@@ -1,0 +1,18 @@
+Functions:
+- notify changes and recompile
+- provide binary and debugging info
+- SD card operations
+- static website
+
+GET /api/debugInfo
+GET /api/debugInfoCRC
+GET /api/sdcard/info
+GET,POST /api/sdcard/raw/SECTOR
+GET,POST,DELETE /api/sdcard/fat/...
+
+Requires:
+- web service
+- CRC
+- sdcc (pipe)
+- fat
+- notify
