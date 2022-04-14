@@ -2,6 +2,7 @@
 import argparse
 import json
 import webbrowser
+from pathlib import Path
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 #
@@ -48,8 +49,17 @@ class HTTPHandler(BaseHTTPRequestHandler):
                 self.send_response(500, str(e))
                 self.end_headers()
 
+        elif self.path in ['/', '/index.html', '/fortuna3.css', '/fortuna3.js', '/debugger.js', '/Z80.js']:
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+
+            filename = self.path[1:] if self.path != '/' else 'index.html'
+            content = Path('frontend/' + filename).read_text()
+            self.wfile.write(bytes(content, 'utf-8'))
+
         else:
-            self.send_response(404)
+            self.send_response(404, 'Resource not found')
             self.end_headers()
 
 

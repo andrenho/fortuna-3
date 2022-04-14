@@ -1,0 +1,21 @@
+.main-grid {
+    display: grid;
+}
+
+.tabs {
+    display: flex;
+    flex-direction: row;
+    padding-left: 16px;
+    border-bottom: 1px black solid;
+    gap: 12px;
+}
+
+.tab {
+    border: 1px black solid;
+    padding: 3px 8px;
+    cursor: pointer;
+}
+
+.selected {
+   background: lightcyan;
+}
