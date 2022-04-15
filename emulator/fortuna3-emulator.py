@@ -49,14 +49,22 @@ class HTTPHandler(BaseHTTPRequestHandler):
                 self.send_response(500, str(e))
                 self.end_headers()
 
-        elif self.path in ['/', '/index.html', '/fortuna3.css', '/fortuna3.js', '/debugger.js', '/Z80.js']:
+        elif self.path in ['/', '/index.html', '/fortuna3.css', '/fortuna3.js', '/debugger.js', '/Z80.js', '/ShareTechMono-Regular.ttf']:
+            filename = self.path[1:] if self.path != '/' else 'index.html'
+
             self.send_response(200)
-            self.send_header('Content-type', 'text/html')
+            if filename.endswith('.html'):
+                self.send_header('Content-type', 'text/html')
+            elif filename.endswith('.css'):
+                self.send_header('Content-type', 'text/css')
+            elif filename.endswith('.js'):
+                self.send_header('Content-type', 'text/javascript')
+            else:
+                self.send_header('Content-type', 'application/octet-stream')
             self.end_headers()
 
-            filename = self.path[1:] if self.path != '/' else 'index.html'
-            content = Path('frontend/' + filename).read_text()
-            self.wfile.write(bytes(content, 'utf-8'))
+            content = Path('frontend/' + filename).read_bytes()
+            self.wfile.write(content)
 
         else:
             self.send_response(404, 'Resource not found')

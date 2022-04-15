@@ -16,3 +16,15 @@ Requires:
 - sdcc (pipe)
 - fat
 - notify
+
+TODO:
+ - Compilation (mock / backend)
+ - SDCard (mock / backend)
+ - Create emulator
+ - Debuggers
+   - RAM
+   - Code
+   - CPU
+   - Canvas
+   - Video
+   - SD Card

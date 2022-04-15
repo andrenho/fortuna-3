@@ -1,21 +1,49 @@
+@font-face { font-family: ShareTech; src: url('ShareTechMono-Regular.ttf'); }
+
+html { font-family: ShareTech, monospace; }
+
 .main-grid {
-    display: grid;
+    display: flex;
 }
+
+/*
+ * CONTROLS
+ */
+
+/*
+ * TABS
+ */
 
 .tabs {
     display: flex;
     flex-direction: row;
-    padding-left: 16px;
-    border-bottom: 1px black solid;
-    gap: 12px;
+    white-space: nowrap;
 }
 
 .tab {
     border: 1px black solid;
-    padding: 3px 8px;
+    padding: 6px 14px;
     cursor: pointer;
+    background-color: lightgray;
 }
 
-.selected {
-   background: lightcyan;
+.tab-selected {
+    background: white;
+    border-bottom: 0px;
+}
+
+.tab-empty {
+    border-bottom: 1px black solid;
+}
+
+.tab-start {
+    width: 24px;
+}
+
+.tab-middle {
+    width: 12px;
+}
+
+.tab-end {
+    width: 100%;
 }
