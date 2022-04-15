@@ -1,5 +1,5 @@
 $ = (name) => document.getElementById(name)
-$$ = (name) => document.getElementsByClassName(name)
+$$ = (name) => Array.from(document.getElementsByClassName(name))
 
 //
 // TABS
@@ -7,11 +7,11 @@ $$ = (name) => document.getElementsByClassName(name)
 
 function tab_initialize() {
     tab_select("tab-emulator")
-    Array.from($$("tab")).forEach(tab => tab.addEventListener("click", (e) => tab_select(e.currentTarget.id)));
+    $$("tab").forEach(tab => tab.addEventListener("click", (e) => tab_select(e.currentTarget.id)));
 }
 
 function tab_select(tab) {
-    Array.from($$("tab")).forEach(tab => tab.classList.remove("tab-selected"))
+    $$("tab").forEach(tab => tab.classList.remove("tab-selected"))
     $(tab).classList.toggle("tab-selected")
 }
 
