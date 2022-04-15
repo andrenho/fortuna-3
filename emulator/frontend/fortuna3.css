@@ -1,6 +1,7 @@
 @font-face { font-family: ShareTech; src: url('ShareTechMono-Regular.ttf'); }
 
 html { font-family: ShareTech, monospace; }
+button { font-family: ShareTech, monospace; }
 
 .main-grid {
     display: flex;
@@ -9,6 +10,16 @@ html { font-family: ShareTech, monospace; }
 /*
  * CONTROLS
  */
+
+.buttons {
+    position: fixed;
+    top: 0;
+    right: 0;
+    border-left: 2px solid black;
+    border-bottom: 2px solid black;
+    padding: 12px;
+    background: white;
+}
 
 /*
  * TABS
@@ -46,4 +57,12 @@ html { font-family: ShareTech, monospace; }
 
 .tab-end {
     width: 100%;
+}
+
+/*
+ * PANELS
+ */
+
+.panel {
+    padding: 16px;
 }

@@ -13,6 +13,12 @@ function tab_initialize() {
 function tab_select(tab) {
     $$("tab").forEach(tab => tab.classList.remove("tab-selected"))
     $(tab).classList.toggle("tab-selected")
+    $$("panel").forEach(panel => {
+        if (panel.classList.contains(`panel-${tab}`))
+            panel.style.display = 'block';
+        else
+            panel.style.display = 'none';
+    });
 }
 
 //
