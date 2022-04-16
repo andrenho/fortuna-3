@@ -15,11 +15,35 @@ function tab_select(tab) {
     $(tab).classList.toggle("tab-selected")
     $$("panel").forEach(panel => {
         if (panel.classList.contains(`panel-${tab}`))
-            panel.style.display = 'block';
+            panel.style.display = 'block'
         else
-            panel.style.display = 'none';
+            panel.style.display = 'none'
     });
 }
+
+//
+// FLAT-DATA (memory, sdcard)
+//
+
+const flatDataTemplate = document.createElement("template")
+flatDataTemplate.innerHTML = `<h1>Hello world</h1>`
+
+class FlatData extends HTMLElement {
+
+    constructor() {
+        super();
+        this.attachShadow({ mode: "open" })
+        this.shadowRoot.appendChild(flatDataTemplate.content.cloneNode(true));
+    }
+
+    connectedCallback() {
+        console.log("connected");
+    }
+
+
+}
+
+window.customElements.define("flat-data", FlatData);
 
 //
 // INITIALIZATION

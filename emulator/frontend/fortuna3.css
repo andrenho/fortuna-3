@@ -65,4 +65,5 @@ button { font-family: ShareTech, monospace; }
 
 .panel {
     padding: 16px;
+    display: flex;
 }
