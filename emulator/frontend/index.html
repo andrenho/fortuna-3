@@ -4,13 +4,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Fortuna-3 emulator</title>
-
-    <link href="fortuna3.css" rel="stylesheet">
-
     <script src="Z80.js"></script>
-    <script src="fortuna3.js"></script>
-    <script src="debugger.js"></script>
 </head>
+
+<!--
+  -- GENERAL STYLE
+  -->
+
+<style>
+
+    @font-face { font-family: ShareTech; src: url('ShareTechMono-Regular.ttf'); }
+
+    html { font-family: ShareTech, monospace; }
+    button { font-family: ShareTech, monospace; }
+
+    .main-grid {
+        display: flex;
+    }
+
+    /*
+     * CONTROLS
+     */
+
+    .buttons {
+        position: fixed;
+        top: 0;
+        right: 0;
+        border-left: 2px solid black;
+        border-bottom: 2px solid black;
+        padding: 12px;
+        background: white;
+    }
+
+    /*
+     * TABS
+     */
+
+    .tabs {
+        display: flex;
+        flex-direction: row;
+        white-space: nowrap;
+    }
+
+    .tab {
+        border: 1px black solid;
+        padding: 6px 14px;
+        cursor: pointer;
+        background-color: lightgray;
+    }
+
+    .tab-selected {
+        background: white;
+        border-bottom: 0px;
+    }
+
+    .tab-empty {
+        border-bottom: 1px black solid;
+    }
+
+    .tab-start {
+        width: 24px;
+    }
+
+    .tab-middle {
+        width: 12px;
+    }
+
+    .tab-end {
+        width: 100%;
+    }
+
+    /*
+     * PANELS
+     */
+
+    .panel {
+        padding: 16px;
+        display: flex;
+    }
+
+</style>
+
+<!--
+  -- EMULATOR CODE
+  -->
+<script>
+
+    class Emulator {
+    }
+
+</script>
+
+<!--
+  -- DEBUGGER CODE
+  -->
+
+<script>
+
+    $ = (name) => document.getElementById(name)
+    $$ = (name) => Array.from(document.getElementsByClassName(name))
+
+    //
+    // TABS
+    //
+
+    function tab_initialize() {
+        tab_select("tab-emulator")
+        $$("tab").forEach(tab => tab.addEventListener("click", (e) => tab_select(e.currentTarget.id)));
+    }
+
+    function tab_select(tab) {
+        $$("tab").forEach(tab => tab.classList.remove("tab-selected"))
+        $(tab).classList.toggle("tab-selected")
+        $$("panel").forEach(panel => {
+            if (panel.classList.contains(`panel-${tab}`))
+                panel.style.display = 'block'
+            else
+                panel.style.display = 'none'
+        });
+    }
+
+    //
+    // INITIALIZATION
+    //
+
+    window.onload = () => {
+        tab_initialize()
+    }
+
+</script>
+
+<!--
+  -- FLAT-DATA COMPONENT
+  -->
+
+<template id="flat-data-template">
+
+    <div class="main">
+        <div class="title-row">
+            <span id="title" class="title">Title</span>
+            <button>&lt;&lt;</button>
+        </div>
+    </div>
+
+    <style>
+        .title-row {
+            display: flex;
+        }
+        .title {
+            width: 120px;
+            font-size: large;
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+
+        class FlatData extends HTMLElement {
+
+            constructor() {
+                super();
+                this.attachShadow({ mode: "open" })
+                const template = $("flat-data-template").content.cloneNode(true);
+                this.shadowRoot.appendChild(template);
+            }
+
+            static get observedAttributes() {
+                return ['title'];
+            }
+
+            attributeChangedCallback(prop, old, newValue) {
+                if (old === newValue)
+                    return;
+                if (prop === 'title')
+                    this.shadowRoot.getElementById("title").textContent = this.title;
+                this[prop] = newValue;
+            }
+
+            connectedCallback() {
+            }
+
+        }
+
+        window.customElements.define("flat-data", FlatData);
+
+    </script>
+
+</template>
+
+<!--
+  -- MAIN
+  -->
+
 <body>
 
 <div class="main">
@@ -29,13 +214,15 @@
 
     <div class="panel panel-tab-emulator" style="display: none;">
 
-        <flat-data></flat-data>
+        <flat-data title="RAM"></flat-data>
 
     </div>
 
     <div class="panel panel-tab-sdcard" style="display: none;">
     </div>
+    
 </div>
 
 </body>
+
 </html>
