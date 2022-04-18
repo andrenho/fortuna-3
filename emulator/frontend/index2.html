@@ -51,7 +51,49 @@
     });
 </script>
 
-<!---- STYLE ---->
+<!---- COMPONENT - TABS ---->
+<template id="tab-main-template">
+    <div class="tabs">
+        <div class="tab-empty tab-start"></div>
+        <slot></slot>
+        <div class="tab-empty tab-end"></div>
+    </div>
+</template>
+
+<template id="tab-item-template">
+    <div class="tab" id="tab-emulator"><slot></slot></div>
+    <div class="tab-empty tab-middle"></div>
+</template>
+
+<script>
+
+    window.customElements.define("tab-main", class extends HTMLElement {
+
+        constructor() {
+            super();
+            /*
+            this.attachShadow({ mode: "open" })
+            this.shadowRoot.appendChild($("tab-main-template").content.cloneNode(true));
+             */
+        }
+
+    });
+
+    window.customElements.define("tab-item", class extends HTMLElement {
+
+        constructor() {
+            super();
+            /*
+            this.attachShadow({ mode: "open" })
+            this.shadowRoot.appendChild($("tab-item-template").content.cloneNode(true));
+             */
+        }
+
+    });
+
+</script>
+
+<!---- CSS - STYLE ---->
 <style>
     @font-face { font-family: ShareTech; src: url('ShareTechMono-Regular.ttf'); }
 
@@ -59,10 +101,25 @@
     button { font-family: ShareTech, monospace; }
 </style>
 
-<!---- BODY ---->
+<!---- HTML - BODY ---->
 <body>
 
-    <command-button class="command-button" onstep="console.log(step);"></command-button>
+    <command-button id="command-button"></command-button>
+
+    <tab-main>
+        <tab-item for="emulator-panel">Emulator</tab-item>
+        <tab-item for="sdcard-panel" id="x">SD Card</tab-item>
+    </tab-main>
 
 </body>
+
+<!---- INITIALIZATION ---->
+<script>
+
+    window.addEventListener("load", () => {
+        $("command-button").addEventListener("step", (e) => console.log(e));
+    });
+
+</script>
+
 </html>
