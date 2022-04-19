@@ -53,16 +53,58 @@
 
 <!---- COMPONENT - TABS ---->
 <template id="tab-main-template">
+
+    <style>
+        .tabs {
+            display: flex;
+            flex-direction: row;
+            white-space: nowrap;
+        }
+
+        .tab-start {
+            border-bottom: 1px black solid;
+            width: 24px;
+        }
+
+        .tab-end {
+            border-bottom: 1px black solid;
+            width: 100%;
+        }
+    </style>
+
     <div class="tabs">
-        <div class="tab-empty tab-start"></div>
+        <div class="tab-start"></div>
         <slot></slot>
-        <div class="tab-empty tab-end"></div>
+        <div class="tab-end"></div>
     </div>
+
 </template>
 
 <template id="tab-item-template">
-    <div class="tab" id="tab-emulator"><slot></slot></div>
-    <div class="tab-empty tab-middle"></div>
+
+    <style>
+
+        .tab {
+            border: 1px black solid;
+            padding: 6px 14px;
+            cursor: pointer;
+            background-color: lightgray;
+        }
+
+        .tab-middle {
+            border-bottom: 1px black solid;
+            width: 12px;
+        }
+
+        .tab-selected {
+            background: white;
+            border-bottom: 0;
+        }
+
+    </style>
+
+    <div class="tab tab-selected"><slot></slot></div>
+    <div class="tab-middle"></div>
 </template>
 
 <script>
@@ -71,10 +113,8 @@
 
         constructor() {
             super();
-            /*
             this.attachShadow({ mode: "open" })
             this.shadowRoot.appendChild($("tab-main-template").content.cloneNode(true));
-             */
         }
 
     });
@@ -83,10 +123,8 @@
 
         constructor() {
             super();
-            /*
             this.attachShadow({ mode: "open" })
             this.shadowRoot.appendChild($("tab-item-template").content.cloneNode(true));
-             */
         }
 
     });
