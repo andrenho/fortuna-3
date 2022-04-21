@@ -49,7 +49,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
                 self.send_response(500, str(e))
                 self.end_headers()
 
-        elif self.path in ['/', '/index.html', '/fortuna3.css', '/fortuna3.js', '/debugger.js', '/Z80.js', '/ShareTechMono-Regular.ttf']:
+        elif self.path in ['/', '/index.html', '/Z80.js', '/ShareTechMono-Regular.ttf']:
             filename = self.path[1:] if self.path != '/' else 'index.html'
 
             self.send_response(200)
