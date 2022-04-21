@@ -266,7 +266,7 @@
             <tbody id="data-table"></tbody>
         </table>
 
-        <span></span>
+        <slot></slot>
     </div>
 
 </template>
@@ -352,6 +352,24 @@
 
 </script>
 
+<!---- COMPONENT - STACK ---->
+<template id="memory-stack-template">
+
+    <div>Stack:</div>
+
+</template>
+<script>
+
+    window.customElements.define("memory-stack", class extends HTMLElement {
+        constructor() {
+            super();
+            this.attachShadow({ mode: "open" })
+            this.shadowRoot.appendChild($("memory-stack-template").content.cloneNode(true));
+        }
+    });
+
+</script>
+
 <!---- CSS - STYLE ---->
 <style>
     @font-face { font-family: ShareTech; src: url('ShareTechMono-Regular.ttf'); }
@@ -376,7 +394,9 @@
 
     <div id="emulator-panel">
         <div class="main">
-            <flat-data id="ram" title="Memory (RAM)" current-page="0" max-page="256" rows="16"></flat-data>
+            <flat-data id="ram" title="Memory (RAM)" current-page="0" max-page="256" rows="16">
+                <memory-stack id="stack" length="10"></memory-stack>
+            </flat-data>
         </div>
     </div>
 
