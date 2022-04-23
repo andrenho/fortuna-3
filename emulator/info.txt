@@ -22,7 +22,7 @@ TODO:
  - SDCard (mock / backend)
  - Create emulator
  - Debuggers
-   - RAM
+   - RAM (ok)
    - Code
    - CPU
    - Canvas

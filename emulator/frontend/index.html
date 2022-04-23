@@ -22,6 +22,7 @@
     class Emulator {
 
         ram = new Uint8Array();
+        sp = 0;
 
         constructor(memorySize = (64 * 1024)) {
             this.memorySize = memorySize;
@@ -31,7 +32,23 @@
         }
 
         getRamByte(addr) {
-            return this.ram[addr & this.memorySize];
+            while (addr < 0)
+                addr += this.memorySize;
+            return this.ram[addr & (this.memorySize - 1)];
+        }
+
+        getRamWord(addr) {
+            return this.getRamByte(addr) | (this.getRamByte(addr + 1) << 8);
+        }
+
+        stack(length) {
+            let current = 0;
+            let values = [];
+            for (let i = 0; i < length; ++i) {
+                values.push(this.getRamWord(current));
+                current -= 2;
+            }
+            return values;
         }
 
     }
@@ -237,6 +254,14 @@
             text-align: center;
         }
 
+        .error {
+            background-color: lightcoral;
+        }
+
+        .highlighted {
+            background-color: mediumspringgreen;
+        }
+
         input { font-size: medium; }
         button { font-size: medium; }
         th {
@@ -279,9 +304,13 @@
             this.attachShadow({ mode: "open" })
             this.shadowRoot.appendChild($("flat-data-template").content.cloneNode(true));
 
-            this.shadowRoot.getElementById("previous-page").addEventListener("click", () => this.previousPage());
-            this.shadowRoot.getElementById("next-page").addEventListener("click", () => this.nextPage());
             this.dataFetchCallback_ = undefined;
+            this.highlightAddress = undefined;
+
+            this.shadowRoot.getElementById("previous-page").addEventListener("click", () => this.#updatePage(-1));
+            this.shadowRoot.getElementById("next-page").addEventListener("click", () => this.#updatePage(+1));
+            this.shadowRoot.getElementById("page").addEventListener("input", (e) => this.#setPage(e.currentTarget.value));
+            this.shadowRoot.getElementById("page").addEventListener("change", (e) => this.#updatePageInput());
         }
 
         connectedCallback() {
@@ -302,50 +331,94 @@
 
         set dataFetchCallback(d) {
             this.dataFetchCallback_ = d;
-            this.onPageUpdate();
+            this.update();
         }
 
-        previousPage() {
-            this.page--;
-            if (this.page < 0)
-                this.page = (this.maxPages - 1);
-            this.setAttribute("current-page", this.page);
-        }
-
-        nextPage() {
-            this.page++;
-            if (this.page >= this.maxPages)
+        #updatePage(step) {
+            if (isNaN(this.page)) {
                 this.page = 0;
+                this.shadowRoot.getElementById("page").classList.remove("error");
+            } else {
+                this.page += step;
+                if (this.page < 0)
+                    this.page = (this.maxPages - 1);
+                if (this.page >= this.maxPages)
+                    this.page = 0;
+            }
             this.setAttribute("current-page", this.page);
         }
 
-        onPageUpdate() {
-            this.shadowRoot.getElementById("page").value = hex(this.page, 0, true);
-            if (this.dataFetchCallback_) {
-                const data = this.dataFetchCallback_(this.page * this.rows * 16, this.rows * 16);
-                for (let row = 0; row < this.rows; ++row) {
-                    let addr = (this.page * this.rows * 16) + (row * 16);
-                    this.shadowRoot.getElementById(`address_${row}`).innerText = hex(addr, 4);
-                    let ascii = [];
-                    for (let column = 0; column < 16; ++column) {
-                        let i = (row * 16) + column;
-                        this.shadowRoot.getElementById(`data_${row}_${column}`).innerText = hex(data[i]);
-                        ascii.push((data[i] < 32 || data[i] > 126) ? '.' : String.fromCharCode(data[i]));
-                    }
-                    this.shadowRoot.getElementById(`ascii_${row}`).innerText = ascii.join('');
+        #setPage(pageStr) {
+            this.page = parseInt(pageStr, 16);
+            if (isNaN(this.page) || this.page < 0 || this.page >= this.maxPages) {
+                this.shadowRoot.getElementById("page").classList.add("error");
+                this.page = NaN;
+            } else {
+                this.shadowRoot.getElementById("page").classList.remove("error");
+            }
+            this.update(false);
+        }
+
+        update(updateElement = true) {
+            if (updateElement)
+                this.#updatePageInput();
+
+            if (isNaN(this.page))
+                this.#updateTableAsError();
+            else if (this.dataFetchCallback_)
+                this.#updateTable();
+
+            console.debug("flat-data updated");
+        }
+
+        #updatePageInput() {
+            if (!isNaN(this.page))
+                this.shadowRoot.getElementById("page").value = hex(this.page, 0, true);
+        }
+
+        #updateTable() {
+            const data = this.dataFetchCallback_(this.page * this.rows * 16, this.rows * 16);
+            for (let row = 0; row < this.rows; ++row) {
+                let addr = (this.page * this.rows * 16) + (row * 16);
+                this.shadowRoot.getElementById(`address_${row}`).innerText = hex(addr, 4);
+                let ascii = [];
+                for (let column = 0; column < 16; ++column) {
+                    let i = (row * 16) + column;
+                    const element = this.shadowRoot.getElementById(`data_${row}_${column}`);
+                    element.innerText = hex(data[i]);
+                    if (this.highlightAddress === (addr + column))
+                        element.classList.add("highlighted");
+                    else
+                        element.classList.remove("highlighted");
+                    ascii.push((data[i] < 32 || data[i] > 126) ? '.' : String.fromCharCode(data[i]));
                 }
+                this.shadowRoot.getElementById(`ascii_${row}`).innerText = ascii.join('');
+            }
+        }
+
+        #updateTableAsError() {
+            for (let row = 0; row < this.rows; ++row) {
+                this.shadowRoot.getElementById(`address_${row}`).innerText = "XXXX";
+                for (let column = 0; column < 16; ++column) {
+                    const element = this.shadowRoot.getElementById(`data_${row}_${column}`);
+                    element.classList.remove("highlighted");
+                    element.innerText = "XX";
+                }
+                this.shadowRoot.getElementById(`ascii_${row}`).innerText = "xxxxxxxx xxxxxxxx";
             }
         }
 
         static get observedAttributes() {
-            return ['current-page'];
+            return ['current-page', 'highlight-address'];
         }
 
         attributeChangedCallback(prop, old, newValue) {
             if (prop === 'current-page') {
                 this.page = parseInt(newValue);
-                this.onPageUpdate();
+            } else if (prop === 'highlight-address') {
+                this.highlightAddress = parseInt(newValue);
             }
+            this.update();
         }
 
     });
@@ -355,17 +428,64 @@
 <!---- COMPONENT - STACK ---->
 <template id="memory-stack-template">
 
-    <div>Stack:</div>
+    <style>
+        .main {
+            padding-top: 12px;
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-template-rows: auto auto;
+            justify-content: start;
+        }
+
+        .title {
+            font-weight: bold;
+            padding-right: 12px;
+        }
+
+        .arrow {
+            grid-column: 2;
+            font-weight: bold;
+            font-size: 10px;
+        }
+    </style>
+
+    <div class="main">
+        <div class="title">Stack:</div>
+        <div class="values"><span id="data"></span></div>
+        <div class="arrow">PUSH <span style="letter-spacing: -2px;">--&gt;</span></div>
+    </div>
 
 </template>
 <script>
 
     window.customElements.define("memory-stack", class extends HTMLElement {
+
         constructor() {
             super();
             this.attachShadow({ mode: "open" })
             this.shadowRoot.appendChild($("memory-stack-template").content.cloneNode(true));
+            this.stackFetchCallback_ = undefined;
         }
+
+        set stackFetchCallback(d) {
+            this.stackFetchCallback_ = d;
+            this.update();
+        }
+
+        connectedCallback() {
+            this.length = parseInt(this.getAttribute("length"));
+            this.update();
+        }
+
+        update() {
+            if (this.stackFetchCallback_ && this.length) {
+                this.shadowRoot.getElementById("data").innerText = this.stackFetchCallback_(this.length)
+                    .map((v) => hex(v, 4))
+                    .join(' ');
+            }
+            console.debug("memory-stack updated");
+        }
+
     });
 
 </script>
@@ -394,8 +514,8 @@
 
     <div id="emulator-panel">
         <div class="main">
-            <flat-data id="ram" title="Memory (RAM)" current-page="0" max-page="256" rows="16">
-                <memory-stack id="stack" length="10"></memory-stack>
+            <flat-data id="ram" title="Memory (RAM)" current-page="0" max-page="256" rows="16" highlight-address="258">
+                <memory-stack id="stack" length="12"></memory-stack>
             </flat-data>
         </div>
     </div>
@@ -411,6 +531,7 @@
         const emulator = new Emulator();
 
         $("ram").dataFetchCallback = (initialAddr, pageSize) => new Uint8Array(emulator.ram.buffer.slice(initialAddr, initialAddr + pageSize));
+        $("stack").stackFetchCallback = (length) => emulator.stack(length);
     });
 
 </script>
