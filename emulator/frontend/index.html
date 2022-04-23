@@ -490,6 +490,101 @@
 
 </script>
 
+<!---- COMPONENT - DEBUG-CODE ---->
+<template id="debug-code-template">
+
+    <style>
+        .main {
+            display: flex;
+        }
+
+        .code {
+            border: 1px black solid;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        td {
+            border: 0;
+            padding-right: 8px;
+            padding-left: 8px;
+        }
+
+        .breakpoint {
+            width: 12px;
+            border-right: 1px black solid;
+        }
+
+        .address {
+            width: 50px;
+            border-right: 1px black solid;
+        }
+
+        .line {
+            min-width: 500px;
+            max-width: 500px;
+            overflow-x: hidden;
+            white-space: nowrap;
+        }
+
+        .bytes {
+            border-left: 1px black solid;
+        }
+
+        .comment {
+            color: forestgreen;
+        }
+
+        .current {
+            background-color: yellow;
+        }
+
+        .active {
+            background-color: crimson !important;
+        }
+    </style>
+
+    <div class="main">
+        <div class="files">
+
+        </div>
+        <table class="code">
+            <tr>
+                <td class="breakpoint active"></td>
+                <td class="address">0000</td>
+                <td class="line">hello <span class="comment">; this is a comment</span></td>
+                <td class="bytes">FA 44 38</td>
+            </tr>
+            <tr>
+                <td class="breakpoint current"></td>
+                <td class="address current">0000</td>
+                <td class="line current">&nbsp;&nbsp;&nbsp;&nbsp;nop</td>
+                <td class="bytes current">FA 44 38</td>
+            </tr>
+        </table>
+    </div>
+
+</template>
+<script>
+
+    window.customElements.define("debug-code", class extends HTMLElement {
+
+        #debugCode;
+
+        constructor() {
+            super();
+            this.attachShadow({ mode: "open" })
+            this.shadowRoot.appendChild($("debug-code-template").content.cloneNode(true));
+        }
+
+        setDebugCode(debugCode) {
+            this.#debugCode = debugCode;
+        }
+
+    });
+
+</script>
+
 <!---- CSS - STYLE ---->
 <style>
     @font-face { font-family: ShareTech; src: url('ShareTechMono-Regular.ttf'); }
@@ -514,9 +609,12 @@
 
     <div id="emulator-panel">
         <div class="main">
+            <!--
             <flat-data id="ram" title="Memory (RAM)" current-page="0" max-page="256" rows="16" highlight-address="258">
                 <memory-stack id="stack" length="12"></memory-stack>
             </flat-data>
+            -->
+            <debug-code id="debug-code"></debug-code>
         </div>
     </div>
 
@@ -530,8 +628,16 @@
     window.addEventListener("load", () => {
         const emulator = new Emulator();
 
+        /*
         $("ram").dataFetchCallback = (initialAddr, pageSize) => new Uint8Array(emulator.ram.buffer.slice(initialAddr, initialAddr + pageSize));
         $("stack").stackFetchCallback = (length) => emulator.stack(length);
+         */
+
+        $("debug-code").setDebugCode({
+            "main.z80": "    nop\n    jmp hello  ; jump to hello.z80",
+            "hello.z80": "    nop\nhello:\n    nop\n    ret"
+        });
+
     });
 
 </script>
