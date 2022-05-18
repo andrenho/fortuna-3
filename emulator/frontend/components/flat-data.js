@@ -30,7 +30,6 @@ Usage:
     // on page change
     document.getElementById("ram").addEventListener("page-change", (e) => {
         const { addrStart, addrEnd, page } = e.detail;
-        e.target.setAttribute("current-page", page);
         e.target.setAttribute("data", ram.slice(addrStart, addrEnd).toString());
         e.target.setAttribute("highlight-address", (highlightAddr > addrStart && highlightAddr <= addrEnd) ? highlightAddr % 256 : undefined);
     });
@@ -135,7 +134,7 @@ window.customElements.define("flat-data", class extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["title", "page-count", "rows", "data", "current-page"];
+        return ["title", "page-count", "rows", "data", "current-page", "highlight-address"];
     }
 
     attributeChangedCallback(prop, old, newValue) {
@@ -151,7 +150,18 @@ window.customElements.define("flat-data", class extends HTMLElement {
                 this.#updateData(newValue.split(",").map(v => parseInt(v)));
                 break;
             case "current-page":
-                this.#updateCurrentPage(parseInt(newValue));
+                const page = parseInt(newValue);
+                const newPage = this.#adjustPage(page);
+                if (page === newPage) {
+                    this.shadowRoot.getElementById("page").value = hex(newPage, 0, true);
+                    this.#updateCurrentPage(newPage);
+                } else {
+                    this.setAttribute("current-page", newPage);
+                }
+                break;
+            case "highlight-address":
+                const addr = parseInt(newValue);
+                this.#setHighlight(isNaN(addr) ? -1 : addr);
                 break;
         }
     }
@@ -159,11 +169,11 @@ window.customElements.define("flat-data", class extends HTMLElement {
     addressRange() {
         const currentPage = parseInt(this.getAttribute("current-page"));
         const pageCount = parseInt(this.getAttribute("page-count"));
-        return { addrStart: (currentPage * pageCount), addrEnd: ((currentPage + 1) * pageCount) };
+        return { addrStart: (currentPage * pageCount * 16), addrEnd: ((currentPage + 1) * pageCount * 16) };
     }
 
     #buildTable() {
-        let tbody = [];
+        const tbody = [];
         for (let row = 0; row < this.rows; ++row) {
             tbody.push(`<tr><td class="address" id="address_${row}">0000</td>`);
             for (let column = 0; column < 16; ++column)
@@ -174,8 +184,9 @@ window.customElements.define("flat-data", class extends HTMLElement {
     }
 
     #updateData(data) {
+        const currentPage = parseInt(this.getAttribute("current-page"));
         for (let row = 0; row < this.rows; ++row) {
-            let addr = (this.page * this.rows * 16) + (row * 16);
+            let addr = (currentPage * this.rows * 16) + (row * 16);
             this.shadowRoot.getElementById(`address_${row}`).innerText = hex(addr, 4);
             let ascii = [];
             for (let column = 0; column < 16; ++column) {
@@ -196,11 +207,10 @@ window.customElements.define("flat-data", class extends HTMLElement {
 
     #updateCurrentPage(page) {
         const currentPage = parseInt(this.getAttribute("current-page"));
-        const pageCount = parseInt(this.getAttribute("page-count"));
 
         this.dispatchEvent(new CustomEvent("page-change", { detail : {
-            addrStart: currentPage * this.rows,
-            addrEnd: (currentPage + 1) * this.rows,
+            addrStart: currentPage * this.rows * 16,
+            addrEnd: (currentPage + 1) * this.rows * 16,
             page: currentPage,
         }}))
     }
@@ -209,6 +219,29 @@ window.customElements.define("flat-data", class extends HTMLElement {
         const currentPage = parseInt(this.getAttribute("current-page"));
         this.setAttribute("current-page", currentPage + diff);
     }
+
+    #adjustPage(page) {
+        const pageCount = parseInt(this.getAttribute("page-count"));
+        if (page < 0)
+            page = pageCount - 1;
+        else if (page >= pageCount)
+            page = 0;
+        return page;
+    }
+
+    #setHighlight(addr) {
+        for (let row = 0; row < this.rows; ++row) {
+            for (let column = 0; column < 16; ++column) {
+                let i = (row * 16) + column;
+                const element = this.shadowRoot.getElementById(`data_${row}_${column}`);
+                if (i === addr)
+                    element.classList.add("highlighted");
+                else
+                    element.classList.remove("highlighted");
+            }
+        }
+    }
+
 
     /*
     #updatePage(step) {
