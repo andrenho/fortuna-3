@@ -7,8 +7,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 FILES = [
     '/index.html',
-    '/js/util.js', '/js/Z80.js',
-    '/components/flat-data.html', 'components/memory-stack.html', 'components/debug-code.html', 'components/command-button.html'
+    '/js/Z80.js',
+    '/components/common.js',
+    '/components/flat-data.js', 'components/memory-stack.js', 'components/debug-code.js', 'components/command-button.js',
     '/data/ShareTechMono-Regular.ttf',
 ]
 

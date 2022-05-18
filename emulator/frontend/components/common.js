@@ -1,0 +1,1 @@
+hex = (value, pad=2, withPrefix=false) => (withPrefix ? "0x" : "") + value.toString(16).padStart(pad, '0');
