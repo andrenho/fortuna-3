@@ -5,14 +5,24 @@ import webbrowser
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
+FILES = [
+    '/index.html',
+    '/js/util.js', '/js/Z80.js',
+    '/components/flat-data.html', 'components/memory-stack.html', 'components/debug-code.html', 'components/command-button.html'
+    '/data/ShareTechMono-Regular.ttf',
+]
+
+
 #
 # COMMANDLINE ARGUMENTS
 #
 
 parser = argparse.ArgumentParser(description='Fortuna3 emulator')
-parser.add_argument('project_path', help='Path of the project file')
-parser.add_argument('-d', '--debug', action='store_true', help='Development mode, assumes frontend running from somewhere else.')
+parser.add_argument('project_path', help='Path of the project file', nargs='?')
+parser.add_argument('-d', '--dev', action='store_true', help='Development mode')
 parser.add_argument('-s', '--sdcard', action='store', type=str)
+args = parser.parse_args()
+
 
 #
 # COMPILATION
@@ -49,28 +59,39 @@ class HTTPHandler(BaseHTTPRequestHandler):
                 self.send_response(500, str(e))
                 self.end_headers()
 
-        elif self.path in ['/', '/index.html', '/Z80.js', '/ShareTechMono-Regular.ttf']:
+        elif self.path == '/' or self.path in FILES:
             filename = self.path[1:] if self.path != '/' else 'index.html'
 
-            self.send_response(200)
-            if filename.endswith('.html'):
-                self.send_header('Content-type', 'text/html')
-            elif filename.endswith('.css'):
-                self.send_header('Content-type', 'text/css')
-            elif filename.endswith('.js'):
-                self.send_header('Content-type', 'text/javascript')
+            if args.dev:
+                self.serve_local_file(filename)
             else:
-                self.send_header('Content-type', 'application/octet-stream')
-            self.end_headers()
-
-            content = Path('frontend/' + filename).read_bytes()
-            self.wfile.write(content)
+                self.serve_embedded_file(filename)
 
         else:
             self.send_response(404, 'Resource not found')
             self.end_headers()
 
+    def serve_local_file(self, filename):
+        self.send_response(200)
+        if filename.endswith('.html'):
+            self.send_header('Content-type', 'text/html')
+        elif filename.endswith('.css'):
+            self.send_header('Content-type', 'text/css')
+        elif filename.endswith('.js'):
+            self.send_header('Content-type', 'text/javascript')
+        else:
+            self.send_header('Content-type', 'application/octet-stream')
+        self.end_headers()
 
-#webbrowser.open('http://localhost:8024/')
+        self.wfile.write(Path('frontend/' + filename).read_bytes())
+
+    def serve_embedded_file(self, filename):
+        self.send_response(501)
+        self.wfile.write(b'Not implemented yet.')   # TODO
+
+
+if not args.dev:
+    webbrowser.open('http://localhost:8024/')
+
 with HTTPServer(('', 8024), HTTPHandler) as server:
     server.serve_forever()
