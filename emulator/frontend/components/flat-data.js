@@ -88,7 +88,7 @@ window.customElements.define("flat-data", class extends HTMLElement {
             input { font-size: medium; }
             button { font-size: medium; }
             th {
-                width: 22px;
+                width: 21px;
                 vertical-align: top;
             }
         </style>
