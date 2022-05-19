@@ -127,10 +127,7 @@ window.customElements.define("flat-data", class extends HTMLElement {
     connectedCallback() {
         this.shadowRoot.getElementById("previous-page").addEventListener("click", () => this.#stepPage(-1));
         this.shadowRoot.getElementById("next-page").addEventListener("click", () => this.#stepPage(+1));
-        /*
-        this.shadowRoot.getElementById("page").addEventListener("input", (e) => this.#setPageFromString(e.currentTarget.value));
-        this.shadowRoot.getElementById("page").addEventListener("change", (e) => this.#updatePageInputText());
-         */
+        this.shadowRoot.getElementById("page").addEventListener("change", (e) => this.#changePageInputText(e.target.value));
     }
 
     static get observedAttributes() {
@@ -205,7 +202,7 @@ window.customElements.define("flat-data", class extends HTMLElement {
         }
     }
 
-    #updateCurrentPage(page) {
+    #updateCurrentPage() {
         const currentPage = parseInt(this.getAttribute("current-page"));
 
         this.dispatchEvent(new CustomEvent("page-change", { detail : {
@@ -242,82 +239,10 @@ window.customElements.define("flat-data", class extends HTMLElement {
         }
     }
 
-
-    /*
-    #updatePage(step) {
-        if (isNaN(this.page)) {
-            this.page = 0;
-            this.shadowRoot.getElementById("page").classList.remove("error");
-        } else {
-            this.page += step;
-            if (this.page < 0)
-                this.page = (this.maxPages - 1);
-            if (this.page >= this.maxPages)
-                this.page = 0;
-        }
-        this.setAttribute("current-page", this.page);
-        this.dispatchEvent(new CustomEvent("page-change", { detail : { addrStart: this.page * this.rows, addrEnd: (this.page + 1) * this.rows }}))
+    #changePageInputText(pageStr) {
+        const newPage = parseInt(pageStr, 16);
+        this.setAttribute("current-page",
+            isNaN(newPage) ? this.getAttribute("current-page") : newPage);
     }
 
-    #setPageFromString(pageStr) {
-        this.page = parseInt(pageStr, 16);
-        if (isNaN(this.page) || this.page < 0 || this.page >= this.maxPages) {
-            this.shadowRoot.getElementById("page").classList.add("error");
-            this.page = NaN;
-        } else {
-            this.shadowRoot.getElementById("page").classList.remove("error");
-        }
-        this.#update(false);
-    }
-
-    #update(updateElement = true) {
-        if (updateElement)
-            this.#updatePageInputText();
-
-        if (isNaN(this.page))
-            this.#updateTableAsError();
-
-        console.debug("flat-data updated");
-    }
-
-    #updatePageInputText() {
-        if (!isNaN(this.page))
-            this.shadowRoot.getElementById("page").value = hex(this.page, 0, true);
-    }
-
-    #updateTable() {
-        const dataAttr = this.getAttribute("data");
-        if (!dataAttr)
-            return;
-        const data = dataAttr.split(",").map(v => parseInt(v));
-        for (let row = 0; row < this.rows; ++row) {
-            let addr = (this.page * this.rows * 16) + (row * 16);
-            this.shadowRoot.getElementById(`address_${row}`).innerText = hex(addr, 4);
-            let ascii = [];
-            for (let column = 0; column < 16; ++column) {
-                let i = (row * 16) + column;
-                const element = this.shadowRoot.getElementById(`data_${row}_${column}`);
-                element.innerText = hex(data[i]);
-                if (this.highlightAddress === (addr + column))
-                    element.classList.add("highlighted");
-                else
-                    element.classList.remove("highlighted");
-                ascii.push((data[i] < 32 || data[i] > 126) ? "." : String.fromCharCode(data[i]));
-            }
-            this.shadowRoot.getElementById(`ascii_${row}`).innerText = ascii.join("");
-        }
-    }
-
-    #updateTableAsError() {
-        for (let row = 0; row < this.rows; ++row) {
-            this.shadowRoot.getElementById(`address_${row}`).innerText = "XXXX";
-            for (let column = 0; column < 16; ++column) {
-                const element = this.shadowRoot.getElementById(`data_${row}_${column}`);
-                element.classList.remove("highlighted");
-                element.innerText = "XX";
-            }
-            this.shadowRoot.getElementById(`ascii_${row}`).innerText = "xxxxxxxx xxxxxxxx";
-        }
-    }
-    */
 });
