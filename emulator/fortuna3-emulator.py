@@ -9,7 +9,7 @@ FILES = [
     '/index.html',
     '/js/Z80.js',
     '/components/common.js',
-    '/components/flat-data.js', 'components/memory-stack.js', 'components/debug-code.js', 'components/command-button.js',
+    '/components/flat-data.js', '/components/memory-stack.js', '/components/debug-code.js', '/components/command-button.js',
     '/data/ShareTechMono-Regular.ttf',
 ]
 
