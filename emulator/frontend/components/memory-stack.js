@@ -1,5 +1,4 @@
 /*
-
 Attributes:
     - data: comma separated list of words (2-bytes)
 

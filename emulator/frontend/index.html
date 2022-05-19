@@ -10,6 +10,7 @@
     <script src="components/common.js"></script>
     <script src="components/flat-data.js"></script>
     <script src="components/memory-stack.js"></script>
+    <script src="components/command-button.js"></script>
 
 </head>
 
@@ -27,6 +28,8 @@
         <!-- any errors will be shown here -->
     </h1>
 
+    <command-button id="command-button"></command-button>
+
     <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
         <memory-stack id="stack"></memory-stack>
     </flat-data>
@@ -37,6 +40,9 @@
         window.crypto.getRandomValues(ram);
 
         const highlightAddr = 258;
+
+        // step button
+        document.getElementById("command-button").addEventListener("step", () => console.log("step"));
 
         // on page change
         document.getElementById("ram").addEventListener("page-change", (e) => {
