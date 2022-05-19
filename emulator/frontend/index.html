@@ -8,9 +8,11 @@
     <title>Fortuna-3 emulator</title>
 
     <script src="components/common.js"></script>
+
+    <script src="components/command-button.js"></script>
+    <script src="components/debug-assembly.js"></script>
     <script src="components/flat-data.js"></script>
     <script src="components/memory-stack.js"></script>
-    <script src="components/command-button.js"></script>
 
 </head>
 
@@ -29,6 +31,8 @@
     </h1>
 
     <command-button id="command-button"></command-button>
+
+    <debug-assembly></debug-assembly>
 
     <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
         <memory-stack id="stack"></memory-stack>
@@ -54,9 +58,6 @@
         // on data change
         const { addrStart, addrEnd } = document.getElementById("ram").addressRange();
         document.getElementById("ram").setAttribute("data", ram.slice(addrStart, addrEnd).toString());
-        const bytes = ram.slice(0, 24);
-        console.log(bytes);
-        console.log(toWords(Array.from({ length: bytes.length / 2})));
         document.getElementById("stack").setAttribute("data", toWords(ram.slice(0, 24)).toString());
 
     </script>
