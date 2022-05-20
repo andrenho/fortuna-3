@@ -42,7 +42,7 @@
 
     <div class="main">
 
-        <debug-assembly></debug-assembly>
+        <debug-assembly id="debug"></debug-assembly>
 
         <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
             <memory-stack id="stack"></memory-stack>
@@ -72,6 +72,21 @@
         document.getElementById("ram").setAttribute("data", ram.slice(addrStart, addrEnd).toString());
         document.getElementById("stack").setAttribute("data", toWords(ram.slice(0, 24)).toString());
 
+        // setup debug-assembly
+        const files = {
+            "main.s": [
+                { line: "; hello" },
+                { address: 0, line: "   nop  ; do nothing", bytes: [0x0] },
+            ],
+            "hello.s": [
+                { address: 1, line: "   nop  ; do nothing", bytes: [0x0] },
+            ]
+        };
+        const debug = document.querySelector("#debug");
+        debug.setAttribute("source", JSON.stringify(files["main.s"]));
+        debug.setAttribute("current-pc", "0");
+        debug.setAttribute("files", Object.keys(files).join(","));
+        debug.setAttribute("selected-file", "main.s");
     </script>
 
 </body>

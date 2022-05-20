@@ -1,3 +1,17 @@
+/*
+Attributes:
+  - source: JSON describing the source code
+      - array of records in the following format: { address, line, bytes }
+  - breakpoints: list of breakpoints (by address)
+  - current-pc: address of the current PC
+  - files: a comma-separated list of files
+  - selected-file: the currently selected file
+
+Events:
+  - fileChanged: the user has selected a different file
+  - breakpoint: the user has attempted to add/remove a breakpoint
+ */
+
 window.customElements.define("debug-assembly", class extends HTMLElement {
 
     #template = `
@@ -22,6 +36,8 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
                 padding: 2px 8px;
                 cursor: pointer;
                 box-shadow: 6px 6px 6px lightgray;
+                background-color: white;
+                height: 16px;
             }
 
             .file:last-child {
@@ -29,7 +45,7 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
             }
 
             .selected {
-                background: aquamarine;
+                background: aquamarine !important;
             }
 
             .code {
@@ -89,11 +105,9 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
         </style>
 
         <div class="main">
-            <div class="files">
-                <div class="file">main.s</div>
-                <div class="file selected">temp_file.s</div>
-            </div>
+            <div id="files" class="files"></div>
             <table class="code">
+                <!--
                 <tr>
                     <td class="breakpoint active"></td>
                     <td class="address">0000</td>
@@ -106,7 +120,8 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
                     <td class="line current">&nbsp;&nbsp;&nbsp;&nbsp;nop</td>
                     <td class="bytes current">FA 44 38</td>
                 </tr>
-                <tr>
+                -->
+                <tr id="last-line">
                     <td class="breakpoint last-line"></td>
                     <td class="address last-line"></td>
                     <td class="line last-line"></td>
@@ -115,7 +130,6 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
             </table>
         </div>
     `;
-    #debugCode;
 
     constructor() {
         super();
@@ -123,8 +137,34 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
         this.shadowRoot.innerHTML = this.#template;
     }
 
-    setDebugCode(debugCode) {
-        this.#debugCode = debugCode;
+    static get observedAttributes() {
+        return ["source", "breakpoints", "current-pc", "files", "selected-file"];
     }
 
+    attributeChangedCallback(prop, old, newValue) {
+        console.log(prop);
+        switch (prop) {
+            case "files":
+                this.#updateFiles(newValue.split(","));
+                break;
+            case "selected-file":
+                this.#updateSelectedFile(newValue);
+                break;
+        }
+    }
+
+    #updateFiles(files) {
+        this.shadowRoot.querySelector("#files").innerHTML =
+            files.map(file => `<div class="file">${file}</div>`).join("");
+    }
+
+    #updateSelectedFile(newValue) {
+       console.log(this.shadowRoot.querySelectorAll(".file"));
+       this.shadowRoot.querySelectorAll(".file").forEach(element => {
+           if (element.innerHTML === newValue)
+               element.classList.add("selected");
+           else
+               element.classList.remove("selected");
+       });
+    }
 });
