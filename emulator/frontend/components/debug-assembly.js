@@ -2,6 +2,8 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
 
     #template = `
         <style>
+            * { font-family: ShareTech, monospace; }
+            
             .main {
                 display: flex;
             }
@@ -9,7 +11,7 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
             .files {
                 display: flex;
                 flex-direction: column;
-                width: 150px;
+                width: 120px;
             }
 
             .file {
@@ -19,6 +21,7 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
                 border-bottom: 0;
                 padding: 2px 8px;
                 cursor: pointer;
+                box-shadow: 6px 6px 6px lightgray;
             }
 
             .file:last-child {
@@ -34,6 +37,7 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
                 border-collapse: collapse;
                 table-layout: fixed;
                 min-height: 500px;
+                box-shadow: 6px 6px 6px lightgray;
             }
 
             td {
@@ -43,25 +47,28 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
             }
 
             .breakpoint {
-                width: 12px;
+                width: 21px;
+                padding: 0;
                 border-right: 1px black solid;
                 cursor: pointer;
+                background-color: white;
             }
 
             .address {
                 width: 35px;
                 border-right: 1px black solid;
+                font-weight: bold;
             }
 
             .line {
-                width: 500px;
+                width: 400px;
                 overflow-x: hidden;
                 white-space: nowrap;
             }
 
             .bytes {
                 border-left: 1px black solid;
-                width: 150px;
+                width: 120px;
             }
 
             .comment {

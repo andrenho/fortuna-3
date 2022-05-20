@@ -50,6 +50,7 @@ window.customElements.define("flat-data", class extends HTMLElement {
                 border: 1px solid black;
                 padding: 16px;
                 width: fit-content;
+                box-shadow: 6px 6px 6px lightgray;
             }
 
             .title-row {
@@ -89,6 +90,7 @@ window.customElements.define("flat-data", class extends HTMLElement {
             button { font-size: medium; }
             th {
                 width: 21px;
+                min-width: 21px;
                 vertical-align: top;
             }
         </style>
@@ -105,7 +107,7 @@ window.customElements.define("flat-data", class extends HTMLElement {
             <table style="table-layout: fixed; border-collapse: collapse;">
                 <thead>
                 <tr>
-                    <th style="width: 54px; height: 28px;"></th>
+                    <th style="width: 54px; min-width: 54px; height: 28px;"></th>
                     <th>_0</th><th>_1</th><th>_2</th><th>_3</th><th>_4</th><th>_5</th><th>_6</th><th class="space-after">_7</th>
                     <th>_8</th><th>_9</th><th>_a</th><th>_b</th><th>_c</th><th>_d</th><th>_e</th><th class="space-after">_f</th>
                     <th style="width: 150px; text-align: left;">ASCII</th>
