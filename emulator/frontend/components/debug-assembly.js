@@ -8,7 +8,7 @@ Attributes:
   - selected-file: the currently selected file
 
 Events:
-  - fileChanged: the user has selected a different file
+  - file-changed: the user has selected a different file
   - breakpoint: the user has attempted to add/remove a breakpoint
  */
 
@@ -142,7 +142,6 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
     }
 
     attributeChangedCallback(prop, old, newValue) {
-        console.log(prop);
         switch (prop) {
             case "files":
                 this.#updateFiles(newValue.split(","));
@@ -154,12 +153,18 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
     }
 
     #updateFiles(files) {
-        this.shadowRoot.querySelector("#files").innerHTML =
-            files.map(file => `<div class="file">${file}</div>`).join("");
+        for (const file of files) {
+            const div = document.createElement('div');
+            div.className = "file";
+            div.innerText = file;
+            div.addEventListener("click", () => {
+                this.dispatchEvent(new CustomEvent("file-changed", { detail: { file } }));
+            });
+            this.shadowRoot.querySelector("#files").appendChild(div);
+        }
     }
 
     #updateSelectedFile(newValue) {
-       console.log(this.shadowRoot.querySelectorAll(".file"));
        this.shadowRoot.querySelectorAll(".file").forEach(element => {
            if (element.innerHTML === newValue)
                element.classList.add("selected");
