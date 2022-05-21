@@ -107,26 +107,28 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
         <div class="main">
             <div id="files" class="files"></div>
             <table class="code">
-                <!--
-                <tr>
-                    <td class="breakpoint active"></td>
-                    <td class="address">0000</td>
-                    <td class="line">hello <span class="comment">; this is a comment</span></td>
-                    <td class="bytes">FA 44 38</td>
-                </tr>
-                <tr>
-                    <td class="breakpoint current"></td>
-                    <td class="address current">0000</td>
-                    <td class="line current">&nbsp;&nbsp;&nbsp;&nbsp;nop</td>
-                    <td class="bytes current">FA 44 38</td>
-                </tr>
-                -->
-                <tr id="last-line">
-                    <td class="breakpoint last-line"></td>
-                    <td class="address last-line"></td>
-                    <td class="line last-line"></td>
-                    <td class="bytes last-line"></td>
-                </tr>
+                <tbody id="code">
+                    <!--
+                    <tr>
+                        <td class="breakpoint active"></td>
+                        <td class="address">0000</td>
+                        <td class="line">hello <span class="comment">; this is a comment</span></td>
+                        <td class="bytes">FA 44 38</td>
+                    </tr>
+                    <tr>
+                        <td class="breakpoint current"></td>
+                        <td class="address current">0000</td>
+                        <td class="line current">&nbsp;&nbsp;&nbsp;&nbsp;nop</td>
+                        <td class="bytes current">FA 44 38</td>
+                    </tr>
+                    -->
+                    <tr id="last-line">
+                        <td class="breakpoint last-line"></td>
+                        <td class="address last-line"></td>
+                        <td class="line last-line"></td>
+                        <td class="bytes last-line"></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     `;
@@ -148,6 +150,9 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
                 break;
             case "selected-file":
                 this.#updateSelectedFile(newValue);
+                break;
+            case "source":
+                this.#updateSource(JSON.parse(newValue));
                 break;
         }
     }
@@ -171,5 +176,37 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
            else
                element.classList.remove("selected");
        });
+    }
+
+    #updateSource(source) {
+        // clean up code
+        const codeElement = this.shadowRoot.querySelector("#code");
+        const lastLine = this.shadowRoot.querySelector("#last-line");
+        for (const element of codeElement.children) {
+            if (element !== lastLine)
+                codeElement.removeChild(element);
+        }
+
+        const parseLine = (line) => {
+            line = line.replaceAll(" ", "&nbsp;");
+            const semicolonPos = line.indexOf(";");
+            if (semicolonPos !== -1)
+                line = line.replace(";", `<span class="comment">;`) + "</span>";
+            return line;
+        };
+
+        // add rows  (TODO: add breakpoints/source)
+        for (const line of source) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <tr>
+                    <td class="breakpoint"></td>
+                    <td class="address">${line.address !== undefined ? hex(line.address, 4) : ""}</td>
+                    <td class="line">${parseLine(line.line)}</td>
+                    <td class="bytes">${line.bytes !== undefined ? line.bytes.map(v => hex(v)).join(" ") : "" }</td>
+                </tr>
+            `;
+            codeElement.insertBefore(tr, lastLine);
+        }
     }
 });

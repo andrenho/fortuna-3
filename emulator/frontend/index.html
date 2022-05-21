@@ -87,6 +87,11 @@
         debug.setAttribute("current-pc", "0");
         debug.setAttribute("files", Object.keys(files).join(","));
         debug.setAttribute("selected-file", "main.s");
+
+        debug.addEventListener("file-changed", e => {
+            debug.setAttribute("selected-file", e.detail.file);
+            debug.setAttribute("source", JSON.stringify(files[e.detail.file]));
+        });
     </script>
 
 </body>
