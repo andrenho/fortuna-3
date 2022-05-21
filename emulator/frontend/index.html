@@ -13,6 +13,7 @@
     <script src="components/debug-assembly.js"></script>
     <script src="components/flat-data.js"></script>
     <script src="components/memory-stack.js"></script>
+    <script src="components/register-box.js"></script>
 
 </head>
 
@@ -43,6 +44,11 @@
     <div class="main">
 
         <debug-assembly id="debug"></debug-assembly>
+
+        <register-box title="Z80">
+            <register-value name="AF" value="0" digits="4"></register-value>
+            <register-value name="DE" value="13245" digits="4"></register-value>
+        </register-box>
 
         <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
             <memory-stack id="stack"></memory-stack>

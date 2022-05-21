@@ -23,8 +23,8 @@ TODO:
  - Create emulator
  - Debuggers
    - RAM (ok)
-   - Code
+   - Code (ok)
    - CPU
-   - Canvas
+   - Terminal
    - Video
    - SD Card
