@@ -8,8 +8,44 @@ Attributes:
   - selected-file: the currently selected file
 
 Events:
-  - file-changed: the user has selected a different file
-  - breakpoint: the user has attempted to add/remove a breakpoint
+  - file-change: the user has selected a different file
+  - breakpoint-click: the user has attempted to add/remove a breakpoint
+
+Usage:
+    <debug-assembly id="debug"></debug-assembly>
+
+    const files = {
+        "main.s": [
+            { line: "; hello" },
+            { address: 0, line: "   nop  ; do nothing", bytes: [0x0] },
+        ],
+        "hello.s": [
+            { address: 1, line: "   nop  ; do nothing", bytes: [0x0] },
+        ]
+    };
+    const breakpoints = new Set();
+
+    const debug = document.querySelector("#debug");
+    debug.setAttribute("source", JSON.stringify(files["main.s"]));
+    debug.setAttribute("current-pc", "0");
+    debug.setAttribute("files", Object.keys(files).join(","));
+    debug.setAttribute("selected-file", "main.s");
+
+    debug.addEventListener("file-change", e => {
+        debug.setAttribute("selected-file", e.detail.file);
+        debug.setAttribute("source", JSON.stringify(files[e.detail.file]));
+    });
+
+    debug.addEventListener("breakpoint-click", e => {
+        if (breakpoints.has(e.detail.address))
+            breakpoints.delete(e.detail.address);
+        else
+            breakpoints.add(e.detail.address);
+        if (breakpoints.size > 0)
+            debug.setAttribute("breakpoints", Array.from(breakpoints).join(","));
+        else
+            debug.removeAttribute("breakpoints");
+    });
  */
 
 window.customElements.define("debug-assembly", class extends HTMLElement {
@@ -112,21 +148,19 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
         </div>
     `;
     #lastLine = `
-        <tr id="last-line">
-            <td class="breakpoint last-line"></td>
-            <td class="address last-line"></td>
-            <td class="line last-line"></td>
-            <td class="bytes last-line"></td>
-        </tr>
+        <td class="breakpoint last-line"></td>
+        <td class="address last-line"></td>
+        <td class="line last-line"></td>
+        <td class="bytes last-line"></td>
     `;
     #currentPC;
-    #breakpoints = [];
+    #breakpoints = new Set();
 
     constructor() {
         super();
         this.attachShadow({ mode: "open" })
         this.shadowRoot.innerHTML = this.#template;
-        this.shadowRoot.querySelector("#code").innerHTML = this.#lastLine;
+        this.shadowRoot.querySelector("#code").innerHTML = `<tr>${this.#lastLine}</tr>`;
     }
 
     static get observedAttributes() {
@@ -149,7 +183,10 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
                 this.#updateCurrentPC();
                 break;
             case "breakpoints":
-                this.#breakpoints = newValue.split(",").map(v => parseInt(v));
+                if (newValue !== "" && newValue !== undefined && newValue !== null)
+                    this.#breakpoints = new Set(newValue.split(",").map(v => parseInt(v)));
+                else
+                    this.#breakpoints = new Set();
                 this.#updateBreakpoints();
                 break;
         }
@@ -161,7 +198,7 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
             div.className = "file";
             div.innerText = file;
             div.addEventListener("click", () => {
-                this.dispatchEvent(new CustomEvent("file-changed", { detail: { file } }));
+                this.dispatchEvent(new CustomEvent("file-change", { detail: { file } }));
             });
             this.shadowRoot.querySelector("#files").appendChild(div);
         }
@@ -191,25 +228,32 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
         // add rows  (TODO: add breakpoints (class active)/source (class current))
         for (const line of source) {
             const tr = document.createElement("tr");
-            if (line.address !== undefined)
-                tr.dataset.address = line.address;
             tr.innerHTML = `
-                <td class="breakpoint"></td>
+                <td class="breakpoint">&nbsp;</td>
                 <td class="address">${line.address !== undefined ? hex(line.address, 4) : ""}</td>
                 <td class="line">${parseLine(line.line)}</td>
                 <td class="bytes">${line.bytes !== undefined ? line.bytes.map(v => hex(v)).join(" ") : "" }</td>
             `;
             codeElement.appendChild(tr);
+
+            if (line.address !== undefined) {
+                tr.dataset.address = line.address;
+                tr.querySelector(".breakpoint").addEventListener("click", e => {
+                    this.dispatchEvent(new CustomEvent("breakpoint-click", { detail: { address: line.address } }));
+                });
+            }
         }
 
-        codeElement.innerHTML += this.#lastLine;
+        const lastLine = document.createElement("tr");
+        lastLine.innerHTML = this.#lastLine;
+        codeElement.appendChild(lastLine);
 
         this.#updateCurrentPC();
         this.#updateBreakpoints();
     }
 
     #updateCurrentPC() {
-        if (this.#currentPC === undefined)
+        if (this.#currentPC === undefined || this.#currentPC === null)
             return;
         for (const tr of this.shadowRoot.querySelector("#code").children) {
             if (tr.dataset.address === this.#currentPC.toString())
@@ -220,6 +264,13 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
     }
 
     #updateBreakpoints() {
-
+        for (const tr of this.shadowRoot.querySelector("#code").children) {
+            const td = tr.querySelector(".breakpoint")
+            if (this.#breakpoints.has(parseInt(tr.dataset.address))) {
+                td.classList.add("active");
+            } else {
+                td.classList.remove("active");
+            }
+        }
     }
 });

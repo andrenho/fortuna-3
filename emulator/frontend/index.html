@@ -82,15 +82,28 @@
                 { address: 1, line: "   nop  ; do nothing", bytes: [0x0] },
             ]
         };
+        const breakpoints = new Set();
+
         const debug = document.querySelector("#debug");
         debug.setAttribute("source", JSON.stringify(files["main.s"]));
         debug.setAttribute("current-pc", "0");
         debug.setAttribute("files", Object.keys(files).join(","));
         debug.setAttribute("selected-file", "main.s");
 
-        debug.addEventListener("file-changed", e => {
+        debug.addEventListener("file-change", e => {
             debug.setAttribute("selected-file", e.detail.file);
             debug.setAttribute("source", JSON.stringify(files[e.detail.file]));
+        });
+
+        debug.addEventListener("breakpoint-click", e => {
+            if (breakpoints.has(e.detail.address))
+                breakpoints.delete(e.detail.address);
+            else
+                breakpoints.add(e.detail.address);
+            if (breakpoints.size > 0)
+                debug.setAttribute("breakpoints", Array.from(breakpoints).join(","));
+            else
+                debug.removeAttribute("breakpoints");
         });
     </script>
 
