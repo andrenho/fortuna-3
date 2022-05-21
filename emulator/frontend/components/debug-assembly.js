@@ -107,36 +107,26 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
         <div class="main">
             <div id="files" class="files"></div>
             <table class="code">
-                <tbody id="code">
-                    <!--
-                    <tr>
-                        <td class="breakpoint active"></td>
-                        <td class="address">0000</td>
-                        <td class="line">hello <span class="comment">; this is a comment</span></td>
-                        <td class="bytes">FA 44 38</td>
-                    </tr>
-                    <tr>
-                        <td class="breakpoint current"></td>
-                        <td class="address current">0000</td>
-                        <td class="line current">&nbsp;&nbsp;&nbsp;&nbsp;nop</td>
-                        <td class="bytes current">FA 44 38</td>
-                    </tr>
-                    -->
-                    <tr id="last-line">
-                        <td class="breakpoint last-line"></td>
-                        <td class="address last-line"></td>
-                        <td class="line last-line"></td>
-                        <td class="bytes last-line"></td>
-                    </tr>
-                </tbody>
+                <tbody id="code"></tbody>
             </table>
         </div>
     `;
+    #lastLine = `
+        <tr id="last-line">
+            <td class="breakpoint last-line"></td>
+            <td class="address last-line"></td>
+            <td class="line last-line"></td>
+            <td class="bytes last-line"></td>
+        </tr>
+    `;
+    #currentPC;
+    #breakpoints = [];
 
     constructor() {
         super();
         this.attachShadow({ mode: "open" })
         this.shadowRoot.innerHTML = this.#template;
+        this.shadowRoot.querySelector("#code").innerHTML = this.#lastLine;
     }
 
     static get observedAttributes() {
@@ -153,6 +143,14 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
                 break;
             case "source":
                 this.#updateSource(JSON.parse(newValue));
+                break;
+            case "current-pc":
+                this.#currentPC = parseInt(newValue);
+                this.#updateCurrentPC();
+                break;
+            case "breakpoints":
+                this.#breakpoints = newValue.split(",").map(v => parseInt(v));
+                this.#updateBreakpoints();
                 break;
         }
     }
@@ -181,32 +179,47 @@ window.customElements.define("debug-assembly", class extends HTMLElement {
     #updateSource(source) {
         // clean up code
         const codeElement = this.shadowRoot.querySelector("#code");
-        const lastLine = this.shadowRoot.querySelector("#last-line");
-        for (const element of codeElement.children) {
-            if (element !== lastLine)
-                codeElement.removeChild(element);
-        }
+        codeElement.innerHTML = "";
 
         const parseLine = (line) => {
-            line = line.replaceAll(" ", "&nbsp;");
-            const semicolonPos = line.indexOf(";");
-            if (semicolonPos !== -1)
-                line = line.replace(";", `<span class="comment">;`) + "</span>";
+            line = line.replaceAll(" ", "&nbsp");
+            line = line.replace(";", `<span class="comment">;`) + "</span>";
+            line = line.replaceAll("&nbsp", "&nbsp;");
             return line;
         };
 
-        // add rows  (TODO: add breakpoints/source)
+        // add rows  (TODO: add breakpoints (class active)/source (class current))
         for (const line of source) {
             const tr = document.createElement("tr");
+            if (line.address !== undefined)
+                tr.dataset.address = line.address;
             tr.innerHTML = `
-                <tr>
-                    <td class="breakpoint"></td>
-                    <td class="address">${line.address !== undefined ? hex(line.address, 4) : ""}</td>
-                    <td class="line">${parseLine(line.line)}</td>
-                    <td class="bytes">${line.bytes !== undefined ? line.bytes.map(v => hex(v)).join(" ") : "" }</td>
-                </tr>
+                <td class="breakpoint"></td>
+                <td class="address">${line.address !== undefined ? hex(line.address, 4) : ""}</td>
+                <td class="line">${parseLine(line.line)}</td>
+                <td class="bytes">${line.bytes !== undefined ? line.bytes.map(v => hex(v)).join(" ") : "" }</td>
             `;
-            codeElement.insertBefore(tr, lastLine);
+            codeElement.appendChild(tr);
         }
+
+        codeElement.innerHTML += this.#lastLine;
+
+        this.#updateCurrentPC();
+        this.#updateBreakpoints();
+    }
+
+    #updateCurrentPC() {
+        if (this.#currentPC === undefined)
+            return;
+        for (const tr of this.shadowRoot.querySelector("#code").children) {
+            if (tr.dataset.address === this.#currentPC.toString())
+                tr.classList.add("current");
+            else
+                tr.classList.remove("current");
+        }
+    }
+
+    #updateBreakpoints() {
+
     }
 });
