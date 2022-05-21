@@ -57,9 +57,6 @@
 
         const highlightAddr = 258;
 
-        // step button
-        document.getElementById("command-button").addEventListener("step", () => console.log("step"));
-
         // on page change
         document.getElementById("ram").addEventListener("page-change", (e) => {
             const { addrStart, addrEnd, page } = e.detail;
@@ -83,6 +80,7 @@
             ]
         };
         const breakpoints = new Set();
+        let currentPC = 0;
 
         const debug = document.querySelector("#debug");
         debug.setAttribute("source", JSON.stringify(files["main.s"]));
@@ -105,6 +103,26 @@
             else
                 debug.removeAttribute("breakpoints");
         });
+
+        // step button
+        document.getElementById("command-button").addEventListener("step", () => {
+            ++currentPC;
+            debug.setAttribute("current-pc", currentPC.toString());
+            for (const filename of Object.keys(files)) {
+                let found = false;
+                for (const line of files[filename]) {
+                    if (currentPC === line.address) {
+                        debug.setAttribute("selected-file", filename);
+                        debug.setAttribute("source", JSON.stringify(files[filename]));
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                    break;
+            }
+        });
+
     </script>
 
 </body>
