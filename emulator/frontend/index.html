@@ -47,9 +47,9 @@
 
     <div class="main">
 
-        <debug-assembly id="debug" style="display: none;"></debug-assembly>
+        <debug-assembly id="debug"></debug-assembly>
 
-        <register-box id="registers" title="Z80" columns="7" rows="2" style="display: none;">
+        <register-box id="registers" title="Z80" columns="7" rows="2">
             <register-value name="AF" value="0" digits="4"></register-value>
             <register-value name="BC" value="0" digits="4"></register-value>
             <register-value name="DE" value="0" digits="4"></register-value>
@@ -76,7 +76,7 @@
             </div>
         </register-box>
 
-        <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2" style="display: none;">
+        <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
             <memory-stack id="stack"></memory-stack>
         </flat-data>
 
