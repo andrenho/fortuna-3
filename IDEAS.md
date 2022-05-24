@@ -6,7 +6,7 @@
   - Motherboard
     - Z80 CPU
     - 512 kB RAM
-    - ATMEGA1280
+    - ATMEGA1280 or ATMEGA2560
       - Boot from SDCard or internal ROM
       - Serial I/O
       - SDCard management + FAT32
@@ -21,3 +21,4 @@
     - SDCard socket
     - Serial port
     - Generic I/O ports (6?)
+    - 3.3V line
