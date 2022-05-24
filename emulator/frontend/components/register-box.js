@@ -1,3 +1,19 @@
+/*
+Usage:
+    <register-box id="registers" title="Z80" columns="2" rows="1">
+        <register-value name="AF" value="0" digits="4"></register-value>
+        <register-value name="BC" value="0" digits="4"></register-value>
+
+        <div style="grid-area: flags;">
+            <flag-value name="S" value="1"></flag-value>
+            <flag-value name="Z" value="0"></flag-value>
+        </div>
+    </register-box>
+
+    document.querySelector("#registers").setValue("AF", 0x12f4);
+    document.querySelector("#registers").setValue("S", true);
+ */
+
 window.customElements.define("register-box", class extends HTMLElement {
 
     #template = `
@@ -64,6 +80,15 @@ window.customElements.define("register-box", class extends HTMLElement {
         }
     }
 
+    setValue(item, value) {
+        for (const reg of this.querySelectorAll("register-value, flag-value")) {
+            if (reg.getAttribute("name") === item) {
+                reg.setAttribute("value", value.toString());
+                return;
+            }
+        }
+    }
+
     #updateGrid() {
         const slot = this.shadowRoot.getElementById("slot");
         slot.style.gridTemplateColumns = "auto ".repeat(this.#columns);
@@ -122,4 +147,32 @@ window.customElements.define("register-value", class extends HTMLElement {
         if (prop === "digits" || prop === "value")
             this.shadowRoot.querySelector(".register-value").innerHTML = hex(parseInt(this.#value), this.#digits);
     }
+});
+
+
+window.customElements.define("flag-value", class extends HTMLElement {
+
+    #template = `<label><input type="checkbox" onclick="return false;"><span id="name"></span></label>`;
+
+    constructor() {
+        super();
+        this.attachShadow({ mode: "open" });
+        this.shadowRoot.innerHTML = this.#template;
+    }
+
+    static get observedAttributes() {
+        return ["name", "value"];
+    }
+
+    attributeChangedCallback(prop, old, newValue) {
+        switch (prop) {
+            case "name":
+                this.shadowRoot.querySelector("#name").innerText = newValue;
+                break;
+            case "value":
+                this.shadowRoot.querySelector("input").checked = Boolean(parseInt(newValue));
+                break;
+        }
+    }
+
 });

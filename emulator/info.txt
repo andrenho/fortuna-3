@@ -24,7 +24,7 @@ TODO:
  - Debuggers
    - RAM (ok)
    - Code (ok)
-   - CPU
+   - CPU (ok)
    - Terminal
    - Video
    - SD Card

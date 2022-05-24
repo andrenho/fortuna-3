@@ -19,7 +19,9 @@
 
 <!---- CSS - STYLE ---->
 <style>
-    /* * { opacity: 0.55 } */
+    /*
+    * { opacity: 0.5 }
+     */
 
     @font-face { font-family: ShareTech; src: url('/data/ShareTechMono-Regular.ttf'); }
 
@@ -45,9 +47,9 @@
 
     <div class="main">
 
-        <debug-assembly id="debug"></debug-assembly>
+        <debug-assembly id="debug" style="display: none;"></debug-assembly>
 
-        <register-box title="Z80" columns="7" rows="2">
+        <register-box id="registers" title="Z80" columns="7" rows="2">
             <register-value name="AF" value="0" digits="4"></register-value>
             <register-value name="BC" value="0" digits="4"></register-value>
             <register-value name="DE" value="0" digits="4"></register-value>
@@ -65,11 +67,16 @@
             <register-value name="I" value="0" digits="2"></register-value>
 
             <div style="grid-area: flags;">
-                <flag-value name="S" set></flag-value>
+                <flag-value name="S" value="0"></flag-value>
+                <flag-value name="Z" value="0"></flag-value>
+                <flag-value name="H" value="0"></flag-value>
+                <flag-value name="P/V" value="0"></flag-value>
+                <flag-value name="N" value="0"></flag-value>
+                <flag-value name="C" value="0"></flag-value>
             </div>
         </register-box>
 
-        <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
+        <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2" style="display: none;">
             <memory-stack id="stack"></memory-stack>
         </flat-data>
 
@@ -147,6 +154,11 @@
                     break;
             }
         });
+
+        // update registers
+        const registers = document.getElementById("registers");
+        registers.setValue("AF", 0x12af);
+        registers.setValue("S", 1);
 
     </script>
 
