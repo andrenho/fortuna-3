@@ -1,0 +1,23 @@
+- A HTML emulator
+  - Frontend contains emulator + debugger
+    - Frontend emulator can run standalone
+  - Backend manages compilation + SD card
+- The computer
+  - Motherboard
+    - Z80 CPU
+    - 512 kB RAM
+    - ATMEGA1280
+      - Boot from SDCard or internal ROM
+      - Serial I/O
+      - SDCard management + FAT32
+      - Memory bank management
+      - Timers
+      - I/O active line management (?)
+        - Allow SPI 
+      - Wall clock
+      - Additional 2-row display (? - or from board?)
+    - Glue logic to WAIT CPU at I/O request
+    - Clock (8 mhz?) + external clock socket
+    - SDCard socket
+    - Serial port
+    - Generic I/O ports (6?)

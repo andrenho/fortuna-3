@@ -2,7 +2,7 @@ Functions:
 - notify changes and recompile
 - provide binary and debugging info
 - SD card operations
-- static website
+- serve static website
 
 GET /api/debugInfo
 GET /api/debugInfoCRC
@@ -17,14 +17,14 @@ Requires:
 - fat
 - notify
 
+
 TODO:
- - Compilation (mock / backend)
- - SDCard (mock / backend)
- - Create emulator
- - Debuggers
-   - RAM (ok)
-   - Code (ok)
-   - CPU (ok)
-   - Terminal
-   - Video
-   - SD Card
+ - Debugger
+   - Components (ok)
+   - Screen layout
+ - SDCard (backend + frontend)
+ - Backend compiler
+ - Emulator + video
+   - Z80
+   - Management IC
+ - Debugger integration
