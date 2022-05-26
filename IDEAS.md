@@ -1,3 +1,7 @@
+```
+"cd " + path + " && " + compiler_full_path() + " -chklabels -L listing.txt -Llo -nosym -x -Fbin -o rom.bin " + filename + " 2>&1";
+```
+
 - A HTML emulator
   - Frontend contains emulator + debugger
     - Frontend emulator can run standalone
@@ -22,3 +26,5 @@
     - Serial port
     - Generic I/O ports (6?)
     - 3.3V line
+  - Initialization
+    1. Load from "ROM" (up to 4k?) into RAM 0x0
