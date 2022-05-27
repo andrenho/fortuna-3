@@ -35,18 +35,22 @@ args = parser.parse_args()
 #
 
 class FortunaService:
-    pass
+
+    def debug(self):
+        pass
 
 
-#
-# WEB SERVER
-#
+    #
+    # WEB SERVER
+    #
 
-class HTTPHandler(BaseHTTPRequestHandler):
-    fortuna = FortunaService()
+    class HTTPHandler(BaseHTTPRequestHandler):
+        fortuna = FortunaService()
 
     def call_service(self, path):
-        return {'hello': 'world'}
+        if self.path.startswith('/api/debug'):
+            return self.fortuna.debug()
+        raise Exception("Invalid path " + path)
 
     def do_GET(self):
         if self.path.startswith('/api'):
