@@ -40,12 +40,12 @@ class FortunaService:
         pass
 
 
-    #
-    # WEB SERVER
-    #
+#
+# WEB SERVER
+#
 
-    class HTTPHandler(BaseHTTPRequestHandler):
-        fortuna = FortunaService()
+class HTTPHandler(BaseHTTPRequestHandler):
+    fortuna = FortunaService()
 
     def call_service(self, path):
         if self.path.startswith('/api/debug'):

@@ -28,3 +28,6 @@
     - 3.3V line
   - Initialization
     1. Load from "ROM" (up to 4k?) into RAM 0x0
+  - Memory organization
+    - 4 x 16kB pages
+    - 3 pages interchangeable, last page is OS
