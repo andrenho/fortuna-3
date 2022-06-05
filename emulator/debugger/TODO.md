@@ -1,0 +1,44 @@
+- [ ] Organize frontend layout
+  - [ ] Automated build
+  - [ ] Static website
+  - [ ] Auto deploy website
+- [ ] Create options
+    - [ ] Create options on frontend (browse project name, SDCard path / size)
+    - [ ] GET, POST /api/config on backend
+    - [ ] Save config on disk, read from disk on initialization
+    - [ ] Reload config on frontend initialization
+- [ ] SDCard access
+    - [ ] Add SDCard on frontend
+    - [ ] Backend raw access (read only?)
+- [ ] Emulation
+    - [ ] Create base C library, compile to WASM
+        - [ ] Automate process using maven (?)
+    - [ ] Create JS emulator base, connect to WASM modules
+        - [ ] Add canvas component
+    - [ ] Add Z80 emulation
+    - [ ] UART emulation
+    - [ ] SDCard with FAT32
+- [ ] SDCard filemanager
+    - [ ] Create frontend component
+    - [ ] Use emulator FAT32 implementation to read files
+- [ ] Compilation
+    - [ ] Read config file, find all related files
+    - [ ] Create thread that monitors changed files and reruns compiler
+    - [ ] Run compiler
+    - [ ] Read and interpret listing file
+    - [ ] GET /api/debugInfo
+    - [ ] GET /api/debugInfoCRC (or compilation count or UUID or something)
+- [ ] Debugging
+    - [ ] Connect to emulator
+    - [ ] Step
+    - [ ] Run
+    - [ ] Run with breakpoints
+    - [ ] Next
+- [ ] Fortuna-3 specific stuff
+    - [ ] Memory management
+    - [ ] SDCard + FAT32
+    - [ ] Timers
+    - [ ] Wall clock
+    - [ ] Peripheral management
+    - [ ] Parallel communication
+    - [ ] SPI
