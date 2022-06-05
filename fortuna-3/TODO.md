@@ -76,7 +76,7 @@
     - Implementation
     - API
 
-## Hardware
+### Hardware
 - Design motherboard 
   - Clock logic
   - With Z80, RAM, uC, wall clock
