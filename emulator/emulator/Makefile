@@ -3,13 +3,11 @@ SRC=life.c
 all: fortuna3.js
 
 fortuna3.js: ${SRC}
-	emcc -o fortuna.js $^ -O3 -s NO_EXIT_RUNTIME=1 -s "EXPORTED_RUNTIME_METHODS=['ccall']"
+	emcc -o fortuna.wasm $^ --no-entry -O3 -s WASM=1 -s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']"
 
-install: fortuna3.js
+install: fortuna.wasm
 	mkdir -p ../debugger/src/main/resources/static/emulator
-	cp fortuna.js fortuna.wasm ../debugger/src/main/resources/static/emulator/
+	cp fortuna.wasm ../debugger/src/main/resources/static/emulator/
 
 clean:
-	rm fortuna3.js fortuna3.wasm \
-		../debugger/src/main/resources/static/emulator/fortuna3.js \
-		../debugger/src/main/resources/static/emulator/fortuna3.wasm
+	rm fortuna.wasm
