@@ -52,48 +52,50 @@
 
     <command-button id="command-button"></command-button>
 
-    <tab-selector tabs="Debugger,SD Card,Documentation" selected="0"></tab-selector>
+    <tab-selector tabs="Debugger,SD Card,Documentation" selected="0" id="tab-selector">
 
-    <div class="main">
+        <div class="main" style="visibility: hidden;" id="debugger">
 
-        <debug-assembly id="debug"></debug-assembly>
+            <debug-assembly id="debug"></debug-assembly>
 
-        <div class="main-column-2">
+            <div class="main-column-2">
 
-            <register-box id="registers" title="Z80" columns="7" rows="2">
-                <register-value name="AF" value="0" digits="4"></register-value>
-                <register-value name="BC" value="0" digits="4"></register-value>
-                <register-value name="DE" value="0" digits="4"></register-value>
-                <register-value name="HL" value="0" digits="4"></register-value>
-                <register-value name="SP" value="0" digits="4"></register-value>
-                <register-value name="PC" value="0" digits="4"></register-value>
-                <div><!-- empty --></div>
+                <register-box id="registers" title="Z80" columns="7" rows="2">
+                    <register-value name="AF" value="0" digits="4"></register-value>
+                    <register-value name="BC" value="0" digits="4"></register-value>
+                    <register-value name="DE" value="0" digits="4"></register-value>
+                    <register-value name="HL" value="0" digits="4"></register-value>
+                    <register-value name="SP" value="0" digits="4"></register-value>
+                    <register-value name="PC" value="0" digits="4"></register-value>
+                    <div><!-- empty --></div>
 
-                <register-value name="AF'" value="0" digits="4"></register-value>
-                <register-value name="BC'" value="0" digits="4"></register-value>
-                <register-value name="DE'" value="0" digits="4"></register-value>
-                <register-value name="HL'" value="0" digits="4"></register-value>
-                <register-value name="IX" value="0" digits="4"></register-value>
-                <register-value name="IY" value="0" digits="4"></register-value>
-                <register-value name="I" value="0" digits="2"></register-value>
+                    <register-value name="AF'" value="0" digits="4"></register-value>
+                    <register-value name="BC'" value="0" digits="4"></register-value>
+                    <register-value name="DE'" value="0" digits="4"></register-value>
+                    <register-value name="HL'" value="0" digits="4"></register-value>
+                    <register-value name="IX" value="0" digits="4"></register-value>
+                    <register-value name="IY" value="0" digits="4"></register-value>
+                    <register-value name="I" value="0" digits="2"></register-value>
 
-                <div style="grid-area: flags;">
-                    <flag-value name="S" value="0"></flag-value>
-                    <flag-value name="Z" value="0"></flag-value>
-                    <flag-value name="H" value="0"></flag-value>
-                    <flag-value name="P/V" value="0"></flag-value>
-                    <flag-value name="N" value="0"></flag-value>
-                    <flag-value name="C" value="0"></flag-value>
-                </div>
-            </register-box>
+                    <div style="grid-area: flags;">
+                        <flag-value name="S" value="0"></flag-value>
+                        <flag-value name="Z" value="0"></flag-value>
+                        <flag-value name="H" value="0"></flag-value>
+                        <flag-value name="P/V" value="0"></flag-value>
+                        <flag-value name="N" value="0"></flag-value>
+                        <flag-value name="C" value="0"></flag-value>
+                    </div>
+                </register-box>
 
-            <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
-                <memory-stack id="stack"></memory-stack>
-            </flat-data>
+                <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
+                    <memory-stack id="stack"></memory-stack>
+                </flat-data>
+
+            </div>
 
         </div>
 
-    </div>
+    </tab-selector>
 
     <script async>
 
@@ -102,7 +104,12 @@
 
         const highlightAddr = 258;
 
-        // on page change
+        // on tab change
+        document.getElementById("tab-selector").addEventListener("index-change", (e) => {
+            document.getElementById("debugger").style.visibility = (e.detail === 0) ? "visible" : "hidden";
+        });
+
+        // on RAM page change
         document.getElementById("ram").addEventListener("page-change", (e) => {
             const { addrStart, addrEnd, page } = e.detail;
             e.target.setAttribute("data", ram.slice(addrStart, addrEnd).toString());
