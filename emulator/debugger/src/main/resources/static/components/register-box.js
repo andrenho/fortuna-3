@@ -38,10 +38,9 @@ window.customElements.define("register-box", class extends HTMLElement {
             
             .container {
                 display: grid;
-                /* grid-template-columns: auto auto; */
                 justify-content: start;
-                column-gap: 6px;
-                row-gap: 6px;
+                column-gap: 12px;
+                row-gap: 8px;
             }
         </style>
         

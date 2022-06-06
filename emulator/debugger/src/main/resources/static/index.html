@@ -34,6 +34,12 @@
         gap: 24px;
     }
 
+    .main-column-2 {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
 </style>
 
 <!---- HTML - BODY ---->
@@ -49,36 +55,40 @@
 
         <debug-assembly id="debug"></debug-assembly>
 
-        <register-box id="registers" title="Z80" columns="7" rows="2">
-            <register-value name="AF" value="0" digits="4"></register-value>
-            <register-value name="BC" value="0" digits="4"></register-value>
-            <register-value name="DE" value="0" digits="4"></register-value>
-            <register-value name="HL" value="0" digits="4"></register-value>
-            <register-value name="SP" value="0" digits="4"></register-value>
-            <register-value name="PC" value="0" digits="4"></register-value>
-            <div><!-- empty --></div>
+        <div class="main-column-2">
 
-            <register-value name="AF'" value="0" digits="4"></register-value>
-            <register-value name="BC'" value="0" digits="4"></register-value>
-            <register-value name="DE'" value="0" digits="4"></register-value>
-            <register-value name="HL'" value="0" digits="4"></register-value>
-            <register-value name="IX" value="0" digits="4"></register-value>
-            <register-value name="IY" value="0" digits="4"></register-value>
-            <register-value name="I" value="0" digits="2"></register-value>
+            <register-box id="registers" title="Z80" columns="7" rows="2">
+                <register-value name="AF" value="0" digits="4"></register-value>
+                <register-value name="BC" value="0" digits="4"></register-value>
+                <register-value name="DE" value="0" digits="4"></register-value>
+                <register-value name="HL" value="0" digits="4"></register-value>
+                <register-value name="SP" value="0" digits="4"></register-value>
+                <register-value name="PC" value="0" digits="4"></register-value>
+                <div><!-- empty --></div>
 
-            <div style="grid-area: flags;">
-                <flag-value name="S" value="0"></flag-value>
-                <flag-value name="Z" value="0"></flag-value>
-                <flag-value name="H" value="0"></flag-value>
-                <flag-value name="P/V" value="0"></flag-value>
-                <flag-value name="N" value="0"></flag-value>
-                <flag-value name="C" value="0"></flag-value>
-            </div>
-        </register-box>
+                <register-value name="AF'" value="0" digits="4"></register-value>
+                <register-value name="BC'" value="0" digits="4"></register-value>
+                <register-value name="DE'" value="0" digits="4"></register-value>
+                <register-value name="HL'" value="0" digits="4"></register-value>
+                <register-value name="IX" value="0" digits="4"></register-value>
+                <register-value name="IY" value="0" digits="4"></register-value>
+                <register-value name="I" value="0" digits="2"></register-value>
 
-        <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
-            <memory-stack id="stack"></memory-stack>
-        </flat-data>
+                <div style="grid-area: flags;">
+                    <flag-value name="S" value="0"></flag-value>
+                    <flag-value name="Z" value="0"></flag-value>
+                    <flag-value name="H" value="0"></flag-value>
+                    <flag-value name="P/V" value="0"></flag-value>
+                    <flag-value name="N" value="0"></flag-value>
+                    <flag-value name="C" value="0"></flag-value>
+                </div>
+            </register-box>
+
+            <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
+                <memory-stack id="stack"></memory-stack>
+            </flat-data>
+
+        </div>
 
     </div>
 
