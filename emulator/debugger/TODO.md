@@ -1,7 +1,7 @@
 - [x] Automated build
 - [x] Static website
 - [x] Create base C library, compile to WASM
-- [ ] Organize frontend layout
+- [x] Organize frontend layout
   - [x] Grid layout for main debugger page
   - [x] Create tabs component
   - [x] Page for SDCard and documentation
