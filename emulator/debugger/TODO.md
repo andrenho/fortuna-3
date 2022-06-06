@@ -3,8 +3,8 @@
 - [x] Create base C library, compile to WASM
 - [ ] Organize frontend layout
   - [x] Grid layout for main debugger page
-  - [ ] Create tabs component
-  - [ ] Page for SDCard and documentation
+  - [x] Create tabs component
+  - [x] Page for SDCard and documentation
 - [ ] Create options
     - [ ] Create options on frontend (browse project name, SDCard path / size)
     - [ ] GET, POST /api/config on backend
