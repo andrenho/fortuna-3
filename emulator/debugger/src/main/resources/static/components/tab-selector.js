@@ -90,7 +90,11 @@ window.customElements.define("tab-selector", class extends HTMLElement {
             if (i === this.#selected)
                 tab.classList.add("tab-selected");
             tab.innerText = this.#tabNames[i];
+            tab.addEventListener("click", () => {
+                this.setAttribute("selected", i.toString());
+            });
             tabs.insertBefore(tab, tabEnd);
+
             tabs.insertBefore(tabMiddle.cloneNode(), tabEnd);
         }
     }
