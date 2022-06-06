@@ -82,7 +82,7 @@
 
     </div>
 
-    <script>
+    <script async>
 
         const ram = new Uint8Array(64 * 1024);
         window.crypto.getRandomValues(ram);
@@ -159,6 +159,11 @@
         const registers = document.getElementById("registers");
         registers.setValue("AF", 0x12af);
         registers.setValue("S", 1);
+
+        // load WASM module
+        fetch("emulator/fortuna.wasm").then(response => response.arrayBuffer().then(buffer => WebAssembly.instantiate(buffer).then(obj => {
+            console.log(obj.instance.exports);
+        })));
 
     </script>
 

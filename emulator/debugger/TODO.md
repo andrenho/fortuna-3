@@ -1,7 +1,8 @@
-- [ ] Organize frontend layout
-  - [ ] Automated build
-  - [ ] Static website
+- [x] Organize frontend layout
+  - [x] Automated build
+  - [x] Static website
   - [ ] Auto deploy website
+- [ ] Create base C library, compile to WASM
 - [ ] Create options
     - [ ] Create options on frontend (browse project name, SDCard path / size)
     - [ ] GET, POST /api/config on backend
@@ -11,8 +12,6 @@
     - [ ] Add SDCard on frontend
     - [ ] Backend raw access (read only?)
 - [ ] Emulation
-    - [ ] Create base C library, compile to WASM
-        - [ ] Automate process using maven (?)
     - [ ] Create JS emulator base, connect to WASM modules
         - [ ] Add canvas component
     - [ ] Add Z80 emulation
