@@ -163,7 +163,7 @@
         // load WASM module
 
         fetch("emulator/fortuna.wasm").then(response => response.arrayBuffer().then(buffer => WebAssembly.instantiate(buffer).then(obj => {
-            console.log(obj.instance.exports.life_meaning());
+            console.log(obj.instance.exports.life_meaning(21));
         })));
 
     </script>
