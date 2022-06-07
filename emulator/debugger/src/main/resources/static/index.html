@@ -26,6 +26,10 @@
 
     @font-face { font-family: ShareTech; src: url('/data/ShareTechMono-Regular.ttf'); }
 
+    *, input, button { font-family: ShareTech, monospace; }
+    ::-webkit-file-upload-button { font-family: ShareTech, monospace; font-size: 15px; }
+    .file { font-family: ShareTech, monospace; font-size: 15px; }
+
     .error { color: red; }
 
     .main {
@@ -52,9 +56,14 @@
 
     <command-button id="command-button"></command-button>
 
-    <tab-selector tabs="Debugger,SD Card,Documentation" selected="0" id="tab-selector"></tab-selector>
+    <tab-selector tabs="Project file,Debugger,SD Card,Documentation" selected="0" id="tab-selector"></tab-selector>
 
-    <div class="main" id="debugger">
+    <div id="project-file" class="main">
+        <label for="file" class="custom-file-upload">Choose project file:</label>
+        <input type="file" id="file" accept="application/json" class="file">
+    </div>
+
+    <div class="main" id="debugger" style="display: none;">
 
         <debug-assembly id="debug"></debug-assembly>
 
@@ -108,9 +117,9 @@
 
         // on tab change
         document.getElementById("tab-selector").addEventListener("index-change", (e) => {
-            document.getElementById("debugger").style.display = (e.detail === 0) ? "flex" : "none";
-            document.getElementById("sd-card").style.display = (e.detail === 1) ? "block" : "none";
-            document.getElementById("documentation").style.display = (e.detail === 2) ? "block" : "none";
+            document.getElementById("debugger").style.display = (e.detail === 1) ? "flex" : "none";
+            document.getElementById("sd-card").style.display = (e.detail === 2) ? "block" : "none";
+            document.getElementById("documentation").style.display = (e.detail === 3) ? "block" : "none";
         });
 
         // on RAM page change
