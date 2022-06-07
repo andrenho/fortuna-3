@@ -5,16 +5,17 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=yes, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <title>Fortuna-3 emulator</title>
 
     <script src="components/common.js"></script>
-
     <script src="components/command-button.js"></script>
     <script src="components/debug-assembly.js"></script>
     <script src="components/flat-data.js"></script>
     <script src="components/memory-stack.js"></script>
     <script src="components/register-box.js"></script>
     <script src="components/tab-selector.js"></script>
+    <script src="js/debugger.js"></script>
 
 </head>
 
@@ -56,14 +57,9 @@
 
     <command-button id="command-button"></command-button>
 
-    <tab-selector tabs="Project file,Debugger,SD Card,Documentation" selected="0" id="tab-selector"></tab-selector>
+    <tab-selector tabs="Debugger,SD Card,Documentation" selected="0" id="tab-selector"></tab-selector>
 
-    <div id="project-file" class="main">
-        <label for="file" class="custom-file-upload">Choose project file:</label>
-        <input type="file" id="file" accept="application/json" class="file">
-    </div>
-
-    <div class="main" id="debugger" style="display: none;">
+    <div class="main" id="debugger">
 
         <debug-assembly id="debug"></debug-assembly>
 
@@ -104,7 +100,9 @@
 
     </div>
 
-    <div id="sd-card" style="display: none;">SD Card</div>
+    <div class="main" id="sd-card" style="display: none;">
+        <flat-data id="sdcard" title="SD Card" current-page="0" page-count="256" rows="32"></flat-data>
+    </div>
 
     <div id="documentation" style="display: none;">Documentation</div>
 
@@ -114,13 +112,6 @@
         window.crypto.getRandomValues(ram);
 
         const highlightAddr = 258;
-
-        // on tab change
-        document.getElementById("tab-selector").addEventListener("index-change", (e) => {
-            document.getElementById("debugger").style.display = (e.detail === 1) ? "flex" : "none";
-            document.getElementById("sd-card").style.display = (e.detail === 2) ? "block" : "none";
-            document.getElementById("documentation").style.display = (e.detail === 3) ? "block" : "none";
-        });
 
         // on RAM page change
         document.getElementById("ram").addEventListener("page-change", (e) => {
