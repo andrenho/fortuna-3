@@ -77,6 +77,10 @@ window.customElements.define("flat-data", class extends HTMLElement {
             .data {
                 text-align: center;
             }
+            
+            .zero {
+                color: lightgray;
+            }
 
             .error {
                 background-color: lightcoral;
@@ -197,6 +201,10 @@ window.customElements.define("flat-data", class extends HTMLElement {
                         element.classList.add("highlighted");
                     else
                         element.classList.remove("highlighted");
+                    if (data[i] === 0)
+                        element.classList.add("zero");
+                    else
+                        element.classList.remove("zero");
                     ascii.push((data[i] < 32 || data[i] > 126) ? "." : String.fromCharCode(data[i]));
                 }
             }

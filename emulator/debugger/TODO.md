@@ -7,9 +7,9 @@
   - [x] Page for SDCard and documentation
 - [ ] SDCard access
   - [x] Add SDCard on frontend
-  - [ ] Make zeroes gray
-  - [ ] Backend API sample
-  - [ ] Implement page flipping on the frontend
+  - [x] Make zeroes gray
+  - [x] Backend API sample
+  - [x] Implement page flipping on the frontend
   - [ ] Backend API
     - [ ] Read project JSON for file location / create file
     - [ ] Read data from real file
