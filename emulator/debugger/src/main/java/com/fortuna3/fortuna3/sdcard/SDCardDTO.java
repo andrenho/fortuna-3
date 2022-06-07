@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 
 @Data @NoArgsConstructor @AllArgsConstructor
 public class SDCardDTO {
-    private int sizeInBlocks;
+    private long sizeInBlocks;
 }

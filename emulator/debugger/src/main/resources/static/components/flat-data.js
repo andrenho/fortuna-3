@@ -104,7 +104,7 @@ window.customElements.define("flat-data", class extends HTMLElement {
                 <div id="title" class="title">Title here</div>
                 <label for="page">Page:</label>
                 <button id="previous-page" title="Previous page">&lt;&lt;</button>
-                <input id="page" type="text" size="6" value="0x0" style="text-align: right;">
+                <input id="page" type="text" size="8" value="0x0" style="text-align: right;">
                 <button id="next-page" title="Next page">&gt;&gt;</button>
             </div>
 

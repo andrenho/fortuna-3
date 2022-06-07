@@ -11,10 +11,12 @@
   - [x] Backend API sample
   - [x] Implement page flipping on the frontend
   - [ ] Backend API
-    - [ ] Read project JSON for file location / create file
-    - [ ] Read data from real file
-    - [ ] Add FAT32 library
-    - [ ] Format a new disk
+    - [x] Read data from real file
+    - [x] Add FAT32 library
+    - [x] Format a new disk
+    - [ ] What is the correct size?
+    - [ ] Read config file
+    - [ ] Option to create disk in disk
 - [ ] Auto deploy website
 - [ ] Emulation
     - [ ] Create JS emulator base, connect to WASM modules
