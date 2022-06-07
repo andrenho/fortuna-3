@@ -12,4 +12,11 @@ window.addEventListener("load", () => {
         $("#documentation").style.display = (e.detail === 2) ? "flex" : "none";
     });
 
+    //
+    // SD CARD MANAGEMENT
+    //
+
+    // initialize SD Card as all zeroes as we wait for the backend
+    $("#sdcard").setAttribute("data", new Uint8Array(32 * 16).toString());
+
 });

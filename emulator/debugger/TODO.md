@@ -6,8 +6,15 @@
   - [x] Create tabs component
   - [x] Page for SDCard and documentation
 - [ ] SDCard access
-  - [ ] Add SDCard on frontend
-  - [ ] Backend raw access (read only?)
+  - [x] Add SDCard on frontend
+  - [ ] Make zeroes gray
+  - [ ] Backend API sample
+  - [ ] Implement page flipping on the frontend
+  - [ ] Backend API
+    - [ ] Read project JSON for file location / create file
+    - [ ] Read data from real file
+    - [ ] Add FAT32 library
+    - [ ] Format a new disk
 - [ ] Auto deploy website
 - [ ] Emulation
     - [ ] Create JS emulator base, connect to WASM modules
