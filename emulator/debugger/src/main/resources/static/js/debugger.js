@@ -70,6 +70,6 @@ window.addEventListener("load", async () => {
     //
     const emulator = new FortunaEmulator();
     await emulator.initialize("emulator");
-    emulator.step();
+    console.log(emulator.debuggerInfo(0));
 
 });

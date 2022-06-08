@@ -1,4 +1,4 @@
-SRC=life.c
+SRC=fromjs.c
 
 all: fortuna3.wasm
 
