@@ -18,7 +18,7 @@
     - [x] Read config file
     - [x] Option to create disk in disk
 - [ ] Emulation
-    - [ ] Create JS emulator base, connect to WASM modules
+    - [x] Create JS emulator base, connect to WASM modules
         - [ ] Add canvas component
     - [ ] Add Z80 emulation
     - [ ] UART emulation
