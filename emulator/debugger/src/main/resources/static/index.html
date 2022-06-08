@@ -15,7 +15,7 @@
     <script src="components/memory-stack.js"></script>
     <script src="components/register-box.js"></script>
     <script src="components/tab-selector.js"></script>
-    <script src="emulator/fortuna.js"></script>
+    <script src="emulator/fortuna-emulator.js"></script>
     <script src="js/debugger.js"></script>
 
 </head>
@@ -64,7 +64,7 @@
 
         <div class="main-column-2">
 
-            <div id="video"></div>
+            <fortuna-emulator id="emulator"></fortuna-emulator>
 
             <register-box id="registers" title="Z80" columns="7" rows="2">
                 <register-value name="AF" value="0" digits="4"></register-value>

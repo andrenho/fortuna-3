@@ -73,21 +73,16 @@ async function initializeSdCard() {
 }
 
 //
-// EMULATOR
+// INITIALIZATION
 //
-
-async function initializeEmulator()
-{
-    const emulator = new FortunaEmulator();
-    await emulator.initialize("emulator", $("#video"));
-    return emulator;
-}
 
 window.addEventListener("load", async () => {
 
     initializeTabs();
     const sdCardPromise = initializeSdCard();
-    const emulator = await initializeEmulator();
+
+    const emulator = await $("#emulator").initialize("emulator");
+    console.log(emulator.debuggerInfo(0));
 
     // ...
 
