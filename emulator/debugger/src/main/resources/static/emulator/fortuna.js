@@ -2,8 +2,6 @@ class FortunaEmulator {
     
     #exports
 
-	#memory = new WebAssembly.Memory({ initial: 256 });
-    
     async initialize(emulatorPath) {
         await fetch(`${emulatorPath}/fortuna.wasm`).then(response => response.arrayBuffer().then(buffer => WebAssembly.instantiate(buffer).then(obj => {
             this.#exports = obj.instance.exports;
@@ -11,10 +9,11 @@ class FortunaEmulator {
         })));
     }
     
-	debuggerInfo(ramBlock) {
-		this.#exports.ram_data(ramBlock, this.#memory);
+	debuggerInfo(ramPage) {
+		const array = new Uint8Array(this.#exports.memory.buffer, 0, 256);
+		this.#exports.ram_data(ramPage, array.byteOffset);
 		return {
-			"ram": new Uint8Array(this.#memory.buffer.slice(0, 256)),
+			ram: array,
 		}
 	}
     

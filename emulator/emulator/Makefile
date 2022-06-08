@@ -2,7 +2,7 @@ SRC=fromjs.c
 
 all: fortuna3.wasm
 
-fortuna3.wasm: ${SRC}
+fortuna.wasm: ${SRC}
 	emcc -o fortuna.wasm $^ --no-entry -O3 -s WASM=1 -s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']"
 
 install: fortuna.wasm fortuna.js

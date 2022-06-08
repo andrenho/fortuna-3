@@ -26,7 +26,9 @@ EMSCRIPTEN_KEEPALIVE CPUInfo cpu_info()
 }
 */
 
-EMSCRIPTEN_KEEPALIVE void ram_data(uint16_t block, uint8_t data[256])
+#include <stdio.h>
+
+EMSCRIPTEN_KEEPALIVE void ram_data(uint16_t page, uint8_t* data)
 {
 	for (size_t i = 0; i < 256; ++i)
 		data[i] = i;
