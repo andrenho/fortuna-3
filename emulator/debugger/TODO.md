@@ -16,8 +16,7 @@
     - [x] Format a new disk
     - [x] What is the correct size?
     - [x] Read config file
-    - [ ] Option to create disk in disk
-- [ ] Auto deploy website
+    - [x] Option to create disk in disk
 - [ ] Emulation
     - [ ] Create JS emulator base, connect to WASM modules
         - [ ] Add canvas component
@@ -25,6 +24,7 @@
     - [ ] UART emulation
     - [ ] SDCard with FAT32
     - [ ] Update documentation
+- [ ] Auto deploy website
 - [ ] SDCard filemanager
     - [ ] Create frontend component
     - [ ] Use emulator FAT32 implementation to read files
