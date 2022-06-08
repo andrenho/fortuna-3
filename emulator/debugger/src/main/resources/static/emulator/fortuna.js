@@ -2,7 +2,7 @@ class FortunaEmulator {
     
     #exports
 
-    async initialize(emulatorPath) {
+    async initialize(emulatorPath, videoElement) {
         await fetch(`${emulatorPath}/fortuna.wasm`).then(response => response.arrayBuffer().then(buffer => WebAssembly.instantiate(buffer).then(obj => {
             this.#exports = obj.instance.exports;
             this.#exports.initialize();

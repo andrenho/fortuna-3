@@ -1,58 +1,62 @@
 const $ = (id) => document.querySelector(id);
 
-window.addEventListener("load", async () => {
+//
+// ERROR
+//
 
-    //
-    // ERROR
-    //
+function showError(err) {
+    if (err.name === "Error")
+        $("#error").innerText = err.message;
+    else
+        $("#error").innerText = err;
+    console.error(err);
+}
 
-    function showError(err) {
-        if (err.name === "Error")
-            $("#error").innerText = err.message;
-        else
-            $("#error").innerText = err;
-        console.error(err);
-    }
+//
+// BACKEND
+//
 
-    //
-    // BACKEND
-    //
-
-    async function backendFetch(input, init, doWithResult) {
-        if (doWithResult === undefined)
-            doWithResult = init;
-        try {
-            const r = await fetch(`${window.location.origin}${input}`, init);
-            const result = await r.json();
-            if (r.ok) {
-                doWithResult(result);
-            } else {
-                showError(`${result.status} -- ${result.error}`);
-            }
-        } catch (e) {
-            showError(await r.text());
+async function backendFetch(input, init, doWithResult) {
+    if (doWithResult === undefined)
+        doWithResult = init;
+    try {
+        const r = await fetch(`${window.location.origin}${input}`, init);
+        const result = await r.json();
+        if (r.ok) {
+            doWithResult(result);
+        } else {
+            showError(`${result.status} -- ${result.error}`);
         }
+    } catch (e) {
+        showError(await r.text());
     }
+}
 
-    //
-    // TAB
-    //
+//
+// TAB
+//
 
+function initializeTabs() {
     $("#tab-selector").addEventListener("index-change", (e) => {
         $("#debugger").style.display = (e.detail === 0) ? "flex" : "none";
         $("#sd-card").style.display = (e.detail === 1) ? "flex" : "none";
         $("#documentation").style.display = (e.detail === 2) ? "flex" : "none";
     });
+}
 
-    //
-    // SD CARD
-    //
+//
+// SDCARD
+//
+
+async function initializeSdCard() {
+    const sdCardElement = $("#sdcard");
+    const promises = [];
 
     // initialize SD Card as all zeroes as we wait for the backend
-    $("#sdcard").setAttribute("data", new Uint8Array(32 * 16).toString());
+    sdCardElement.setAttribute("data", new Uint8Array(32 * 16).toString());
 
     // load number of pages
-    backendFetch("/api/sdcard/0", (sd) => $("#sdcard").setAttribute("page-count", sd.sizeInBlocks));
+    promises.push(backendFetch("/api/sdcard/0", (sd) => sdCardElement.setAttribute("page-count", sd.sizeInBlocks)));
 
     // load first block
     const loadSdCardBlock = async (blockNumber) => {
@@ -60,16 +64,33 @@ window.addEventListener("load", async () => {
             $("#sdcard").setAttribute("data", Uint8Array.from(atob(block.bytes), c => c.charCodeAt(0)).toString())
         });
     };
-    loadSdCardBlock(0);
+    promises.push(loadSdCardBlock(0));
 
     // on SDCard page change
-    $("#sdcard").addEventListener("page-change", (e) => loadSdCardBlock(e.detail.page));
+    sdCardElement.addEventListener("page-change", (e) => loadSdCardBlock(e.detail.page));
 
-    //
-    // EMULATOR
-    //
+    return Promise.all(promises);
+}
+
+//
+// EMULATOR
+//
+
+async function initializeEmulator()
+{
     const emulator = new FortunaEmulator();
-    await emulator.initialize("emulator");
-    console.log(emulator.debuggerInfo(0));
+    await emulator.initialize("emulator", $("#video"));
+    return emulator;
+}
 
+window.addEventListener("load", async () => {
+
+    initializeTabs();
+    const sdCardPromise = initializeSdCard();
+    const emulator = await initializeEmulator();
+
+    // ...
+
+    await sdCardPromise;
+    console.log("Debugger initialized.");
 });
