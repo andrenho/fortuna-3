@@ -65,4 +65,11 @@ window.addEventListener("load", async () => {
     // on SDCard page change
     $("#sdcard").addEventListener("page-change", (e) => loadSdCardBlock(e.detail.page));
 
+    //
+    // EMULATOR
+    //
+    const emulator = new FortunaEmulator();
+    await emulator.initialize("emulator");
+    emulator.step();
+
 });

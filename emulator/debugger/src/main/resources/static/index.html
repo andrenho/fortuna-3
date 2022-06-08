@@ -15,6 +15,7 @@
     <script src="components/memory-stack.js"></script>
     <script src="components/register-box.js"></script>
     <script src="components/tab-selector.js"></script>
+    <script src="emulator/fortuna.js"></script>
     <script src="js/debugger.js"></script>
 
 </head>
@@ -186,9 +187,11 @@
 
         // load WASM module
 
+        /*
         fetch("emulator/fortuna.wasm").then(response => response.arrayBuffer().then(buffer => WebAssembly.instantiate(buffer).then(obj => {
             console.log(obj.instance.exports.life_meaning(21));
         })));
+         */
 
     </script>
 
