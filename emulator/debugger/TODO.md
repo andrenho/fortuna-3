@@ -19,7 +19,7 @@
     - [x] Option to create disk in disk
 - [ ] Emulation
     - [x] Create JS emulator base, connect to WASM modules
-        - [ ] Add canvas component
+        - [x] Add canvas component
     - [ ] Add Z80 emulation
     - [ ] UART emulation
     - [ ] SDCard with FAT32
