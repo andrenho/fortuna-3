@@ -14,8 +14,8 @@
     - [x] Read data from real file
     - [x] Add FAT32 library
     - [x] Format a new disk
-    - [ ] What is the correct size?
-    - [ ] Read config file
+    - [x] What is the correct size?
+    - [x] Read config file
     - [ ] Option to create disk in disk
 - [ ] Auto deploy website
 - [ ] Emulation

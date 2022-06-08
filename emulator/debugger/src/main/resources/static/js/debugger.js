@@ -3,7 +3,39 @@ const $ = (id) => document.querySelector(id);
 window.addEventListener("load", async () => {
 
     //
-    // TAB MANAGEMENT
+    // ERROR
+    //
+
+    function showError(err) {
+        if (err.name === "Error")
+            $("#error").innerText = err.message;
+        else
+            $("#error").innerText = err;
+        console.error(err);
+    }
+
+    //
+    // BACKEND
+    //
+
+    async function backendFetch(input, init, doWithResult) {
+        if (doWithResult === undefined)
+            doWithResult = init;
+        try {
+            const r = await fetch(`${window.location.origin}${input}`, init);
+            const result = await r.json();
+            if (r.ok) {
+                doWithResult(result);
+            } else {
+                showError(`${result.status} -- ${result.error}`);
+            }
+        } catch (e) {
+            showError(await r.text());
+        }
+    }
+
+    //
+    // TAB
     //
 
     $("#tab-selector").addEventListener("index-change", (e) => {
@@ -13,28 +45,20 @@ window.addEventListener("load", async () => {
     });
 
     //
-    // SD CARD MANAGEMENT
+    // SD CARD
     //
 
     // initialize SD Card as all zeroes as we wait for the backend
     $("#sdcard").setAttribute("data", new Uint8Array(32 * 16).toString());
 
     // load number of pages
-    (async () => {
-        const r = await fetch(`${window.location.origin}/api/sdcard/0`);
-        if (r.ok) {
-            const sd = await r.json();
-            $("#sdcard").setAttribute("page-count", sd.sizeInBlocks);
-        }
-    })();
+    backendFetch("/api/sdcard/0", (sd) => $("#sdcard").setAttribute("page-count", sd.sizeInBlocks));
 
     // load first block
     const loadSdCardBlock = async (blockNumber) => {
-        const r = await fetch(`${window.location.origin}/api/sdcard/0/${blockNumber}`);
-        if (r.ok) {
-            const block = await r.json();
-            $("#sdcard").setAttribute("data", Uint8Array.from(atob(block.bytes), c => c.charCodeAt(0)).toString());
-        }
+        await backendFetch(`/api/sdcard/0/${blockNumber}`, (block) => {
+            $("#sdcard").setAttribute("data", Uint8Array.from(atob(block.bytes), c => c.charCodeAt(0)).toString())
+        });
     };
     loadSdCardBlock(0);
 

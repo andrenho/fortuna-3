@@ -1,6 +1,6 @@
 {
   "debugger": {
-    "sdcard": {
+    "sdCard": {
       "sizeMb": "16",
       "fatType": "fat16",
       "blockType": "ram"

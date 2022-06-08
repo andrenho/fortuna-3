@@ -18,15 +18,8 @@ import java.io.IOException;
 @SpringBootApplication
 public class Fortuna3Application {
 
-    @Autowired
-    private SDCardService sdCardService;
-
     public static void main(String[] args) {
         SpringApplication.run(Fortuna3Application.class, args);
     }
 
-    @EventListener(ContextRefreshedEvent.class)
-    public void initialize() throws IOException {
-        sdCardService.initialize(16 * 1024 * 1024);
-    }
 }
