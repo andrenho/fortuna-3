@@ -20,6 +20,7 @@
 - [ ] Emulation
     - [x] Create JS emulator base, connect to WASM modules
         - [x] Add canvas component
+    - [ ] SDCard support
     - [ ] Add Z80 emulation
     - [ ] UART emulation
     - [ ] SDCard with FAT32

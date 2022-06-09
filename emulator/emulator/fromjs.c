@@ -3,9 +3,14 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "sdcard.h"
 
-EMSCRIPTEN_KEEPALIVE void initialize(/* callbacks */)
+void sdDiskStatus();
+
+EMSCRIPTEN_KEEPALIVE void initialize(long sd_size_mb_)
 {
+	sd_size_mb = sd_size_mb_;
+	sdDiskStatus();
 }
 
 EMSCRIPTEN_KEEPALIVE void reset()
@@ -25,8 +30,6 @@ EMSCRIPTEN_KEEPALIVE CPUInfo cpu_info()
 {
 }
 */
-
-#include <stdio.h>
 
 EMSCRIPTEN_KEEPALIVE void ram_data(uint16_t page, uint8_t* data)
 {

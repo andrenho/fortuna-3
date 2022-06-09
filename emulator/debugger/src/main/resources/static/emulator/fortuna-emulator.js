@@ -67,11 +67,18 @@ class FortunaEmulator extends HTMLElement {
         this.#spans[this.#cursor.y][this.#cursor.x].classList.add("cursor");
     }
 
-    async initialize(wasmPath) {
-        await fetch(`emulator/fortuna.wasm`).then(response => response.arrayBuffer().then(buffer => WebAssembly.instantiate(buffer).then(obj => {
+    async initialize(obj) {
+        const imports = {
+            sdDiskStatus: obj.sdDiskStatus
+        };
+        console.log(imports);
+
+        await fetch(`${obj.wasmPath}/fortuna.wasm`).then(response => response.arrayBuffer().then(buffer => WebAssembly.instantiate(buffer, { env: imports }).then(obj => {
+            console.log(obj);
             this.#exports = obj.instance.exports;
-            this.#exports.initialize();
+            this.#exports.initialize(obj.sdCardSizeInMb);
         })));
+
         return this;
     }
 
