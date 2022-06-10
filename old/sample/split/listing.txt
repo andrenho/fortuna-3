@@ -1,0 +1,67 @@
+Sections:
+00: "seg0" (0-3A)
+
+
+Source: "split.z80"
+                        	     1: PrintChar equ &BB5A ;Amstrad CPC BIOS call
+                        	     2: Terminator equ 0    ;marks the end of a string
+                        	     3:         org &0
+                        	     4: 
+00:0000 212C00          	     5: 	LD HL,StringA
+                        	     6: loop:
+00:0003 7E              	     7: 	ld a,(HL)		;load a char from (HL)
+00:0004 FE00            	     8: 	cp Terminator	        ;is it the terminator?
+00:0006 C8              	     9: 	ret z			;if so, exit
+00:0007 5F              	    10: 	ld e,a			;store this char in E temporarily
+00:0008 23              	    11: 	inc hl			;next char
+00:0009 7E              	    12: 	ld a,(HL)		;get next char
+00:000A FE00            	    13: 	cp Terminator	        ;is the next char the terminator?
+00:000C CA2700          	    14: 	jp z,StringDone	        ;if so, print E and exit.
+                        	    15: 
+                        	    16: 	;needed to prevent the last char from getting a comma and space.
+                        	    17: 
+00:000F 2B              	    18: 	dec hl			;go back one so we don't skip any chars
+00:0010 BB              	    19: 	cp e                    ;does (HL) == (HL+1)?
+                        	    20: 
+00:0011 F5              	    21: 	push af
+00:0012 7B              	    22: 	ld a,e
+00:0013 CD5ABB          	    23: 	call PrintChar		;either way, print E to screen.
+00:0016 F1              	    24: 	pop af			;retrieve the results of the last compare.
+                        	    25: 
+00:0017 280A            	    26: 	jr z,SkipComma		;if A=E, no comma or space. Just loop again.
+00:0019 3E2C            	    27: 	ld a,','
+00:001B CD5ABB          	    28: 	call PrintChar
+00:001E 3E20            	    29: 	ld a,' '
+00:0020 CD5ABB          	    30: 	call PrintChar
+                        	    31: SkipComma:
+00:0023 23              	    32: 	inc hl			;next char
+00:0024 C30300          	    33: 	jp loop			;back to start
+                        	    34: StringDone:
+00:0027 7B              	    35: 	ld a,e			;last character in string is printed here.
+00:0028 C35ABB          	    36: 	jp PrintChar
+                        	    37: 
+                        	    38: ReturnToBasic:
+00:002B C9              	    39: 	RET
+                        	    40: 
+                        	    41: 
+                        	    42: StringA:
+00:002C 674848483559592B	    43: 	byte "gHHH5YY++///\",0
+00:0034 2B2F2F2F5C
+00:0039 00
+
+
+Symbols by name:
+PrintChar                        E:BB5A
+ReturnToBasic                    A:002B
+SkipComma                        A:0023
+StringA                          A:002C
+StringDone                       A:0027
+Terminator                       E:0000
+loop                             A:0003
+
+Labels by address:
+0003 loop
+0023 SkipComma
+0027 StringDone
+002B ReturnToBasic
+002C StringA

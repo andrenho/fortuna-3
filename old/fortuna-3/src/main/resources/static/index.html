@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=yes, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fortuna-3 emulator</title>
+
+    <script src="components/common.js"></script>
+
+    <script src="components/command-button.js"></script>
+    <script src="components/debug-assembly.js"></script>
+    <script src="components/flat-data.js"></script>
+    <script src="components/memory-stack.js"></script>
+    <script src="components/register-box.js"></script>
+
+</head>
+
+<!---- CSS - STYLE ---->
+<style>
+    /*
+    * { opacity: 0.5 }
+     */
+
+    @font-face { font-family: ShareTech; src: url('/data/ShareTechMono-Regular.ttf'); }
+
+    .error { color: red; }
+
+    .main {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 16px;
+        gap: 24px;
+    }
+
+</style>
+
+<!---- HTML - BODY ---->
+<body>
+
+    <h1 class="error" id="error">
+        <!-- any errors will be shown here -->
+    </h1>
+
+    <command-button id="command-button"></command-button>
+
+    <div class="main">
+
+        <debug-assembly id="debug"></debug-assembly>
+
+        <register-box id="registers" title="Z80" columns="7" rows="2">
+            <register-value name="AF" value="0" digits="4"></register-value>
+            <register-value name="BC" value="0" digits="4"></register-value>
+            <register-value name="DE" value="0" digits="4"></register-value>
+            <register-value name="HL" value="0" digits="4"></register-value>
+            <register-value name="SP" value="0" digits="4"></register-value>
+            <register-value name="PC" value="0" digits="4"></register-value>
+            <div><!-- empty --></div>
+
+            <register-value name="AF'" value="0" digits="4"></register-value>
+            <register-value name="BC'" value="0" digits="4"></register-value>
+            <register-value name="DE'" value="0" digits="4"></register-value>
+            <register-value name="HL'" value="0" digits="4"></register-value>
+            <register-value name="IX" value="0" digits="4"></register-value>
+            <register-value name="IY" value="0" digits="4"></register-value>
+            <register-value name="I" value="0" digits="2"></register-value>
+
+            <div style="grid-area: flags;">
+                <flag-value name="S" value="0"></flag-value>
+                <flag-value name="Z" value="0"></flag-value>
+                <flag-value name="H" value="0"></flag-value>
+                <flag-value name="P/V" value="0"></flag-value>
+                <flag-value name="N" value="0"></flag-value>
+                <flag-value name="C" value="0"></flag-value>
+            </div>
+        </register-box>
+
+        <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
+            <memory-stack id="stack"></memory-stack>
+        </flat-data>
+
+    </div>
+
+    <script>
+
+        const ram = new Uint8Array(64 * 1024);
+        window.crypto.getRandomValues(ram);
+
+        const highlightAddr = 258;
+
+        // on page change
+        document.getElementById("ram").addEventListener("page-change", (e) => {
+            const { addrStart, addrEnd, page } = e.detail;
+            e.target.setAttribute("data", ram.slice(addrStart, addrEnd).toString());
+            e.target.setAttribute("highlight-address", (highlightAddr > addrStart && highlightAddr <= addrEnd) ? highlightAddr % 256 : undefined);
+        });
+
+        // on data change
+        const { addrStart, addrEnd } = document.getElementById("ram").addressRange();
+        document.getElementById("ram").setAttribute("data", ram.slice(addrStart, addrEnd).toString());
+        document.getElementById("stack").setAttribute("data", toWords(ram.slice(0, 24)).toString());
+
+        // setup debug-assembly
+        const files = {
+            "main.s": [
+                { line: "; hello" },
+                { address: 0, line: "   nop  ; do nothing", bytes: [0x0] },
+            ],
+            "hello.s": [
+                { address: 1, line: "   nop  ; do nothing", bytes: [0x0] },
+            ]
+        };
+        const breakpoints = new Set();
+        let currentPC = 0;
+
+        const debug = document.querySelector("#debug");
+        debug.setAttribute("source", JSON.stringify(files["main.s"]));
+        debug.setAttribute("current-pc", "0");
+        debug.setAttribute("files", Object.keys(files).join(","));
+        debug.setAttribute("selected-file", "main.s");
+
+        debug.addEventListener("file-change", e => {
+            debug.setAttribute("selected-file", e.detail.file);
+            debug.setAttribute("source", JSON.stringify(files[e.detail.file]));
+        });
+
+        debug.addEventListener("breakpoint-click", e => {
+            if (breakpoints.has(e.detail.address))
+                breakpoints.delete(e.detail.address);
+            else
+                breakpoints.add(e.detail.address);
+            if (breakpoints.size > 0)
+                debug.setAttribute("breakpoints", Array.from(breakpoints).join(","));
+            else
+                debug.removeAttribute("breakpoints");
+        });
+
+        // step button
+        document.getElementById("command-button").addEventListener("step", () => {
+            ++currentPC;
+            debug.setAttribute("current-pc", currentPC.toString());
+            for (const filename of Object.keys(files)) {
+                let found = false;
+                for (const line of files[filename]) {
+                    if (currentPC === line.address) {
+                        debug.setAttribute("selected-file", filename);
+                        debug.setAttribute("source", JSON.stringify(files[filename]));
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                    break;
+            }
+        });
+
+        // update registers
+        const registers = document.getElementById("registers");
+        registers.setValue("AF", 0x12af);
+        registers.setValue("S", 1);
+
+    </script>
+
+</body>
+
+</html>
+
+<!-- vim: foldmethod=indent:ts=4:sts=4:sw=4:noexpandtab
+-->

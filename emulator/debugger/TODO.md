@@ -1,0 +1,52 @@
+- [x] Automated build
+- [x] Static website
+- [x] Create base C library, compile to WASM
+- [x] Organize frontend layout
+  - [x] Grid layout for main debugger page
+  - [x] Create tabs component
+  - [x] Page for SDCard and documentation
+- [ ] SDCard access
+  - [x] Add SDCard on frontend
+  - [x] Make zeroes gray
+  - [x] Backend API sample
+  - [x] Implement page flipping on the frontend
+  - [ ] Backend API
+    - [x] Read data from real file
+    - [x] Add FAT32 library
+    - [x] Format a new disk
+    - [x] What is the correct size?
+    - [x] Read config file
+    - [x] Option to create disk in disk
+- [ ] Emulation
+    - [x] Create JS emulator base, connect to WASM modules
+        - [x] Add canvas component
+    - [ ] SDCard support
+    - [ ] Add Z80 emulation
+    - [ ] UART emulation
+    - [ ] SDCard with FAT32
+    - [ ] Update documentation
+- [ ] Auto deploy website
+- [ ] SDCard filemanager
+    - [ ] Create frontend component
+    - [ ] Use emulator FAT32 implementation to read files
+- [ ] Compilation
+    - [ ] Read config file, find all related files
+    - [ ] Create thread that monitors changed files and reruns compiler
+    - [ ] Run compiler
+    - [ ] Read and interpret listing file
+    - [ ] GET /api/debugInfo
+    - [ ] GET /api/debugInfoCRC (or compilation count or UUID or something)
+- [ ] Debugging
+    - [ ] Connect to emulator
+    - [ ] Step
+    - [ ] Run
+    - [ ] Run with breakpoints
+    - [ ] Next
+- [ ] Fortuna-3 specific stuff
+    - [ ] Memory management
+    - [ ] SDCard + FAT32
+    - [ ] Timers
+    - [ ] Wall clock
+    - [ ] Peripheral management
+    - [ ] Parallel communication
+    - [ ] SPI
