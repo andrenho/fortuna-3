@@ -1,4 +1,4 @@
-SRC=fromjs.c fortuna.c sdcard.c fatfs/ff.c fatfs/ffsystem.c z80/Z80.c
+SRC=fromjs.c emulator.c sdcard.c fatfs/ff.c fatfs/ffsystem.c z80/Z80.c
 
 all: fortuna.wasm
 
