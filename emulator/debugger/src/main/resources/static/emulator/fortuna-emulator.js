@@ -68,15 +68,25 @@ class FortunaEmulator extends HTMLElement {
     }
 
     async initialize(obj) {
+        let buffer;
+
         const imports = {
-            sdDiskStatus: obj.sdDiskStatus
+            sd_card_read: (startAt, nSectors, data) => {
+                obj.sdCardReadCallback(startAt, nSectors, data);
+                console.log(new Uint8Array(this.#exports.memory.buffer, 512, 512));
+                return 0;
+            },
+            sd_card_write: (startAt, nSectors, data) => {
+                obj.sdCardWriteCallback(startAt, nSectors, data)
+                console.log(new Uint8Array(this.#exports.memory.buffer, 512, 512));
+                return 0;
+            },
         };
-        console.log(imports);
 
         await fetch(`${obj.wasmPath}/fortuna.wasm`).then(response => response.arrayBuffer().then(buffer => WebAssembly.instantiate(buffer, { env: imports }).then(obj => {
-            console.log(obj);
             this.#exports = obj.instance.exports;
-            this.#exports.initialize(obj.sdCardSizeInMb);
+            buffer = new Uint8Array(this.#exports.memory.buffer, 512, 512);
+            console.warn(this.#exports.initialize(obj.sdCardSizeInMb, buffer.byteOffset));
         })));
 
         return this;

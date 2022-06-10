@@ -6309,7 +6309,6 @@ FRESULT f_fdisk (
 	BYTE *buf = (BYTE*)work;
 	DSTATUS stat;
 
-
 	stat = disk_initialize(pdrv);
 	if (stat & STA_NOINIT) return FR_NOT_READY;
 	if (stat & STA_PROTECT) return FR_WRITE_PROTECTED;

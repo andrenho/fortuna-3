@@ -1,18 +1,28 @@
 #include "sdcard.h"
 
+#include <stdbool.h>
+
 long sd_size_mb;
-SD_Status sd_status;
+
+PARTITION VolToPart[FF_VOLUMES] = {
+	{0, 1},    /* "0:" ==> 1st partition in PD#0 */
+};
+
+// implement these externally
+extern int sd_card_read(unsigned long start_at, unsigned int n_sectors, uint8_t* data);
+extern int sd_card_write(unsigned long start_at, unsigned int n_sectors, const uint8_t* data);
+
 
 DSTATUS disk_status(BYTE pdrv)
 {
 	(void) pdrv;
-	return sd_status();
+	return 0;
 }
 
 DSTATUS disk_initialize(BYTE pdrv)
 {
 	(void) pdrv;
-	return sd_status();
+	return 0;
 }
 
 DRESULT disk_read (
@@ -23,8 +33,10 @@ DRESULT disk_read (
 )
 {
 	(void) pdrv;
-	// TODO - add callback
-	return RES_OK;
+	if (sd_card_read(sector, count, buff) == 0) {
+		return RES_OK;
+	}
+	return RES_ERROR;
 }
 
 DRESULT disk_write (
@@ -35,7 +47,9 @@ DRESULT disk_write (
 )
 {
 	(void) pdrv;
-	return RES_OK;
+	if (sd_card_write(sector, count, buff) == 0)
+		return RES_OK;
+	return RES_ERROR;
 }
 
 DRESULT disk_ioctl (

@@ -6,7 +6,4 @@
 
 extern long sd_size_mb;
 
-typedef DSTATUS (*SD_Status)(void);
-extern SD_Status sd_status;
-
 #endif

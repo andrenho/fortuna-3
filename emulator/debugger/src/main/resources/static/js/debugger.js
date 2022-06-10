@@ -23,7 +23,9 @@ async function backendFetch(input, init, doWithResult) {
         const r = await fetch(`${window.location.origin}${input}`, init);
         const result = await r.json();
         if (r.ok) {
-            doWithResult(result);
+            if (doWithResult)
+                doWithResult(result);
+            return result;
         } else {
             showError(`${result.status} -- ${result.error}`);
         }
@@ -79,19 +81,16 @@ async function initializeSdCard() {
 window.addEventListener("load", async () => {
 
     initializeTabs();
-    const sdCardPromise = initializeSdCard();
 
     const emulator = await $("#emulator").initialize({
         wasmPath: "emulator",
         sdCardSizeInMb: 16,
-        sdDiskStatus: () => { console.log("XXXX"); return "ok" },
-        sdCardReadCallback: (sector, count) => { console.log(`R: ${sector}/${count}`); return new Uint8Array(256); },
-        sdCardWriteCallback: (sector, count, data) => { console.log(`W: ${sector}/${count}`); console.log(data); },
+        sdCardReadCallback: (sector, count, data) => { console.log(`R: ${sector}/${count}`); console.log(data); return 0; },
+        sdCardWriteCallback: (sector, count, data) => { console.log(`W: ${sector}/${count}`); console.log(data); return 0; },
     });
     console.log(emulator.debuggerInfo(0));
 
     // ...
 
-    await sdCardPromise;
     console.log("Debugger initialized.");
 });

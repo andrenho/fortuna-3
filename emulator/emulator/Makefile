@@ -12,4 +12,4 @@ install: fortuna.wasm
 clean:
 	rm -f *.o fortuna.wasm
 
-// vim: ts=8:sts=8:sw=8:expandtab
+# vim: ts=8:sts=8:sw=8:expandtab
