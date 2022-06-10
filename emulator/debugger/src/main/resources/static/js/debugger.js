@@ -81,6 +81,7 @@ window.addEventListener("load", async () => {
     initializeTabs();
     const sdCardPromise = initializeSdCard();
 
+    /*
     const emulator = await $("#emulator").initialize({
         wasmPath: "emulator",
         sdCardSizeInMb: 16,
@@ -89,6 +90,7 @@ window.addEventListener("load", async () => {
         sdCardWriteCallback: (sector, count, data) => { console.log(`W: ${sector}/${count}`); console.log(data); },
     });
     console.log(emulator.debuggerInfo(0));
+     */
 
     // ...
 

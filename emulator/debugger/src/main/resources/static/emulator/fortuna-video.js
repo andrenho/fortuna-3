@@ -1,4 +1,4 @@
-class FortunaEmulator extends HTMLElement {
+window.customElements.define("fortuna-video", class extends HTMLElement {
 
     #template = `
         <style>
@@ -32,7 +32,6 @@ class FortunaEmulator extends HTMLElement {
         </div>
     `;
     
-    #exports
     #spans = [];
     #lines = 20;
     #columns = 60;
@@ -67,6 +66,7 @@ class FortunaEmulator extends HTMLElement {
         this.#spans[this.#cursor.y][this.#cursor.x].classList.add("cursor");
     }
 
+    /*
     async initialize(obj) {
         const imports = {
             sdDiskStatus: obj.sdDiskStatus
@@ -89,7 +89,6 @@ class FortunaEmulator extends HTMLElement {
 			ram: array,
 		}
 	}
+     */
     
-}
-
-window.customElements.define("fortuna-emulator", FortunaEmulator);
+});
