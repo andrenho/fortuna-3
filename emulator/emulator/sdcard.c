@@ -1,18 +1,35 @@
 #include "sdcard.h"
 
-long sd_size_mb;
-SD_Status sd_status;
+#include <string.h>
+#include <stdlib.h>
+
+#include "fatfs/ff.h"
+#include "fatfs/diskio.h"
+
+static size_t sdcard_sz;
+static uint8_t* sd_data;
+
+void sdcard_init(size_t sz)
+{
+    sdcard_sz = sz;
+    sd_data = malloc(sz);
+}
+
+void sdcard_copy_page(size_t page, uint8_t* data)
+{
+    memcpy(data, &sd_data[page*512], 512);
+}
 
 DSTATUS disk_status(BYTE pdrv)
 {
 	(void) pdrv;
-	return sd_status();
+	return 0;
 }
 
 DSTATUS disk_initialize(BYTE pdrv)
 {
 	(void) pdrv;
-	return sd_status();
+	return 0;
 }
 
 DRESULT disk_read (
@@ -49,7 +66,7 @@ DRESULT disk_ioctl (
 		case CTRL_SYNC:
 			break;
 		case GET_SECTOR_COUNT:
-			((WORD*) buff)[0] = sd_size_mb / 1024 / 2;
+			((WORD*) buff)[0] = sdcard_sz / 512;
 			break;
 		case GET_BLOCK_SIZE:
 			((DWORD*) buff)[0] = 1;

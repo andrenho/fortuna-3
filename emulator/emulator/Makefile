@@ -3,7 +3,11 @@ SRC=fromjs.c emulator.c ram.c sdcard.c fatfs/ff.c fatfs/ffsystem.c z80/Z80.c
 all: fortuna.wasm
 
 fortuna.wasm: ${SRC}
-	emcc -Wall -Wextra -o fortuna.wasm $^ --no-entry -O3 -sERROR_ON_UNDEFINED_SYMBOLS=0 -s WASM=1 -s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']"
+	emcc -Wall -Wextra -o fortuna.wasm $^ --no-entry -O3 \
+		-s ERROR_ON_UNDEFINED_SYMBOLS=0 \
+		-s WASM=1 \
+		-s INITIAL_MEMORY=1073741824 \
+		-s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']"
 
 install: fortuna.wasm
 	mkdir -p ../debugger/src/main/resources/static/emulator

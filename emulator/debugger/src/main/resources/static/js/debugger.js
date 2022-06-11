@@ -44,6 +44,8 @@ function updateDebuggerState(state)
     ram.setAttribute("highlight-address", (state.cpu.pc >= addrStart && state.cpu.pc < addrEnd) ? state.cpu.pc % 256 : undefined);
     $("#stack").setAttribute("data", toWords(state.stack).toString());
 
+    $("#sdcard").setAttribute("data", state.sdCardPage.toString());
+
     const registers = $("#registers");
     registers.setValue("AF", state.cpu.af);
     registers.setValue("BC", state.cpu.bc);
@@ -73,11 +75,17 @@ function updateDebuggerState(state)
 window.addEventListener("load", async () => {
 
     const ramElement = $("#ram");
+    const sdCardElement = $("#sdcard");
 
-    const emulator = await initializeFortunaEmulator($("#video"), "emulator");
-    const getState = () => emulator.state(ramElement.page());
+    const sdCardSizeInMB = 16;  // TODO - where should this come from?
+
+    const emulator = await initializeFortunaEmulator($("#video"), "emulator", sdCardSizeInMB);
+    const getState = () => emulator.state(ramElement.page(), sdCardElement.page());
 
     ramElement.addEventListener("page-change", (e) => updateDebuggerState(getState()));
+    sdCardElement.addEventListener("page-change", (e) => updateDebuggerState(getState()));
+
+    sdCardElement.setAttribute("page-count", (sdCardSizeInMB * 1024 * 1024 / 512).toString());
 
     updateDebuggerState(getState());
 

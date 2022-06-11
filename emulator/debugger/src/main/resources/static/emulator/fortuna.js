@@ -1,4 +1,4 @@
-async function initializeFortunaEmulator(videoElement, wasmPath) {
+async function initializeFortunaEmulator(videoElement, wasmPath, sdCardSizeInMB) {
 
     class Emulator {
 
@@ -9,17 +9,17 @@ async function initializeFortunaEmulator(videoElement, wasmPath) {
             this.#videoElement = videoElement;
         }
 
-        async initialize(wasmPath) {
+        async initialize(wasmPath, sdCardSizeInMB) {
             const response = await fetch(`${wasmPath}/fortuna.wasm`);
             const buffer = await response.arrayBuffer();
             const obj = await WebAssembly.instantiate(buffer);
             this.#exports = obj.instance.exports;
-            this.#exports.initialize();
+            this.#exports.initialize(sdCardSizeInMB);
         }
 
-        state(ramPage) {
+        state(ramPage, sdCardPage) {
             const state = new Uint8Array(this.#exports.memory.buffer, 0, 0x400);
-            this.#exports.get_state(ramPage, state.byteOffset);
+            this.#exports.get_state(ramPage, sdCardPage, state.byteOffset);
 
             const pair = (n) => state[n] + (state[n+1] << 8);
 
@@ -45,14 +45,15 @@ async function initializeFortunaEmulator(videoElement, wasmPath) {
                     z: (state[0] >> 6) & 1,
                     s: (state[0] >> 7) & 1,
                 },
-                ramPage: state.slice(0x100, 0x200),
                 stack: state.slice(0xe8, 0x100),
+                ramPage: state.slice(0x100, 0x200),
+                sdCardPage: state.slice(0x200, 0x400),
             }
         }
 
     }
 
     const emulator = new Emulator(videoElement);
-    await emulator.initialize(wasmPath);
+    await emulator.initialize(wasmPath, sdCardSizeInMB);
     return emulator;
 }
