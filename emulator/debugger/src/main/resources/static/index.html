@@ -173,19 +173,6 @@
             }
         });
 
-        // update registers
-        const registers = document.getElementById("registers");
-        registers.setValue("AF", 0x12af);
-        registers.setValue("S", 1);
-
-        // load WASM module
-
-        /*
-        fetch("emulator/fortuna.wasm").then(response => response.arrayBuffer().then(buffer => WebAssembly.instantiate(buffer).then(obj => {
-            console.log(obj.instance.exports.life_meaning(21));
-        })));
-         */
-
     </script>
 
 </body>
