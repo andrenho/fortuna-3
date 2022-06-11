@@ -33,66 +33,17 @@ async function backendFetch(input, init, doWithResult) {
 }
 
 //
-// TAB
+// DEBUGGER STATE
 //
 
-function initializeTabs() {
-    $("#tab-selector").addEventListener("index-change", (e) => {
-        $("#debugger").style.display = (e.detail === 0) ? "flex" : "none";
-        $("#sd-card").style.display = (e.detail === 1) ? "flex" : "none";
-        $("#documentation").style.display = (e.detail === 2) ? "flex" : "none";
-    });
-}
-
-//
-// SDCARD
-//
-
-/*
-async function initializeSdCard() {
-    const sdCardElement = $("#sdcard");
-    const promises = [];
-
-    // initialize SD Card as all zeroes as we wait for the backend
-    sdCardElement.setAttribute("data", new Uint8Array(32 * 16).toString());
-
-    // load number of pages
-    promises.push(backendFetch("/api/sdcard/0", (sd) => sdCardElement.setAttribute("page-count", sd.sizeInBlocks)));
-
-    // load first block
-    const loadSdCardBlock = async (blockNumber) => {
-        await backendFetch(`/api/sdcard/0/${blockNumber}`, (block) => {
-            $("#sdcard").setAttribute("data", Uint8Array.from(atob(block.bytes), c => c.charCodeAt(0)).toString())
-        });
-    };
-    promises.push(loadSdCardBlock(0));
-
-    // on SDCard page change
-    sdCardElement.addEventListener("page-change", (e) => loadSdCardBlock(e.detail.page));
-
-    return Promise.all(promises);
-}
- */
-
-//
-// RAM
-//
-function initializeRam(emulator) {
-
-    // on RAM page change
-    $("#ram").addEventListener("page-change", (e) => {
-        const { addrStart, addrEnd, page } = e.detail;
-        const state = emulator.state(page);
-        e.target.setAttribute("data", state.ramPage.toString());
-        e.target.setAttribute("highlight-address", (state.cpu.pc > addrStart && state.cpu.pc <= addrEnd) ? state.cpu.pc % 256 : undefined);
-    });
-
-    /*
-    // on data change
-    const { addrStart, addrEnd } = document.getElementById("ram").addressRange();
-    document.getElementById("ram").setAttribute("data", ram.slice(addrStart, addrEnd).toString());
-    document.getElementById("stack").setAttribute("data", toWords(ram.slice(0, 24)).toString());
-     */
+function updateDebuggerState(state)
+{
+    const ram = $("#ram");
+    const { addrStart, addrEnd } = ram.addressRange();
+    ram.setAttribute("data", state.ramPage.toString());
+    ram.setAttribute("highlight-address", (state.cpu.pc >= addrStart && state.cpu.pc < addrEnd) ? state.cpu.pc % 256 : undefined);
+    console.log(state.stack);
+    $("#stack").setAttribute("data", toWords(state.stack).toString());
 }
 
 //
@@ -101,24 +52,14 @@ function initializeRam(emulator) {
 
 window.addEventListener("load", async () => {
 
-    initializeTabs();
+    const ramElement = $("#ram");
 
     const emulator = await initializeFortunaEmulator($("#video"), "emulator");
-    initializeRam(emulator);
-    console.log(emulator.state(0));
+    const getState = () => emulator.state(ramElement.page());
 
-    /*
-    const emulator = await $("#emulator").initialize({
-        wasmPath: "emulator",
-        sdCardSizeInMb: 16,
-        sdDiskStatus: () => { console.log("XXXX"); return "ok" },
-        sdCardReadCallback: (sector, count) => { console.log(`R: ${sector}/${count}`); return new Uint8Array(256); },
-        sdCardWriteCallback: (sector, count, data) => { console.log(`W: ${sector}/${count}`); console.log(data); },
-    });
-    console.log(emulator.debuggerInfo(0));
-     */
+    ramElement.addEventListener("page-change", (e) => updateDebuggerState(getState()));
 
-    // ...
+    updateDebuggerState(getState());
 
     console.log("Debugger initialized.");
 });

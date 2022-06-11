@@ -175,6 +175,10 @@ window.customElements.define("flat-data", class extends HTMLElement {
         return { addrStart: (currentPage * pageCount * 16), addrEnd: ((currentPage + 1) * pageCount * 16) };
     }
 
+    page() {
+        return parseInt(this.getAttribute("current-page"));
+    }
+
     #buildTable() {
         const tbody = [];
         for (let row = 0; row < this.rows; ++row) {

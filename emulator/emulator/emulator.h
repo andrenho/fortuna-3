@@ -7,6 +7,8 @@
 
 #define RAM_PAGE_SZ 256
 
+extern Z80 z80;
+
 void emulator_init();
 Z80 const* emulator_z80();
 uint8_t const* emulator_ram_page(uint8_t page);

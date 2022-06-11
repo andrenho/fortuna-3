@@ -93,7 +93,7 @@
                 </div>
             </register-box>
 
-            <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16" highlight-address="2">
+            <flat-data id="ram" title="Memory (RAM)" current-page="0" page-count="256" rows="16">
                 <memory-stack id="stack"></memory-stack>
             </flat-data>
 
@@ -107,12 +107,17 @@
 
     <div id="documentation" style="display: none;">Documentation</div>
 
+    <script>
+        window.addEventListener("load", () => {
+            document.querySelector("#tab-selector").addEventListener("index-change", (e) => {
+                document.querySelector("#debugger").style.display = (e.detail === 0) ? "flex" : "none";
+                document.querySelector("#sd-card").style.display = (e.detail === 1) ? "flex" : "none";
+                document.querySelector("#documentation").style.display = (e.detail === 2) ? "flex" : "none";
+            });
+        });
+    </script>
+
     <script async>
-
-        const ram = new Uint8Array(64 * 1024);
-        window.crypto.getRandomValues(ram);
-
-        const highlightAddr = 258;
 
         // setup debug-assembly
         const files = {
