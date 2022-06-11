@@ -48,6 +48,7 @@ function initializeTabs() {
 // SDCARD
 //
 
+/*
 async function initializeSdCard() {
     const sdCardElement = $("#sdcard");
     const promises = [];
@@ -71,6 +72,28 @@ async function initializeSdCard() {
 
     return Promise.all(promises);
 }
+ */
+
+//
+// RAM
+//
+function initializeRam(emulator) {
+
+    // on RAM page change
+    $("#ram").addEventListener("page-change", (e) => {
+        const { addrStart, addrEnd, page } = e.detail;
+        const state = emulator.state(page);
+        e.target.setAttribute("data", state.ramPage.toString());
+        e.target.setAttribute("highlight-address", (state.cpu.pc > addrStart && state.cpu.pc <= addrEnd) ? state.cpu.pc % 256 : undefined);
+    });
+
+    /*
+    // on data change
+    const { addrStart, addrEnd } = document.getElementById("ram").addressRange();
+    document.getElementById("ram").setAttribute("data", ram.slice(addrStart, addrEnd).toString());
+    document.getElementById("stack").setAttribute("data", toWords(ram.slice(0, 24)).toString());
+     */
+}
 
 //
 // INITIALIZATION
@@ -79,7 +102,10 @@ async function initializeSdCard() {
 window.addEventListener("load", async () => {
 
     initializeTabs();
-    const sdCardPromise = initializeSdCard();
+
+    const emulator = await initializeFortunaEmulator($("#video"), "emulator");
+    initializeRam(emulator);
+    console.log(emulator.state(0));
 
     /*
     const emulator = await $("#emulator").initialize({
@@ -94,6 +120,5 @@ window.addEventListener("load", async () => {
 
     // ...
 
-    await sdCardPromise;
     console.log("Debugger initialized.");
 });

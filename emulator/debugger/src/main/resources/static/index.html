@@ -15,6 +15,7 @@
     <script src="components/memory-stack.js"></script>
     <script src="components/register-box.js"></script>
     <script src="components/tab-selector.js"></script>
+    <script src="emulator/fortuna.js"></script>
     <script src="emulator/fortuna-video.js"></script>
     <script src="js/debugger.js"></script>
 
@@ -112,18 +113,6 @@
         window.crypto.getRandomValues(ram);
 
         const highlightAddr = 258;
-
-        // on RAM page change
-        document.getElementById("ram").addEventListener("page-change", (e) => {
-            const { addrStart, addrEnd, page } = e.detail;
-            e.target.setAttribute("data", ram.slice(addrStart, addrEnd).toString());
-            e.target.setAttribute("highlight-address", (highlightAddr > addrStart && highlightAddr <= addrEnd) ? highlightAddr % 256 : undefined);
-        });
-
-        // on data change
-        const { addrStart, addrEnd } = document.getElementById("ram").addressRange();
-        document.getElementById("ram").setAttribute("data", ram.slice(addrStart, addrEnd).toString());
-        document.getElementById("stack").setAttribute("data", toWords(ram.slice(0, 24)).toString());
 
         // setup debug-assembly
         const files = {
