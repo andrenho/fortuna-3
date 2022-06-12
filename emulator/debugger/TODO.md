@@ -21,8 +21,10 @@
     - [x] Create JS emulator base, connect to WASM modules
         - [x] Add canvas component
     - [ ] RAM memory banks
+      - [x] Emulator
+        - [ ] Write some tests
+        - [ ] Documentation in HTML
       - [ ] Debugger
-      - [ ] Emulator
       - [ ] Download zipped BIOS
     - [ ] SDCard support
       - [ ] Format on initialization
