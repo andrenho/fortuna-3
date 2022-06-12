@@ -20,7 +20,14 @@
 - [ ] Emulation
     - [x] Create JS emulator base, connect to WASM modules
         - [x] Add canvas component
+    - [ ] RAM memory banks
+      - [ ] Debugger
+      - [ ] Emulator
+      - [ ] Download zipped BIOS
     - [ ] SDCard support
+      - [ ] Format on initialization
+      - [ ] Download zipped image
+      - [ ] Read SDCard data from project json
     - [ ] Add Z80 emulation
     - [ ] UART emulation
     - [ ] SDCard with FAT32
