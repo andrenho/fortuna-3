@@ -52,9 +52,14 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     data[0x17] = z80.HL.B.h;
     data[0x18] = z80.I;
 
-    ram_copy(z80.SP.W, 24, &data[0xe8]);
-    ram_copy(ram_page * 256, 256, &data[0x100]);
+    // stack
+    for (uint16_t addr = 0; addr < 24; ++addr)
+        data[addr + 0xe8] = ram_get(z80.SP.W + addr);
 
+    // RAM
+    ram_get_page(ram_page, &data[0x100]);
+
+    // SD Card
     sdcard_copy_page(sd_page, &data[0x200]);
 }
 
