@@ -1,7 +1,7 @@
-- [ ] Initial setup
-  - [ ] Create typescript library for emulator + WASM
-  - [ ] Create React project that connects to library
-  - [ ] Create store
+- [x] Initial setup
+  - [x] Create typescript library for emulator + WASM
+  - [x] Create React project that connects to library
+  - [x] Create store
 - [ ] Tabs component (General + SDCard + Documentation), general layout
 - [ ] Component for computer module (closeable)
 - [ ] RAM
