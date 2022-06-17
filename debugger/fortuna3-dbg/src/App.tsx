@@ -1,6 +1,5 @@
 import React from 'react';
 import { Fortuna3Emulator } from "fortuna3-emu";
-import useStore from "./hooks/useStore";
 
 function App() {
 
