@@ -1,0 +1,47 @@
+- [ ] Initial setup
+  - [ ] Create typescript library for emulator + WASM
+  - [ ] Create React project that connects to library
+  - [ ] Create store
+- [ ] Tabs component (General + SDCard + Documentation), general layout
+- [ ] Component for computer module (closeable)
+- [ ] RAM
+  - [ ] On emulator (WASM) + banks
+    - [ ] Either zero or random on initialization
+  - [ ] On emulator (TS)
+  - [ ] Component
+    - [ ] Banks on debugger
+    - [ ] Stack on debugger
+    - [ ] PC
+- [ ] SDCard
+  - [ ] On emulator (WASM)
+    - [ ] Empty FAT on initialization (pass size + type from debugger)
+  - [ ] On emulator (TS)
+  - [ ] Component
+  - [ ] Show files (?)
+- [ ] Video
+  - [ ] On emulator (WASM)
+  - [ ] Provide component
+- [ ] CPU
+  - [ ] On emulator (WASM)
+  - [ ] On emulator (TS)
+  - [ ] On debugger
+    - [ ] Add/remove breakpoints
+  - [ ] Reset
+  - [ ] Step
+- [ ] Spring application
+  - [ ] Project file format
+  - [ ] Watch for changes
+  - [ ] Auto-compile
+  - [ ] Debugger: watch for changes, receive file
+- [ ] Running
+  - [ ] Run
+  - [ ] Run with breakpoints
+  - [ ] Next
+- [ ] Fortuna-3 specific stuff
+  - [ ] Memory management
+  - [ ] SDCard + FAT32
+  - [ ] Timers
+  - [ ] Wall clock
+  - [ ] Peripheral management
+  - [ ] Parallel communication
+  - [ ] SPI
