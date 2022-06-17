@@ -1,9 +1,10 @@
 import React from 'react';
-import {hello} from "fortuna3-emu";
+import { Fortuna3Emulator } from "fortuna3-emu";
 
 function App() {
 
-  console.log(hello());
+  const emulator = new Fortuna3Emulator();
+  emulator.initialize().then(r => {});
 
   return (
     <div className="App">

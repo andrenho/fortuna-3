@@ -8,9 +8,12 @@
     "/dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && copyfiles --flat src-wasm/fortuna.wasm dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "extraFiles": [
+    "src-wasm/fortuna.wasm"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/andrenho/fortuna-3.git"
@@ -24,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/andrenho/fortuna-3/issues"
   },
-  "homepage": "https://github.com/andrenho/fortuna-3#readme"
+  "homepage": "https://github.com/andrenho/fortuna-3#readme",
+  "devDependencies": {
+    "copyfiles": "^2.4.1"
+  }
 }
