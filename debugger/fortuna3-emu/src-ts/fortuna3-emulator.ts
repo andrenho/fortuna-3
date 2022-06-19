@@ -1,5 +1,5 @@
 type Fortuna3Exports = WebAssembly.Exports & {
-    life: () => void;
+    life: () => number;
 };
 
 export class Fortuna3Emulator {
@@ -15,7 +15,6 @@ export class Fortuna3Emulator {
     }
 
     life() : number {
-        // @ts-ignore
         return this.exports.life();
     }
 
