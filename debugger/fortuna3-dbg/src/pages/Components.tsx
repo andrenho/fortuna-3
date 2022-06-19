@@ -1,3 +1,5 @@
+import Box from "../components/Box";
+
 export default function Components() : JSX.Element {
-    return <div>Components</div>;
+    return <Box title="Test"><div>Hello</div></Box>
 }

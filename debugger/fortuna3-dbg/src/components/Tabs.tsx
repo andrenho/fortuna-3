@@ -5,17 +5,17 @@ const tabs : CSS.Properties = {
     display: "flex",
     flexDirection: "row",
     whiteSpace: "nowrap",
-}
+};
 
 const tabStart : CSS.Properties = {
     borderBottom: "1px black solid",
     width: "24px",
-}
+};
 
 const tabEnd : CSS.Properties = {
     borderBottom: "1px black solid",
     width: "100%",
-}
+};
 
 const tab : CSS.Properties = {
     borderWidth: "1px",
@@ -26,25 +26,25 @@ const tab : CSS.Properties = {
     background: "lightgray",
     fontWeight: "bold",
     boxShadow: "6px 6px 6px lightgray",
-}
+};
 
 const tabSelected : CSS.Properties = {
     ...tab,
     background: "white",
     borderWidth: "1px 1px 0 1px",
-}
+};
 
 const tabMiddle : CSS.Properties = {
     borderBottom: "1px black solid",
     width: "24px",
-}
+};
 
 const whiteBox : CSS.Properties = {
     background: "white",
     position: "relative",
     height: "10px",
     zIndex: "1",
-}
+};
 
 interface TabProps {
     selected: number,

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 // import { Fortuna3Emulator } from "fortuna3-emu";
-import Tabs from "./components/tabs/Tabs";
+import Tabs from "./components/Tabs";
 import Components from "./pages/Components";
 
 export default function App() {
