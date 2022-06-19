@@ -9,10 +9,6 @@ fortuna.wasm: ${SRC}
 		-s INITIAL_MEMORY=1073741824 \
 		-s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']"
 
-install: fortuna.wasm
-	mkdir -p ../debugger/src/main/resources/static/emulator
-	cp fortuna.wasm ../debugger/src/main/resources/static/emulator/
-
 clean:
 	rm -f *.o fortuna.wasm
 

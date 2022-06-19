@@ -12,13 +12,17 @@ export default function Components() : JSX.Element {
         "6": "lightgreen",
     };
 
-    return <FlatData
-        title="RAM"
-        currentPage={page}
-        totalPages={256}
-        rows={16}
-        data={data.slice(page * 16, page * 16 + 256)}
-        highlightOffset={highlight}
-        onPageChange={(n) => setPage(n)}
-    />;
+    return (
+        <FlatData
+            title="RAM"
+            currentPage={page}
+            totalPages={256}
+            rows={16}
+            data={data.slice(page * 16, page * 16 + 256)}
+            highlightOffset={highlight}
+            onPageChange={(n) => setPage(n)}
+        >
+
+        </FlatData>
+    );
 }
