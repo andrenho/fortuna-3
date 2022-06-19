@@ -1,9 +1,8 @@
 import Box from "./Box";
 import CSS from "csstype";
-import {PropsWithChildren} from "react";
+import React, {PropsWithChildren, useEffect, useState} from "react";
 import {hex} from "../util/hex";
 import {range} from "../util/array";
-import Color from "color";
 
 const style : {[key: string] : CSS.Properties} = {
     spaceAfter: {
@@ -42,6 +41,8 @@ const style : {[key: string] : CSS.Properties} = {
     }
 }
 
+export type Highlights = {[key: number]: string};
+
 interface FlatDataProps {
     title: string;
     currentPage: number;
@@ -49,16 +50,18 @@ interface FlatDataProps {
     rows: number;
     data: Uint8Array;
     onPageChange: (page: number) => void;
-    highlightOffset?: {[key: number]: Color}
+    highlightOffset?: Highlights;
 }
 
 export default function FlatData(props: PropsWithChildren<FlatDataProps>) : JSX.Element {
 
+    const [pageText, setPageText] = useState("");
+    useEffect(() => setPageText(hex(props.currentPage, 0, true)), [props.currentPage]);
+
     const asciiChar = (datum: number) : string => (datum < 32 || datum >= 127) ? "." : String.fromCharCode(datum);
     const data = (row: number, col: number) : number => props.data[row * 16 + col];
 
-    const stepPage = (diff: -1 | 1) => {
-        let newPage = props.currentPage + diff;
+    const updatePage = (newPage: number) => {
         if (newPage <= -1)
             newPage = props.totalPages - 1;
         else if (newPage >= props.totalPages)
@@ -72,15 +75,26 @@ export default function FlatData(props: PropsWithChildren<FlatDataProps>) : JSX.
             myStyle.color = "#b0b0b0";
         if (col === 7 || col === 15)
             myStyle = {...myStyle, ...style.spaceAfter};
+        const addr = row * 16 + col;
+        if (props.highlightOffset && props.highlightOffset[addr])
+            myStyle.backgroundColor = props.highlightOffset[addr];
         return myStyle;
+    };
+
+    const onTypePage = () => {
+        const newPage = parseInt(pageText, 16);
+        if (isNaN(newPage))
+            setPageText(hex(props.currentPage, 0, true));
+        else
+            updatePage(newPage);
     };
 
     return (<Box title={props.title}>
         <div style={style.titleRow}>
             <label htmlFor="page">Page:</label>
-            <button title="Previous page" style={style.input} onClick={() => stepPage(-1)}>&lt;&lt;</button>
-            <input id="page" type="text" size={8} value={hex(props.currentPage, 0, true)} style={{ textAlign: "right", ...style.input }} />
-            <button title="Next page" style={style.input} onClick={() => stepPage(1)}>&gt;&gt;</button>
+            <button title="Previous page" style={style.input} onClick={() => updatePage(props.currentPage - 1)}>&lt;&lt;</button>
+            <input type="text" size={8} value={pageText} onChange={e => setPageText(e.target.value)} onBlur={onTypePage} style={{ textAlign: "right", ...style.input }} />
+            <button title="Next page" style={style.input} onClick={() => updatePage(props.currentPage + 1)}>&gt;&gt;</button>
         </div>
 
         <table style={{tableLayout: "fixed", borderCollapse: "collapse"}}>
@@ -96,7 +110,7 @@ export default function FlatData(props: PropsWithChildren<FlatDataProps>) : JSX.
             {
                 range(props.rows).map(row => (
                     <tr key={`row_${row}`}>
-                        <td key={`addr_${row}`} style={style.address}>{ hex((props.currentPage * props.rows / 0x10) + row, 3) }_</td>
+                        <td key={`addr_${row}`} style={style.address}>{ hex((props.currentPage * props.rows) + row, 3) }_</td>
                         {range(16).map(col => (
                             <td key={`${row}_${col}`} style={dataStyle(row, col)}>
                                 { hex(data(row, col)) }

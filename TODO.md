@@ -3,7 +3,7 @@
   - [x] Create React project that connects to library
   - [x] Create store
 - [x] Tabs component (General + SDCard + Documentation), general layout
-- [ ] Component for computer module (closeable)
+- [x] Component for computer module (closeable)
 - [ ] RAM
   - [ ] On emulator (WASM) + banks
     - [ ] Either zero or random on initialization
