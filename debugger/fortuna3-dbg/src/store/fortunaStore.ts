@@ -10,6 +10,7 @@ export default class FortunaStore {
 
     state : EmulatorState = {
         ramPage: new Uint8Array(256),
+        cpu: { pc: 0 },
     };
 
     constructor() {

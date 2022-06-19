@@ -4,7 +4,12 @@ type Fortuna3Exports = WebAssembly.Exports & {
     get_state: (ramPage: number, memoryByteOffset: number) => void;
 };
 
+interface Z80State {
+    pc: number,
+}
+
 export interface EmulatorState {
+    cpu: Z80State,
     ramPage: Uint8Array,
 }
 
@@ -25,6 +30,9 @@ export class Fortuna3Emulator {
         const state = new Uint8Array(this.exports.memory.buffer, 0, 0x400);
         this.exports.get_state(ramPage, state.byteOffset);
         return {
+            cpu: {
+                pc: 0x0,  // TODO
+            },
             ramPage: state.slice(0x100, 0x200),
         };
     }
