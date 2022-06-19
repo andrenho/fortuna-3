@@ -4,18 +4,18 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "emulator.h"
+// #include "emulator.h"
 #include "ram.h"
-#include "sdcard.h"
+// #include "sdcard.h"
 
 #define KB *1024
 #define MB KB*1024
 
-EMSCRIPTEN_KEEPALIVE void initialize(size_t sdcard_sz_in_mb)
+EMSCRIPTEN_KEEPALIVE void initialize(/* size_t sdcard_sz_in_mb */)
 {
-    emulator_init();
+    // emulator_init();
     ram_init(512 KB);
-    sdcard_init(sdcard_sz_in_mb MB);
+    // sdcard_init(sdcard_sz_in_mb MB);
 };
 
 /* State format:
@@ -25,7 +25,9 @@ EMSCRIPTEN_KEEPALIVE void initialize(size_t sdcard_sz_in_mb)
  *  [0x100 - 0x1ff] : RAM
  *  [0x200 - 0x3ff] : SDCard
  */
-EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* data) {
+#include <stdio.h>
+EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, /* size_t sd_page, */ uint8_t* data) {
+    /*
     data[0x0] = z80.AF.B.l;
     data[0x1] = z80.AF.B.h;
     data[0x2] = z80.BC.B.l;
@@ -55,12 +57,15 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     // stack
     for (uint16_t addr = 0; addr < 24; ++addr)
         data[addr + 0xe8] = ram_get(z80.SP.W + addr);
+    */
 
     // RAM
     ram_get_page(ram_page, &data[0x100]);
 
+    /*
     // SD Card
     sdcard_copy_page(sd_page, &data[0x200]);
+    */
 }
 
 // vim: ts=4:sts=4:sw=4:noexpandtab

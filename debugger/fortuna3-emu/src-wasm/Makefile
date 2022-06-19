@@ -1,4 +1,4 @@
-SRC=life.c
+SRC=glue.c ram.c
 
 all: fortuna.wasm
 

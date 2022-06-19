@@ -1,11 +1,9 @@
 import React, {useState} from 'react';
 // import { Fortuna3Emulator } from "fortuna3-emu";
-import Tabs from "./components/Tabs";
-import Components from "./pages/Components";
+import Tabs from "../components/Tabs";
+import Components from "./Components";
 
 export default function App() {
-
-    // Fortuna3Emulator.initialize(require("fortuna3-emu/dist/fortuna.wasm")).then(emulator => console.log(emulator.life()));
 
     const [selectedTab, setSelectedTab] = useState(0);
 

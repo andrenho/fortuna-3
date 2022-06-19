@@ -1,6 +1,12 @@
 type Fortuna3Exports = WebAssembly.Exports & {
-    life: () => number;
+    memory: WebAssembly.Memory;
+    initialize: () => void;
+    get_state: (ramPage: number, memoryByteOffset: number) => void;
 };
+
+export interface EmulatorState {
+    ramPage: Uint8Array,
+}
 
 export class Fortuna3Emulator {
 
@@ -11,11 +17,16 @@ export class Fortuna3Emulator {
     static async initialize(wasmFilePath: string) : Promise<Fortuna3Emulator> {
         const emulator = new Fortuna3Emulator();
         emulator.exports = await Fortuna3Emulator.loadWasmBinary(wasmFilePath) as Fortuna3Exports;
+        emulator.exports.initialize();
         return emulator;
     }
 
-    life() : number {
-        return this.exports.life();
+    getState(ramPage: number) : EmulatorState {
+        const state = new Uint8Array(this.exports.memory.buffer, 0, 0x400);
+        this.exports.get_state(ramPage, state.byteOffset);
+        return {
+            ramPage: state.slice(0x100, 0x200),
+        };
     }
 
     private static async loadWasmBinary(wasmFilePath: string) : Promise<WebAssembly.Exports> {
