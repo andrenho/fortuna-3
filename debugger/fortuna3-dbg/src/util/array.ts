@@ -1,0 +1,1 @@
+export const range = (upTo: number) : number[] => Array.from(Array(upTo).keys());
