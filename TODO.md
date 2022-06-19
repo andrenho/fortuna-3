@@ -6,12 +6,12 @@
 - [x] Component for computer module (closeable)
 - [ ] RAM
   - [ ] On emulator (WASM) + banks
-    - [ ] Either zero or random on initialization
-  - [ ] On emulator (TS)
+    - [x] Either zero or random on initialization
+  - [x] On emulator (TS)
   - [ ] Component
     - [ ] Banks on debugger
     - [ ] Stack on debugger
-    - [ ] PC
+    - [x] PC
 - [ ] SDCard
   - [ ] On emulator (WASM)
     - [ ] Empty FAT on initialization (pass size + type from debugger)
