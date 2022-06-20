@@ -7,6 +7,8 @@ export default class FortunaStore {
     private emulator? : Fortuna3Emulator;
 
     ramPage = 0;
+    sdCardPage = 0;
+    sdCardSizeInMB = 0;
 
     state : EmulatorState = {
         cpu: {
@@ -16,11 +18,14 @@ export default class FortunaStore {
         ramPage: new Uint8Array(256),
         stack: new Uint8Array(24),
         ramBanks: [],
+        sdCardPage: new Uint8Array(512),
     };
 
     constructor() {
         makeAutoObservable(this);
-        Fortuna3Emulator.initialize(require("fortuna3-emu/dist/fortuna.wasm")).then(emulator => {
+        // TODO - where are SDCard image size and type coming from?
+        this.sdCardSizeInMB = 512;
+        Fortuna3Emulator.initialize(require("fortuna3-emu/dist/fortuna.wasm"), this.sdCardSizeInMB, 32).then(emulator => {
             runInAction(() => {
                 this.emulator = emulator;
                 this.updateEmulatorState();
@@ -33,8 +38,13 @@ export default class FortunaStore {
         this.updateEmulatorState();
     }
 
+    setSdCardPage(newPage: number) : void {
+        this.sdCardPage = newPage;
+        this.updateEmulatorState();
+    }
+
     private updateEmulatorState() : void {
-        this.state = this.emulator!.getState(this.ramPage);
+        this.state = this.emulator!.getState(this.ramPage, this.sdCardPage);
     }
 
 }

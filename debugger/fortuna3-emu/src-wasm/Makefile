@@ -1,4 +1,4 @@
-SRC=glue.c ram.c z80/z80.c
+SRC=glue.c ram.c sdcard.c z80/z80.c fatfs/ff.c fatfs/ffsystem.c
 
 all: fortuna.wasm
 
@@ -12,4 +12,4 @@ fortuna.wasm: ${SRC}
 clean:
 	rm -f *.o fortuna.wasm
 
-// vim: ts=8:sts=8:sw=8:expandtab
+# vim: ts=8:sts=8:sw=8:expandtab

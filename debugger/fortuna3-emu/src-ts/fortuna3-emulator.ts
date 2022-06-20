@@ -1,7 +1,7 @@
 type Fortuna3Exports = WebAssembly.Exports & {
     memory: WebAssembly.Memory;
-    initialize: () => void;
-    get_state: (ramPage: number, memoryByteOffset: number) => void;
+    initialize: (sdCardImageSizeMB: number, fatType: 16 | 32) => void;
+    get_state: (ramPage: number, sdCardPage: number, memoryByteOffset: number) => void;
 };
 
 interface Z80State {
@@ -31,6 +31,7 @@ export interface EmulatorState {
     ramBanks: number[],
     ramPage: Uint8Array,
     stack: Uint8Array,
+    sdCardPage: Uint8Array,
 }
 
 export class Fortuna3Emulator {
@@ -39,16 +40,16 @@ export class Fortuna3Emulator {
 
     private constructor() {}
 
-    static async initialize(wasmFilePath: string) : Promise<Fortuna3Emulator> {
+    static async initialize(wasmFilePath: string, sdCardImageSizeMB: number, fatType: 16 | 32) : Promise<Fortuna3Emulator> {
         const emulator = new Fortuna3Emulator();
         emulator.exports = await Fortuna3Emulator.loadWasmBinary(wasmFilePath) as Fortuna3Exports;
-        emulator.exports.initialize();
+        emulator.exports.initialize(sdCardImageSizeMB, fatType);
         return emulator;
     }
 
-    getState(ramPage: number) : EmulatorState {
+    getState(ramPage: number, sdCardPage: number) : EmulatorState {
         const state = new Uint8Array(this.exports.memory.buffer, 0, 0x400);
-        this.exports.get_state(ramPage, state.byteOffset);
+        this.exports.get_state(ramPage, sdCardPage, state.byteOffset);
 
         const pair = (n: number) : number => state[n] + (state[n+1] << 8);
 
@@ -77,6 +78,7 @@ export class Fortuna3Emulator {
             ramBanks: Array.from(state.slice(0xe4, 0xe8)),
             stack: state.slice(0xe8, 0x100),
             ramPage: state.slice(0x100, 0x200),
+            sdCardPage: state.slice(0x200, 0x400),
         };
     }
 
