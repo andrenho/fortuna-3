@@ -28,6 +28,7 @@ interface Z80State {
 
 export interface EmulatorState {
     cpu: Z80State,
+    ramBanks: number[],
     ramPage: Uint8Array,
     stack: Uint8Array,
 }
@@ -73,6 +74,7 @@ export class Fortuna3Emulator {
                 z: !!((state[0] >> 6) & 1),
                 s: !!((state[0] >> 7) & 1),
             },
+            ramBanks: Array.from(state.slice(0xe4, 0xe8)),
             stack: state.slice(0xe8, 0x100),
             ramPage: state.slice(0x100, 0x200),
         };

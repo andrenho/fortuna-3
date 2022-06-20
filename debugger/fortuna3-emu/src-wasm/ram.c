@@ -16,7 +16,7 @@ void ram_init(size_t sz)
         ((uint32_t *) ram_)[i] = rand();
 }
 
-void ram_banks(uint8_t* virtual_banks_)
+void ram_banks(uint8_t virtual_banks_[4])
 {
     memcpy(virtual_banks_, virtual_banks, 4);
 }

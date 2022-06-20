@@ -15,6 +15,7 @@ export default class FortunaStore {
         },
         ramPage: new Uint8Array(256),
         stack: new Uint8Array(24),
+        ramBanks: [],
     };
 
     constructor() {

@@ -4,13 +4,13 @@
   - [x] Create store
 - [x] Tabs component (General + SDCard + Documentation), general layout
 - [x] Component for computer module (closeable)
-- [ ] RAM
-  - [ ] On emulator (WASM) + banks
+- [x] RAM
+  - [x] On emulator (WASM) + banks
     - [x] Either zero or random on initialization
   - [x] On emulator (TS)
-  - [ ] Component
-    - [ ] Banks on debugger
-    - [ ] Stack on debugger
+  - [x] Component
+    - [x] Banks on debugger
+    - [x] Stack on debugger
     - [x] PC
 - [ ] SDCard
   - [ ] On emulator (WASM)

@@ -24,8 +24,9 @@ EMSCRIPTEN_KEEPALIVE void initialize(/* size_t sdcard_sz_in_mb */)
 
 /* State format:
  *
- *  [  0x0 - 0x???] : Z80
- *  [ 0xe8 - 0xff ] : Stack
+ *  [0x000 - 0x???] : Z80
+ *  [0x0e4 - 0x0e7] : RAM banks
+ *  [0x0e8 - 0x0ff] : Stack
  *  [0x100 - 0x1ff] : RAM
  *  [0x200 - 0x3ff] : SDCard
  */
@@ -56,6 +57,9 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, /* size_t sd_page, */ uin
     data[0x16] = z80.HL.B.l;
     data[0x17] = z80.HL.B.h;
     data[0x18] = z80.I;
+
+    // RAM banks
+    ram_banks(&data[0xe4]);
 
     // stack
     for (uint16_t addr = 0; addr < 24; ++addr)
