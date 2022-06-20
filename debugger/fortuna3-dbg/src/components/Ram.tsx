@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
 import FlatData, {Highlights} from "./FlatData";
 import useStore from "../hooks/useStore";
+import Stack from "./Stack";
 
 const RAM = observer(() : JSX.Element => {
 
@@ -23,7 +24,7 @@ const RAM = observer(() : JSX.Element => {
             highlightOffset={highlights}
             onPageChange={(n) => store.setRamPage(n)}
         >
-
+            <Stack />
         </FlatData>
     );
 

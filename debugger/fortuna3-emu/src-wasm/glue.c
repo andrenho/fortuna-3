@@ -8,12 +8,16 @@
 #include "ram.h"
 // #include "sdcard.h"
 
+#include "z80/Z80.h"
+
 #define KB *1024
 #define MB KB*1024
 
+static Z80 z80 = { 0 };
+
 EMSCRIPTEN_KEEPALIVE void initialize(/* size_t sdcard_sz_in_mb */)
 {
-    // emulator_init();
+    ResetZ80(&z80);
     ram_init(512 KB);
     // sdcard_init(sdcard_sz_in_mb MB);
 };
@@ -27,7 +31,6 @@ EMSCRIPTEN_KEEPALIVE void initialize(/* size_t sdcard_sz_in_mb */)
  */
 #include <stdio.h>
 EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, /* size_t sd_page, */ uint8_t* data) {
-    /*
     data[0x0] = z80.AF.B.l;
     data[0x1] = z80.AF.B.h;
     data[0x2] = z80.BC.B.l;
@@ -57,7 +60,6 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, /* size_t sd_page, */ uin
     // stack
     for (uint16_t addr = 0; addr < 24; ++addr)
         data[addr + 0xe8] = ram_get(z80.SP.W + addr);
-    */
 
     // RAM
     ram_get_page(ram_page, &data[0x100]);

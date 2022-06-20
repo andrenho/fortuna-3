@@ -3,8 +3,9 @@ import CSS from "csstype";
 import React, {PropsWithChildren, useEffect, useState} from "react";
 import {hex} from "../util/hex";
 import {range} from "../util/array";
+import {StyleSet} from "../util/types";
 
-const style : {[key: string] : CSS.Properties} = {
+const style : StyleSet = {
     spaceAfter: {
         paddingRight: "12px",
         paddingLeft: "4px"

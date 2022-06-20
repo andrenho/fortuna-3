@@ -1,4 +1,4 @@
-SRC=glue.c ram.c
+SRC=glue.c ram.c z80/z80.c
 
 all: fortuna.wasm
 
