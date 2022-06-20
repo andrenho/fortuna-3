@@ -1,5 +1,6 @@
 #include "sdcard.h"
 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -9,10 +10,28 @@
 static size_t sdcard_sz;
 static uint8_t* sd_data;
 
-void sdcard_init(size_t sz, FatType fat_type)
+#define ERROR(...) { \
+    snprintf(last_error, 0x200, __VA_ARGS__); \
+    return false; \
+}
+
+PARTITION VolToPart[FF_VOLUMES] = {
+        {0, 1},    /* "0:" ==> 1st partition in PD#0 */
+};
+
+bool sdcard_init(size_t sz, FatType fat_type, char last_error[0x200])
 {
     sdcard_sz = sz;
     sd_data = malloc(sz);
+
+    uint8_t buf[FF_MAX_SS];
+    LBA_t plist[] = { 100, 0 };
+    if (f_fdisk(0, plist, buf) != FR_OK)
+        ERROR("fdisk ERROR");
+    if (f_mkfs("", 0, buf, sizeof buf) != FR_OK)
+        ERROR("mkfs ERROR");
+
+    return true;
 }
 
 void sdcard_copy_page(size_t page, uint8_t* data)
@@ -40,7 +59,7 @@ DRESULT disk_read (
 )
 {
     (void) pdrv;
-    // TODO - add callback
+    memcpy(buff, &sd_data[sector * 512], count * 512);
     return RES_OK;
 }
 
@@ -52,6 +71,7 @@ DRESULT disk_write (
 )
 {
     (void) pdrv;
+    memcpy(&sd_data[sector * 512], buff, count * 512);
     return RES_OK;
 }
 

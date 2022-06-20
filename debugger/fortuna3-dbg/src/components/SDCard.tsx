@@ -10,7 +10,7 @@ const SDCard = observer(() : JSX.Element => {
     return <FlatData
         title="SD Card"
         currentPage={store.sdCardPage}
-        totalPages={store.sdCardSizeInMB / 2048}
+        totalPages={store.sdCardSizeInMB * 2048}
         rows={32}
         data={state?.sdCardPage!}
         onPageChange={n => store.setSdCardPage(n)}

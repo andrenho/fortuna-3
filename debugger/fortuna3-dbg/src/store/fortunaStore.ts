@@ -19,6 +19,7 @@ export default class FortunaStore {
         stack: new Uint8Array(24),
         ramBanks: [],
         sdCardPage: new Uint8Array(512),
+        lastError: "",
     };
 
     constructor() {

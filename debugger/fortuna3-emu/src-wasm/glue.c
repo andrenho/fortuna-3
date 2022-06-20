@@ -1,8 +1,10 @@
 #include <emscripten/emscripten.h>
 
+#include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "ram.h"
 #include "sdcard.h"
@@ -14,18 +16,27 @@
 
 static Z80 z80 = { 0 };
 
-EMSCRIPTEN_KEEPALIVE void initialize(size_t sdcard_sz_in_mb, size_t fat_type)
+static char last_error[0x200] = { 0 };
+
+#define ERROR(...) { \
+    snprintf(last_error, sizeof last_error, __VA_ARGS__); \
+    return false; \
+}
+
+EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb, size_t fat_type)
 {
     ResetZ80(&z80);
     ram_init(512 KB);
 
-    FatType fat_type_enum;
+    FatType fat_type_enum = FAT32;  // TODO
     if (fat_type == 16)
         fat_type = FAT16;
     else if (fat_type == 32)
         fat_type = FAT32;
+    else
+        ERROR("Invalid FAT type");
 
-    sdcard_init(sdcard_sz_in_mb MB, fat_type_enum);
+    return sdcard_init(sdcard_sz_in_mb MB, fat_type_enum, last_error);
 };
 
 /* State format:
@@ -35,6 +46,7 @@ EMSCRIPTEN_KEEPALIVE void initialize(size_t sdcard_sz_in_mb, size_t fat_type)
  *  [0x0e8 - 0x0ff] : Stack
  *  [0x100 - 0x1ff] : RAM
  *  [0x200 - 0x3ff] : SDCard
+ *  [0x400 - 0x600] : Last error
  */
 #include <stdio.h>
 EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* data) {
@@ -76,6 +88,9 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
 
     // SD Card
     sdcard_copy_page(sd_page, &data[0x200]);
+
+    // last error
+    memcpy(&data[0x400], last_error, sizeof last_error);
 }
 
 // vim: ts=4:sts=4:sw=4:noexpandtab
