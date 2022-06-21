@@ -19,6 +19,30 @@ PARTITION VolToPart[FF_VOLUMES] = {
         {0, 1},    /* "0:" ==> 1st partition in PD#0 */
 };
 
+static bool check_for_errors(const char* call, FRESULT result, char last_error[0x200])
+{
+    switch (result) {
+        case FR_OK:
+            return true;
+        case FR_INT_ERR:
+            ERROR("%s: Assertion error", call)
+        case FR_NOT_READY:
+            ERROR("%s: Disk not ready", call)
+        case FR_WRITE_PROTECTED:
+            ERROR("%s: Disk is write protected", call)
+        case FR_INVALID_PARAMETER:
+            ERROR("%s: Invalid parameter", call)
+        case FR_NOT_ENOUGH_CORE:
+            ERROR("%s: Not enough core", call)
+        case FR_INVALID_DRIVE:
+            ERROR("%s: Invalid drive", call)
+        case FR_MKFS_ABORTED:
+            ERROR("%s: mkfs aborted", call)
+        default:
+            ERROR("%s: unexpected error (%d)", call, result)
+    }
+}
+
 bool sdcard_init(size_t sz, FatType fat_type, char last_error[0x200])
 {
     sdcard_sz = sz;
@@ -26,10 +50,10 @@ bool sdcard_init(size_t sz, FatType fat_type, char last_error[0x200])
 
     uint8_t buf[FF_MAX_SS];
     LBA_t plist[] = { 100, 0 };
-    if (f_fdisk(0, plist, buf) != FR_OK)
-        ERROR("fdisk ERROR");
-    if (f_mkfs("", 0, buf, sizeof buf) != FR_OK)
-        ERROR("mkfs ERROR");
+    if (!check_for_errors("fdisk", f_fdisk(0, plist, buf), last_error))
+        return false;
+    if (!check_for_errors("mkfs", f_mkfs("", 0, buf, sizeof buf), last_error))
+        return false;
 
     return true;
 }
