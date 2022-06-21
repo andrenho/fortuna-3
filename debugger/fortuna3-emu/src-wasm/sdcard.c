@@ -48,11 +48,11 @@ bool sdcard_init(size_t sz, FatType fat_type, char last_error[0x200])
     sdcard_sz = sz;
     sd_data = malloc(sz);
 
-    uint8_t buf[FF_MAX_SS];
+    uint8_t buf[64 * 1024];
     LBA_t plist[] = { 100, 0 };
     if (!check_for_errors("fdisk", f_fdisk(0, plist, buf), last_error))
         return false;
-    if (!check_for_errors("mkfs", f_mkfs("", 0, buf, sizeof buf), last_error))
+    if (!check_for_errors("mkfs", f_mkfs("0:", 0, buf, sizeof buf), last_error))
         return false;
 
     return true;
