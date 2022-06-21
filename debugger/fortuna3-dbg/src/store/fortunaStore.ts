@@ -45,7 +45,10 @@ export default class FortunaStore {
     }
 
     private updateEmulatorState() : void {
-        this.state = this.emulator!.getState(this.ramPage, this.sdCardPage);
+        const newState = this.emulator!.getState(this.ramPage, this.sdCardPage);
+        this.state = newState;
+        console.debug("New state received from emulator:");
+        console.debug(newState);
     }
 
 }

@@ -14,7 +14,7 @@
     - [x] PC
 - [ ] SDCard
   - [ ] On emulator (WASM)
-    - [ ] Empty SDCard
+    - [x] Empty SDCard
     - [ ] Empty FAT on initialization (pass size + type from debugger)
     - [ ] Treat errors
   - [ ] On emulator (TS)

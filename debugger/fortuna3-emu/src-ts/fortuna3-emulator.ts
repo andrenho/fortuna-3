@@ -49,7 +49,7 @@ export class Fortuna3Emulator {
     }
 
     getState(ramPage: number, sdCardPage: number) : EmulatorState {
-        const state = new Uint8Array(this.exports.memory.buffer, 0, 0x400);
+        const state = new Uint8Array(this.exports.memory.buffer, 0, 0x600);
         this.exports.get_state(ramPage, sdCardPage, state.byteOffset);
 
         const pair = (n: number) : number => state[n] + (state[n+1] << 8);

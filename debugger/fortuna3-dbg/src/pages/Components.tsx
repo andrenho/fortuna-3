@@ -1,12 +1,23 @@
 import SDCard from "../components/SDCard";
 import useStore from "../hooks/useStore";
+import {StyleSet} from "../util/types";
+import {observer} from "mobx-react-lite";
 
-export default function Components() : JSX.Element {
+const style : StyleSet = {
+    error: {
+        color: "red",
+        fontSize: "x-large",
+    }
+};
+
+const Components = observer(() : JSX.Element => {
 
     const { state } = useStore();
 
     return (<>
-        { state.lastError ?? <h2 style={{color:"red"}}>{ state.lastError }</h2> }
+        { <div style={style.error}>{ state.lastError }</div> }
         <SDCard />
     </>);
-}
+});
+
+export default Components;
