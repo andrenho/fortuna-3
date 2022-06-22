@@ -52,6 +52,7 @@ interface FlatDataProps {
     data: Uint8Array;
     onPageChange: (page: number) => void;
     highlightOffset?: Highlights;
+    topRightElement?: JSX.Element;
 }
 
 export default function FlatData(props: PropsWithChildren<FlatDataProps>) : JSX.Element {
@@ -96,6 +97,7 @@ export default function FlatData(props: PropsWithChildren<FlatDataProps>) : JSX.
             <button title="Previous page" style={style.input} onClick={() => updatePage(props.currentPage - 1)}>&lt;&lt;</button>
             <input type="text" size={8} value={pageText} onChange={e => setPageText(e.target.value)} onBlur={onTypePage} style={{ textAlign: "right", ...style.input }} />
             <button title="Next page" style={style.input} onClick={() => updatePage(props.currentPage + 1)}>&gt;&gt;</button>
+            {props.topRightElement}
         </div>
 
         <table style={{tableLayout: "fixed", borderCollapse: "collapse"}}>
