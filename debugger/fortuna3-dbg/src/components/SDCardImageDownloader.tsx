@@ -3,13 +3,15 @@ import {StyleSet} from "../util/types";
 import useStore from "../hooks/useStore";
 
 const style : StyleSet = {
-    link: {
+    container: {
         paddingRight: "8px",
-        display: "inline-block",
         width: "100%",
         textAlign: "right",
+    },
+    link: {
         color: "blue",
         textDecoration: "none",
+        cursor: "pointer",
     }
 }
 
@@ -22,7 +24,7 @@ const SDCardImageDownloader = observer(() : JSX.Element => {
         store.downloadSdCardImage();
     };
 
-    return <a style={style.link} onClick={linkClicked}>&#x1f4be; Download disk image</a>;
+    return <div style={style.container}><a style={style.link} onClick={linkClicked}>&#x1f4be; Download disk image</a></div>;
 });
 
 export default SDCardImageDownloader;

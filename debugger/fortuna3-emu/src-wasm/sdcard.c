@@ -135,11 +135,18 @@ DWORD get_fattime (void)
 
 size_t sdcard_compressed_image_bound()
 {
+    // return 256;
     return compressBound(sdcard_sz);
 }
 
 bool sdcard_copy_compressed_image(uint8_t* output, unsigned long* output_sz, char last_error[0x200])
 {
+    /*
+    for (int i = 0; i < 256; ++i)
+        output[i] = i;
+    *output_sz = 256;
+     */
+
     int status = compress(output, output_sz, (const unsigned char *) sd_data, sdcard_sz);
     if (status != Z_OK)
         ERROR("Error compressing disk image.");
