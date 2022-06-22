@@ -25,8 +25,8 @@ export default class FortunaStore {
     constructor() {
         makeAutoObservable(this);
         // TODO - where are SDCard image size and type coming from?
-        this.sdCardSizeInMB = 512;
-        Fortuna3Emulator.initialize(require("fortuna3-emu/dist/fortuna.wasm"), this.sdCardSizeInMB, 32).then(emulator => {
+        this.sdCardSizeInMB = 16;
+        Fortuna3Emulator.initialize(require("fortuna3-emu/dist/fortuna.wasm"), this.sdCardSizeInMB).then(emulator => {
             runInAction(() => {
                 this.emulator = emulator;
                 this.updateEmulatorState();

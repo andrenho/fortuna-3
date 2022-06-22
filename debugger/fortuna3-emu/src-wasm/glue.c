@@ -23,20 +23,12 @@ static char last_error[0x200] = { 0 };
     return false; \
 }
 
-EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb, size_t fat_type)
+EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
 {
     ResetZ80(&z80);
     ram_init(512 KB);
 
-    FatType fat_type_enum = FAT32;  // TODO
-    if (fat_type == 16)
-        fat_type = FAT16;
-    else if (fat_type == 32)
-        fat_type = FAT32;
-    else
-        ERROR("Invalid FAT type");
-
-    return sdcard_init(sdcard_sz_in_mb MB, fat_type_enum, last_error);
+    return sdcard_init(sdcard_sz_in_mb MB, last_error);
 };
 
 /* State format:

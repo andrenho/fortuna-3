@@ -15,11 +15,12 @@
 - [ ] SDCard
   - [ ] On emulator (WASM)
     - [x] Empty SDCard
-    - [ ] Empty FAT on initialization (pass size + type from debugger)
-    - [ ] Treat errors
-  - [ ] On emulator (TS)
-  - [ ] Component
+    - [x] Empty FAT on initialization (pass size + type from debugger)
+    - [x] Treat errors
+  - [x] On emulator (TS)
+  - [x] Component
   - [ ] Show files (?)
+  - [ ] Download image
 - [ ] Video
   - [ ] On emulator (WASM)
   - [ ] Provide component

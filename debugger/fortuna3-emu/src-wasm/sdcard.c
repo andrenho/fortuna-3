@@ -43,16 +43,24 @@ static bool check_for_errors(const char* call, FRESULT result, char last_error[0
     }
 }
 
-bool sdcard_init(size_t sz, FatType fat_type, char last_error[0x200])
+bool sdcard_init(size_t sz, char last_error[0x200])
 {
     sdcard_sz = sz;
     sd_data = malloc(sz);
 
-    uint8_t buf[64 * 1024];
+    uint8_t buf[1024];
     LBA_t plist[] = { 100, 0 };
     if (!check_for_errors("fdisk", f_fdisk(0, plist, buf), last_error))
         return false;
-    if (!check_for_errors("mkfs", f_mkfs("0:", 0, buf, sizeof buf), last_error))
+
+    MKFS_PARM parm = {
+            .fmt = FM_ANY,
+            .au_size = 0,
+            .align = 0,
+            .n_fat = 0,
+            .n_root = 0,
+    };
+    if (!check_for_errors("mkfs", f_mkfs("0:", &parm, buf, sizeof buf), last_error))
         return false;
 
     return true;
@@ -110,7 +118,7 @@ DRESULT disk_ioctl (
         case CTRL_SYNC:
             break;
         case GET_SECTOR_COUNT:
-            ((WORD*) buff)[0] = sdcard_sz / 512;
+            ((LBA_t *) buff)[0] = sdcard_sz / FF_MAX_SS;
             break;
         case GET_BLOCK_SIZE:
             ((DWORD*) buff)[0] = 1;

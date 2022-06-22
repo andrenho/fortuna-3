@@ -1,6 +1,6 @@
 type Fortuna3Exports = WebAssembly.Exports & {
     memory: WebAssembly.Memory;
-    initialize: (sdCardImageSizeMB: number, fatType: 16 | 32) => boolean;
+    initialize: (sdCardImageSizeMB: number) => boolean;
     get_state: (ramPage: number, sdCardPage: number, memoryByteOffset: number) => void;
 };
 
@@ -41,10 +41,10 @@ export class Fortuna3Emulator {
 
     private constructor() {}
 
-    static async initialize(wasmFilePath: string, sdCardImageSizeMB: number, fatType: 16 | 32) : Promise<Fortuna3Emulator> {
+    static async initialize(wasmFilePath: string, sdCardImageSizeMB: number) : Promise<Fortuna3Emulator> {
         const emulator = new Fortuna3Emulator();
         emulator.exports = await Fortuna3Emulator.loadWasmBinary(wasmFilePath) as Fortuna3Exports;
-        console.log(emulator.exports.initialize(sdCardImageSizeMB, fatType));
+        emulator.exports.initialize(sdCardImageSizeMB);
         return emulator;
     }
 
@@ -53,6 +53,9 @@ export class Fortuna3Emulator {
         this.exports.get_state(ramPage, sdCardPage, state.byteOffset);
 
         const pair = (n: number) : number => state[n] + (state[n+1] << 8);
+
+        let error = new TextDecoder().decode(state.slice(0x400, 0x600));
+        error = error.replace(/\0.*$/g, '');  // remove nulls
 
         return {
             cpu: {
@@ -80,7 +83,7 @@ export class Fortuna3Emulator {
             stack: state.slice(0xe8, 0x100),
             ramPage: state.slice(0x100, 0x200),
             sdCardPage: state.slice(0x200, 0x400),
-            lastError: new TextDecoder().decode(state.slice(0x400, 0x600)),
+            lastError: error,
         };
     }
 
