@@ -40,6 +40,7 @@ export interface EmulatorState {
 export class Fortuna3Emulator {
 
     private exports : Fortuna3Exports;
+    private currentPages = 1;
 
     private constructor() {}
 
@@ -90,8 +91,21 @@ export class Fortuna3Emulator {
     }
 
     downloadSdCardImage() : Uint8Array {
-        console.log(this.exports.get_sdcard_compression_bytes());
-        return new Uint8Array(256);
+        const expectedSize = this.exports.get_sdcard_compression_bytes();
+        const expectedPages = Math.round(expectedSize / (64 * 1024));
+
+        if (expectedPages > this.currentPages) {
+            this.exports.memory.grow(expectedPages - this.currentPages);
+            this.currentPages = expectedPages;
+        }
+
+        const data = new Uint8Array(this.exports.memory.buffer, 0, expectedSize);
+        const size = this.exports.get_sdcard_compressed_image(data.byteOffset);
+
+        const jsData = data.slice(0, size);
+        console.log(jsData);
+
+        return jsData;
     }
 
     private static async loadWasmBinary(wasmFilePath: string) : Promise<WebAssembly.Exports> {

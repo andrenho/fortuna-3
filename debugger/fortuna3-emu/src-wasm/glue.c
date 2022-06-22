@@ -97,4 +97,6 @@ EMSCRIPTEN_KEEPALIVE unsigned long get_sdcard_compressed_image(uint8_t* data)
     return size;
 }
 
+void emscripten_notify_memory_growth(size_t blubb) {}
+
 // vim: ts=4:sts=4:sw=4:noexpandtab

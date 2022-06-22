@@ -6,6 +6,7 @@ fortuna.wasm: ${SRC}
 	emcc -Wall -Wextra -o fortuna.wasm $^ --no-entry -O3 -DNDEBUG=1 \
 		-s WASM=1 \
 		-s INITIAL_MEMORY=1073741824 \
+		-s -s ALLOW_MEMORY_GROWTH=1 \
 		-s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']"
 
 clean:
