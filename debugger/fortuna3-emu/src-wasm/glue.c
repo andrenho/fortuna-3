@@ -29,7 +29,7 @@ EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
     ram_init(512 KB);
 
     return sdcard_init(sdcard_sz_in_mb MB, last_error);
-};
+}
 
 /* State format:
  *
@@ -40,7 +40,6 @@ EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
  *  [0x200 - 0x3ff] : SDCard
  *  [0x400 - 0x600] : Last error
  */
-#include <stdio.h>
 EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* data) {
     data[0x0] = z80.AF.B.l;
     data[0x1] = z80.AF.B.h;
@@ -83,6 +82,19 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
 
     // last error
     memcpy(&data[0x400], last_error, sizeof last_error);
+}
+
+EMSCRIPTEN_KEEPALIVE unsigned long get_sdcard_compression_bytes()
+{
+    return sdcard_compressed_image_bound();
+}
+
+EMSCRIPTEN_KEEPALIVE unsigned long get_sdcard_compressed_image(uint8_t* data)
+{
+    unsigned long size;
+    if (!sdcard_copy_compressed_image(data, &size, last_error))
+        return 0;
+    return size;
 }
 
 // vim: ts=4:sts=4:sw=4:noexpandtab

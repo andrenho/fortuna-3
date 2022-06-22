@@ -2,6 +2,8 @@ type Fortuna3Exports = WebAssembly.Exports & {
     memory: WebAssembly.Memory;
     initialize: (sdCardImageSizeMB: number) => boolean;
     get_state: (ramPage: number, sdCardPage: number, memoryByteOffset: number) => void;
+    get_sdcard_compression_bytes: () => number;
+    get_sdcard_compressed_image: (memoryByteOffset: number) => number;
 };
 
 interface Z80State {
@@ -85,6 +87,11 @@ export class Fortuna3Emulator {
             sdCardPage: state.slice(0x200, 0x400),
             lastError: error,
         };
+    }
+
+    downloadSdCardImage() : Uint8Array {
+        console.log(this.exports.get_sdcard_compression_bytes());
+        return new Uint8Array(256);
     }
 
     private static async loadWasmBinary(wasmFilePath: string) : Promise<WebAssembly.Exports> {

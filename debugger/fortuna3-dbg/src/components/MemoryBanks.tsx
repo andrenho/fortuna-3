@@ -52,6 +52,6 @@ export default function MemoryBanks(props: PropsWithChildren) : JSX.Element {
     const { state } = useStore();
 
     return (<div style={style.main}>
-        { range(16).map(v => <MemoryBank index={v} assignedTo={state.ramBanks.find(w => w === v)} />) }
+        { range(16).map(v => <MemoryBank key={`memoryBank_${v}`} index={v} assignedTo={state.ramBanks.find(w => w === v)} />) }
     </div>);
 }

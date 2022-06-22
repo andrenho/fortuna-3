@@ -6,6 +6,7 @@
 
 #include "fatfs/ff.h"
 #include "fatfs/diskio.h"
+#include "miniz/miniz.h"
 
 static size_t sdcard_sz;
 static uint8_t* sd_data;
@@ -130,6 +131,20 @@ DRESULT disk_ioctl (
 DWORD get_fattime (void)
 {
     return 0;
+}
+
+size_t sdcard_compressed_image_bound()
+{
+    return compressBound(sdcard_sz);
+}
+
+bool sdcard_copy_compressed_image(uint8_t* output, unsigned long* output_sz, char last_error[0x200])
+{
+    int status = compress(output, output_sz, (const unsigned char *) sd_data, sdcard_sz);
+    if (status != Z_OK)
+        ERROR("Error compressing disk image.");
+
+    return true;
 }
 
 // vim: ts=4:sts=4:sw=4:noexpandtab
