@@ -22,11 +22,13 @@
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
+    "copyfiles": "^2.4.1",
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "install-emulator-js": "copyfiles --flat node_modules/fortuna3-emu/dist/fortuna.js public && copyfiles --flat node_modules/fortuna3-emu/dist/fortuna.wasm public",
+    "start": "npm run install-emulator-js && react-scripts start",
+    "build": "npm run install-emulator-js && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -24,6 +24,8 @@ static unsigned long sdimg_sz = 0;
 
 char last_error[0x200] = { 0 };
 
+EMSCRIPTEN_KEEPALIVE int life() { return 42; }  // TODO - remove
+
 EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
 {
     ResetZ80(&z80);
