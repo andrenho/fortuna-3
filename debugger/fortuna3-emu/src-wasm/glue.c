@@ -102,12 +102,25 @@ EMSCRIPTEN_KEEPALIVE int compress_sdcard_image()
 
 EMSCRIPTEN_KEEPALIVE int get_compressed_sdcard_image_page(size_t page, size_t page_size, uint8_t* data)
 {
+	for (size_t i = 0; i < sdimg_sz; ++i)
+		data[i] = sdimg_z[i];
+	return sdimg_sz;
+
+	/*
+	for (int i = 0; i < 512; ++i)
+		data[i] = i & 0xff;
+	return 512;
+
 	int r = page_size;
 	if ((page + 1) * page_size > sdimg_sz)
 		r = sdimg_sz - (page * page_size);
-	if (r > 0)
-		memcpy(data, sdimg_z, r);
+	if (r > 0) {
+		for (int i = 0; i < r; ++i)
+			data[i] = i & 0xff;
+		// memcpy(data, &sdimg_z[page * page_size], r);
+	}
 	return r < 0 ? 0 : r;
+	*/
 }
 
 EMSCRIPTEN_KEEPALIVE void delete_compressed_sdcard_image()

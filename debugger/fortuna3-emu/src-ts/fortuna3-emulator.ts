@@ -107,17 +107,17 @@ export class Fortuna3Emulator {
 
         // get compressed image from C
         const pageSize = 32 * 1024;
-        const data = new Uint8Array(this.exports.memory.buffer, 0, pageSize);
         let page = 0;
         let sz : number;
         let currentSz = 0;
         do {
-            console.log("X");
+            const data = new Uint8Array(this.exports.memory.buffer, 0, pageSize);
             sz = this.exports.get_compressed_sdcard_image_page(page++, pageSize, data.byteOffset);
-            console.log(sz);
+            console.log(sz, data);
             compressedImage.set(data.slice(0, sz), currentSz);
             currentSz += sz;
         } while (sz === pageSize);
+        console.log(compressedImage.length);
 
         // delete compressed image
         this.exports.delete_compressed_sdcard_image();
