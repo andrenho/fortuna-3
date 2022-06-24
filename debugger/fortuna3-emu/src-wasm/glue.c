@@ -6,29 +6,30 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "globals.h"
+
 #include "ram.h"
 #include "sdcard.h"
 
 #include "z80/Z80.h"
+#include "miniz/miniz.h"
 
 #define KB *1024
 #define MB KB*1024
 
 static Z80 z80 = { 0 };
 
-static char last_error[0x200] = { 0 };
+static uint8_t* sdimg_z = NULL;
+static unsigned long sdimg_sz = 0;
 
-#define ERROR(...) { \
-    snprintf(last_error, sizeof last_error, __VA_ARGS__); \
-    return false; \
-}
+char last_error[0x200] = { 0 };
 
 EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
 {
     ResetZ80(&z80);
     ram_init(512 KB);
 
-    return sdcard_init(sdcard_sz_in_mb MB, last_error);
+    return sdcard_init(sdcard_sz_in_mb MB);
 }
 
 /* State format:
@@ -40,7 +41,8 @@ EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
  *  [0x200 - 0x3ff] : SDCard
  *  [0x400 - 0x600] : Last error
  */
-EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* data) {
+EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* data)
+{
     data[0x0] = z80.AF.B.l;
     data[0x1] = z80.AF.B.h;
     data[0x2] = z80.BC.B.l;
@@ -84,19 +86,37 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     memcpy(&data[0x400], last_error, sizeof last_error);
 }
 
-EMSCRIPTEN_KEEPALIVE unsigned long get_sdcard_compression_bytes()
+EMSCRIPTEN_KEEPALIVE int compress_sdcard_image()
 {
-    return sdcard_compressed_image_bound();
+	sdimg_sz = compressBound(sdcard_sz);
+	sdimg_z = calloc(1, sdimg_sz);
+	if (!sdimg_z)
+		ERROR("Could not allocate enough memory to create image.");
+
+	int r = compress(sdimg_z, &sdimg_sz, (const unsigned char *) sd_data, sdcard_sz);
+    if (r != Z_OK)
+		ERROR("Error %d while compressing image.", r);
+
+	return sdimg_sz;
 }
 
-EMSCRIPTEN_KEEPALIVE unsigned long get_sdcard_compressed_image(uint8_t* data)
+EMSCRIPTEN_KEEPALIVE int get_compressed_sdcard_image_page(size_t page, size_t page_size, uint8_t* data)
 {
-    unsigned long size;
-    if (!sdcard_copy_compressed_image(data, &size, last_error))
-        return 0;
-    return size;
+	int r = page_size;
+	if ((page + 1) * page_size > sdimg_sz)
+		r = sdimg_sz - (page * page_size);
+	if (r > 0)
+		memcpy(data, sdimg_z, r);
+	return r < 0 ? 0 : r;
 }
 
-void emscripten_notify_memory_growth(size_t blubb) {}
+EMSCRIPTEN_KEEPALIVE void delete_compressed_sdcard_image()
+{
+	free(sdimg_z);
+	sdimg_z = NULL;
+	sdimg_sz = 0;
+}
+
+void emscripten_notify_memory_growth(size_t i) { (void) i; }
 
 // vim: ts=4:sts=4:sw=4:noexpandtab

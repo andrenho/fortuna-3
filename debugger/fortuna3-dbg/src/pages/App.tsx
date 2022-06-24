@@ -4,6 +4,7 @@ import Components from "./Components";
 import useStore from "../hooks/useStore";
 import {StyleSet} from "../util/types";
 import SDCard from "../components/SDCard";
+import {observer} from "mobx-react-lite";
 
 const style : StyleSet = {
     error: {
@@ -12,7 +13,7 @@ const style : StyleSet = {
     }
 };
 
-export default function App() {
+const App = observer(() => {
 
     const { state } = useStore();
 
@@ -20,10 +21,12 @@ export default function App() {
 
     return (<>
         <Tabs tabs={["Components", "SD Card", "Documentation"]} selected={selectedTab} onChange={i => setSelectedTab(i)} />
-        { state.lastError ?? <div style={style.error}>{ state.lastError }</div> }
+        <div style={style.error}>{ state.lastError }</div>
         <div style={{padding:"16px"}}>
             {selectedTab === 0 && <Components />}
             {selectedTab === 1 && <SDCard />}
         </div>
     </>);
-}
+});
+
+export default App;

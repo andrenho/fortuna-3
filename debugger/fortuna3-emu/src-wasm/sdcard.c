@@ -6,21 +6,17 @@
 
 #include "fatfs/ff.h"
 #include "fatfs/diskio.h"
-#include "miniz/miniz.h"
 
-static size_t sdcard_sz;
-static uint8_t* sd_data;
+#include "globals.h"
 
-#define ERROR(...) { \
-    snprintf(last_error, 0x200, __VA_ARGS__); \
-    return false; \
-}
+size_t sdcard_sz;
+uint8_t* sd_data;
 
 PARTITION VolToPart[FF_VOLUMES] = {
         {0, 1},    /* "0:" ==> 1st partition in PD#0 */
 };
 
-static bool check_for_errors(const char* call, FRESULT result, char last_error[0x200])
+static bool check_for_errors(const char* call, FRESULT result)
 {
     switch (result) {
         case FR_OK:
@@ -44,14 +40,14 @@ static bool check_for_errors(const char* call, FRESULT result, char last_error[0
     }
 }
 
-bool sdcard_init(size_t sz, char last_error[0x200])
+bool sdcard_init(size_t sz)
 {
     sdcard_sz = sz;
     sd_data = malloc(sz);
 
     uint8_t buf[1024];
     LBA_t plist[] = { 100, 0 };
-    if (!check_for_errors("fdisk", f_fdisk(0, plist, buf), last_error))
+    if (!check_for_errors("fdisk", f_fdisk(0, plist, buf)))
         return false;
 
     MKFS_PARM parm = {
@@ -61,7 +57,7 @@ bool sdcard_init(size_t sz, char last_error[0x200])
             .n_fat = 0,
             .n_root = 0,
     };
-    if (!check_for_errors("mkfs", f_mkfs("0:", &parm, buf, sizeof buf), last_error))
+    if (!check_for_errors("mkfs", f_mkfs("0:", &parm, buf, sizeof buf)))
         return false;
 
     return true;
@@ -131,27 +127,6 @@ DRESULT disk_ioctl (
 DWORD get_fattime (void)
 {
     return 0;
-}
-
-size_t sdcard_compressed_image_bound()
-{
-    return 256;
-    // return compressBound(sdcard_sz);
-}
-
-bool sdcard_copy_compressed_image(uint8_t* output, unsigned long* output_sz, char last_error[0x200])
-{
-    for (int i = 0; i < 256; ++i)
-        output[i] = i;
-    *output_sz = 256;
-
-    /*
-    int status = compress(output, output_sz, (const unsigned char *) sd_data, sdcard_sz);
-    if (status != Z_OK)
-        ERROR("Error compressing disk image.");
-        */
-
-    return true;
 }
 
 // vim: ts=4:sts=4:sw=4:noexpandtab

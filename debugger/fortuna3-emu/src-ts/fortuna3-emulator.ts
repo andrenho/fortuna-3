@@ -2,8 +2,9 @@ type Fortuna3Exports = WebAssembly.Exports & {
     memory: WebAssembly.Memory;
     initialize: (sdCardImageSizeMB: number) => boolean;
     get_state: (ramPage: number, sdCardPage: number, memoryByteOffset: number) => void;
-    get_sdcard_compression_bytes: () => number;
-    get_sdcard_compressed_image: (memoryByteOffset: number) => number;
+    compress_sdcard_image: () => number;
+    get_compressed_sdcard_image_page: (page: number, pageSize: number, memoryByteOffset: number) => number;
+    delete_compressed_sdcard_image: () => void;
 };
 
 interface Z80State {
@@ -34,7 +35,7 @@ export interface EmulatorState {
     ramPage: Uint8Array,
     stack: Uint8Array,
     sdCardPage: Uint8Array,
-    lastError: string,
+    lastError: string | undefined,
 }
 
 export class Fortuna3Emulator {
@@ -57,8 +58,10 @@ export class Fortuna3Emulator {
 
         const pair = (n: number) : number => state[n] + (state[n+1] << 8);
 
-        let error = new TextDecoder().decode(state.slice(0x400, 0x600));
+        let error : string | undefined = new TextDecoder().decode(state.slice(0x400, 0x600));
         error = error.replace(/\0.*$/g, '');  // remove nulls
+        if (error === "")
+            error = undefined;
 
         return {
             cpu: {
@@ -91,21 +94,35 @@ export class Fortuna3Emulator {
     }
 
     downloadSdCardImage() : Uint8Array {
-        const expectedSize = this.exports.get_sdcard_compression_bytes();
-        const expectedPages = Math.round(expectedSize / (64 * 1024));
+        const compressedImageSize = this.exports.compress_sdcard_image();
+        console.log(compressedImageSize);
 
-        if (expectedPages > this.currentPages) {
-            this.exports.memory.grow(expectedPages - this.currentPages);
-            this.currentPages = expectedPages;
+        // compress image
+        if (compressedImageSize === 0) {
+            this.exports.delete_compressed_sdcard_image();
+            throw new Error("There was an error trying to compress image.");
         }
 
-        const data = new Uint8Array(this.exports.memory.buffer, 0, expectedSize);
-        const size = this.exports.get_sdcard_compressed_image(data.byteOffset);
+        const compressedImage = new Uint8Array(compressedImageSize);
 
-        const jsData = data.slice(0, size);
-        console.log(jsData);
+        // get compressed image from C
+        const pageSize = 32 * 1024;
+        const data = new Uint8Array(this.exports.memory.buffer, 0, pageSize);
+        let page = 0;
+        let sz : number;
+        let currentSz = 0;
+        do {
+            console.log("X");
+            sz = this.exports.get_compressed_sdcard_image_page(page++, pageSize, data.byteOffset);
+            console.log(sz);
+            compressedImage.set(data.slice(0, sz), currentSz);
+            currentSz += sz;
+        } while (sz === pageSize);
 
-        return jsData;
+        // delete compressed image
+        this.exports.delete_compressed_sdcard_image();
+
+        return compressedImage;
     }
 
     private static async loadWasmBinary(wasmFilePath: string) : Promise<WebAssembly.Exports> {

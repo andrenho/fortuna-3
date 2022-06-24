@@ -44,8 +44,10 @@ export default class FortunaStore {
         this.updateEmulatorState();
     }
 
-    downloadSdCardImage() : void {
-        this.emulator!.downloadSdCardImage();
+    downloadSdCardImage() : Uint8Array {
+        const bytes = this.emulator!.downloadSdCardImage();
+        this.updateEmulatorState();  // update errors
+        return bytes;
     }
 
     private updateEmulatorState() : void {
