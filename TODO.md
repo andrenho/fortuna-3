@@ -22,10 +22,10 @@
   - [x] On emulator (TS)
   - [x] Component
   - [ ] Show files (?)
-  - [ ] Download image
+  - [x] Download image
 
-- [ ] Redo loading module
-- [ ] Build script
+- [x] Redo loading module
+- [x] Build script
 
 - [ ] Video
   - [ ] On emulator (WASM)
