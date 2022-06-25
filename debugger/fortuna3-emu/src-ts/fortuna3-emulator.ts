@@ -7,6 +7,12 @@ type Fortuna3Exports = WebAssembly.Exports & {
     delete_compressed_sdcard_image: () => void;
 };
 
+interface FortunaModule extends EmscriptenModule {
+    _life: () => number;
+}
+
+declare var Module : FortunaModule;
+
 interface Z80State {
     af: number,
     bc: number,
@@ -45,11 +51,29 @@ export class Fortuna3Emulator {
 
     private constructor() {}
 
+    public life() : number { return Module._life(); }
+
     static async initialize(wasmFilePath: string, sdCardImageSizeMB: number) : Promise<Fortuna3Emulator> {
         const emulator = new Fortuna3Emulator();
-        emulator.exports = await Fortuna3Emulator.loadWasmBinary(wasmFilePath) as Fortuna3Exports;
-        emulator.exports.initialize(sdCardImageSizeMB);
+
+        await this.loadWasmModule(wasmFilePath);
+
+        // emulator.exports = await Fortuna3Emulator.loadWasmBinary(wasmFilePath) as Fortuna3Exports;
+        // emulator.exports.initialize(sdCardImageSizeMB);
         return emulator;
+    }
+
+    private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
+        const script = document.createElement("script");
+        script.src = `${wasmFilePath}/fortuna.js`;
+        script.async = true;
+        document.body.appendChild(script);
+
+        const waitForScript = async () => new Promise<void>(resolve => script.onload = () => resolve());
+        await waitForScript();
+
+        const waitForModuleInitialization = async () => new Promise<void>(resolve => Module.onRuntimeInitialized = () => resolve());
+        await waitForModuleInitialization();
     }
 
     getState(ramPage: number, sdCardPage: number) : EmulatorState {

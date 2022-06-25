@@ -4,6 +4,7 @@
   - [x] Create store
 - [x] Tabs component (General + SDCard + Documentation), general layout
 - [x] Component for computer module (closeable)
+
 - [x] RAM
   - [x] On emulator (WASM) + banks
     - [x] Either zero or random on initialization
@@ -12,8 +13,9 @@
     - [x] Banks on debugger
     - [x] Stack on debugger
     - [x] PC
-- [ ] SDCard
-  - [ ] On emulator (WASM)
+
+- [x] SDCard
+  - [x] On emulator (WASM)
     - [x] Empty SDCard
     - [x] Empty FAT on initialization (pass size + type from debugger)
     - [x] Treat errors
@@ -21,9 +23,14 @@
   - [x] Component
   - [ ] Show files (?)
   - [ ] Download image
+
+- [ ] Redo loading module
+- [ ] Build script
+
 - [ ] Video
   - [ ] On emulator (WASM)
   - [ ] Provide component
+
 - [ ] CPU
   - [ ] On emulator (WASM)
   - [ ] On emulator (TS)
@@ -36,10 +43,12 @@
   - [ ] Watch for changes
   - [ ] Auto-compile
   - [ ] Debugger: watch for changes, receive file
+
 - [ ] Running
   - [ ] Run
   - [ ] Run with breakpoints
   - [ ] Next
+
 - [ ] Fortuna-3 specific stuff
   - [ ] Memory management
   - [ ] SDCard + FAT32

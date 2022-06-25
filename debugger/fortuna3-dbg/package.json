@@ -26,7 +26,7 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "install-emulator-js": "copyfiles --flat node_modules/fortuna3-emu/dist/fortuna.js public && copyfiles --flat node_modules/fortuna3-emu/dist/fortuna.wasm public",
+    "install-emulator-js": "copyfiles --flat node_modules/fortuna3-emu/dist/fortuna.js public/fortuna && copyfiles --flat node_modules/fortuna3-emu/dist/fortuna.wasm public/fortuna",
     "start": "npm run install-emulator-js && react-scripts start",
     "build": "npm run install-emulator-js && react-scripts build",
     "test": "react-scripts test",
