@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 if ! command -v emcc &> /dev/null; then
   echo "emcc is required"
