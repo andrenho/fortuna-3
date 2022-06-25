@@ -29,6 +29,11 @@ EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
     return sdcard_init(sdcard_sz_in_mb MB);
 }
 
+EMSCRIPTEN_KEEPALIVE void step()
+{
+    RunZ80(&z80);
+}
+
 /* State format:
  *
  *  [0x000 - 0x???] : Z80

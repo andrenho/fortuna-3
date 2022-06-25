@@ -27,10 +27,6 @@
 - [x] Redo loading module
 - [x] Build script
 
-- [ ] Video
-  - [ ] On emulator (WASM)
-  - [ ] Provide component
-
 - [ ] CPU
   - [ ] On emulator (WASM)
   - [ ] On emulator (TS)
@@ -38,11 +34,16 @@
     - [ ] Add/remove breakpoints
   - [ ] Reset
   - [ ] Step
+
 - [ ] Spring application
   - [ ] Project file format
   - [ ] Watch for changes
   - [ ] Auto-compile
   - [ ] Debugger: watch for changes, receive file
+
+- [ ] Video
+  - [ ] On emulator (WASM)
+  - [ ] Provide component
 
 - [ ] Running
   - [ ] Run
