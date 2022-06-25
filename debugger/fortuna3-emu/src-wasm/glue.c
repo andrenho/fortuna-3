@@ -19,9 +19,6 @@
 
 static Z80 z80 = { 0 };
 
-static uint8_t* sdimg_z = NULL;
-static unsigned long sdimg_sz = 0;
-
 char last_error[0x200] = { 0 };
 
 EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
@@ -86,50 +83,39 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     memcpy(&data[0x400], last_error, sizeof last_error);
 }
 
-EMSCRIPTEN_KEEPALIVE int compress_sdcard_image()
+EMSCRIPTEN_KEEPALIVE unsigned long compressed_sdcard_max_size()
 {
-	sdimg_sz = compressBound(sdcard_sz);
-	sdimg_z = calloc(1, sdimg_sz);
-	if (!sdimg_z)
-		ERROR("Could not allocate enough memory to create image.");
+    return 50000;
+    // return compressBound(sdcard_sz);
+}
 
-	int r = compress(sdimg_z, &sdimg_sz, (const unsigned char *) sd_data, sdcard_sz);
+EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
+{
+    mz_zip_archive zip;
+    mz_zip_zero_struct(&zip);
+
+    mz_zip_writer_init_heap(&zip, 0, 128 * 1024);
+    mz_zip_writer_add_mem(&zip, "image.img", sd_data, sdcard_sz, MZ_BEST_COMPRESSION);
+
+    void *buf;
+    size_t sz;
+    mz_zip_writer_finalize_heap_archive(&zip, &buf, &sz);
+
+    memcpy(data, buf, sz);
+
+    mz_zip_writer_end(&zip);
+
+    return sz;
+
+    /*
+    int r = compress(data, &data_len, sd_data, sdcard_sz);
     if (r != Z_OK)
-		ERROR("Error %d while compressing image.", r);
-
-	return sdimg_sz;
-}
-
-EMSCRIPTEN_KEEPALIVE int get_compressed_sdcard_image_page(size_t page, size_t page_size, uint8_t* data)
-{
-	for (size_t i = 0; i < sdimg_sz; ++i)
-		data[i] = sdimg_z[i];
-	return sdimg_sz;
-
-	/*
-	for (int i = 0; i < 512; ++i)
-		data[i] = i & 0xff;
-	return 512;
-
-	int r = page_size;
-	if ((page + 1) * page_size > sdimg_sz)
-		r = sdimg_sz - (page * page_size);
-	if (r > 0) {
-		for (int i = 0; i < r; ++i)
-			data[i] = i & 0xff;
-		// memcpy(data, &sdimg_z[page * page_size], r);
-	}
-	return r < 0 ? 0 : r;
-	*/
-}
-
-EMSCRIPTEN_KEEPALIVE void delete_compressed_sdcard_image()
-{
-	free(sdimg_z);
-	sdimg_z = NULL;
-	sdimg_sz = 0;
+        return r;
+    else
+        return data_len;
+        */
 }
 
 void emscripten_notify_memory_growth(size_t i) { (void) i; }
 
-// vim: ts=4:sts=4:sw=4:noexpandtab
+// vim: ts=4:sts=4:sw=4:expandtab

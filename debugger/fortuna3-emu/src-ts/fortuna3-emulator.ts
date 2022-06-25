@@ -118,6 +118,18 @@ export class Fortuna3Emulator {
     }
 
     downloadSdCardImage() : Uint8Array {
+
+        const bufferSize = 16 * 1024 * 1024; // this.api.compressedSDCardMaxSize();
+
+        const buf = Module._malloc(bufferSize);
+        const compressedImageSize = this.api.compressSDCard(buf, bufferSize);
+        const compressedImage = new Uint8Array(Module.HEAP8.buffer, buf, compressedImageSize).slice(0);
+        console.log(compressedImage);
+
+        Module._free(buf);
+
+        return compressedImage;
+
         /*
         const compressedImageSize = this.exports.compress_sdcard_image();
         console.log(compressedImageSize);
