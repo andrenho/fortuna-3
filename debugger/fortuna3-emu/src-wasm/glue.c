@@ -83,37 +83,29 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     memcpy(&data[0x400], last_error, sizeof last_error);
 }
 
-EMSCRIPTEN_KEEPALIVE unsigned long compressed_sdcard_max_size()
-{
-    return 50000;
-    // return compressBound(sdcard_sz);
-}
-
 EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
 {
     mz_zip_archive zip;
     mz_zip_zero_struct(&zip);
 
-    mz_zip_writer_init_heap(&zip, 0, 128 * 1024);
-    mz_zip_writer_add_mem(&zip, "image.img", sd_data, sdcard_sz, MZ_BEST_COMPRESSION);
+    if (mz_zip_writer_init_heap(&zip, 0, 128 * 1024) == false)
+        ERROR("Error initializing zipper.");
+    if (mz_zip_writer_add_mem(&zip, "image.img", sd_data, sdcard_sz, MZ_BEST_COMPRESSION) == false)
+        ERROR("Error adding file to archive.");
 
     void *buf;
     size_t sz;
-    mz_zip_writer_finalize_heap_archive(&zip, &buf, &sz);
+    if (mz_zip_writer_finalize_heap_archive(&zip, &buf, &sz) == false)
+        ERROR("Error adding file to archive.");
+
+    if (sz > data_len)
+        ERROR("Not enough space in memory to create zip.");
 
     memcpy(data, buf, sz);
 
     mz_zip_writer_end(&zip);
 
     return sz;
-
-    /*
-    int r = compress(data, &data_len, sd_data, sdcard_sz);
-    if (r != Z_OK)
-        return r;
-    else
-        return data_len;
-        */
 }
 
 void emscripten_notify_memory_growth(size_t i) { (void) i; }

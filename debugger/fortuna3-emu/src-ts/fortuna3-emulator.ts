@@ -41,10 +41,10 @@ export class Fortuna3Emulator {
     private api : FortunaApi;
     private currentPages = 1;
 
-    private constructor() {}
+    private constructor(private sdCardImageSizeMB) {}
 
     static async initialize(wasmFilePath: string, sdCardImageSizeMB: number) : Promise<Fortuna3Emulator> {
-        const emulator = new Fortuna3Emulator();
+        const emulator = new Fortuna3Emulator(sdCardImageSizeMB);
 
         await this.loadWasmModule(wasmFilePath);
         emulator.api = loadApiFunctions(Module);
@@ -119,49 +119,15 @@ export class Fortuna3Emulator {
 
     downloadSdCardImage() : Uint8Array {
 
-        const bufferSize = 16 * 1024 * 1024; // this.api.compressedSDCardMaxSize();
+        const bufferSize = this.sdCardImageSizeMB * 1024 * 1024;
 
         const buf = Module._malloc(bufferSize);
         const compressedImageSize = this.api.compressSDCard(buf, bufferSize);
         const compressedImage = new Uint8Array(Module.HEAP8.buffer, buf, compressedImageSize).slice(0);
-        console.log(compressedImage);
 
         Module._free(buf);
 
         return compressedImage;
-
-        /*
-        const compressedImageSize = this.exports.compress_sdcard_image();
-        console.log(compressedImageSize);
-
-        // compress image
-        if (compressedImageSize === 0) {
-            this.exports.delete_compressed_sdcard_image();
-            throw new Error("There was an error trying to compress image.");
-        }
-
-        const compressedImage = new Uint8Array(compressedImageSize);
-
-        // get compressed image from C
-        const pageSize = 32 * 1024;
-        let page = 0;
-        let sz : number;
-        let currentSz = 0;
-        do {
-            const data = new Uint8Array(this.exports.memory.buffer, 0, pageSize);
-            sz = this.exports.get_compressed_sdcard_image_page(page++, pageSize, data.byteOffset);
-            console.log(sz, data);
-            compressedImage.set(data.slice(0, sz), currentSz);
-            currentSz += sz;
-        } while (sz === pageSize);
-        console.log(compressedImage.length);
-
-        // delete compressed image
-        this.exports.delete_compressed_sdcard_image();
-
-        return compressedImage;
-         */
-        return new Uint8Array(0);
     }
 
 }

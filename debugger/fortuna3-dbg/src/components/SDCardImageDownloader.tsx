@@ -24,8 +24,8 @@ const SDCardImageDownloader = observer(() : JSX.Element => {
     const linkClicked = () => {
         const bytes = store.downloadSdCardImage();
         if (bytes.length > 0) {
-            const blob = new Blob([bytes], { type: "application/gzip" });
-            FileSaver.saveAs(blob, "sdcard.img.gz");
+            const blob = new Blob([bytes], { type: "application/zip" });
+            FileSaver.saveAs(blob, "sdcard.zip");
         }
     };
 
