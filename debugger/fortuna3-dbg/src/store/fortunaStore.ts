@@ -27,7 +27,6 @@ export default class FortunaStore {
         // TODO - where are SDCard image size and type coming from?
         this.sdCardSizeInMB = 16;
         Fortuna3Emulator.initialize(`${process.env.PUBLIC_URL}/fortuna`, this.sdCardSizeInMB).then(emulator => {
-            console.log(emulator.life());
             runInAction(() => {
                 this.emulator = emulator;
                 this.updateEmulatorState();

@@ -7,9 +7,10 @@ fortuna.wasm: ${SRC}
 		-s WASM=1 \
 		-s INITIAL_MEMORY=1073741824 \
 		-s ALLOW_MEMORY_GROWTH=1 \
-                -s ABORTING_MALLOC=0 \
-                -s ASSERTIONS=1 \
-		-s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']"
+		-s ABORTING_MALLOC=0 \
+		-s ASSERTIONS=1 \
+		-s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']" \
+		-s "EXPORTED_FUNCTIONS=['_malloc', '_free']"
 
 clean:
 	rm -f *.o fortuna.wasm

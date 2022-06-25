@@ -8,10 +8,11 @@
     "/dist"
   ],
   "scripts": {
-    "build": "tsc && copyfiles --flat src-wasm/fortuna.wasm dist/ && copyfiles --flat src-wasm/fortuna.js dist/",
+    "build": "copyfiles --flat src-wasm/fortuna.wasm dist/ && copyfiles --flat src-wasm/fortuna.js dist/ && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "extraFiles": [
+    "src-wasm/fortuna.js",
     "src-wasm/fortuna.wasm"
   ],
   "repository": {

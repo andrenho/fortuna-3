@@ -1,16 +1,8 @@
-type Fortuna3Exports = WebAssembly.Exports & {
-    memory: WebAssembly.Memory;
-    initialize: (sdCardImageSizeMB: number) => boolean;
-    get_state: (ramPage: number, sdCardPage: number, memoryByteOffset: number) => void;
-    compress_sdcard_image: () => number;
-    get_compressed_sdcard_image_page: (page: number, pageSize: number, memoryByteOffset: number) => number;
-    delete_compressed_sdcard_image: () => void;
-};
+import {FortunaApi, loadApiFunctions} from "./api";
 
-interface FortunaModule extends EmscriptenModule {
-    _life: () => number;
+export interface FortunaModule extends EmscriptenModule {
+    cwrap: typeof cwrap;
 }
-
 declare var Module : FortunaModule;
 
 interface Z80State {
@@ -46,20 +38,20 @@ export interface EmulatorState {
 
 export class Fortuna3Emulator {
 
-    private exports : Fortuna3Exports;
+    private api : FortunaApi;
     private currentPages = 1;
 
     private constructor() {}
-
-    public life() : number { return Module._life(); }
 
     static async initialize(wasmFilePath: string, sdCardImageSizeMB: number) : Promise<Fortuna3Emulator> {
         const emulator = new Fortuna3Emulator();
 
         await this.loadWasmModule(wasmFilePath);
+        emulator.api = loadApiFunctions(Module);
 
-        // emulator.exports = await Fortuna3Emulator.loadWasmBinary(wasmFilePath) as Fortuna3Exports;
-        // emulator.exports.initialize(sdCardImageSizeMB);
+        emulator.api.initialize(sdCardImageSizeMB);
+        console.log("Emulator initialized.");
+
         return emulator;
     }
 
@@ -77,17 +69,21 @@ export class Fortuna3Emulator {
     }
 
     getState(ramPage: number, sdCardPage: number) : EmulatorState {
-        const state = new Uint8Array(this.exports.memory.buffer, 0, 0x600);
-        this.exports.get_state(ramPage, sdCardPage, state.byteOffset);
 
-        const pair = (n: number) : number => state[n] + (state[n+1] << 8);
+        const bufferSize = 0x600;
+
+        const buf = Module._malloc(bufferSize);
+        this.api.getState(ramPage, sdCardPage, buf);
+        const state = new Uint8Array(Module.HEAP8.buffer, buf, bufferSize);
 
         let error : string | undefined = new TextDecoder().decode(state.slice(0x400, 0x600));
         error = error.replace(/\0.*$/g, '');  // remove nulls
         if (error === "")
             error = undefined;
 
-        return {
+        const pair = (n: number) : number => state[n] + (state[n+1] << 8);
+
+        const result : EmulatorState = {
             cpu: {
                 af: pair(0x0),
                 bc: pair(0x2),
@@ -115,9 +111,14 @@ export class Fortuna3Emulator {
             sdCardPage: state.slice(0x200, 0x400),
             lastError: error,
         };
+
+        Module._free(buf);
+
+        return result;
     }
 
     downloadSdCardImage() : Uint8Array {
+        /*
         const compressedImageSize = this.exports.compress_sdcard_image();
         console.log(compressedImageSize);
 
@@ -147,13 +148,8 @@ export class Fortuna3Emulator {
         this.exports.delete_compressed_sdcard_image();
 
         return compressedImage;
-    }
-
-    private static async loadWasmBinary(wasmFilePath: string) : Promise<WebAssembly.Exports> {
-        const response = await fetch(wasmFilePath);
-        const buffer = await response.arrayBuffer();
-        const obj = await WebAssembly.instantiate(buffer);
-        return obj.instance.exports;
+         */
+        return new Uint8Array(0);
     }
 
 }
