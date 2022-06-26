@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import Tabs from "../components/Tabs";
+import Tabs from "../components/main-page/Tabs";
 import Components from "./Components";
 import useStore from "../hooks/useStore";
 import {StyleSet} from "../util/types";
-import SDCard from "../components/SDCard";
+import SDCard from "../components/sdcard/SDCard";
 import {observer} from "mobx-react-lite";
-import EmulatorControls from "../components/EmulatorControls";
+import EmulatorControls from "../components/main-page/EmulatorControls";
 
 const style : StyleSet = {
     error: {

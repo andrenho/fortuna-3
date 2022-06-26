@@ -1,6 +1,7 @@
 import {createContext} from "react";
 import {EmulatorState, Fortuna3Emulator} from "fortuna3-emu";
 import {makeAutoObservable, runInAction} from "mobx";
+import DebuggingInfo, {initialDebuggingInfo} from "./types/debuggingInfo";
 
 export default class FortunaStore {
 
@@ -21,6 +22,8 @@ export default class FortunaStore {
         sdCardPage: new Uint8Array(512),
         lastError: "",
     };
+
+    debuggingInfo: DebuggingInfo = initialDebuggingInfo();
 
     constructor() {
         makeAutoObservable(this);

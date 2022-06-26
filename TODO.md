@@ -27,7 +27,7 @@
 - [x] Redo loading module
 - [x] Build script
 
-- [ ] CPU
+- [x] CPU
   - [x] On emulator (WASM)
   - [x] On emulator (TS)
   - [x] On debugger
@@ -35,6 +35,13 @@
     - [x] Buttons component
       - [x] Reset
       - [x] Step
+
+- [ ] Code debugger
+  - [ ] Add breakpoints (WASM)
+  - [ ] Add breakpoints (TS)
+  - [ ] Add breakpoints on main component
+
+- [ ] Move WASM project to main directory
 
 - [ ] Spring application
   - [ ] Project file format

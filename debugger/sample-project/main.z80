@@ -1,0 +1,3 @@
+	jsr	stringlength
+	
+done:	jp	done
