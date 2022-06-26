@@ -7,12 +7,13 @@ import useStore from "../hooks/useStore";
 type RegisterProps = {
     name: string,
     value: number,
+    size: number,
 }
 
 const Register = (props: RegisterProps) : JSX.Element => {
     return (<div>
         <div style={{fontWeight: "bold", fontSize: "11px"}}>{ props.name }</div>
-        <div style={{border: "1px black solid", padding: "2px"}}>{ hex(props.value, 4) }</div>
+        <div style={{border: "1px black solid", padding: "2px"}}>{ hex(props.value, props.size) }</div>
     </div>);
 };
 
@@ -32,7 +33,7 @@ const Flag = (props: FlagProps) : JSX.Element => {
 
 //-----------------
 
-const columns = 6;
+const columns = 7;
 const rows = 2;
 
 const style : StyleSet = {
@@ -58,21 +59,21 @@ const CPU = observer(() : JSX.Element => {
 
     return (<Box title="Z80">
         <div style={style.registers}>
-            <Register name="AF" value={cpu.af} />
-            <Register name="BC" value={cpu.bc} />
-            <Register name="DE" value={cpu.de} />
-            <Register name="HL" value={cpu.hl} />
-            <Register name="SP" value={cpu.sp} />
-            <Register name="PC" value={cpu.pc} />
-            <Register name="AF'" value={cpu.afx} />
-            <Register name="BC'" value={cpu.bcx} />
-            <Register name="DE'" value={cpu.dex} />
-            <Register name="HL'" value={cpu.hlx} />
-            <Register name="IX" value={cpu.ix} />
-            <Register name="IY" value={cpu.iy} />
+            <Register name="AF" value={cpu.af} size={4} />
+            <Register name="BC" value={cpu.bc} size={4} />
+            <Register name="DE" value={cpu.de} size={4} />
+            <Register name="HL" value={cpu.hl} size={4} />
+            <Register name="SP" value={cpu.sp} size={4} />
+            <Register name="PC" value={cpu.pc} size={4} />
+            <Register name="I" value={cpu.i} size={2} />
+            <Register name="AF'" value={cpu.afx} size={4} />
+            <Register name="BC'" value={cpu.bcx} size={4} />
+            <Register name="DE'" value={cpu.dex} size={4} />
+            <Register name="HL'" value={cpu.hlx} size={4} />
+            <Register name="IX" value={cpu.ix} size={4} />
+            <Register name="IY" value={cpu.iy} size={4} />
         </div>
         <div style={style.flags}>
-            <Flag name="I" value={cpu.i} />
             <Flag name="C" value={cpu.c} />
             <Flag name="N" value={cpu.n} />
             <Flag name="P/V" value={cpu.pv} />
