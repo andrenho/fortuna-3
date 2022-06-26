@@ -28,18 +28,22 @@
 - [x] Build script
 
 - [ ] CPU
-  - [ ] On emulator (WASM)
-  - [ ] On emulator (TS)
+  - [x] On emulator (WASM)
+  - [x] On emulator (TS)
   - [ ] On debugger
-    - [ ] Add/remove breakpoints
-  - [ ] Reset
-  - [ ] Step
+    - [x] CPU component
+    - [ ] Buttons component
+      - [ ] Reset
+      - [ ] Step
 
 - [ ] Spring application
   - [ ] Project file format
   - [ ] Watch for changes
   - [ ] Auto-compile
   - [ ] Debugger: watch for changes, receive file
+
+- [ ] Manage code
+  - [ ] Add/remove breakpoints
 
 - [ ] Video
   - [ ] On emulator (WASM)

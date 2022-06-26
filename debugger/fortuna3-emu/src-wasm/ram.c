@@ -4,11 +4,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-static uint8_t* ram_;
+static uint8_t* ram_ = 0;
 static uint8_t virtual_banks[4] = { 0, 1, 2, 3 };
 
 void ram_init(size_t sz)
 {
+    free(ram_);
     ram_ = malloc(sz);
 
     srand(0);

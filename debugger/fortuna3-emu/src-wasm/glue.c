@@ -61,14 +61,14 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     data[0xd] = z80.PC.B.h;
     data[0xe] = z80.SP.B.l;
     data[0xf] = z80.SP.B.h;
-    data[0x10] = z80.AF.B.l;
-    data[0x11] = z80.AF.B.h;
-    data[0x12] = z80.BC.B.l;
-    data[0x13] = z80.BC.B.h;
-    data[0x14] = z80.DE.B.l;
-    data[0x15] = z80.DE.B.h;
-    data[0x16] = z80.HL.B.l;
-    data[0x17] = z80.HL.B.h;
+    data[0x10] = z80.AF1.B.l;
+    data[0x11] = z80.AF1.B.h;
+    data[0x12] = z80.BC1.B.l;
+    data[0x13] = z80.BC1.B.h;
+    data[0x14] = z80.DE1.B.l;
+    data[0x15] = z80.DE1.B.h;
+    data[0x16] = z80.HL1.B.l;
+    data[0x17] = z80.HL1.B.h;
     data[0x18] = z80.I;
 
     // RAM banks

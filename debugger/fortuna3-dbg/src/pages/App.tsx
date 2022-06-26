@@ -5,6 +5,7 @@ import useStore from "../hooks/useStore";
 import {StyleSet} from "../util/types";
 import SDCard from "../components/SDCard";
 import {observer} from "mobx-react-lite";
+import EmulatorControls from "../components/EmulatorControls";
 
 const style : StyleSet = {
     error: {
@@ -20,6 +21,7 @@ const App = observer(() => {
     const [selectedTab, setSelectedTab] = useState(0);
 
     return (<>
+        <EmulatorControls />
         <Tabs tabs={["Components", "SD Card", "Documentation"]} selected={selectedTab} onChange={i => setSelectedTab(i)} />
         <div style={style.error}>{ state.lastError }</div>
         <div style={{padding:"16px"}}>

@@ -130,4 +130,8 @@ export class Fortuna3Emulator {
         return compressedImage;
     }
 
+    step() : void {
+        this.api.step();
+    }
+
 }

@@ -6,6 +6,7 @@ const box : CSS.Properties = {
     padding: "16px",
     width: "fit-content",
     boxShadow: "6px 6px 6px lightgray",
+    marginBottom: "24px",
 };
 
 const title : CSS.Properties = {

@@ -34,6 +34,11 @@ export default class FortunaStore {
         });
     }
 
+    step() {
+        this.emulator!.step();
+        this.updateEmulatorState();
+    }
+
     setRamPage(newPage: number) : void {
         this.ramPage = newPage;
         this.updateEmulatorState();
@@ -56,7 +61,6 @@ export default class FortunaStore {
         console.debug("New state received from emulator:");
         console.debug(newState);
     }
-
 }
 
 // @ts-ignore
