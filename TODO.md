@@ -30,11 +30,11 @@
 - [ ] CPU
   - [x] On emulator (WASM)
   - [x] On emulator (TS)
-  - [ ] On debugger
+  - [x] On debugger
     - [x] CPU component
-    - [ ] Buttons component
-      - [ ] Reset
-      - [ ] Step
+    - [x] Buttons component
+      - [x] Reset
+      - [x] Step
 
 - [ ] Spring application
   - [ ] Project file format

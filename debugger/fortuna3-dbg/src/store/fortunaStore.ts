@@ -34,6 +34,11 @@ export default class FortunaStore {
         });
     }
 
+    reset() {
+        this.emulator!.reset();
+        this.updateEmulatorState();
+    }
+
     step() {
         this.emulator!.step();
         this.updateEmulatorState();

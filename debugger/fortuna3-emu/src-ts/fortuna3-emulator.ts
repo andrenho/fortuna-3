@@ -55,17 +55,13 @@ export class Fortuna3Emulator {
         return emulator;
     }
 
-    private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
-        const script = document.createElement("script");
-        script.src = `${wasmFilePath}/fortuna.js`;
-        script.async = true;
-        document.body.appendChild(script);
+    step() : void {
+        this.api.step();
+    }
 
-        const waitForScript = async () => new Promise<void>(resolve => script.onload = () => resolve());
-        await waitForScript();
-
-        const waitForModuleInitialization = async () => new Promise<void>(resolve => Module.onRuntimeInitialized = () => resolve());
-        await waitForModuleInitialization();
+    reset() : void {
+        this.api.initialize(this.sdCardImageSizeMB);
+        console.log("Emulator initialized.");
     }
 
     getState(ramPage: number, sdCardPage: number) : EmulatorState {
@@ -130,8 +126,17 @@ export class Fortuna3Emulator {
         return compressedImage;
     }
 
-    step() : void {
-        this.api.step();
+    private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
+        const script = document.createElement("script");
+        script.src = `${wasmFilePath}/fortuna.js`;
+        script.async = true;
+        document.body.appendChild(script);
+
+        const waitForScript = async () => new Promise<void>(resolve => script.onload = () => resolve());
+        await waitForScript();
+
+        const waitForModuleInitialization = async () => new Promise<void>(resolve => Module.onRuntimeInitialized = () => resolve());
+        await waitForModuleInitialization();
     }
 
 }
