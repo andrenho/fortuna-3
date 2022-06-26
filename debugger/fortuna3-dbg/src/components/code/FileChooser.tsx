@@ -38,6 +38,7 @@ const FileChooser = observer((props: FileChooserProps) : JSX.Element => {
                     ...(i === debuggingInfo.files.length - 1) ? {borderBottom: "1px black solid"} : undefined,
                     ...(filename === props.selectedFile) ? {backgroundColor: "aquamarine"} : undefined,
                 }}
+                key={`fc_${filename}`}
                 onClick={() => props.onSelectFile(filename)}>
                 { filename }
             </div>)) }
