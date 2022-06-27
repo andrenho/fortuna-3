@@ -11,7 +11,7 @@ if ! command -v npm &> /dev/null; then
 fi
 
 echo "Building WASM emulator..."
-cd fortuna3-emu/src-wasm && make && cd ../..
+cd emulator-wasm && make && cd ..
 
 echo "Building TS emulator..."
 cd fortuna3-emu && npm install && npm run build && cd ..
