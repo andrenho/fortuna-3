@@ -29,6 +29,7 @@ interface Z80State {
 
 export interface EmulatorState {
     cpu: Z80State,
+    breakpoints: number[],
     ramBanks: number[],
     ramPage: Uint8Array,
     stack: Uint8Array,
@@ -101,12 +102,19 @@ export class Fortuna3Emulator {
                 z: !!((state[0] >> 6) & 1),
                 s: !!((state[0] >> 7) & 1),
             },
+            breakpoints: [],
             ramBanks: Array.from(state.slice(0xe4, 0xe8)),
             stack: state.slice(0xe8, 0x100),
             ramPage: state.slice(0x100, 0x200),
             sdCardPage: state.slice(0x200, 0x400),
             lastError: error,
         };
+
+        for (let i = 0x80; i < 0xe4; i += 2) {
+            const addr = pair(i);
+            if (addr !== 0)
+                result.breakpoints.push(addr);
+        }
 
         Module._free(buf);
 
@@ -124,6 +132,14 @@ export class Fortuna3Emulator {
         Module._free(buf);
 
         return compressedImage;
+    }
+
+    addBreakpoint(addr: number) : void {
+        this.api.addBreakpoint(addr);
+    }
+
+    removeBreakpoint(addr: number) : void {
+        this.api.removeBreakpoint(addr);
     }
 
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {

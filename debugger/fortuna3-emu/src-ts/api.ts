@@ -6,7 +6,9 @@ export interface FortunaApi {
     initialize: (sdCardSizeInMB: number) => boolean,
     getState: (ramPage: number, sdPage: number, data: pointer) => void;
     compressSDCard: (data: pointer, maxSize: number) => number;
-    step() : () => void;
+    step : () => void;
+    addBreakpoint: (addr: number) => void,
+    removeBreakpoint: (addr: number) => void,
 }
 
 export function loadApiFunctions(module: FortunaModule) : FortunaApi {
@@ -15,5 +17,7 @@ export function loadApiFunctions(module: FortunaModule) : FortunaApi {
         getState: module.cwrap("get_state", null, ["number", "number", "number"]),
         compressSDCard: module.cwrap("compress_sdcard", "number", ["number", "number"]),
         step: module.cwrap("step", null, []),
+        addBreakpoint: module.cwrap("add_breakpoint", null, ["number"]),
+        removeBreakpoint: module.cwrap("remove_breakpoint", null, ["number"]),
     };
 }

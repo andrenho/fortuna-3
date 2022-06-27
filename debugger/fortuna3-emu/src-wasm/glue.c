@@ -8,6 +8,7 @@
 
 #include "globals.h"
 
+#include "cpu.h"
 #include "ram.h"
 #include "sdcard.h"
 
@@ -25,6 +26,7 @@ EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
 {
     ResetZ80(&z80);
     ram_init(512 KB);
+    bkp_clear();
 
     return sdcard_init(sdcard_sz_in_mb MB);
 }
@@ -37,6 +39,7 @@ EMSCRIPTEN_KEEPALIVE void step()
 /* State format:
  *
  *  [0x000 - 0x???] : Z80
+ *  [0x080 - 0x0e3] : Breakpoints (16-bit)
  *  [0x0e4 - 0x0e7] : RAM banks
  *  [0x0e8 - 0x0ff] : Stack
  *  [0x100 - 0x1ff] : RAM
@@ -70,6 +73,12 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     data[0x16] = z80.HL1.B.l;
     data[0x17] = z80.HL1.B.h;
     data[0x18] = z80.I;
+
+    // Breakpoints
+    for (size_t i = 0; i < MAX_BKPS; ++i) {
+        data[0x80 + (i * 2)] = bkp[i] & 0xff;
+        data[0x80 + (i * 2) + 1] = bkp[i] >> 8;
+    }
 
     // RAM banks
     ram_banks(&data[0xe4]);
@@ -111,6 +120,16 @@ EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
     mz_zip_writer_end(&zip);
 
     return sz;
+}
+
+EMSCRIPTEN_KEEPALIVE void add_breakpoint(uint16_t addr)
+{
+    bkp_add(addr);
+}
+
+EMSCRIPTEN_KEEPALIVE void remove_breakpoint(uint16_t addr)
+{
+    bkp_del(addr);
 }
 
 void emscripten_notify_memory_growth(size_t i) { (void) i; }

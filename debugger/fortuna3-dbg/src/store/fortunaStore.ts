@@ -16,6 +16,7 @@ export default class FortunaStore {
             af: 0, bc: 0, de: 0, hl: 0, ix: 0, iy: 0, pc: 0, sp: 0, afx: 0, bcx: 0, dex: 0, hlx: 0, i: 0,
             c: false, n: false, pv: false, h: false, z: false, s: false,
         },
+        breakpoints: [],
         ramPage: new Uint8Array(256),
         stack: new Uint8Array(24),
         ramBanks: [],

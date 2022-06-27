@@ -1,6 +1,36 @@
 #include "z80/Z80.h"
+#include "cpu.h"
 
 #include "ram.h"
+
+uint16_t bkp[MAX_BKPS];
+
+void bkp_clear()
+{
+    for (size_t i = 0; i < MAX_BKPS; ++i)
+        bkp[i] = 0;
+}
+
+void bkp_add(uint16_t addr)
+{
+    for (size_t i = 0; i < MAX_BKPS; ++i)
+        if (bkp[i] == addr)
+            return;
+
+    for (size_t i = 0; i < MAX_BKPS; ++i) {
+        if (bkp[i] == 0) {
+            bkp[i] = addr;
+            return;
+        }
+    }
+}
+
+void bkp_del(uint16_t addr)
+{
+    for (size_t i = 0; i < MAX_BKPS; ++i)
+        if (bkp[i] == addr)
+            bkp[i] = 0;
+}
 
 word LoopZ80(Z80 *R)
 {
