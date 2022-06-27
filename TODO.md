@@ -36,13 +36,13 @@
       - [x] Reset
       - [x] Step
 
-- [ ] Code debugger
+- [x] Code debugger
   - [x] Create debugger in main component
     - [x] Source code formatting
     - [x] Detect changes in source file
-  - [ ] Add breakpoints (WASM)
-  - [ ] Add breakpoints (TS)
-  - [ ] Add breakpoints on main component
+  - [x] Add breakpoints (WASM)
+  - [x] Add breakpoints (TS)
+  - [x] Add breakpoints on main component
 
 - [ ] Move WASM project to main directory
 
