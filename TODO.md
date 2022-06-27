@@ -44,7 +44,7 @@
   - [x] Add breakpoints (TS)
   - [x] Add breakpoints on main component
 
-- [ ] Move WASM project to main directory
+- [x] Move WASM project to main directory
 
 - [ ] Spring application
   - [ ] Project file format
