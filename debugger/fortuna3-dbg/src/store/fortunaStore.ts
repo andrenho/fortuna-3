@@ -36,6 +36,7 @@ export default class FortunaStore {
             runInAction(() => {
                 this.emulator = emulator;
                 this.updateEmulatorState();
+                this.updateSelectedFile();
             });
         });
     }
@@ -43,11 +44,13 @@ export default class FortunaStore {
     reset() {
         this.emulator!.reset();
         this.updateEmulatorState();
+        this.updateSelectedFile();
     }
 
     step() {
         this.emulator!.step();
         this.updateEmulatorState();
+        this.updateSelectedFile();
     }
 
     setRamPage(newPage: number) : void {
@@ -71,12 +74,19 @@ export default class FortunaStore {
         this.selectedFile = file;
     }
 
+    swapBreakpoint(addr: number) {
+        if (this.state.breakpoints.includes(addr))
+            this.emulator!.removeBreakpoint(addr);
+        else
+            this.emulator!.addBreakpoint(addr);
+        this.updateEmulatorState();
+    }
+
     private updateEmulatorState() : void {
         const newState = this.emulator!.getState(this.ramPage, this.sdCardPage);
         this.state = newState;
         console.debug("New state received from emulator:");
         console.debug(newState);
-        this.updateSelectedFile();
     }
 
     private updateSelectedFile() : void {

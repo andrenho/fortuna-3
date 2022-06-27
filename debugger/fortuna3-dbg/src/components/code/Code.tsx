@@ -56,7 +56,8 @@ const Code = observer((props: CodeProps) : JSX.Element => {
         return <><span>{ code }</span><span style={{color:"forestgreen"}}>{ comment }</span></>;
     };
 
-    const { debuggingInfo, state } = useStore();
+    const store = useStore();
+    const { debuggingInfo, state } = store;
 
     let currentSource : SourceLine[];
     if (props.selectedFile && props.selectedFile in debuggingInfo.code)
@@ -64,17 +65,23 @@ const Code = observer((props: CodeProps) : JSX.Element => {
     else
         currentSource = sourceFileNotFound;
 
+    const swapBreakpoint = (address: number | undefined) => {
+        console.log(address);
+        if (address)
+            store.swapBreakpoint(address);
+    }
+
     return (<table style={style.code}>
         <tbody>
             { currentSource.map((line, i) => (
                 <tr key={`sl_${i}`} style={{ backgroundColor: (state.cpu.pc === line.address) ? "yellow" : "white" }}>
-                    <td style={style.breakpoint}></td>
+                    <td style={{...style.breakpoint, background: (state.breakpoints.includes(line.address!)) ? "red" : undefined}} onClick={() => swapBreakpoint(line.address)}></td>
                     <td style={style.address}>{ line.address !== undefined ? hex(line.address, 4) : undefined }</td>
                     <td style={style.line}>{ parseCode(line.source) }</td>
                     <td style={style.bytes}>{ line.bytes !== undefined ? line.bytes.map(v => hex(v, 2)).join(" ") : undefined }</td>
                 </tr>
             ))}
-            <tr>
+            <tr style={{backgroundColor: "white"}}>
                 <td style={{...style.breakpoint, ...style.lastLine}}></td>
                 <td style={{...style.address, ...style.lastLine}}></td>
                 <td style={{...style.line, ...style.lastLine}}></td>

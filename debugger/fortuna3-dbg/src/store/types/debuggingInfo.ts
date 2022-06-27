@@ -25,6 +25,7 @@ export function initialDebuggingInfo() : DebuggingInfo {
                 { source: "; Hello world!" },
                 { source: "    nop  ; do nothing", address: 0, bytes: [0] },
                 { source: "x:  jp x", address: 2, bytes: [0xc3, 0xc3, 0xc3] },
+                { source: "    nop", address: 3, bytes: [0] },
             ],
             "hello.z80": [
                 { source: "ret", address: 1, bytes: [0xf4] },
