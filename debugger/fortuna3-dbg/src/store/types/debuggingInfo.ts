@@ -1,4 +1,4 @@
-type SourceLine = {
+export type SourceLine = {
     source: string,
     address?: number | undefined,
     bytes?: number[] | undefined,
@@ -23,7 +23,7 @@ export function initialDebuggingInfo() : DebuggingInfo {
         code: {
             "main.z80": [
                 { source: "; Hello world!" },
-                { source: "    nop", address: 0, bytes: [0] },
+                { source: "    nop  ; do nothing", address: 0, bytes: [0] },
                 { source: "x:  jp x", address: 2, bytes: [0xc3, 0xc3, 0xc3] },
             ],
             "hello.z80": [

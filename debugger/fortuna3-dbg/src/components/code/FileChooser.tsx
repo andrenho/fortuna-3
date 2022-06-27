@@ -22,7 +22,7 @@ const style: StyleSet = {
 };
 
 type FileChooserProps = {
-    selectedFile: string,
+    selectedFile: string | undefined,
     onSelectFile: (filename: string) => void;
 };
 

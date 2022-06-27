@@ -25,6 +25,8 @@ export default class FortunaStore {
 
     debuggingInfo: DebuggingInfo = initialDebuggingInfo();
 
+    selectedFile?: string | undefined;
+
     constructor() {
         makeAutoObservable(this);
         // TODO - where are SDCard image size and type coming from?
@@ -63,11 +65,28 @@ export default class FortunaStore {
         return bytes;
     }
 
+    setSelectedFile(file: string | undefined) {
+        console.debug(`Selected file updated to "${file}"`);
+        this.selectedFile = file;
+    }
+
     private updateEmulatorState() : void {
         const newState = this.emulator!.getState(this.ramPage, this.sdCardPage);
         this.state = newState;
         console.debug("New state received from emulator:");
         console.debug(newState);
+        this.updateSelectedFile();
+    }
+
+    private updateSelectedFile() : void {
+        for (const file of this.debuggingInfo.files) {
+            for (const line of this.debuggingInfo.code[file]) {
+                if (line.address === this.state.cpu.pc) {
+                    this.setSelectedFile(file);
+                    return;
+                }
+            }
+        }
     }
 }
 

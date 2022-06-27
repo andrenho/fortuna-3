@@ -37,6 +37,9 @@
       - [x] Step
 
 - [ ] Code debugger
+  - [x] Create debugger in main component
+    - [x] Source code formatting
+    - [x] Detect changes in source file
   - [ ] Add breakpoints (WASM)
   - [ ] Add breakpoints (TS)
   - [ ] Add breakpoints on main component

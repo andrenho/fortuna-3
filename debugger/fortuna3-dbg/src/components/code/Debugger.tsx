@@ -1,15 +1,16 @@
 import FileChooser from "./FileChooser";
 import Code from "./Code";
-import {useState} from "react";
+import useStore from "../../hooks/useStore";
+import {observer} from "mobx-react-lite";
 
-const Debugger = () : JSX.Element => {
+const Debugger = observer(() : JSX.Element => {
 
-    const [selectedFile, setSelectedFile] = useState("");
+    const store = useStore();
 
     return (<div style={{display: "flex", marginBottom: "16px"}}>
-        <FileChooser selectedFile={selectedFile} onSelectFile={(name) => setSelectedFile(name)} />
-        <Code />
+        <FileChooser selectedFile={store.selectedFile} onSelectFile={(name) => store.setSelectedFile(name)} />
+        <Code selectedFile={store.selectedFile} />
     </div>);
-};
+});
 
 export default Debugger;
