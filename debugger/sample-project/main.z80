@@ -1,3 +1,5 @@
-	jsr	stringlength
+	jr	stringlength
+
+  include stringlength.z80
 	
 done:	jp	done

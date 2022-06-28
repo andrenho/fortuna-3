@@ -8,7 +8,7 @@ import java.util.List;
 @Component
 public class OutputMapper {
     public DebuggingInfoDTO mapCompilerOutputsToDebuggingInfo(List<ParsedCompilerOutputDTO> compilerOutputs) {
-        // TODO
+        // TODO - implement
         return null;
     }
 }

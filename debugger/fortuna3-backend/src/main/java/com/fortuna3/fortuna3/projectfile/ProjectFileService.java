@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -27,5 +28,10 @@ public class ProjectFileService {
 
     public ProjectFileDTO getProjectFile() {
         return projectFile;
+    }
+
+    public String getProjectFilePath() {
+        File file = new File(projectPath);
+        return file.getParent();
     }
 }

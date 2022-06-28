@@ -4,4 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CompilerMapper {
+    public ParsedCompilerOutputDTO mapRawToParsedCompilerOutput(RawCompilerOutputDTO rawCompilerOutput) {
+        return null;  // TODO - implement
+    }
 }
