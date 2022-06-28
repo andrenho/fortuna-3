@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ConfigurationGuard implements InitializingBean {
 
-    @Value("${project-path:#{null}}")
+    @Value("${projectPath:#{null}}")
     private String projectPath;
 
     @Override
     public void afterPropertiesSet() {
         if (projectPath == null || projectPath.isEmpty()) {
-            final String message = "--project-path=XXXX command line argument missing.";
+            final String message = "-DprojectPath=XXXX command line argument missing.";
             System.err.println(message);
             throw new IllegalArgumentException(message);
         }

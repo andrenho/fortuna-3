@@ -1,3 +1,6 @@
 {
-  "bios": "main.z80"
+  "sdcard": {
+    "sizeInMB": 32
+  },
+  "biosSource": "main.z80"
 }

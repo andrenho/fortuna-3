@@ -48,8 +48,11 @@
 
 - [ ] Spring application
   - [ ] Project file format
+  - [ ] Compilation
+    - [ ] Find dependencies
+    - [ ] Create API with checksum and debugging info
   - [ ] Watch for changes
-  - [ ] Auto-compile
+  - [ ] Load into the debugger (frontend)
   - [ ] Debugger: watch for changes, receive file
 
 - [ ] Manage code
