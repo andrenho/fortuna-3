@@ -9,6 +9,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 @Configuration
 public class ConfigurationGuard implements InitializingBean {
 
@@ -21,6 +24,12 @@ public class ConfigurationGuard implements InitializingBean {
             final String message = "-DprojectPath=XXXX command line argument missing.";
             System.err.println(message);
             throw new IllegalArgumentException(message);
+        } else {
+            if (Files.notExists(Path.of(projectPath))) {
+                final String message = "File " + projectPath + " was not found.";
+                System.err.println(message);
+                throw new IllegalArgumentException(message);
+            }
         }
     }
 }

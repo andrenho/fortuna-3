@@ -25,4 +25,4 @@ cp -r fortuna3-dbg/build/* fortuna3-backend/src/main/resources/static/
 cd fortuna3-backend && mvn -DskipTests clean install && cd ..
 cp fortuna3-backend/target/*.jar .
 
-echo "All done. Run the debugger using 'java -jar fortuna-3-*.jar -DprojectPath=my-project.json'"
+echo "All done. Run the debugger using 'java -DprojectPath='my_project.json' -jar ./fortuna-3-*.jar'"
