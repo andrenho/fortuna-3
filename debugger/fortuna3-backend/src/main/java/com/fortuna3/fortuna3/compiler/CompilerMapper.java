@@ -85,10 +85,10 @@ public class CompilerMapper {
         }
 
         try {
-            sourceLineDTO.setBytes(HexFormat.of().parseHex(line.substring(8, 16).trim()));
+            sourceLineDTO.setByteArray(HexFormat.of().parseHex(line.substring(8, 16).trim()));
         } catch (IllegalArgumentException ignored) {}
-        if (sourceLineDTO.getBytes().length == 0)
-            sourceLineDTO.setBytes(null);
+        if (sourceLineDTO.getByteArray().length == 0)
+            sourceLineDTO.setByteArray(null);
 
         return sourceLineDTO;
     }

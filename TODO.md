@@ -52,6 +52,8 @@
     - [x] Find dependencies
     - [x] Create API with checksum and debugging info
   - [x] Watch for changes
+  - [x] Serialize byte array of instruction as number sequence
+  - [ ] Add to build
   - [ ] Load into the debugger (frontend)
   - [ ] Debugger: watch for changes, receive file
 
