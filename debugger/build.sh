@@ -17,6 +17,12 @@ echo "Building TS emulator..."
 cd fortuna3-emu && npm install && npm run build && cd ..
 
 echo "Building debugger..."
-cd fortuna3-dbg && npm install && cd ..
+cd fortuna3-dbg && npm install && npm run build && cd ..
 
-echo "All done. Cd into fotuna3-dbg and run 'npm start' to run the debugger."
+echo "Building backend..."
+rm -rf fortuna3-backend/src/main/resources/static/*
+cp -r fortuna3-dbg/build/* fortuna3-backend/src/main/resources/static/
+cd fortuna3-backend && mvn -DskipTests clean install && cd ..
+cp fortuna3-backend/target/*.jar .
+
+echo "All done. Run the debugger using 'java -jar fortuna-3-*.jar -DprojectPath=my-project.json'"
