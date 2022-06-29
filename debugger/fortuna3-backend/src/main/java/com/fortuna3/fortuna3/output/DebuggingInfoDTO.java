@@ -7,6 +7,8 @@ import java.util.Map;
 @Data
 public class DebuggingInfoDTO {
 
+    private boolean success;
     private Map<String, SourceProjectDTO> projects;
-    private Integer crc;
+    private Integer hash;
+    private String errorMessage;
 }

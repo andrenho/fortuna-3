@@ -14,7 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 public class CompilerService {
@@ -44,12 +46,16 @@ public class CompilerService {
         ProjectFileDTO projectFile = projectFileService.getProjectFile();
         String path = projectFileService.getProjectFilePath();
 
-        List<CompletableFuture<SourceProjectDTO>> futures = new ArrayList<>();
-        if (projectFile.getBiosSource() != null)
-            futures.add(CompletableFuture.supplyAsync(() -> compile(path + "/" + projectFile.getBiosSource())));
+        record SourceProjectIndex(String name, SourceProjectDTO sourceProject) {}
 
-        List<SourceProjectDTO> compilerOutputs = futures.stream().map(CompletableFuture::join).toList();
-        return outputMapper.mapSourceProjectsToDebuggingInfo(compilerOutputs);
+        List<CompletableFuture<SourceProjectIndex>> futures = new ArrayList<>();
+        if (projectFile.getBiosSource() != null)
+            futures.add(CompletableFuture.supplyAsync(() -> new SourceProjectIndex("bios", compile(path + "/" + projectFile.getBiosSource()))));
+
+        Map<String, SourceProjectDTO> projects = futures
+                .stream().map(CompletableFuture::join).toList()
+                .stream().collect(Collectors.toMap(SourceProjectIndex::name, SourceProjectIndex::sourceProject));
+        return outputMapper.mapSourceProjectsToDebuggingInfo(projects);
     }
 
     private SourceProjectDTO compile(String biosSource) {
@@ -101,10 +107,10 @@ public class CompilerService {
         return currentDebuggingInfo;
     }
 
-    public Integer getCrc() {
+    public Integer getHash() {
 
         if (currentDebuggingInfo != null)
-            return currentDebuggingInfo.getCrc();
+            return currentDebuggingInfo.getHash();
         else
             return 0;
     }

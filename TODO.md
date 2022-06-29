@@ -46,12 +46,12 @@
 
 - [x] Move WASM project to main directory
 
-- [ ] Spring application
-  - [ ] Project file format
-  - [ ] Compilation
-    - [ ] Find dependencies
-    - [ ] Create API with checksum and debugging info
-  - [ ] Watch for changes
+- [x] Spring application
+  - [x] Project file format
+  - [x] Compilation
+    - [x] Find dependencies
+    - [x] Create API with checksum and debugging info
+  - [x] Watch for changes
   - [ ] Load into the debugger (frontend)
   - [ ] Debugger: watch for changes, receive file
 

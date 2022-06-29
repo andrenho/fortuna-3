@@ -9,14 +9,13 @@ import java.util.HexFormat;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.CRC32;
 
 @Component
 public class CompilerMapper {
 
     private enum Section { NONE, SOURCE, SYMBOLS, LABELS }
 
-    private Pattern filenamePattern = Pattern.compile("\\\"(.*?)\\\"");
+    private final Pattern filenamePattern = Pattern.compile("\\\"(.*?)\\\"");
 
     public SourceProjectDTO mapRawToSourceProject(RawCompilerOutputDTO rawCompilerOutput) {
 
@@ -25,10 +24,6 @@ public class CompilerMapper {
         if (rawCompilerOutput.getStatus() != 0)
             sourceProject.setCompilerError(rawCompilerOutput.getCompilerError());
         sourceProject.setBinary(rawCompilerOutput.getRom());
-
-        CRC32 crc32 = new CRC32();
-        crc32.update(rawCompilerOutput.getRom());
-        sourceProject.setCrc(crc32.getValue());
 
         try {
             mapListingFiletoSourceProject(rawCompilerOutput, sourceProject);
