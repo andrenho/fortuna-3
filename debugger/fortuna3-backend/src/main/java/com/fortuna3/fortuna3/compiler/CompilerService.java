@@ -2,14 +2,16 @@ package com.fortuna3.fortuna3.compiler;
 
 import com.fortuna3.fortuna3.output.DebuggingInfoDTO;
 import com.fortuna3.fortuna3.output.OutputMapper;
+import com.fortuna3.fortuna3.output.SourceProjectDTO;
 import com.fortuna3.fortuna3.projectfile.ProjectFileDTO;
 import com.fortuna3.fortuna3.projectfile.ProjectFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -42,18 +44,18 @@ public class CompilerService {
         ProjectFileDTO projectFile = projectFileService.getProjectFile();
         String path = projectFileService.getProjectFilePath();
 
-        List<CompletableFuture<ParsedCompilerOutputDTO>> futures = new ArrayList<>();
+        List<CompletableFuture<SourceProjectDTO>> futures = new ArrayList<>();
         if (projectFile.getBiosSource() != null)
             futures.add(CompletableFuture.supplyAsync(() -> compile(path + "/" + projectFile.getBiosSource())));
 
-        List<ParsedCompilerOutputDTO> compilerOutputs = futures.stream().map(CompletableFuture::join).toList();
-        return outputMapper.mapCompilerOutputsToDebuggingInfo(compilerOutputs);
+        List<SourceProjectDTO> compilerOutputs = futures.stream().map(CompletableFuture::join).toList();
+        return outputMapper.mapSourceProjectsToDebuggingInfo(compilerOutputs);
     }
 
-    private ParsedCompilerOutputDTO compile(String biosSource) {
+    private SourceProjectDTO compile(String biosSource) {
 
         RawCompilerOutputDTO rawCompilerOutputDTO = runCompiler(biosSource);
-        return compilerMapper.mapRawToParsedCompilerOutput(rawCompilerOutputDTO);
+        return compilerMapper.mapRawToSourceProject(rawCompilerOutputDTO);
     }
 
     private RawCompilerOutputDTO runCompiler(String mainSourceFile) {
@@ -66,26 +68,33 @@ public class CompilerService {
                 mainSourceFile;
 
         try {
-            String s;
             Process process = Runtime.getRuntime().exec(commandLine);
 
-            try (BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                while ((s = output.readLine()) != null)
-                    rawCompilerOutput.getOutput().add(s);
-            }
-
-            try (BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-                while ((s = error.readLine()) != null)
-                    rawCompilerOutput.getError().add(s);
-            }
-
+            rawCompilerOutput.setCompilerOutput(getOutput(process.getInputStream()));
+            rawCompilerOutput.setCompilerError(getOutput(process.getErrorStream()));
             rawCompilerOutput.setStatus(process.waitFor());
+            rawCompilerOutput.setListing(Files.readString(Path.of("listing.txt")));
+            rawCompilerOutput.setRom(Files.readAllBytes(Path.of("rom.bin")));
+
+            new File("listing.txt").delete();
+            new File("rom.bin").delete();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         return rawCompilerOutput;
+    }
+
+    private String getOutput(InputStream inputStream) throws IOException {
+
+        String s;
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader output = new BufferedReader(new InputStreamReader(inputStream))) {
+            while ((s = output.readLine()) != null)
+                lines.add(s);
+        }
+        return String.join("\n", lines);
     }
 
     public DebuggingInfoDTO getCurrentDebuggingInfo() {

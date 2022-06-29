@@ -20,9 +20,9 @@ public class CompilerExecutableService {
         tmpdir = Files.createTempDirectory("fortuna").toFile().getAbsolutePath();
 
         // TODO - what about linux?
-        compilerPath = tmpdir + "/vasmz80_oldstyle.exe";
-        System.out.println(compilerPath);
-        try (InputStream is = Objects.requireNonNull(getClass().getResource("/compiler/vasmz80_oldstyle.exe")).openStream();
+        compilerPath = tmpdir + "/vasmz80_oldstyle-win32.exe";
+        System.out.println("Compiler extracted to " + compilerPath);
+        try (InputStream is = Objects.requireNonNull(getClass().getResource("/compiler/vasmz80_oldstyle-win32.exe")).openStream();
              OutputStream os = new FileOutputStream(compilerPath)) {
             byte[] b = new byte[2048];
             int length;
@@ -35,11 +35,8 @@ public class CompilerExecutableService {
     @PreDestroy
     public void deleteCompiler() {
 
-        File file = new File(compilerPath);
-        file.delete();
-
-        file = new File(tmpdir);
-        file.delete();
+        new File(compilerPath).delete();
+        new File(tmpdir).delete();
     }
 
     public String getCompilerPath() {
