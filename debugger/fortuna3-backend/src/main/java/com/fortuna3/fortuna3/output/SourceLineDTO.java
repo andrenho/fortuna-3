@@ -9,5 +9,5 @@ public class SourceLineDTO {
 
     private Integer address;
     private String line;
-    private List<Byte> bytes;
+    private byte[] bytes;
 }
