@@ -58,9 +58,10 @@
 - [x] Organize screen
 
 - [ ] Fetch/refetch from backend
-  - [ ] Project chooser
-  - [ ] Implement logic in store
+  - [x] Project chooser
+  - [x] Implement logic in store
   - [ ] Manage errors
+  - [ ] Load binary
   - [ ] Load into the debugger (frontend)
   - [ ] Debugger: watch for changes, receive file
 

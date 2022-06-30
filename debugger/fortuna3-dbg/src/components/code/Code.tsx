@@ -89,9 +89,9 @@ const Code = observer((props: CodeProps) : JSX.Element => {
             { currentSource.map((line, i) => (
                 <tr key={`sl_${i}`} style={{ backgroundColor: (state.cpu.pc === line.address) ? "yellow" : "white" }}>
                     <td style={{...style.breakpoint, background: (state.breakpoints.includes(line.address!)) ? "red" : undefined}} onClick={() => swapBreakpoint(line.address)}></td>
-                    <td style={style.address}>{ line.address !== undefined ? hex(line.address, 4) : undefined }</td>
+                    <td style={style.address}>{ line.address != null ? hex(line.address, 4) : undefined }</td>
                     <td style={style.line}>{ parseCode(line.line) }</td>
-                    <td style={style.bytes}>{ line.bytes !== undefined ? line.bytes.map(v => hex(v, 2)).join(" ") : undefined }</td>
+                    <td style={style.bytes}>{ line.bytes != null ? line.bytes.map(v => hex(v, 2)).join(" ") : undefined }</td>
                 </tr>
             ))}
             <tr style={{backgroundColor: "white"}}>

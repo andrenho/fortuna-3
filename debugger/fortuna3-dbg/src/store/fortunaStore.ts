@@ -2,6 +2,7 @@ import {createContext} from "react";
 import {EmulatorState, Fortuna3Emulator} from "fortuna3-emu";
 import {makeAutoObservable, runInAction} from "mobx";
 import DebuggingInfo, {initialDebuggingInfo, SourceProject} from "./types/debuggingInfo";
+import {fetchBackendCompilation, fetchBackendCrc} from "../service/backendService";
 
 export default class FortunaStore {
 
@@ -29,6 +30,8 @@ export default class FortunaStore {
     selectedFile?: string | undefined;
     selectedProject?: string | undefined;
 
+    lastCompilationHash: number = 0;
+
     constructor() {
         makeAutoObservable(this);
         // TODO - where are SDCard image size and type coming from?
@@ -40,6 +43,8 @@ export default class FortunaStore {
                 this.updateSelectedFile();
             });
         });
+
+        setInterval(() => this.updateDebuggingInfoFromBackend(), 1000);
     }
 
     get currentProject() : SourceProject | undefined {
@@ -82,7 +87,7 @@ export default class FortunaStore {
     }
 
     setSelectedProject(project: string) {
-        console.debug(`Selected file updated to "${project}"`);
+        console.debug(`Selected project updated to "${project}"`);
         this.selectedProject = project;
         this.setSelectedFile(this.debuggingInfo.projects[project].mainSourceFile);
     }
@@ -113,6 +118,21 @@ export default class FortunaStore {
                     return;
                 }
             }
+        }
+    }
+
+    private async updateDebuggingInfoFromBackend() : Promise<void> {
+        const newHash = await fetchBackendCrc();
+        if (newHash !== this.lastCompilationHash) {
+            const debuggingInfo = await fetchBackendCompilation();
+            console.debug("Debugging info updated from backend:");
+            console.debug(debuggingInfo);
+            this.reset();
+            runInAction(() => {
+                this.lastCompilationHash = newHash;
+                this.debuggingInfo = debuggingInfo;
+                this.setSelectedProject("bios");
+            });
         }
     }
 }
