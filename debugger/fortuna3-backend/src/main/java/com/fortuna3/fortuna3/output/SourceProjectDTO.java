@@ -13,6 +13,7 @@ import java.util.Map;
 public class SourceProjectDTO {
 
     private boolean success;
+    private String mainSourceFile;
     private Map<String, List<SourceLineDTO>> source = new HashMap<>();
     private Map<String, Integer> symbols = new HashMap<>();
     private Map<String, Integer> labels = new HashMap<>();

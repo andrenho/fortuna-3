@@ -1,35 +1,31 @@
-export type SourceLine = {
-    source: string,
+export interface SourceLine {
+    line: string,
     address?: number | undefined,
     bytes?: number[] | undefined,
-};
+}
+
+export interface SourceProject {
+    success: boolean,
+    mainSourceFile: string,
+    source: {[key: string]: SourceLine[]},
+    symbols: {[key: string]: number},
+    labels: {[key: string]: number},
+    binary: Uint8Array,
+    compilerError?: string,
+}
 
 export default interface DebuggingInfo {
-    files: string[],
-    code: {[key: string]: SourceLine[]},
+    success: boolean,
+    projects: {[key: string]: SourceProject},
+    errorMessage?: string,
+    hash: number,
 }
 
 export function initialDebuggingInfo() : DebuggingInfo {
-    /*
     return {
-        files: ["no_file"],
-        code: {
-            no_file: [{ source: "No project loaded." }],
-        },
-    };
-     */
-    return {
-        files: ["main.z80", "hello.z80"],
-        code: {
-            "main.z80": [
-                { source: "; Hello world!" },
-                { source: "    nop  ; do nothing", address: 0, bytes: [0] },
-                { source: "x:  jp x", address: 2, bytes: [0xc3, 0xc3, 0xc3] },
-                { source: "    nop", address: 3, bytes: [0] },
-            ],
-            "hello.z80": [
-                { source: "ret", address: 1, bytes: [0xf4] },
-            ]
-        }
-    };
+        success: false,
+        errorMessage: "No project loaded",
+        projects: {},
+        hash: 0,
+    }
 }

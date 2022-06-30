@@ -9,4 +9,5 @@ public class RawCompilerOutputDTO {
     private String compilerError;
     private String listing;
     private byte[] rom;
+    private String mainSourceFile;
 }

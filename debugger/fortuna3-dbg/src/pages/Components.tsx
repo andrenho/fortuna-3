@@ -8,7 +8,7 @@ const Components = observer(() : JSX.Element => {
     return (
         <div style={{display: "flex", flexDirection: "row", gap: "16px", flexWrap: "wrap", alignItems: "flex-start"}}>
             <Debugger />
-            <div style={{display: "flex", flexDirection: "column"}}>
+            <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
                 <CPU />
                 <RAM />
             </div>

@@ -21,6 +21,7 @@ public class CompilerMapper {
 
         SourceProjectDTO sourceProject = new SourceProjectDTO();
         sourceProject.setSuccess(rawCompilerOutput.getStatus() == 0);
+        sourceProject.setMainSourceFile(rawCompilerOutput.getMainSourceFile());
         if (rawCompilerOutput.getStatus() != 0)
             sourceProject.setCompilerError(rawCompilerOutput.getCompilerError());
         sourceProject.setBinary(rawCompilerOutput.getRom());

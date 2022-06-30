@@ -81,6 +81,7 @@ public class CompilerService {
             rawCompilerOutput.setStatus(process.waitFor());
             rawCompilerOutput.setListing(Files.readString(Path.of("listing.txt")));
             rawCompilerOutput.setRom(Files.readAllBytes(Path.of("rom.bin")));
+            rawCompilerOutput.setMainSourceFile(Path.of(mainSourceFile).getFileName().toString());
 
             new File("listing.txt").delete();
             new File("rom.bin").delete();

@@ -1,7 +1,7 @@
 import {createContext} from "react";
 import {EmulatorState, Fortuna3Emulator} from "fortuna3-emu";
 import {makeAutoObservable, runInAction} from "mobx";
-import DebuggingInfo, {initialDebuggingInfo} from "./types/debuggingInfo";
+import DebuggingInfo, {initialDebuggingInfo, SourceProject} from "./types/debuggingInfo";
 
 export default class FortunaStore {
 
@@ -27,6 +27,7 @@ export default class FortunaStore {
     debuggingInfo: DebuggingInfo = initialDebuggingInfo();
 
     selectedFile?: string | undefined;
+    selectedProject?: string | undefined;
 
     constructor() {
         makeAutoObservable(this);
@@ -39,6 +40,12 @@ export default class FortunaStore {
                 this.updateSelectedFile();
             });
         });
+    }
+
+    get currentProject() : SourceProject | undefined {
+        if (this.selectedProject === undefined)
+            return undefined;
+        return this.debuggingInfo.projects[this.selectedProject];
     }
 
     reset() {
@@ -74,6 +81,12 @@ export default class FortunaStore {
         this.selectedFile = file;
     }
 
+    setSelectedProject(project: string) {
+        console.debug(`Selected file updated to "${project}"`);
+        this.selectedProject = project;
+        this.setSelectedFile(this.debuggingInfo.projects[project].mainSourceFile);
+    }
+
     swapBreakpoint(addr: number) {
         if (this.state.breakpoints.includes(addr))
             this.emulator!.removeBreakpoint(addr);
@@ -90,8 +103,11 @@ export default class FortunaStore {
     }
 
     private updateSelectedFile() : void {
-        for (const file of this.debuggingInfo.files) {
-            for (const line of this.debuggingInfo.code[file]) {
+        if (this.currentProject === undefined)
+            return;
+        for (const file of Object.keys(this.currentProject.source)) {
+            const source = this.currentProject.source[file];
+            for (const line of source) {
                 if (line.address === this.state.cpu.pc) {
                     this.setSelectedFile(file);
                     return;
