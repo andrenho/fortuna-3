@@ -2,5 +2,10 @@
   "sdcard": {
     "sizeInMB": 32
   },
-  "biosSource": "main.z80"
+  "projects": {
+    "bios": {
+      "source": "main.z80",
+      "address": 0
+    }
+  }
 }

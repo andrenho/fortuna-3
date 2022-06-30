@@ -9,6 +9,7 @@ export interface FortunaApi {
     step : () => void;
     addBreakpoint: (addr: number) => void,
     removeBreakpoint: (addr: number) => void,
+    setRam: (addr: number, data: number) => void,
 }
 
 export function loadApiFunctions(module: FortunaModule) : FortunaApi {
@@ -19,5 +20,6 @@ export function loadApiFunctions(module: FortunaModule) : FortunaApi {
         step: module.cwrap("step", null, []),
         addBreakpoint: module.cwrap("add_breakpoint", null, ["number"]),
         removeBreakpoint: module.cwrap("remove_breakpoint", null, ["number"]),
+        setRam: module.cwrap("set_ram", null, ["number", "number"]),
     };
 }

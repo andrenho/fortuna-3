@@ -3,6 +3,7 @@ package com.fortuna3.fortuna3.compiler;
 import com.fortuna3.fortuna3.output.DebuggingInfoDTO;
 import com.fortuna3.fortuna3.output.OutputMapper;
 import com.fortuna3.fortuna3.output.SourceProjectDTO;
+import com.fortuna3.fortuna3.projectfile.ProjectDTO;
 import com.fortuna3.fortuna3.projectfile.ProjectFileDTO;
 import com.fortuna3.fortuna3.projectfile.ProjectFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +50,11 @@ public class CompilerService {
         record SourceProjectIndex(String name, SourceProjectDTO sourceProject) {}
 
         List<CompletableFuture<SourceProjectIndex>> futures = new ArrayList<>();
-        if (projectFile.getBiosSource() != null)
-            futures.add(CompletableFuture.supplyAsync(() -> new SourceProjectIndex("bios", compile(path + "/" + projectFile.getBiosSource()))));
+        for (Map.Entry<String, ProjectDTO> project: projectFile.getProjects().entrySet()) {
+            futures.add(CompletableFuture.supplyAsync(() -> new SourceProjectIndex(
+                    project.getKey(),
+                    compile(path + "/" + project.getValue().getSource(), project.getValue().getAddress()))));
+        }
 
         Map<String, SourceProjectDTO> projects = futures
                 .stream().map(CompletableFuture::join).toList()
@@ -58,10 +62,10 @@ public class CompilerService {
         return outputMapper.mapSourceProjectsToDebuggingInfo(projects);
     }
 
-    private SourceProjectDTO compile(String biosSource) {
+    private SourceProjectDTO compile(String biosSource, Integer address) {
 
         RawCompilerOutputDTO rawCompilerOutputDTO = runCompiler(biosSource);
-        return compilerMapper.mapRawToSourceProject(rawCompilerOutputDTO);
+        return compilerMapper.mapRawToSourceProject(rawCompilerOutputDTO, address);
     }
 
     private RawCompilerOutputDTO runCompiler(String mainSourceFile) {

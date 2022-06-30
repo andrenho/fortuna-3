@@ -61,10 +61,10 @@
   - [x] Project chooser
   - [x] Implement logic in store
   - [x] Manage errors
-  - [ ] Bytes are incorrect
-  - [ ] Load binary
-  - [ ] Load into the debugger (frontend)
-  - [ ] Debugger: watch for changes, receive file
+  - [x] Bytes are incorrect
+  - [x] Debugger: watch for changes, receive file
+  - [x] Load binary
+  - [ ] Add SDCard size
 
 - [ ] Manage code
   - [ ] Add/remove breakpoints

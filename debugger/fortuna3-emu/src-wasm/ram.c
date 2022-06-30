@@ -12,9 +12,8 @@ void ram_init(size_t sz)
     free(ram_);
     ram_ = malloc(sz);
 
-    srand(0);
     for (size_t i = 0; i < (sz / 4); ++i)
-        ((uint32_t *) ram_)[i] = rand();
+        ((uint32_t *) ram_)[i] = 0xffffffff;
 }
 
 void ram_banks(uint8_t virtual_banks_[4])

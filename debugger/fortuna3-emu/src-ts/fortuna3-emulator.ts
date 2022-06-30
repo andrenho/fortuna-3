@@ -142,6 +142,11 @@ export class Fortuna3Emulator {
         this.api.removeBreakpoint(addr);
     }
 
+    setRam(addr: number, data: Uint8Array) : void {
+        for (let i = 0; i < data.length; ++i)
+            this.api.setRam(addr + i, data[i]);
+    }
+
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
         const script = document.createElement("script");
         script.src = `${wasmFilePath}/fortuna.js`;

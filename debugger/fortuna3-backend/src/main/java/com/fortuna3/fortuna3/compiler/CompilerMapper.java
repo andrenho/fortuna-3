@@ -17,11 +17,12 @@ public class CompilerMapper {
 
     private final Pattern filenamePattern = Pattern.compile("\\\"(.*?)\\\"");
 
-    public SourceProjectDTO mapRawToSourceProject(RawCompilerOutputDTO rawCompilerOutput) {
+    public SourceProjectDTO mapRawToSourceProject(RawCompilerOutputDTO rawCompilerOutput, Integer address) {
 
         SourceProjectDTO sourceProject = new SourceProjectDTO();
         sourceProject.setSuccess(rawCompilerOutput.getStatus() == 0);
         sourceProject.setMainSourceFile(rawCompilerOutput.getMainSourceFile());
+        sourceProject.setAddress(address);
         if (rawCompilerOutput.getStatus() != 0)
             sourceProject.setCompilerError(rawCompilerOutput.getCompilerError());
         sourceProject.setBinary(rawCompilerOutput.getRom());

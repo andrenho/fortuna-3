@@ -2,6 +2,8 @@ package com.fortuna3.fortuna3.projectfile;
 
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 public class ProjectFileDTO {
 
@@ -11,6 +13,5 @@ public class ProjectFileDTO {
     }
 
     private SDCardDTO sdcard;
-    private String biosSource;
-
+    private Map<String, ProjectDTO> projects;
 }

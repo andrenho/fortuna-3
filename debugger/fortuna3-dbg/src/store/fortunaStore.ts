@@ -57,6 +57,13 @@ export default class FortunaStore {
 
     reset() {
         this.emulator!.reset();
+        if (this.selectedProject && this.selectedProject === "bios") {
+            const bios = Uint8Array.from(window.atob(this.currentProject!.binary), c => c.charCodeAt(0));
+            console.log(bios);
+            this.emulator!.setRam(0, bios);
+        } else {
+            this.currentError = "A BIOS is not included in the project.";
+        }
         this.updateEmulatorState();
         this.updateSelectedFile();
     }
@@ -132,13 +139,13 @@ export default class FortunaStore {
                 console.debug("Debugging info updated from backend:");
                 console.debug(debuggingInfo);
                 if (debuggingInfo.success) {
-                    this.reset();
                     runInAction(() => {
                         this.currentError = undefined;
                         this.lastCompilationHash = newHash;
                         this.debuggingInfo = debuggingInfo;
                         this.setSelectedProject("bios");
                     });
+                    this.reset();
                 } else {
                     runInAction(() => {
                         this.lastCompilationHash = newHash;

@@ -10,7 +10,7 @@ export interface SourceProject {
     source: {[key: string]: SourceLine[]},
     symbols: {[key: string]: number},
     labels: {[key: string]: number},
-    binary: Uint8Array,
+    binary: string,
     compilerError?: string,
 }
 
