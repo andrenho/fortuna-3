@@ -8,15 +8,18 @@ const SDCard = observer(() : JSX.Element => {
     const store = useStore();
     const state = store.state!;
 
-    return (<FlatData
-        title="SD Card"
-        currentPage={store.sdCardPage}
-        totalPages={store.sdCardSizeInMB * 2048}
-        rows={32}
-        data={state?.sdCardPage!}
-        onPageChange={n => store.setSdCardPage(n)}
-        topRightElement={<SDCardImageDownloader />}
-    />);
+    if (store.debuggingInfo != null)
+        return (<FlatData
+            title="SD Card"
+            currentPage={store.sdCardPage}
+            totalPages={store.debuggingInfo.sdCardSizeInMB * 2048}
+            rows={32}
+            data={state?.sdCardPage!}
+            onPageChange={n => store.setSdCardPage(n)}
+            topRightElement={<SDCardImageDownloader />}
+        />);
+    else
+        return <></>;
 });
 
 export default SDCard;

@@ -10,7 +10,6 @@ export default class FortunaStore {
 
     ramPage = 0;
     sdCardPage = 0;
-    sdCardSizeInMB = 0;
 
     state : EmulatorState = {
         cpu: {
@@ -37,8 +36,7 @@ export default class FortunaStore {
     constructor() {
         makeAutoObservable(this);
         // TODO - where are SDCard image size and type coming from?
-        this.sdCardSizeInMB = 16;
-        Fortuna3Emulator.initialize(`${process.env.PUBLIC_URL}/fortuna`, this.sdCardSizeInMB).then(emulator => {
+        Fortuna3Emulator.initialize(`${process.env.PUBLIC_URL}/fortuna`).then(emulator => {
             runInAction(() => {
                 this.emulator = emulator;
                 this.updateEmulatorState();
@@ -56,7 +54,7 @@ export default class FortunaStore {
     }
 
     reset() {
-        this.emulator!.reset();
+        this.emulator!.reset(this.debuggingInfo.sdCardSizeInMB);
         if (this.selectedProject && this.selectedProject === "bios") {
             const bios = Uint8Array.from(window.atob(this.currentProject!.binary), c => c.charCodeAt(0));
             console.log(bios);

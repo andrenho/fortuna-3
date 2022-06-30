@@ -1,4 +1,4 @@
-	jr	stringlength
+	call	stringlength
 
   include stringlength.z80
 	

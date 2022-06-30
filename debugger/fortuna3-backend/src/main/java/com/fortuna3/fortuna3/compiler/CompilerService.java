@@ -59,7 +59,7 @@ public class CompilerService {
         Map<String, SourceProjectDTO> projects = futures
                 .stream().map(CompletableFuture::join).toList()
                 .stream().collect(Collectors.toMap(SourceProjectIndex::name, SourceProjectIndex::sourceProject));
-        return outputMapper.mapSourceProjectsToDebuggingInfo(projects);
+        return outputMapper.mapSourceProjectsToDebuggingInfo(projects, projectFile.getSdcard());
     }
 
     private SourceProjectDTO compile(String biosSource, Integer address) {

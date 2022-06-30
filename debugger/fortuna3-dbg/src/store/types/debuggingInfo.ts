@@ -18,6 +18,7 @@ export default interface DebuggingInfo {
     success: boolean,
     projects: {[key: string]: SourceProject},
     errorMessage?: string,
+    sdCardSizeInMB: number,
     hash: number,
 }
 
@@ -27,5 +28,6 @@ export function initialDebuggingInfo() : DebuggingInfo {
         errorMessage: "No project loaded",
         projects: {},
         hash: 0,
+        sdCardSizeInMB: 0,
     }
 }

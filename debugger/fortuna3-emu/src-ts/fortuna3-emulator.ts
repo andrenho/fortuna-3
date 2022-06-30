@@ -44,13 +44,13 @@ export class Fortuna3Emulator {
 
     private constructor(private sdCardImageSizeMB) {}
 
-    static async initialize(wasmFilePath: string, sdCardImageSizeMB: number) : Promise<Fortuna3Emulator> {
-        const emulator = new Fortuna3Emulator(sdCardImageSizeMB);
+    static async initialize(wasmFilePath: string) : Promise<Fortuna3Emulator> {
+        const emulator = new Fortuna3Emulator(4);
 
         await this.loadWasmModule(wasmFilePath);
         emulator.api = loadApiFunctions(Module);
 
-        emulator.api.initialize(sdCardImageSizeMB);
+        emulator.api.initialize(emulator.sdCardImageSizeMB);
         console.log("Emulator initialized.");
 
         return emulator;
@@ -60,8 +60,9 @@ export class Fortuna3Emulator {
         this.api.step();
     }
 
-    reset() : void {
-        this.api.initialize(this.sdCardImageSizeMB);
+    reset(sdCardSizeInMB: number) : void {
+        this.sdCardImageSizeMB = sdCardSizeInMB;
+        this.api.initialize(sdCardSizeInMB);
         console.log("Emulator initialized.");
     }
 

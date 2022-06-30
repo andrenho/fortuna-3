@@ -64,7 +64,8 @@
   - [x] Bytes are incorrect
   - [x] Debugger: watch for changes, receive file
   - [x] Load binary
-  - [ ] Add SDCard size
+  - [x] Add SDCard size
+  - [ ] Project reload on JSON change
 
 - [ ] Manage code
   - [ ] Add/remove breakpoints

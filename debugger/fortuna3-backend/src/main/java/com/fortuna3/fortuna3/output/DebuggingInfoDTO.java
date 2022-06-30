@@ -14,6 +14,7 @@ public class DebuggingInfoDTO {
     private boolean success;
     private Map<String, SourceProjectDTO> projects;
     private String errorMessage;
+    private Integer sdCardSizeInMB;
 
     public Integer getHash() {
         return hashCode();
