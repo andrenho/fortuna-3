@@ -27,17 +27,18 @@ const style : StyleSet = {
         borderRight: "1px black solid",
         cursor: "pointer",
     },
-    line: {
-        ...td,
-        width: "400px",
-        overflowX: "hidden",
-        whiteSpace: "nowrap",
-    },
     address: {
         ...td,
         width: "35px",
         borderRight: "1px black solid",
         fontWeight: "bold",
+    },
+    line: {
+        ...td,
+        width: "500px",
+        maxWidth: "500px",
+        overflowX: "hidden",
+        whiteSpace: "nowrap",
     },
     bytes: {
         ...td,

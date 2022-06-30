@@ -60,7 +60,8 @@
 - [ ] Fetch/refetch from backend
   - [x] Project chooser
   - [x] Implement logic in store
-  - [ ] Manage errors
+  - [x] Manage errors
+  - [ ] Bytes are incorrect
   - [ ] Load binary
   - [ ] Load into the debugger (frontend)
   - [ ] Debugger: watch for changes, receive file

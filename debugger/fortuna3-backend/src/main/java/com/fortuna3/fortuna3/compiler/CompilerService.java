@@ -76,15 +76,19 @@ public class CompilerService {
         try {
             Process process = Runtime.getRuntime().exec(commandLine);
 
+            rawCompilerOutput.setMainSourceFile(Path.of(mainSourceFile).getFileName().toString());
             rawCompilerOutput.setCompilerOutput(getOutput(process.getInputStream()));
             rawCompilerOutput.setCompilerError(getOutput(process.getErrorStream()));
             rawCompilerOutput.setStatus(process.waitFor());
-            rawCompilerOutput.setListing(Files.readString(Path.of("listing.txt")));
-            rawCompilerOutput.setRom(Files.readAllBytes(Path.of("rom.bin")));
-            rawCompilerOutput.setMainSourceFile(Path.of(mainSourceFile).getFileName().toString());
 
-            new File("listing.txt").delete();
-            new File("rom.bin").delete();
+            if (Files.exists(Path.of("listing.txt"))) {
+                rawCompilerOutput.setListing(Files.readString(Path.of("listing.txt")));
+                new File("listing.txt").delete();
+            }
+            if (Files.exists(Path.of("rom.bin"))) {
+                rawCompilerOutput.setRom(Files.readAllBytes(Path.of("rom.bin")));
+                new File("rom.bin").delete();
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);

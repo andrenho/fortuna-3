@@ -25,7 +25,7 @@ public class SourceLineDTO {
             return null;
 
         List<Integer> bytes = new ArrayList<>(byteArray.length);
-        for (byte b : byteArray) bytes.add(256 - (int) b);
+        for (byte b : byteArray) bytes.add(Byte.toUnsignedInt(b));
         return bytes;
     }
 }

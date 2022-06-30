@@ -19,7 +19,7 @@ public class OutputMapper {
         } else {
 
             debuggingInfo.setErrorMessage(projects.values()
-                            .stream().filter(SourceProjectDTO::isSuccess)
+                            .stream().filter(p -> !p.isSuccess())
                             .map(SourceProjectDTO::getCompilerError)
                             .collect(Collectors.joining("\n")));
         }

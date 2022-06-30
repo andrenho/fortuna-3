@@ -32,6 +32,8 @@ export default class FortunaStore {
 
     lastCompilationHash: number = 0;
 
+    currentError: string | undefined;
+
     constructor() {
         makeAutoObservable(this);
         // TODO - where are SDCard image size and type coming from?
@@ -103,6 +105,7 @@ export default class FortunaStore {
     private updateEmulatorState() : void {
         const newState = this.emulator!.getState(this.ramPage, this.sdCardPage);
         this.state = newState;
+        this.currentError = this.state.lastError;
         console.debug("New state received from emulator:");
         console.debug(newState);
     }
@@ -122,17 +125,29 @@ export default class FortunaStore {
     }
 
     private async updateDebuggingInfoFromBackend() : Promise<void> {
-        const newHash = await fetchBackendCrc();
-        if (newHash !== this.lastCompilationHash) {
-            const debuggingInfo = await fetchBackendCompilation();
-            console.debug("Debugging info updated from backend:");
-            console.debug(debuggingInfo);
-            this.reset();
-            runInAction(() => {
-                this.lastCompilationHash = newHash;
-                this.debuggingInfo = debuggingInfo;
-                this.setSelectedProject("bios");
-            });
+        try {
+            const newHash = await fetchBackendCrc();
+            if (newHash !== this.lastCompilationHash) {
+                const debuggingInfo = await fetchBackendCompilation();
+                console.debug("Debugging info updated from backend:");
+                console.debug(debuggingInfo);
+                if (debuggingInfo.success) {
+                    this.reset();
+                    runInAction(() => {
+                        this.currentError = undefined;
+                        this.lastCompilationHash = newHash;
+                        this.debuggingInfo = debuggingInfo;
+                        this.setSelectedProject("bios");
+                    });
+                } else {
+                    runInAction(() => {
+                        this.lastCompilationHash = newHash;
+                        this.currentError = debuggingInfo.errorMessage;
+                    });
+                }
+            }
+        } catch (e) {
+            runInAction(() => { this.currentError = (e as Error).message; });
         }
     }
 }

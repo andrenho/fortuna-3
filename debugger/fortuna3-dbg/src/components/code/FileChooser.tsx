@@ -6,7 +6,7 @@ const style: StyleSet = {
     files: {
         display: "flex",
         flexDirection: "column",
-        width: "120px",
+        width: "140px",
     },
     file: {
         fontSize: "14px",
