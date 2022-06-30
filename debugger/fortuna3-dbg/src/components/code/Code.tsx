@@ -11,7 +11,8 @@ const style : StyleSet = {
         border: "1px black solid",
         borderCollapse: "collapse",
         tableLayout: "fixed",
-        minHeight: "500px",
+        minHeight: "600px",
+        height: "100%",
         boxShadow: "6px 6px 6px lightgray",
     },
     breakpoint: {

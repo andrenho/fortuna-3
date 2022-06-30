@@ -5,11 +5,15 @@ import Debugger from "../components/code/Debugger";
 
 const Components = observer(() : JSX.Element => {
 
-    return (<>
-        <Debugger />
-        <CPU />
-        <RAM />
-    </>);
+    return (
+        <div style={{display: "flex", flexDirection: "row", gap: "16px", flexWrap: "wrap", alignItems: "flex-start"}}>
+            <Debugger />
+            <div style={{display: "flex", flexDirection: "column"}}>
+                <CPU />
+                <RAM />
+            </div>
+        </div>
+    );
 });
 
 export default Components;
