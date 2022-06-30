@@ -2,6 +2,7 @@ package com.fortuna3.fortuna3.output;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode
 public class SourceLineDTO {
 
     private Integer address;
@@ -23,9 +25,7 @@ public class SourceLineDTO {
             return null;
 
         List<Integer> bytes = new ArrayList<>(byteArray.length);
-        for (int i = 0; i < byteArray.length; ++i)
-            bytes.add(256 - (int) byteArray[i]);
+        for (byte b : byteArray) bytes.add(256 - (int) b);
         return bytes;
-
     }
 }

@@ -16,14 +16,12 @@ public class OutputMapper {
         if (debuggingInfo.isSuccess()) {
 
             debuggingInfo.setProjects(projects);
-            debuggingInfo.setHash(Arrays.hashCode(projects.values().stream().map(SourceProjectDTO::getCrc).toArray()));
         } else {
 
             debuggingInfo.setErrorMessage(projects.values()
                             .stream().filter(SourceProjectDTO::isSuccess)
                             .map(SourceProjectDTO::getCompilerError)
                             .collect(Collectors.joining("\n")));
-            debuggingInfo.setHash(debuggingInfo.getErrorMessage().hashCode());
         }
 
         return debuggingInfo;
