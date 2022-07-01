@@ -8,7 +8,7 @@ const Debugger = observer(() : JSX.Element => {
     const store = useStore();
 
     return (
-        <div style={{display: "flex", flexDirection: "column", gap: "8px"}}>
+        <div style={{display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px"}}>
 
             <div style={{display: "flex", justifyContent: "flex-end", alignItems: "baseline", gap: "4px"}}>
                 <label htmlFor="projects">Project: </label>
@@ -17,10 +17,12 @@ const Debugger = observer(() : JSX.Element => {
                 </select>
             </div>
 
-            <div style={{display: "flex", marginBottom: "16px"}}>
+            <div style={{display: "flex"}}>
                 <FileChooser selectedFile={store.selectedFile} onSelectFile={(name) => store.setSelectedFile(name)} />
                 <Code selectedFile={store.selectedFile} />
             </div>
+
+            <p style={{margin: 0, fontSize: "13px", textAlign: "right"}}>Last updated at <b>{store.lastUpdated}</b>.</p>
 
         </div>
     );

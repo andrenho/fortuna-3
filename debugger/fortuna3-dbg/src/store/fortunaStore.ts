@@ -33,6 +33,8 @@ export default class FortunaStore {
 
     currentError: string | undefined;
 
+    lastUpdated = "never";
+
     constructor() {
         makeAutoObservable(this);
         // TODO - where are SDCard image size and type coming from?
@@ -136,20 +138,18 @@ export default class FortunaStore {
                 const debuggingInfo = await fetchBackendCompilation();
                 console.debug("Debugging info updated from backend:");
                 console.debug(debuggingInfo);
-                if (debuggingInfo.success) {
-                    runInAction(() => {
+                runInAction(() => {
+                    this.lastCompilationHash = newHash;
+                    this.lastUpdated = new Date().toLocaleTimeString();
+                    if (debuggingInfo.success) {
                         this.currentError = undefined;
-                        this.lastCompilationHash = newHash;
                         this.debuggingInfo = debuggingInfo;
                         this.setSelectedProject("bios");
-                    });
-                    this.reset();
-                } else {
-                    runInAction(() => {
-                        this.lastCompilationHash = newHash;
+                        this.reset();
+                    } else {
                         this.currentError = debuggingInfo.errorMessage;
-                    });
-                }
+                    }
+                });
             }
         } catch (e) {
             runInAction(() => { this.currentError = (e as Error).message; });

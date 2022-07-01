@@ -26,8 +26,7 @@ public class ProjectFileService {
 
     private ProjectFileDTO projectFile;
 
-    @PostConstruct
-    public void readConfigFile() throws IOException {
+    private void readConfigFile() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         try {
@@ -39,6 +38,11 @@ public class ProjectFileService {
     }
 
     public ProjectFileDTO getProjectFile() {
+        try {
+            readConfigFile();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
         return projectFile;
     }
 

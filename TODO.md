@@ -65,10 +65,7 @@
   - [x] Debugger: watch for changes, receive file
   - [x] Load binary
   - [x] Add SDCard size
-  - [ ] Project reload on JSON change
-
-- [ ] Manage code
-  - [ ] Add/remove breakpoints
+  - [x] Project reload on JSON change
 
 - [ ] Video
   - [ ] On emulator (WASM)
