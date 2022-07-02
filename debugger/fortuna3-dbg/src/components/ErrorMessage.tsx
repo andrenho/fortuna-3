@@ -1,6 +1,6 @@
 import {observer} from "mobx-react-lite";
-import useStore from "../../hooks/useStore";
-import {StyleSet} from "../../util/types";
+import useStore from "../hooks/useStore";
+import {StyleSet} from "../util/types";
 import React from "react";
 
 const style : StyleSet = {

@@ -3,6 +3,12 @@ import {EmulatorState, Fortuna3Emulator} from "fortuna3-emu";
 import {makeAutoObservable, runInAction} from "mobx";
 import DebuggingInfo, {initialDebuggingInfo, SourceProject} from "./types/debuggingInfo";
 import {fetchBackendCompilation, fetchBackendCrc} from "../service/backendService";
+import TerminalState from "./types/terminalState";
+
+const terminalSize = {
+    w: 60,
+    h: 20
+};
 
 export default class FortunaStore {
 
@@ -22,6 +28,12 @@ export default class FortunaStore {
         ramBanks: [],
         sdCardPage: new Uint8Array(512),
         lastError: "",
+    };
+
+    terminalState: TerminalState = {
+        lines: Array(terminalSize.h).fill(" ".repeat(terminalSize.w)),
+        cursorX: 0,
+        cursorY: 0,
     };
 
     debuggingInfo: DebuggingInfo = initialDebuggingInfo();

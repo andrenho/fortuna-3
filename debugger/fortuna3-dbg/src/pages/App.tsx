@@ -4,7 +4,7 @@ import Components from "./Components";
 import SDCard from "../components/sdcard/SDCard";
 import {observer} from "mobx-react-lite";
 import EmulatorControls from "../components/main-page/EmulatorControls";
-import ErrorMessage from "../components/other/ErrorMessage";
+import ErrorMessage from "../components/ErrorMessage";
 
 const App = observer(() => {
 
