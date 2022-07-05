@@ -2,7 +2,7 @@ import {observer} from "mobx-react-lite";
 import RAM from "../components/memory/Ram";
 import CPU from "../components/Cpu";
 import Debugger from "../components/code/Debugger";
-import Terminal from "../components/Terminal";
+import UART from "../components/UART";
 
 const Components = observer(() : JSX.Element => {
 
@@ -10,7 +10,7 @@ const Components = observer(() : JSX.Element => {
         <div style={{display: "flex", flexDirection: "row", gap: "16px", flexWrap: "wrap", alignItems: "flex-start"}}>
             <Debugger />
             <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
-                <Terminal />
+                <UART rows={20} columns={60} />
                 <CPU />
                 <RAM />
             </div>
