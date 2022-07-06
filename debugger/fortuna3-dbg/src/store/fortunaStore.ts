@@ -3,7 +3,7 @@ import {EmulatorState, Fortuna3Emulator} from "fortuna3-emu";
 import {makeAutoObservable, runInAction} from "mobx";
 import DebuggingInfo, {initialDebuggingInfo, SourceProject} from "./types/debuggingInfo";
 import {fetchBackendCompilation, fetchBackendCrc} from "../service/backendService";
-import TerminalState from "./types/terminalState";
+import UartTerminal from "./types/uartTerminal";
 
 const terminalSize = {
     w: 60,
@@ -30,13 +30,9 @@ export default class FortunaStore {
         lastError: "",
     };
 
-    terminalState: TerminalState = {
-        lines: Array(terminalSize.h).fill(" ".repeat(terminalSize.w)),
-        cursorX: 0,
-        cursorY: 0,
-    };
-
     debuggingInfo: DebuggingInfo = initialDebuggingInfo();
+
+    uartTerminal = new UartTerminal(terminalSize.h, terminalSize.w);
 
     selectedFile?: string | undefined;
     selectedProject?: string | undefined;
@@ -71,7 +67,6 @@ export default class FortunaStore {
         this.emulator!.reset(this.debuggingInfo.sdCardSizeInMB);
         if (this.selectedProject && this.selectedProject === "bios") {
             const bios = Uint8Array.from(window.atob(this.currentProject!.binary), c => c.charCodeAt(0));
-            console.log(bios);
             this.emulator!.setRam(0, bios);
         } else {
             this.currentError = "A BIOS is not included in the project.";
@@ -121,10 +116,16 @@ export default class FortunaStore {
         this.updateEmulatorState();
     }
 
+    updateTerminal() {
+        const printedChars = this.emulator!.getUartPrintedChars();
+        this.uartTerminal.addChars(printedChars);
+    }
+
     private updateEmulatorState() : void {
         const newState = this.emulator!.getState(this.ramPage, this.sdCardPage);
         this.state = newState;
         this.currentError = this.state.lastError;
+        this.updateTerminal();
         console.debug("New state received from emulator:");
         console.debug(newState);
     }

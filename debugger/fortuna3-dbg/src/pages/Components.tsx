@@ -3,14 +3,17 @@ import RAM from "../components/memory/Ram";
 import CPU from "../components/Cpu";
 import Debugger from "../components/code/Debugger";
 import UART from "../components/UART";
+import useStore from "../hooks/useStore";
 
 const Components = observer(() : JSX.Element => {
+
+    const { uartTerminal } = useStore();
 
     return (
         <div style={{display: "flex", flexDirection: "row", gap: "16px", flexWrap: "wrap", alignItems: "flex-start"}}>
             <Debugger />
             <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
-                <UART rows={20} columns={60} />
+                <UART rows={uartTerminal.terminalRows} columns={uartTerminal.terminalColumns} />
                 <CPU />
                 <RAM />
             </div>

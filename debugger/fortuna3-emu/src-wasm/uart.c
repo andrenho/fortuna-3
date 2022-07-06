@@ -1,3 +1,5 @@
+#include <emscripten/emscripten.h>
+
 #include "uart.h"
 
 #include <stdlib.h>
@@ -12,7 +14,7 @@ void uart_printchar(uint8_t value)
         printed_chars[printed_chars_idx++] = value;
 }
 
-size_t uart_unload_printed_chars(uint8_t* data, size_t max_sz)
+EMSCRIPTEN_KEEPALIVE size_t uart_unload_printed_chars(uint8_t* data, size_t max_sz)
 {
     memcpy(data, printed_chars, max_sz);
     size_t r = printed_chars_idx;

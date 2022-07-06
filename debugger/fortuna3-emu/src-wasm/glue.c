@@ -11,6 +11,7 @@
 #include "cpu.h"
 #include "ram.h"
 #include "sdcard.h"
+#include "uart.h"
 
 #include "z80/Z80.h"
 #include "miniz/miniz.h"
@@ -28,7 +29,9 @@ EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
     ram_init(512 KB);
     bkp_clear();
 
-    return sdcard_init(sdcard_sz_in_mb MB);
+    bool r = sdcard_init(sdcard_sz_in_mb MB);
+    puts("Emulator initialized.");
+    return r;
 }
 
 EMSCRIPTEN_KEEPALIVE void step()
@@ -120,6 +123,11 @@ EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
     mz_zip_writer_end(&zip);
 
     return sz;
+}
+
+EMSCRIPTEN_KEEPALIVE size_t max_printed_chars()
+{
+    return MAX_PRINTED_CHARS;
 }
 
 void emscripten_notify_memory_growth(size_t i) { (void) i; }

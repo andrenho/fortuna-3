@@ -1,4 +1,5 @@
 #include <emscripten/emscripten.h>
+#include <stdio.h>
 
 #include "z80/Z80.h"
 #include "cpu.h"
@@ -43,7 +44,7 @@ word LoopZ80(Z80 *R)
 
 void OutZ80(word port, byte value)
 {
-    switch (port) {
+    switch (port & 0xff) {
         case 0x0:
             uart_printchar(value);
             break;
@@ -52,7 +53,7 @@ void OutZ80(word port, byte value)
 
 byte InZ80(word port)
 {
-    switch (port) {
+    switch (port & 0xff) {
         case 0x0:
             return uart_getchar();
     }

@@ -10,6 +10,8 @@ export interface FortunaApi {
     addBreakpoint: (addr: number) => void,
     removeBreakpoint: (addr: number) => void,
     setRam: (addr: number, data: number) => void,
+    unloadPrintedChars: (data: pointer, maxSize: number) => number,
+    maxPrintedChars: () => number,
 }
 
 export function loadApiFunctions(module: FortunaModule) : FortunaApi {
@@ -21,5 +23,7 @@ export function loadApiFunctions(module: FortunaModule) : FortunaApi {
         addBreakpoint: module.cwrap("bkp_add", null, ["number"]),
         removeBreakpoint: module.cwrap("bkp_del", null, ["number"]),
         setRam: module.cwrap("ram_set", null, ["number", "number"]),
+        unloadPrintedChars: module.cwrap("uart_unload_printed_chars", "number", ["number", "number"]),
+        maxPrintedChars: module.cwrap("max_printed_chars", "number", []),
     };
 }

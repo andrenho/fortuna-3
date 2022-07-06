@@ -51,7 +51,6 @@ export class Fortuna3Emulator {
         emulator.api = loadApiFunctions(Module);
 
         emulator.api.initialize(emulator.sdCardImageSizeMB);
-        console.log("Emulator initialized.");
 
         return emulator;
     }
@@ -63,7 +62,6 @@ export class Fortuna3Emulator {
     reset(sdCardSizeInMB: number) : void {
         this.sdCardImageSizeMB = sdCardSizeInMB;
         this.api.initialize(sdCardSizeInMB);
-        console.log("Emulator initialized.");
     }
 
     getState(ramPage: number, sdCardPage: number) : EmulatorState {
@@ -146,6 +144,19 @@ export class Fortuna3Emulator {
     setRam(addr: number, data: Uint8Array) : void {
         for (let i = 0; i < data.length; ++i)
             this.api.setRam(addr + i, data[i]);
+    }
+
+    getUartPrintedChars() : string[] {
+
+        const maxSize = this.api.maxPrintedChars();
+
+        const buf = Module._malloc(maxSize);
+        const sz = this.api.unloadPrintedChars(buf, maxSize);
+        const charArray = new Uint8Array(Module.HEAP8.buffer, buf, sz);
+
+        const r = String.fromCharCode(...charArray).split("");
+        Module._free(buf);
+        return r;
     }
 
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
