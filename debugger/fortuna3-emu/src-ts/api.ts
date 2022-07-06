@@ -18,8 +18,8 @@ export function loadApiFunctions(module: FortunaModule) : FortunaApi {
         getState: module.cwrap("get_state", null, ["number", "number", "number"]),
         compressSDCard: module.cwrap("compress_sdcard", "number", ["number", "number"]),
         step: module.cwrap("step", null, []),
-        addBreakpoint: module.cwrap("add_breakpoint", null, ["number"]),
-        removeBreakpoint: module.cwrap("remove_breakpoint", null, ["number"]),
-        setRam: module.cwrap("set_ram", null, ["number", "number"]),
+        addBreakpoint: module.cwrap("bkp_add", null, ["number"]),
+        removeBreakpoint: module.cwrap("bkp_del", null, ["number"]),
+        setRam: module.cwrap("ram_set", null, ["number", "number"]),
     };
 }

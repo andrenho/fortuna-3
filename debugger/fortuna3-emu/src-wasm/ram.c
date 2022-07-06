@@ -1,3 +1,5 @@
+#include <emscripten/emscripten.h>
+
 #include "ram.h"
 
 #include <stdint.h>
@@ -46,7 +48,7 @@ void ram_get_page(uint16_t page, uint8_t* data)
     memcpy(data, &ram_[starting_physical_addr], 256);
 }
 
-void ram_set(uint16_t addr, uint8_t data)
+EMSCRIPTEN_KEEPALIVE void ram_set(uint16_t addr, uint8_t data)
 {
     ram_[translate_virtual_to_physical(addr)] = data;
 }

@@ -1,4 +1,4 @@
-SRC=glue.c ram.c sdcard.c cpu.c z80/z80.c fatfs/ff.c fatfs/ffsystem.c miniz/miniz.c
+SRC=glue.c ram.c sdcard.c cpu.c uart.c z80/z80.c fatfs/ff.c fatfs/ffsystem.c miniz/miniz.c
 
 all: fortuna.wasm
 

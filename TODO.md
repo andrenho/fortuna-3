@@ -57,7 +57,7 @@
 
 - [x] Organize screen
 
-- [ ] Fetch/refetch from backend
+- [x] Fetch/refetch from backend
   - [x] Project chooser
   - [x] Implement logic in store
   - [x] Manage errors
@@ -67,7 +67,7 @@
   - [x] Add SDCard size
   - [x] Project reload on JSON change
 
-- [ ] Video
+- [ ] Serial
   - [ ] On emulator (WASM)
   - [ ] Provide component
 
@@ -84,3 +84,8 @@
   - [ ] Peripheral management
   - [ ] Parallel communication
   - [ ] SPI
+
+- [ ] Advanced fortuna-3 stuff
+  - [ ] Video
+  - [ ] Audio
+  - [ ] Network

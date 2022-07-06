@@ -1,17 +1,20 @@
+#include <emscripten/emscripten.h>
+
 #include "z80/Z80.h"
 #include "cpu.h"
+#include "uart.h"
 
 #include "ram.h"
 
 uint16_t bkp[MAX_BKPS];
 
-void bkp_clear()
+EMSCRIPTEN_KEEPALIVE void bkp_clear()
 {
     for (size_t i = 0; i < MAX_BKPS; ++i)
         bkp[i] = 0;
 }
 
-void bkp_add(uint16_t addr)
+EMSCRIPTEN_KEEPALIVE void bkp_add(uint16_t addr)
 {
     for (size_t i = 0; i < MAX_BKPS; ++i)
         if (bkp[i] == addr)
@@ -25,7 +28,7 @@ void bkp_add(uint16_t addr)
     }
 }
 
-void bkp_del(uint16_t addr)
+EMSCRIPTEN_KEEPALIVE void bkp_del(uint16_t addr)
 {
     for (size_t i = 0; i < MAX_BKPS; ++i)
         if (bkp[i] == addr)
@@ -40,12 +43,19 @@ word LoopZ80(Z80 *R)
 
 void OutZ80(word port, byte value)
 {
-    (void) port; (void) value;
+    switch (port) {
+        case 0x0:
+            uart_printchar(value);
+            break;
+    }
 }
 
 byte InZ80(word port)
 {
-    (void) port;
+    switch (port) {
+        case 0x0:
+            return uart_getchar();
+    }
     return 0;
 }
 

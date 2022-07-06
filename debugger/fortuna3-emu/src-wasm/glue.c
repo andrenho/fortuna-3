@@ -122,21 +122,6 @@ EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
     return sz;
 }
 
-EMSCRIPTEN_KEEPALIVE void add_breakpoint(uint16_t addr)
-{
-    bkp_add(addr);
-}
-
-EMSCRIPTEN_KEEPALIVE void remove_breakpoint(uint16_t addr)
-{
-    bkp_del(addr);
-}
-
-EMSCRIPTEN_KEEPALIVE void set_ram(uint16_t addr, uint8_t data)
-{
-    ram_set(addr, data);
-}
-
 void emscripten_notify_memory_growth(size_t i) { (void) i; }
 
 // vim: ts=4:sts=4:sw=4:expandtab

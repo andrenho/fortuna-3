@@ -5,6 +5,7 @@ import SDCard from "../components/sdcard/SDCard";
 import {observer} from "mobx-react-lite";
 import EmulatorControls from "../components/main-page/EmulatorControls";
 import ErrorMessage from "../components/ErrorMessage";
+import Documentation from "./Documentation";
 
 const App = observer(() => {
 
@@ -17,6 +18,7 @@ const App = observer(() => {
         <div style={{padding:"16px"}}>
             {selectedTab === 0 && <Components />}
             {selectedTab === 1 && <SDCard />}
+            {selectedTab === 2 && <Documentation />}
         </div>
     </>);
 });
