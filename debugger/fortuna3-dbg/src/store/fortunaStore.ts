@@ -71,15 +71,13 @@ export default class FortunaStore {
         } else {
             this.currentError = "A BIOS is not included in the project.";
         }
-        this.updateEmulatorState();
-        this.updateSelectedFile();
+        this.updateState();
         this.uartTerminal.reset();
     }
 
     step() {
         this.emulator!.step();
-        this.updateEmulatorState();
-        this.updateSelectedFile();
+        this.updateState();
     }
 
     setRamPage(newPage: number) : void {
@@ -120,6 +118,11 @@ export default class FortunaStore {
     updateTerminal() {
         const printedChars = this.emulator!.getUartPrintedChars();
         this.uartTerminal.addChars(printedChars);
+    }
+
+    private updateState() : void {
+        this.updateEmulatorState();
+        this.updateSelectedFile();
     }
 
     private updateEmulatorState() : void {
