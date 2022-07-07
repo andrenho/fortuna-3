@@ -23,6 +23,8 @@ static Z80 z80 = { 0 };
 
 char last_error[0x200] = { 0 };
 
+typedef enum { NORMAL = 0, BREAKPOINT = 1 } FinishReason;
+
 EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
 {
     ResetZ80(&z80);
@@ -36,7 +38,14 @@ EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
 
 EMSCRIPTEN_KEEPALIVE void step()
 {
-    RunZ80(&z80);
+    ExecZ80(&z80, 1);
+}
+
+EMSCRIPTEN_KEEPALIVE FinishReason step_screen(double speed_in_mhz)
+{
+    int cycles = (speed_in_mhz * 1000000) / 60;
+    ExecZ80(&z80, cycles);
+    return NORMAL;
 }
 
 /* State format:

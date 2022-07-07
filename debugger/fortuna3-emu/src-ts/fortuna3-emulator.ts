@@ -1,4 +1,4 @@
-import {FortunaApi, loadApiFunctions} from "./api";
+import {FinishReason, FortunaApi, loadApiFunctions} from "./api";
 
 export interface FortunaModule extends EmscriptenModule {
     cwrap: typeof cwrap;
@@ -40,7 +40,6 @@ export interface EmulatorState {
 export class Fortuna3Emulator {
 
     private api : FortunaApi;
-    private currentPages = 1;
 
     private constructor(private sdCardImageSizeMB) {}
 
@@ -57,6 +56,10 @@ export class Fortuna3Emulator {
 
     step() : void {
         this.api.step();
+    }
+
+    stepScreen(speedInMhz: number) : FinishReason {
+        return this.api.stepScreen(speedInMhz);
     }
 
     reset(sdCardSizeInMB: number) : void {
