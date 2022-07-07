@@ -67,14 +67,18 @@
   - [x] Add SDCard size
   - [x] Project reload on JSON change
 
-- [ ] Serial
-  - [ ] On emulator (WASM)
-  - [ ] Provide component
+- [x] Serial
+  - [x] On emulator (WASM)
+  - [x] Provide component
 
 - [ ] Running
   - [ ] Run
   - [ ] Run with breakpoints
   - [ ] Next
+
+- [ ] Manage keypresses
+  - [ ] When stopped
+  - [ ] When running
 
 - [ ] Fortuna-3 specific stuff
   - [ ] Memory management

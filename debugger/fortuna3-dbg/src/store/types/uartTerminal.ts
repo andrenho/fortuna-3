@@ -1,24 +1,38 @@
+import {makeAutoObservable} from "mobx";
+
 class UartTerminal {
-    lines: string[][];
+    lines: string[][] = [];
     cursorX = 0;
     cursorY = 0;
 
     constructor(readonly terminalRows: number, readonly terminalColumns: number) {
-        this.lines = Array(terminalRows).fill(null).map(() => Array(terminalColumns).fill(' '));
+        makeAutoObservable(this);
+        this.reset();
     }
 
     addChars(printedChars: string[]) {
         for (const chr of printedChars) {
             this.lines[this.cursorY][this.cursorX] = chr;
 
-            if (this.cursorX === this.terminalColumns) {
+            if (this.cursorX === this.terminalColumns - 1) {
                 this.cursorX = 0;
                 ++this.cursorY;
+            } else {
+                ++this.cursorX;
             }
-            // TODO - move screen forward
+
+            if (this.cursorY === this.terminalRows - 1) {
+                this.lines.splice(0, 1);
+                this.lines.push(Array(this.terminalColumns).fill(' '));
+                --this.cursorY;
+            }
         }
-        if (printedChars.length > 0)
-            console.log(this.lines);
+    }
+
+    reset() {
+        this.cursorX = 0;
+        this.cursorY = 0;
+        this.lines = Array(this.terminalRows).fill(null).map(() => Array(this.terminalColumns).fill(' '));
     }
 }
 

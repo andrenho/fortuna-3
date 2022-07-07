@@ -1,6 +1,9 @@
-	call	stringlength
+start:
+	ld	a, 'A'
+	out	(0x0), a
+	ld	a, 'w'
+	out	(0x0), a
+	jp	start
 
-  include stringlength.z80
-	
-  nop
-done:	jp	done
+
+; vim: ts=8:sts=8:sw=8:noexpandtab

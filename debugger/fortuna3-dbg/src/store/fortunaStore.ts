@@ -73,6 +73,7 @@ export default class FortunaStore {
         }
         this.updateEmulatorState();
         this.updateSelectedFile();
+        this.uartTerminal.reset();
     }
 
     step() {

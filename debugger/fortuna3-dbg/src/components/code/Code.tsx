@@ -59,10 +59,18 @@ const projectNotSelected : SourceLine[] = [ { line: "No project is selected." } 
 
 const Code = observer((props: CodeProps) : JSX.Element => {
 
+    const replaceChars = (text: string | undefined) : string => {
+        if (text === undefined)
+            return "";
+        return text
+            .replaceAll(" ", "\u00A0")
+            .replaceAll("\t", "\u00A0".repeat(8));
+    };
+
     const parseCode = (line: string) : JSX.Element => {
         let [code, comment] = line.split(";");
-        code = code?.replaceAll(" ", "\u00A0");
-        comment = comment?.replaceAll(" ", "\u00A0");
+        code = replaceChars(code);
+        comment = replaceChars(comment);
         if (comment)
             comment = `;${comment}`;
         return <><span>{ code }</span><span style={{color:"forestgreen"}}>{ comment }</span></>;
