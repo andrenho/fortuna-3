@@ -80,6 +80,17 @@ export default class FortunaStore {
         this.updateState();
     }
 
+    stepOneScreenful() {
+        this.emulator!.stepOneScreenful();
+        this.updateState();
+    }
+
+    run() {
+        window.requestAnimationFrame(() => {
+            this.emulator!.stepOneScreenful()
+        });
+    }
+
     setRamPage(newPage: number) : void {
         this.ramPage = newPage;
         this.updateEmulatorState();

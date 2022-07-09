@@ -41,9 +41,8 @@ EMSCRIPTEN_KEEPALIVE void step()
     ExecZ80(&z80, 1);
 }
 
-EMSCRIPTEN_KEEPALIVE FinishReason step_screen(double speed_in_mhz)
+EMSCRIPTEN_KEEPALIVE FinishReason step_cycles(int cycles)
 {
-    int cycles = (speed_in_mhz * 1000000) / 60;
     ExecZ80(&z80, cycles);
     return NORMAL;
 }

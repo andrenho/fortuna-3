@@ -39,8 +39,9 @@ export interface EmulatorState {
 
 export class Fortuna3Emulator {
 
-    private api : FortunaApi;
+    speedInMhz = 1;
 
+    private api : FortunaApi;
     private constructor(private sdCardImageSizeMB) {}
 
     static async initialize(wasmFilePath: string) : Promise<Fortuna3Emulator> {
@@ -58,8 +59,10 @@ export class Fortuna3Emulator {
         this.api.step();
     }
 
-    stepScreen(speedInMhz: number) : FinishReason {
-        return this.api.stepScreen(speedInMhz);
+    stepOneScreenful() : FinishReason {
+
+        const cycles = Math.floor(this.speedInMhz * 1_000_000 / 60);
+        return this.api.stepCycles(cycles);
     }
 
     reset(sdCardSizeInMB: number) : void {
