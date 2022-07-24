@@ -1368,6 +1368,9 @@
     )
   )
 
+  (junction (at 138.43 105.41) (diameter 0) (color 0 0 0 0)
+    (uuid 25909463-4637-4b37-ab2d-888bcfe55080)
+  )
   (junction (at 158.75 58.42) (diameter 0) (color 0 0 0 0)
     (uuid 3694e615-8dc6-4aaa-90c1-071f0c692935)
   )
@@ -1385,9 +1388,6 @@
   )
   (junction (at 240.03 107.95) (diameter 0) (color 0 0 0 0)
     (uuid 8a15886e-dd08-4901-a4e3-d7aee00543fd)
-  )
-  (junction (at 147.32 105.41) (diameter 0) (color 0 0 0 0)
-    (uuid 97ef0deb-b89d-4195-971c-1156c89d12c8)
   )
   (junction (at 125.73 153.67) (diameter 0) (color 0 0 0 0)
     (uuid aca19e41-7e6e-4630-a3d8-e74da5e137e1)
@@ -1527,6 +1527,10 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 24cac25a-b8f3-459e-878b-5ce3916ed38a)
   )
+  (wire (pts (xy 138.43 105.41) (xy 153.67 105.41))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 26d171a9-b850-44f9-a3c5-3b4e6bff6df0)
+  )
   (wire (pts (xy 231.14 113.03) (xy 245.11 113.03))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 27d63088-9e10-437c-8ca9-89bff2fe37ee)
@@ -1658,10 +1662,6 @@
   (wire (pts (xy 257.81 120.65) (xy 270.51 120.65))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 5d81513b-25d4-45e1-be35-4ad392fc027f)
-  )
-  (wire (pts (xy 153.67 105.41) (xy 147.32 105.41))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 5e20f86e-9554-4e73-9f31-a0b370fad5c7)
   )
   (wire (pts (xy 41.91 22.86) (xy 41.91 26.67))
     (stroke (width 0) (type default) (color 0 0 0 0))
@@ -1807,7 +1807,7 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 9e8754f1-ee28-4599-ba77-ffa35a40269a)
   )
-  (wire (pts (xy 147.32 105.41) (xy 147.32 124.46))
+  (wire (pts (xy 138.43 105.41) (xy 138.43 124.46))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 9edbd07e-fc1d-401f-83a1-a33f82e2dcd7)
   )
@@ -1842,6 +1842,10 @@
   (wire (pts (xy 176.53 121.92) (xy 176.53 118.11))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid ab9cccca-fb0c-43e2-9a38-e97115789e94)
+  )
+  (wire (pts (xy 125.73 105.41) (xy 138.43 105.41))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid ac4fa253-9c7f-450d-adb1-b4dcd596071c)
   )
   (wire (pts (xy 215.9 20.32) (xy 215.9 21.59))
     (stroke (width 0) (type default) (color 0 0 0 0))
@@ -1882,10 +1886,6 @@
   (wire (pts (xy 100.33 142.24) (xy 115.57 142.24))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid cead8b95-8428-4819-9725-459b23344e45)
-  )
-  (wire (pts (xy 147.32 105.41) (xy 125.73 105.41))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid d0379ec1-a148-41f0-b91f-9c1072da979d)
   )
   (wire (pts (xy 125.73 105.41) (xy 125.73 111.76))
     (stroke (width 0) (type default) (color 0 0 0 0))
@@ -1942,10 +1942,6 @@
   (wire (pts (xy 257.81 115.57) (xy 270.51 115.57))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid e978a055-f36a-474f-a0c9-a8448eac0635)
-  )
-  (wire (pts (xy 146.05 124.46) (xy 147.32 124.46))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid eb52d04a-95cb-490b-a286-5dd2d7a78d13)
   )
   (wire (pts (xy 60.96 113.03) (xy 60.96 116.84))
     (stroke (width 0) (type default) (color 0 0 0 0))
@@ -2008,7 +2004,7 @@
     (effects (font (size 3 3) (thickness 0.6) bold) (justify left bottom))
     (uuid 56a233ab-ca71-472d-844d-76f44df2725b)
   )
-  (text "Wires:\nRED    -- VCC\nBLACK  -- GND\nYELLOW -- DATA\nORANGE -- ADDR\nGREEN  -- SPI\nPURPLE -- Z80 BUS\nBROWN  -- OTHER\n"
+  (text "Wires:\nRED    -- VCC\nBLACK  -- GND\nYELLOW -- DATA\nORANGE -- ADDR\nGREEN  -- SPI\nPURPLE -- Z80 BUS\nBROWN  -- SERIAL\nBLUE   -- OTHER"
     (at 82.55 194.31 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 9a732b76-edf6-4721-814f-43d999e1dc28)
@@ -2042,7 +2038,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 085f519e-dec2-41df-811e-12b17095f062)
   )
-  (label "USR1" (at 231.14 120.65 0)
+  (label "MOSI" (at 231.14 120.65 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 0d3a73e8-f829-4f8e-bc45-1faedc9115ef)
   )
@@ -2054,7 +2050,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 17522b5d-3fb8-4fd0-b2ea-c2d8452cfe83)
   )
-  (label "RT_IO" (at 231.14 128.27 0)
+  (label "RT_SCLK" (at 231.14 128.27 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 1937173b-eb80-445d-b59a-297d3d337b79)
   )
@@ -2102,7 +2098,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 6221760c-5d12-4df6-980d-f1e5a509c576)
   )
-  (label "SCK" (at 270.51 110.49 180)
+  (label "USR0" (at 270.51 110.49 180)
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 6420973a-6172-4c4c-b4c2-079c9e0865ca)
   )
@@ -2122,7 +2118,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 7344bc4f-1dec-41e4-86d2-48af28ed3fcb)
   )
-  (label "RT_SCLK" (at 231.14 123.19 0)
+  (label "RT_IO" (at 231.14 123.19 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 7a3170f7-d835-4594-a742-4244a6e733f1)
   )
@@ -2158,7 +2154,7 @@
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 90674c46-6f22-4dab-a532-e18454f603e2)
   )
-  (label "MOSI" (at 270.51 113.03 180)
+  (label "USR1" (at 270.51 113.03 180)
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 928c9bdb-552e-4aee-98f7-86ea2d4ec38e)
   )
@@ -2194,7 +2190,7 @@
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid b6aae78c-6f9a-45b7-92f1-5bc8508b9d1f)
   )
-  (label "USR0" (at 231.14 118.11 0)
+  (label "SCK" (at 231.14 118.11 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid bbbb10cd-bb99-4802-9c22-7712c88aabde)
   )
@@ -2560,21 +2556,6 @@
     )
     (pin "1" (uuid a9bd337f-96e8-4cd0-887a-e65d3d77899d))
     (pin "2" (uuid 90a37748-6779-425b-9469-201aadb77ff5))
-  )
-
-  (symbol (lib_id "Device:R") (at 142.24 124.46 90) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 4b72698f-cc08-4094-86e6-05cc9a25cb6e)
-    (property "Reference" "R?" (id 0) (at 142.24 119.38 90))
-    (property "Value" "220 (?)" (id 1) (at 142.24 121.92 90))
-    (property "Footprint" "" (id 2) (at 142.24 126.238 90)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "~" (id 3) (at 142.24 124.46 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 87e4e6eb-41b9-49b5-bff3-75a57e7d7731))
-    (pin "2" (uuid cfc1fff5-da2e-4103-bf1b-1095646ea684))
   )
 
   (symbol (lib_id "power:+5V") (at 256.54 22.86 0) (unit 1)
@@ -3294,9 +3275,6 @@
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/58a8ecb4-1cf6-4efc-b5f6-3614ea722710"
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
     )
-    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/5d95c963-dfac-4c58-9600-dc6f9fe565c3"
-      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
-    )
     (path "/631511a7-d94d-4da5-915d-ea35196af5fe"
       (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
     )
@@ -3310,6 +3288,9 @@
       (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
     )
     (path "/8733f77d-1ee0-4585-a0a8-2ec26c7bdf9b"
+      (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
+    )
+    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/883247fb-bfb5-42ae-8659-a110c018d3aa"
       (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/88b04fc9-4d00-4844-8868-c815b89cad89"
@@ -3357,6 +3338,9 @@
     (path "/bc55e75d-057b-421d-a721-7729d814d195"
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
     )
+    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/d3bb123a-7c61-4360-9e6e-c77321bb840a"
+      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/db2fa144-fbad-45b5-b5a6-f25878b6edc8"
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
     )
@@ -3391,9 +3375,6 @@
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/f20d8bcd-2fcb-4b66-ae6d-77676672d6bd"
-      (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
-    )
-    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/f336acc4-edb5-449a-815a-2eb1fb0864ed"
       (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/f3cfb0a3-311c-4139-9896-e419e2e4795f"
@@ -3444,9 +3425,6 @@
     (path "/1f19a928-b67c-43c3-aa4d-6d0403d0650a"
       (reference "J?") (unit 1) (value "SDCard Module") (footprint "")
     )
-    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/3ca93379-b417-4c6c-89df-44e5695b0aff"
-      (reference "J?") (unit 1) (value "HEADER 2x13") (footprint "")
-    )
     (path "/60802229-bc2a-41c2-bef6-9d9e0524ccd1"
       (reference "J?") (unit 1) (value "HEADER 2x13") (footprint "")
     )
@@ -3461,6 +3439,9 @@
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/ac60567d-8248-4bf1-8ae6-bcede5206395"
       (reference "J?") (unit 1) (value "Raspberry_Pi_2_3") (footprint "")
+    )
+    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/af987ce2-1364-42d7-b497-65e1ba2de016"
+      (reference "J?") (unit 1) (value "HEADER 2x13") (footprint "")
     )
     (path "/b7ec4192-d386-4bdd-890f-7191013dfe5d"
       (reference "J?") (unit 1) (value "USB_B_Micro") (footprint "")
@@ -3506,9 +3487,6 @@
     )
     (path "/113d30be-59c9-4cc1-821d-0e7eacd7a788"
       (reference "R?") (unit 1) (value "10k") (footprint "")
-    )
-    (path "/4b72698f-cc08-4094-86e6-05cc9a25cb6e"
-      (reference "R?") (unit 1) (value "220 (?)") (footprint "")
     )
     (path "/52b13d14-2a80-46fd-a55e-88772ff81559"
       (reference "R?") (unit 1) (value "10k") (footprint "")
