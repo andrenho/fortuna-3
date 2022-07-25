@@ -3320,6 +3320,12 @@
     (path "/a3c5217a-0af9-4a78-8acc-5f76cd7ebabc"
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
     )
+    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/a87ba439-1afc-4e0d-816e-0f3b93ac65eb"
+      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/ac052f0c-599d-4e10-b3da-423943c2d9ae"
+      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/afaebe8c-7267-4333-9930-d5235363abe6"
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
     )
@@ -3327,9 +3333,6 @@
       (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
     )
     (path "/b32618fa-5f48-456d-b2f5-22e6c1e711ce"
-      (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
-    )
-    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/b5077b9c-865b-46ac-92f5-233ed0436d63"
       (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
     )
     (path "/b98b9c00-347d-4c97-97bb-c34585a795f0"
@@ -3373,9 +3376,6 @@
     )
     (path "/ef644914-f009-4dcd-b9ae-223972851882"
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/f20d8bcd-2fcb-4b66-ae6d-77676672d6bd"
-      (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/f3cfb0a3-311c-4139-9896-e419e2e4795f"
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
@@ -3501,7 +3501,7 @@
       (reference "R?") (unit 1) (value "220") (footprint "")
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/d42de503-f0e6-4401-add0-7731402da932"
-      (reference "R?") (unit 1) (value "R") (footprint "")
+      (reference "R?") (unit 1) (value "10k") (footprint "")
     )
     (path "/eac4465c-b5fd-444a-a384-e229ce11048e"
       (reference "R?") (unit 1) (value "10k") (footprint "")
@@ -3534,7 +3534,7 @@
       (reference "U?") (unit 1) (value "AS6C4008-55PCN") (footprint "Package_DIP:DIP-32_W15.24mm")
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/4891d654-2af4-456a-8031-ee88ca6317a5"
-      (reference "U?") (unit 1) (value "TXB0104PW") (footprint "Package_SO:TSSOP-14_4.4x5mm_P0.65mm")
+      (reference "U?") (unit 1) (value "Level shifter") (footprint "Package_SO:TSSOP-14_4.4x5mm_P0.65mm")
     )
     (path "/7dca92de-41eb-4d15-b323-0b1013be007b"
       (reference "U?") (unit 1) (value "DS1302+") (footprint "Package_DIP:DIP-8_W7.62mm")
