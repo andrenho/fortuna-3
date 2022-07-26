@@ -1,5 +1,0 @@
-    include "os.z80"
-
-    ld  a, 0f0h  ; 3E F0
-loop:
-    jp  loop
