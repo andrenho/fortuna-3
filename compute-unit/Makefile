@@ -58,7 +58,7 @@ size: ${PROJECT}.elf
 talk:
 	@echo "Press Ctrl+A and then Shift+K to exit."
 	@sleep 1
-	screen /dev/ttyAMA0 38400
+	screen /dev/serial0 38400
 
 clean:
 	rm -f ${OBJECTS} ${PROJECT}.elf ${PROJECT}.hex
