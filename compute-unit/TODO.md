@@ -1,0 +1,4 @@
+- USR0 / USR1
+- LCD
+- SD Card
+- Realtime clock

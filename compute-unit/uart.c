@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <avr/io.h>
+#include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <util/setbaud.h>
 
@@ -39,4 +40,10 @@ void uart_init(void)
     stdin = stdout = &uart;
 
     _delay_ms(100);
+}
+
+void uart_badisr(void)
+{
+    puts_P(PSTR("BADISR"));
+    for(;;) ;
 }
