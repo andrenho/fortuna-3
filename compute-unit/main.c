@@ -2,6 +2,7 @@
 
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
+#include <util/delay.h>
 
 #include "event.h"
 #include "uart.h"
@@ -25,15 +26,17 @@ int main(void)
 
             case EV_USR0:
                 cli();
-                puts_P(PSTR("USR0"));
+                usr0_on_press();
                 last_event = EV_NONE;
+                _delay_ms(80);
                 sei();
                 break;
 
             case EV_USR1:
                 cli();
-                puts_P(PSTR("USR1"));
+                usr0_on_press();
                 last_event = EV_NONE;
+                _delay_ms(80);
                 sei();
                 break;
         }

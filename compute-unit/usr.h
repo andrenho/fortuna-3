@@ -5,6 +5,9 @@
 
 void usr_setup(void);
 
+void usr0_on_press(void);
+void usr1_on_press(void);
+
 #endif
 
 // vim:ts=4:sts=4:sw=4:expandtab
