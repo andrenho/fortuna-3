@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-void usr_setup(void);
+void usr_init(void);
 
 void usr0_on_press(void);
 void usr1_on_press(void);

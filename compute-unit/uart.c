@@ -47,3 +47,5 @@ void uart_badisr(void)
     puts_P(PSTR("BADISR"));
     for(;;) ;
 }
+
+// vim:ts=4:sts=4:sw=4:expandtab

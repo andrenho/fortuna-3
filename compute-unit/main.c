@@ -5,6 +5,7 @@
 #include <util/delay.h>
 
 #include "event.h"
+#include "lcd.h"
 #include "uart.h"
 #include "usr.h"
 
@@ -12,9 +13,14 @@ volatile Event last_event = EV_NONE;
 
 int main(void)
 {
+    _delay_ms(100);
+
     uart_init();
-    usr_setup();
+    usr_init();
+    lcd_init();
     puts_P(PSTR("Hello world!"));
+
+    lcd_print_char('H');
 
     sei();
 
@@ -34,7 +40,7 @@ int main(void)
 
             case EV_USR1:
                 cli();
-                usr0_on_press();
+                usr1_on_press();
                 last_event = EV_NONE;
                 _delay_ms(80);
                 sei();
