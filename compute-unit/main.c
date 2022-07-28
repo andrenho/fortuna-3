@@ -21,6 +21,11 @@ int main(void)
     puts_P(PSTR("Hello world!"));
 
     lcd_print_char('H');
+    lcd_print_char('e');
+    lcd_print_char('l');
+    lcd_print_char('l');
+    lcd_print_char('o');
+    lcd_print_char('!');
 
     sei();
 
