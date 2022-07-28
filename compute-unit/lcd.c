@@ -5,6 +5,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "debug.h"
+
 #define set_E()    PORTK |= _BV(PK0)
 #define clear_E()  PORTK &= ~_BV(PK0)
 #define set_RS()   PORTK |= _BV(PK1)
@@ -56,6 +58,7 @@ void lcd_command(bool rs, uint8_t data)
     set_E();
     _delay_ms(2);
     clear_E();
+    debug_lcd(data);
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

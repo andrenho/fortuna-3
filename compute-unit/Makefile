@@ -2,7 +2,7 @@
 PROJECT=avr-skeleton
 
 # Object files (one for each source file)
-OBJECTS=main.o uart.o usr.o lcd.o clock.o util.o
+OBJECTS=main.o uart.o spi.o usr.o lcd.o clock.o debug.o sdcard.o
 
 # Avrdude configuration to connect on the PI. See avrdude_gpio.conf.
 # Can be one of: pi_rst, pi_cs0, pi_cs1 or pi_gpio, depending on the RESET line in AVR.
@@ -21,6 +21,11 @@ F_CPU=16000000UL
 # Serial speed, in baud. Used by avr-libc for UART speed calculation.
 BAUD=38400
 
+# Debug components (uncomment to debug)
+# DEFINES+=-DDEBUG_LCD=1
+# DEFINES+=-DDEBUG_RTC=1
+DEFINES+=-DDEBUG_SPI=1
+
 #
 # Rules
 #
@@ -31,7 +36,7 @@ WARNINGS=-Wall -Wextra \
 	 -Wformat=2 -Wno-unused-parameter -Wshadow \
 	 -Wwrite-strings -Wstrict-prototypes -Wold-style-definition \
 	 -Wredundant-decls -Wnested-externs -Wmissing-include-dirs -Wjump-misses-init -Wlogical-op
-CPPFLAGS=-std=c11 ${WARNINGS} -Os -DF_CPU=${F_CPU} -DBAUD=${BAUD} -mmcu=${MCU_GCC} -ffunction-sections -fdata-sections -mcall-prologues
+CPPFLAGS=-std=c11 ${WARNINGS} -Os -DF_CPU=${F_CPU} -DBAUD=${BAUD} -mmcu=${MCU_GCC} ${DEFINES} -ffunction-sections -fdata-sections -mcall-prologues
 
 all: ${PROJECT}.hex
 

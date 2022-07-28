@@ -7,6 +7,8 @@
 #include "clock.h"
 #include "event.h"
 #include "lcd.h"
+#include "sdcard.h"
+#include "spi.h"
 #include "uart.h"
 #include "usr.h"
 
@@ -20,6 +22,8 @@ int main(void)
     usr_init();
     lcd_init();
     clock_init();
+    spi_init();
+    sdcard_init();
     puts_P(PSTR("Hello world!"));
 
     /*
@@ -35,6 +39,8 @@ int main(void)
     snprintf(buf, sizeof buf, "%04d/%02d/%02d %02d:%02d:%02d\n", (2000 + dt.yy), dt.mm, dt.dd, dt.hh, dt.nn, dt.ss);
     lcd_print(buf);
     puts(buf);
+
+    sdcard_setup();
 
     sei();
 

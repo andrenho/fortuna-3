@@ -3,6 +3,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "debug.h"
+
 #define set_SCLK()   PORTD |= _BV(PD2)
 #define clear_SCLK() PORTD &= ~_BV(PD2)
 #define set_CE()     PORTD |= _BV(PD3)
@@ -32,6 +34,7 @@ static uint8_t clock_cmd_get(uint8_t cmd)
         clear_SCLK();
         _delay_us(1);
     }
+    debug_mcu2rtc(cmd);
 
     clear_IO();                    // change to read mode
     _delay_us(1);
@@ -46,6 +49,7 @@ static uint8_t clock_cmd_get(uint8_t cmd)
         clear_SCLK();
         _delay_us(1);
     }
+    debug_rtc2mcu(cmd);
 
     clear_CE();                    // change back to write mode
     _delay_us(4);
@@ -73,6 +77,8 @@ static void clock_cmd_set(uint8_t cmd, uint8_t data)
         clear_SCLK();
         _delay_us(1);
     }
+    debug_mcu2rtc(cmd);
+    debug_mcu2rtc(data);
 
     clear_CE();
     _delay_us(4);
