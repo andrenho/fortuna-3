@@ -7,6 +7,7 @@
 void lcd_init(void);
 void lcd_clear(void);
 void lcd_print_char(uint8_t c);
+void lcd_print(char* str);
 void lcd_command(bool rs, uint8_t data);
 
 #endif

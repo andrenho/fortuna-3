@@ -4,6 +4,7 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
+#include "clock.h"
 #include "event.h"
 #include "lcd.h"
 #include "uart.h"
@@ -18,14 +19,22 @@ int main(void)
     uart_init();
     usr_init();
     lcd_init();
+    clock_init();
     puts_P(PSTR("Hello world!"));
 
-    lcd_print_char('H');
-    lcd_print_char('e');
-    lcd_print_char('l');
-    lcd_print_char('l');
-    lcd_print_char('o');
-    lcd_print_char('!');
+    /*
+    ClockDateTime dtx = {
+        .dd = 28, .mm = 7, .yy = 22,
+        .ss = 0, .nn = 38, .hh = 14,
+    };
+    clock_set(dtx);
+    */
+
+    char buf[25];
+    ClockDateTime dt = clock_get();
+    snprintf(buf, sizeof buf, "%04d/%02d/%02d %02d:%02d:%02d\n", (2000 + dt.yy), dt.mm, dt.dd, dt.hh, dt.nn, dt.ss);
+    lcd_print(buf);
+    puts(buf);
 
     sei();
 

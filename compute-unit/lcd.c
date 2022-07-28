@@ -43,6 +43,12 @@ void lcd_print_char(uint8_t c)
     lcd_command(1, c & 0xf);
 }
 
+void lcd_print(char* str)
+{
+    while (*str)
+        lcd_print_char(*str++);
+}
+
 void lcd_command(bool rs, uint8_t data)
 {
 	if (rs) set_RS(); else clear_RS();

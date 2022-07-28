@@ -2,7 +2,7 @@
 PROJECT=avr-skeleton
 
 # Object files (one for each source file)
-OBJECTS=main.o uart.o usr.o lcd.o util.o
+OBJECTS=main.o uart.o usr.o lcd.o clock.o util.o
 
 # Avrdude configuration to connect on the PI. See avrdude_gpio.conf.
 # Can be one of: pi_rst, pi_cs0, pi_cs1 or pi_gpio, depending on the RESET line in AVR.
@@ -58,7 +58,7 @@ size: ${PROJECT}.elf
 talk:
 	@echo "Press Ctrl+A and then Shift+K to exit."
 	@sleep 1
-	screen /dev/serial0 38400
+	sudo screen /dev/serial0 38400
 
 clean:
 	rm -f ${OBJECTS} ${PROJECT}.elf ${PROJECT}.hex
