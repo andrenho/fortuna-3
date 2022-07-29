@@ -7,7 +7,7 @@
 
 typedef enum { FROM_MCU, TO_MCU } Direction;
 
-static void print_P(PGM_P p) {
+void print_P(PGM_P p) {
     char c;
     while ((c = pgm_read_byte(p++)))
         putchar(c);
@@ -110,7 +110,7 @@ void debug_spi_send(uint8_t sent, uint8_t recvd)
     // if (sent != 0xff)
         debug_data(FROM_MCU, 1, sent);
     // if (recvd != 0xff)
-        debug_data(TO_MCU, 1, sent);
+        debug_data(TO_MCU, 1, recvd);
 #endif
 }
 
@@ -119,6 +119,18 @@ void printbin(uint8_t value)
     for (int i = 7; i >= 0; --i)
         putchar(((value >> i) & 1) ? '1' : '0');
     putchar('\n');
+}
+
+void printhex(uint8_t value)
+{
+    if ((value >> 4) < 10)
+        putchar((value >> 4) + '0');
+    else
+        putchar((value >> 4) + 'A' - 10);
+    if ((value & 0xf) < 10)
+        putchar((value & 0xf) + '0');
+    else
+        putchar((value & 0xf) + 'A' - 10);
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

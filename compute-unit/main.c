@@ -48,6 +48,9 @@ int main(void)
     if (!sdcard_ok)
         puts_P(PSTR("SDCard initialization failed."));
 
+    uint8_t buffer[512];
+    sdcard_read_block(0, buffer);
+
     sei();
 
     while (1) {

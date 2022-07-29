@@ -14,7 +14,9 @@ void debug_spi_active(PGM_P dev);
 void debug_spi_inactive(PGM_P dev);
 void debug_spi_send(uint8_t sent, uint8_t recvd);
 
+void print_P(PGM_P p);
 void printbin(uint8_t value);
+void printhex(uint8_t value);
 
 #endif
 

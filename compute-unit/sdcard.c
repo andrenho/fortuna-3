@@ -10,6 +10,8 @@
 #define set_CE()   { PORTG |= _BV(PG5); debug_spi_inactive(PSTR("SD")); }
 #define clear_CE() { PORTG &= ~_BV(PG5); debug_spi_active(PSTR("SD")); }
 
+#define MAX_READ_ATTEMPTS 20
+
 static void command(uint8_t cmd, uint32_t args, uint8_t crc)
 {
     spi_send(cmd | 0x40);
@@ -50,7 +52,9 @@ static bool sdcard_software_reset(void)
     set_CE();
 
 #ifdef DEBUG_SDCARD
-    printf_P(PSTR("\n[SDCard software reset: 0x%x] "), r1);
+    print_P(PSTR("\n[SDCard software reset: "));
+    printhex(r1);
+    print_P(PSTR("] "));
 #endif
 
     return r1 == 0x1;
@@ -86,7 +90,7 @@ static bool sdcard_initialize(void)
     }
 
 #ifdef DEBUG_SDCARD
-        puts_P(PSTR("\n[SDCard initialized.]\n"));
+    puts_P(PSTR("\n[SDCard initialized.]\n"));
 #endif
 
     return true;
@@ -101,9 +105,52 @@ bool sdcard_setup(void)
     return true;
 }
 
-bool sdcard_read_block(uint32_t block, uint8_t* data)
+bool sdcard_read_block(uint32_t block, uint8_t* buffer)
 {
+    clear_CE();
 
+    // send read command
+    command(0x17, block, 0);
+    uint8_t r = spi_recv_ignore_ff();
+    if (r != 0) {
+        set_CE();
+#ifdef DEBUG_SDCARD
+        print_P(PSTR("\n[SDCard read rejected with 0x"));
+        printhex(r);
+        print_P(PSTR("]\n"));
+#endif
+        return false;
+    }
+
+    // read data (skip to `read_data`)
+    for (int i = 0; i < MAX_READ_ATTEMPTS; ++i) {
+        r = spi_recv_ignore_ff();
+        if (r == 0xfe)
+            goto read_data;
+        _delay_ms(10);
+    }
+#ifdef DEBUG_SDCARD
+    puts_P(PSTR("\n[Timeout while reading from SDCard.]\n"));
+#endif
+    set_CE();
+    return false;
+
+read_data:
+    for (int i = 0; i < 512; ++i)
+        buffer[i] = spi_recv();
+
+    // crc
+    spi_send(0xff);
+    spi_send(0xff);
+    set_CE();
+
+#ifdef DEBUG_SDCARD
+    print_P(PSTR("\n[SDCard block 0x"));
+    printhex(block);
+    print_P(PSTR(" read.]\n"));
+#endif
+    
+    return true;
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab
