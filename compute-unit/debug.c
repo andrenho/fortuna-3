@@ -1,6 +1,8 @@
 #include "debug.h"
 
 #include <stdio.h>
+
+#include <avr/io.h>
 #include <avr/pgmspace.h>
 
 typedef enum { FROM_MCU, TO_MCU } Direction;
@@ -40,6 +42,30 @@ static void debug(char app, Direction direction, uint8_t sz, uint32_t byte)
     debug_data(direction, sz, byte);
 }
 
+void debug_reset_reason(void)
+{
+#ifdef DEBUG_RESET
+    puts_P(PSTR(""));
+    for (int i = 0; i < 30; ++i)
+        putchar('-');
+    puts_P(PSTR(""));
+
+    print_P(PSTR("Reset reason: "));
+    if (MCUSR & _BV(JTRF))
+        print_P(PSTR("JTAG "));
+    if (MCUSR & _BV(WDRF))
+        print_P(PSTR("watchdog "));
+    if (MCUSR & _BV(BORF))
+        print_P(PSTR("brown-out "));
+    if (MCUSR & _BV(EXTRF))
+        print_P(PSTR("external reset "));
+    if (MCUSR & _BV(PORF))
+        print_P(PSTR("power-on "));
+    puts_P(PSTR(""));
+#endif
+    MCUSR = 0;
+}
+
 void debug_lcd(uint8_t data) {
 #ifdef DEBUG_LCD
     debug('L', FROM_MCU, 1, data);
@@ -62,30 +88,37 @@ void debug_rtc2mcu(uint8_t data)
 
 void debug_spi_active(PGM_P dev)
 {
-#ifndef DEBUG_SPI
-    print_P(PSTR("\n\e[0;35m+ "));
+#ifdef DEBUG_SPI
+    print_P(PSTR("\n\e[0;35m[+ "));
     print_P(dev);
-    puts_P(PSTR(" active"));
+    puts_P(PSTR(" active]"));
 #endif
 }
 
 void debug_spi_inactive(PGM_P dev)
 {
-#ifndef DEBUG_SPI
-    print_P(PSTR("\n\e[0;35m- "));
+#ifdef DEBUG_SPI
+    print_P(PSTR("\n\e[0;35m[- "));
     print_P(dev);
-    puts_P(PSTR(" inactive"));
+    puts_P(PSTR(" inactive]"));
 #endif
 }
 
 void debug_spi_send(uint8_t sent, uint8_t recvd)
 {
-#ifndef DEBUG_SPI
-    if (sent != 0xff)
+#ifdef DEBUG_SPI
+    // if (sent != 0xff)
         debug_data(FROM_MCU, 1, sent);
-    if (recvd != 0xff)
+    // if (recvd != 0xff)
         debug_data(TO_MCU, 1, sent);
 #endif
+}
+
+void printbin(uint8_t value)
+{
+    for (int i = 7; i >= 0; --i)
+        putchar(((value >> i) & 1) ? '1' : '0');
+    putchar('\n');
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

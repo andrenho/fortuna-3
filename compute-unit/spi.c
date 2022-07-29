@@ -8,8 +8,8 @@
 
 void spi_init(void)
 {
-    DDRB |= (1 << DDB1) | (1 << DDB2);   // MOSI, SCK: output
-    DDRB &= ~(1 << DDB3);  // MISO: input
+    DDRB |= (1 << DDB0) | (1 << DDB1) | (1 << DDB2);   // MOSI, SCK: output
+    // B0 is also set as output otherwise SPI won't work in AVR
     
     // enable SPI, set as MASTER, clock to fosc/128 (TODO - can it go faster?)
     SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPR1) | (1 << SPR0);
@@ -18,7 +18,7 @@ void spi_init(void)
 uint8_t spi_send(uint8_t byte)
 {
     SPDR = byte;
-    while (!(SPSR & (1 << SPIF)));
+    loop_until_bit_is_set(SPSR, SPIF);
     uint8_t r = SPDR;
     debug_spi_send(byte, r);
     return r;

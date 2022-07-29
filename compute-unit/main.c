@@ -5,6 +5,7 @@
 #include <util/delay.h>
 
 #include "clock.h"
+#include "debug.h"
 #include "event.h"
 #include "lcd.h"
 #include "sdcard.h"
@@ -19,12 +20,13 @@ int main(void)
     _delay_ms(100);
 
     uart_init();
+    debug_reset_reason();
+
     usr_init();
     lcd_init();
     clock_init();
     spi_init();
     sdcard_init();
-    puts_P(PSTR("Hello world!"));
 
     /*
     ClockDateTime dtx = {
@@ -34,13 +36,17 @@ int main(void)
     clock_set(dtx);
     */
 
+    /*
     char buf[25];
     ClockDateTime dt = clock_get();
     snprintf(buf, sizeof buf, "%04d/%02d/%02d %02d:%02d:%02d\n", (2000 + dt.yy), dt.mm, dt.dd, dt.hh, dt.nn, dt.ss);
     lcd_print(buf);
     puts(buf);
+    */
 
-    sdcard_setup();
+    bool sdcard_ok = sdcard_setup();
+    if (!sdcard_ok)
+        puts_P(PSTR("SDCard initialization failed."));
 
     sei();
 

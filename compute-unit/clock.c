@@ -15,7 +15,7 @@
 
 void clock_init(void)
 {
-    DDRD |= _BV(PD2) | _BV(PD3) | _BV(PD7);
+    DDRD |= _BV(DDD2) | _BV(DDD3) | _BV(DDD7);
 }
 
 static uint8_t clock_cmd_get(uint8_t cmd)
