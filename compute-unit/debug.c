@@ -91,7 +91,7 @@ void debug_spi_active(PGM_P dev)
 #ifdef DEBUG_SPI
     print_P(PSTR("\n\e[0;35m[+ "));
     print_P(dev);
-    puts_P(PSTR(" active]"));
+    puts_P(PSTR(" active]\e[0m"));
 #endif
 }
 
@@ -100,7 +100,7 @@ void debug_spi_inactive(PGM_P dev)
 #ifdef DEBUG_SPI
     print_P(PSTR("\n\e[0;35m[- "));
     print_P(dev);
-    puts_P(PSTR(" inactive]"));
+    puts_P(PSTR(" inactive]\e[0m"));
 #endif
 }
 

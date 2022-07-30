@@ -22,6 +22,20 @@ static void command(uint8_t cmd, uint32_t args, uint8_t crc)
     spi_send(crc | 0x1);
 }
 
+#ifdef DEBUG_SDCARD
+static void print_sdcard_state(uint8_t r1)
+{
+    if (r1 == 0) print_P(PSTR("ok "));
+    if (r1 & (1 << 0)) print_P(PSTR("idle "));
+    if (r1 & (1 << 1)) print_P(PSTR("erase_reset "));
+    if (r1 & (1 << 2)) print_P(PSTR("illegal_command "));
+    if (r1 & (1 << 3)) print_P(PSTR("command_crc_error "));
+    if (r1 & (1 << 4)) print_P(PSTR("erase_seq_error "));
+    if (r1 & (1 << 5)) print_P(PSTR("addr_error "));
+    if (r1 & (1 << 6)) print_P(PSTR("param_error "));
+}
+#endif
+
 void sdcard_init(void)
 {
     DDRG = _BV(DDG5);
@@ -52,8 +66,26 @@ static bool sdcard_software_reset(void)
     set_CE();
 
 #ifdef DEBUG_SDCARD
-    print_P(PSTR("\n[SDCard software reset: "));
-    printhex(r1);
+    print_P(PSTR("\n[SDCard CMD0 issued: "));
+    print_sdcard_state(r1);
+    print_P(PSTR("] "));
+#endif
+
+    return r1 == 0x1;
+}
+
+static bool sdcard_check_voltage_range(void)
+{
+    clear_CE();
+    command(8, 0x1aa, 0x86);
+    uint8_t r1 = spi_recv_ignore_ff();
+    for (int i = 0; i < 4; ++i)
+        spi_send(0xff);
+    set_CE();
+
+#ifdef DEBUG_SDCARD
+    print_P(PSTR("\n[SDCard CMD8 issued: "));
+    print_sdcard_state(r1);
     print_P(PSTR("] "));
 #endif
 
@@ -66,31 +98,35 @@ static bool sdcard_initialize(void)
     command(55, 0, 0);
     uint8_t r1 = spi_recv_ignore_ff();
     set_CE();
-    if (r1 > 1) {
+    if (r1 != 1) {
 #ifdef DEBUG_SDCARD
         puts_P(PSTR("\n[Command CMD55 not supported by SDCard.]\n"));
 #endif
         return false;
     }
+#ifdef DEBUG_SDCARD
+    print_P(PSTR("\n[Command CMD55 accepted: " ));
+    print_sdcard_state(r1);
+    print_P(PSTR("]\n"));
+#endif
 
     clear_CE();
-    command(0x41, 0x40000000, 0);
-    for (int i = 0; i < 16; ++i) {
-        r1 = spi_recv_ignore_ff();
-        if (r1 == 1)
-            break;
-        _delay_ms(50);
-    }
+    command(41, 0x40000000, 0);
+    r1 = spi_recv_ignore_ff();
     set_CE();
-    if (r1 != 1) {
+    if (r1 != 0) {
 #ifdef DEBUG_SDCARD
-        puts_P(PSTR("\n[Error initializing SDCard (ACMD41).]\n"));
+        print_P(PSTR("\n[Error initializing SDCard (ACMD41): "));
+        print_sdcard_state(r1);
+        print_P(PSTR("]\n"));
 #endif
         return false;
     }
 
 #ifdef DEBUG_SDCARD
-    puts_P(PSTR("\n[SDCard initialized.]\n"));
+    print_P(PSTR("\n[SDCard initialized (ACMD41): "));
+    print_sdcard_state(r1);
+    print_P(PSTR("]\n"));
 #endif
 
     return true;
@@ -100,8 +136,16 @@ bool sdcard_setup(void)
 {
     sdcard_poweron();
     if (!sdcard_software_reset()) return false;
-    if (!sdcard_initialize()) return false;
+    if (!sdcard_check_voltage_range()) return false;
 
+    for (int i = 0; i < 16; ++i) {
+        if (sdcard_initialize())
+            goto initialized;
+        _delay_ms(50);
+    }
+    return false;
+
+initialized:
     return true;
 }
 
@@ -110,7 +154,7 @@ bool sdcard_read_block(uint32_t block, uint8_t* buffer)
     clear_CE();
 
     // send read command
-    command(0x17, block, 0);
+    command(17, block, 0);
     uint8_t r = spi_recv_ignore_ff();
     if (r != 0) {
         set_CE();
