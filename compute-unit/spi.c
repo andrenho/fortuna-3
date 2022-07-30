@@ -12,7 +12,7 @@ void spi_init(void)
     // B0 is also set as output otherwise SPI won't work in AVR
     
     // enable SPI, set as MASTER, clock to fosc/128 (TODO - can it go faster?)
-    SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPR1) | (1 << SPR0);
+    SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPI2X);
 }
 
 uint8_t spi_send(uint8_t byte)

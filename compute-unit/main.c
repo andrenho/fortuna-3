@@ -36,17 +36,16 @@ int main(void)
     clock_set(dtx);
     */
 
-    /*
     char buf[25];
     ClockDateTime dt = clock_get();
     snprintf(buf, sizeof buf, "%04d/%02d/%02d %02d:%02d:%02d\n", (2000 + dt.yy), dt.mm, dt.dd, dt.hh, dt.nn, dt.ss);
     lcd_print(buf);
     puts(buf);
-    */
 
     bool sdcard_ok = sdcard_setup();
     if (!sdcard_ok)
         puts_P(PSTR("SDCard initialization failed."));
+    puts_P(PSTR("SDCard initialized."));
 
     uint8_t buffer[512];
     sdcard_read_block(0, buffer);
