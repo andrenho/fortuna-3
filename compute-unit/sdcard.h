@@ -8,6 +8,7 @@ void sdcard_init(void);
 
 bool sdcard_setup(void);
 bool sdcard_read_block(uint32_t block, uint8_t* buffer);
+bool sdcard_write_block(uint32_t block, uint8_t* buffer);
 
 #endif
 

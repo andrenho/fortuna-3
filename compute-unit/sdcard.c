@@ -10,7 +10,8 @@
 #define set_CE()   { PORTG |= _BV(PG5); debug_spi_inactive(PSTR("SD")); }
 #define clear_CE() { PORTG &= ~_BV(PG5); debug_spi_active(PSTR("SD")); }
 
-#define MAX_READ_ATTEMPTS 20
+#define MAX_READ_ATTEMPTS   20
+#define MAX_WRITE_ATTEMPTS 100
 
 static void command(uint8_t cmd, uint32_t args, uint8_t crc)
 {
@@ -180,8 +181,11 @@ bool sdcard_read_block(uint32_t block, uint8_t* buffer)
     return false;
 
 read_data:
-    for (int i = 0; i < 512; ++i)
-        buffer[i] = spi_recv();
+    for (int i = 0; i < 512; ++i) {
+        uint8_t data = spi_recv();
+        if (buffer)
+            buffer[i] = data;
+    }
 
     // crc
     spi_send(0xff);
@@ -192,6 +196,76 @@ read_data:
     print_P(PSTR("\n[SDCard block 0x"));
     printhex(block);
     print_P(PSTR(" read.]\n"));
+#endif
+    
+    return true;
+}
+
+bool sdcard_write_block(uint32_t block, uint8_t* buffer)
+{
+    clear_CE();
+
+    // send write command
+    command(24, block, 0);
+    uint8_t r1 = spi_recv_ignore_ff();
+    if (r1 != 0) {
+        set_CE();
+#ifdef DEBUG_SDCARD
+        print_P(PSTR("\n[SDCard write rejected with 0x"));
+        printhex(r1);
+        print_P(PSTR("]\n"));
+#endif
+        return false;
+    }
+
+    // write data to card
+    spi_send(0xfe);
+    for (uint16_t i = 0; i < 512; ++i)
+        spi_send(buffer[i]);
+
+    // wait for confirmation
+    for (int i = 0; i < MAX_WRITE_ATTEMPTS; ++i) {
+        r1 = spi_recv();
+        if (r1 != 0xff)
+            goto response_received;
+        _delay_ms(10);
+    }
+#ifdef DEBUG_SDCARD
+    puts_P(PSTR("\n[Timeout while writing to SDCard.]\n"));
+#endif
+    set_CE();
+    return false;
+
+response_received:
+    if ((r1 & 0x1f) != 0x5) {
+#ifdef DEBUG_SDCARD
+        print_P(PSTR("\n[Data write rejected to SDCard: "));
+        print_sdcard_state(r1);
+        puts_P(PSTR("]\n"));
+#endif
+        set_CE();
+        return false;
+    }
+
+    // wait for write to finalize
+    for (int i = 0; i < MAX_WRITE_ATTEMPTS; ++i) {
+        r1 = spi_recv_ignore_ff();
+        if (r1 != 0x0)
+            goto response_data_received;
+        _delay_ms(10);
+    }
+#ifdef DEBUG_SDCARD
+    puts_P(PSTR("\n[Timeout while waiting for write to SDCard.]\n"));
+#endif
+    set_CE();
+    return false;
+
+response_data_received:
+    set_CE();
+#ifdef DEBUG_SDCARD
+    print_P(PSTR("\n[SDCard block 0x"));
+    printhex(block);
+    print_P(PSTR(" written.]\n"));
 #endif
     
     return true;

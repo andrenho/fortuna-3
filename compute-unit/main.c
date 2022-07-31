@@ -47,8 +47,16 @@ int main(void)
         puts_P(PSTR("SDCard initialization failed."));
     puts_P(PSTR("SDCard initialized."));
 
+    /*
     uint8_t buffer[512];
-    sdcard_read_block(0, buffer);
+    for (int i = 0; i < 512; ++i)
+        buffer[i] = i;
+    sdcard_write_block(1, buffer);
+
+    for (int i = 0; i < 512; ++i)
+        buffer[i] = 0;
+    */
+    sdcard_read_block(1, NULL);
 
     sei();
 

@@ -24,8 +24,8 @@ BAUD=38400
 # Debug components (uncomment to debug)
 # DEFINES+=-DDEBUG_LCD=1
 # DEFINES+=-DDEBUG_RTC=1
-# DEFINES+=-DDEBUG_SPI=1
-# DEFINES+=-DDEBUG_SDCARD=1
+DEFINES+=-DDEBUG_SPI=1
+DEFINES+=-DDEBUG_SDCARD=1
 DEFINES+=-DDEBUG_RESET=1
 
 #
@@ -65,7 +65,7 @@ size: ${PROJECT}.elf
 talk:
 	@echo "Press Ctrl+A and then Shift+K to exit."
 	@sleep 1
-	sudo screen /dev/serial0 38400
+	sudo screen /dev/serial0 ${BAUD}
 
 clean:
 	rm -f ${OBJECTS} ${PROJECT}.elf ${PROJECT}.hex
