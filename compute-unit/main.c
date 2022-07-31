@@ -57,6 +57,7 @@ int main(void)
         buffer[i] = 0;
     */
     sdcard_read_block(1, NULL);
+    puts_P(PSTR("SDCard read." ));
 
     sei();
 
