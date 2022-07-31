@@ -3500,9 +3500,6 @@
     (path "/9aa7ada1-f847-4132-a08c-23cca7a6db6c"
       (reference "R?") (unit 1) (value "220") (footprint "")
     )
-    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/d42de503-f0e6-4401-add0-7731402da932"
-      (reference "R?") (unit 1) (value "10k") (footprint "")
-    )
     (path "/eac4465c-b5fd-444a-a384-e229ce11048e"
       (reference "R?") (unit 1) (value "10k") (footprint "")
     )
