@@ -61,4 +61,12 @@ void lcd_command(bool rs, uint8_t data)
     debug_lcd(data);
 }
 
+void lcd_print_line1(char* str)
+{
+}
+
+void lcd_print_line2(char* str)
+{
+}
+
 // vim:ts=4:sts=4:sw=4:expandtab

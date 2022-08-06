@@ -8,6 +8,7 @@
 #include <avr/interrupt.h>
 
 #include "debug.h"
+#include "lcd.h"
 #include "rtc.h"
 
 typedef struct {
@@ -78,6 +79,10 @@ static void help(void)
     puts_P(PSTR("  rtc"));
     puts_P(PSTR("    get                     Read Real Time Clock current value"));
     puts_P(PSTR("    set YY MM DD HH NN SS   Set Real Time Clock value"));
+    puts_P(PSTR("  lcd"));
+    puts_P(PSTR("    clear                   Clear LCD screen"));
+    puts_P(PSTR("    cmd BYTE                Send a command to the LCD (1602)"));
+    puts_P(PSTR("    line[1,2] TEXT          Replace line 1 of the LCD with this text"));
 }
 
 //
@@ -123,21 +128,47 @@ error:
 }
 
 //
+// LCD
+// 
+
+static void lcd_cmd(UserInput* u)
+{
+    long cmd = strtol(u->par[2], NULL, 16);
+    if (errno != 0) {
+        puts_P(PSTR("Invalid byte"));
+        return;
+    } 
+
+    lcd_command(1, cmd);
+}
+
+//
 // EXECUTE COMMANDS
 // 
 
 static void execute(UserInput *u)
 {
-    if (u->npars == 0 && strcmp_P(u->command, PSTR("")) == 0)
+    if (u->npars == 0 && strcmp_P(u->command, PSTR("")) == 0) {
         return;
-    else if (u->npars == 0 && strcmp_P(u->command, PSTR("help")) == 0)
+    } else if (u->npars == 0 && strcmp_P(u->command, PSTR("help")) == 0) {
         help();
-    else if (u->npars == 1 && strcmp_P(u->command, PSTR("rtc")) == 0 && strcmp_P(u->par[0], PSTR("get")) == 0)
-        rtc_read();
-    else if (u->npars == 7 && strcmp_P(u->command, PSTR("rtc")) == 0 && strcmp_P(u->par[0], PSTR("set")) == 0)
-        rtc_store(u);
-    else
+    } else if (strcmp_P(u->command, PSTR("rtc")) == 0) {
+        if (u->npars == 1 && strcmp_P(u->par[0], PSTR("get")) == 0)
+            rtc_read();
+        else if (u->npars == 7 && strcmp_P(u->par[0], PSTR("set")) == 0)
+            rtc_store(u);
+    } else if (strcmp_P(u->command, PSTR("lcd")) == 0) {
+        if (u->npars == 1 && strcmp_P(u->par[0], PSTR("clear")) == 0)
+            lcd_clear();
+        else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("cmd")) == 0)
+            lcd_cmd(u);
+        else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("line1")) == 0)
+            lcd_print_line1(u->par[1]);
+        else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("line2")) == 0)
+            lcd_print_line2(u->par[1]);
+    } else {
         puts_P(PSTR("Syntax error."));
+    }
 }
 
 //
