@@ -1,15 +1,18 @@
 #include "monitor.h"
 
 #include <stdio.h>
+#include <stdint.h>
 
 #include <avr/interrupt.h>
 
 #include "debug.h"
 
 typedef struct {
-    char*  command;
-    size_t npars;
-    char*  par[5];
+    char*    command;
+    size_t   npars;
+    char*    par[8];
+    uint16_t ipar[8];
+    uint16_t hpar[8];
 } UserInput;
 
 // 
@@ -19,7 +22,7 @@ typedef struct {
 static void prompt(void)
 {
     print_P(PSTR("[F3] "));
-    putchar('/');  // TODO - use current directory
+    putchar('/');                   // TODO - use current directory
     print_P(PSTR("> "));
 }
 
@@ -27,6 +30,15 @@ static void parse_input(UserInput *uinput, char* buffer, size_t sz)
 {
     uinput->command = buffer;
     uinput->npars = 0;
+
+    for (size_t i = 0; i < sz; ++i) {
+        if (buffer[i] == ' ') {
+            ++uinput->npars;
+            uinput->par[uinput->npars - 1] = &buffer[i + 1];
+            buffer[i] = 0;
+            ++i;
+        }
+    }
 }
 
 static void input(UserInput *uinput, char* buffer, size_t sz)
@@ -39,8 +51,10 @@ static void input(UserInput *uinput, char* buffer, size_t sz)
             putchar('\n');
             break;
         } else if (c >= 32 && c < 127 && pos < sz) {
-            putchar(c);
-            buffer[pos++] = c;
+            if (!(pos == 0 && c == 32)) {
+                putchar(c);
+                buffer[pos++] = c;
+            }
         } else if (c == 127) {
             print_P(PSTR("\b \b"));
             --pos;
@@ -64,6 +78,15 @@ static void help(void)
 }
 
 //
+// RTC
+//
+
+static void rtc_get(void)
+{
+    puts_P(PSTR("XXX"));
+}
+
+//
 // EXECUTE COMMANDS
 // 
 
@@ -71,6 +94,8 @@ static void execute(UserInput *u)
 {
     if (u->npars == 0 && strcmp_P(u->command, PSTR("help")) == 0)
         help();
+    else if (u->npars == 1 && strcmp_P(u->command, PSTR("rtc")) == 0 && strcmp_P(u->par[0], PSTR("get")) == 0)
+        rtc_get();
     else
         puts_P(PSTR("Syntax error."));
 }
