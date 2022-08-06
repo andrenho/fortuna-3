@@ -1,11 +1,14 @@
 #include "monitor.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #include <avr/interrupt.h>
 
 #include "debug.h"
+#include "rtc.h"
 
 typedef struct {
     char*    command;
@@ -55,7 +58,7 @@ static void input(UserInput *uinput, char* buffer, size_t sz)
                 putchar(c);
                 buffer[pos++] = c;
             }
-        } else if (c == 127) {
+        } else if (c == 127 && pos > 0) {
             print_P(PSTR("\b \b"));
             --pos;
         }
@@ -81,9 +84,42 @@ static void help(void)
 // RTC
 //
 
-static void rtc_get(void)
+static void rtc_read(void)
 {
-    puts_P(PSTR("XXX"));
+    ClockDateTime dt = rtc_get();
+    printdec(dt.mm, 2); putchar('/'); printdec(dt.dd, 2); putchar('/'); printdec(dt.yy, 2);
+    putchar(' ');
+    printdec(dt.hh, 2); putchar(':'); printdec(dt.nn, 2); putchar(':'); printdec(dt.ss, 2);
+    putchar('\n');
+}
+
+static void rtc_store(UserInput* u)
+{
+    long yy = strtol(u->par[1], NULL, 10);
+    long mm = strtol(u->par[2], NULL, 10);
+    long dd = strtol(u->par[3], NULL, 10);
+
+    ClockDateTime dt = { .yy = yy, .mm = mm, .dd = dd };
+
+    if (yy == 0 || mm == 0 || dd == 0)
+        goto error;
+
+    dt.hh = strtol(u->par[4], NULL, 10);
+    if (errno != 0)
+        goto error;
+    dt.nn = strtol(u->par[5], NULL, 10);
+    if (errno != 0)
+        goto error;
+    dt.ss = strtol(u->par[6], NULL, 10);
+    if (errno != 0)
+        goto error;
+
+    rtc_set(dt);
+    puts_P(PSTR("Clock is set."));
+    return;
+
+error:
+    puts_P(PSTR("Invalid date value"));
 }
 
 //
@@ -92,10 +128,14 @@ static void rtc_get(void)
 
 static void execute(UserInput *u)
 {
-    if (u->npars == 0 && strcmp_P(u->command, PSTR("help")) == 0)
+    if (u->npars == 0 && strcmp_P(u->command, PSTR("")) == 0)
+        return;
+    else if (u->npars == 0 && strcmp_P(u->command, PSTR("help")) == 0)
         help();
     else if (u->npars == 1 && strcmp_P(u->command, PSTR("rtc")) == 0 && strcmp_P(u->par[0], PSTR("get")) == 0)
-        rtc_get();
+        rtc_read();
+    else if (u->npars == 7 && strcmp_P(u->command, PSTR("rtc")) == 0 && strcmp_P(u->par[0], PSTR("set")) == 0)
+        rtc_store(u);
     else
         puts_P(PSTR("Syntax error."));
 }

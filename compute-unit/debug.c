@@ -135,4 +135,17 @@ void printhex(uint8_t value)
         putchar((value & 0xf) + 'A' - 10);
 }
 
+void printdec(uint8_t value, size_t digits)
+{
+    if (value >= 100 || digits > 2) {
+        putchar((value / 100) + '0');
+        value -= (value / 100) * 100;
+    }
+    if (value >= 10 || digits > 1) {
+        putchar((value / 10) + '0');
+        value -= (value / 10) * 10;
+    }
+    putchar(value + '0');
+}
+
 // vim:ts=4:sts=4:sw=4:expandtab
