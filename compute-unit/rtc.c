@@ -1,4 +1,4 @@
-#include "clock.h"
+#include "rtc.h"
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -13,12 +13,12 @@
 #define clear_IO()   PORTD &= ~_BV(PD7)
 #define get_IO()     (PIND & _BV(PIND7))
 
-void clock_init(void)
+void rtc_init(void)
 {
     DDRD |= _BV(DDD2) | _BV(DDD3) | _BV(DDD7);
 }
 
-static uint8_t clock_cmd_get(uint8_t cmd)
+static uint8_t rtc_cmd_get(uint8_t cmd)
 {
     set_CE();
     _delay_us(4);
@@ -59,7 +59,7 @@ static uint8_t clock_cmd_get(uint8_t cmd)
     return data;
 }
 
-static void clock_cmd_set(uint8_t cmd, uint8_t data)
+static void rtc_cmd_set(uint8_t cmd, uint8_t data)
 {
     set_CE();
     _delay_us(4);
@@ -84,14 +84,14 @@ static void clock_cmd_set(uint8_t cmd, uint8_t data)
     _delay_us(4);
 }
 
-ClockDateTime clock_get(void)
+ClockDateTime rtc_get(void)
 {
-    uint8_t ss = clock_cmd_get(0x81);
-    uint8_t nn = clock_cmd_get(0x83);
-    uint8_t hh = clock_cmd_get(0x85);
-    uint8_t dd = clock_cmd_get(0x87);
-    uint8_t mm = clock_cmd_get(0x89);
-    uint8_t yy = clock_cmd_get(0x8d);
+    uint8_t ss = rtc_cmd_get(0x81);
+    uint8_t nn = rtc_cmd_get(0x83);
+    uint8_t hh = rtc_cmd_get(0x85);
+    uint8_t dd = rtc_cmd_get(0x87);
+    uint8_t mm = rtc_cmd_get(0x89);
+    uint8_t yy = rtc_cmd_get(0x8d);
     return (ClockDateTime) {
         .ss = (((ss >> 4) & 0b111) * 10) + (ss & 0xf),
         .nn = (nn >> 4) * 10 + (nn & 0xf),
@@ -102,14 +102,14 @@ ClockDateTime clock_get(void)
     };
 }
 
-void clock_set(ClockDateTime dt)
+void rtc_set(ClockDateTime dt)
 {
-    clock_cmd_set(0x80, ((dt.ss / 10) << 4) | (dt.ss % 10));
-    clock_cmd_set(0x82, ((dt.nn / 10) << 4) | (dt.nn % 10));
-    clock_cmd_set(0x84, ((dt.hh / 10) << 4) | (dt.hh % 10));
-    clock_cmd_set(0x86, ((dt.dd / 10) << 4) | (dt.dd % 10));
-    clock_cmd_set(0x88, ((dt.mm / 10) << 4) | (dt.mm % 10));
-    clock_cmd_set(0x8c, ((dt.yy / 10) << 4) | (dt.yy % 10));
+    rtc_cmd_set(0x80, ((dt.ss / 10) << 4) | (dt.ss % 10));
+    rtc_cmd_set(0x82, ((dt.nn / 10) << 4) | (dt.nn % 10));
+    rtc_cmd_set(0x84, ((dt.hh / 10) << 4) | (dt.hh % 10));
+    rtc_cmd_set(0x86, ((dt.dd / 10) << 4) | (dt.dd % 10));
+    rtc_cmd_set(0x88, ((dt.mm / 10) << 4) | (dt.mm % 10));
+    rtc_cmd_set(0x8c, ((dt.yy / 10) << 4) | (dt.yy % 10));
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

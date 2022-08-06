@@ -4,10 +4,11 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
-#include "clock.h"
+#include "rtc.h"
 #include "debug.h"
 #include "event.h"
 #include "lcd.h"
+#include "monitor.h"
 #include "sdcard.h"
 #include "spi.h"
 #include "uart.h"
@@ -20,46 +21,26 @@ int main(void)
     _delay_ms(100);
 
     uart_init();
+    puts_P(PSTR("\e[1;1H\e[2JWelcome to Fortuna-3!\n"));
     debug_reset_reason();
 
     usr_init();
     lcd_init();
-    clock_init();
+    rtc_init();
     spi_init();
     sdcard_init();
 
-    /*
-    ClockDateTime dtx = {
-        .dd = 28, .mm = 7, .yy = 22,
-        .ss = 0, .nn = 38, .hh = 14,
-    };
-    clock_set(dtx);
-    */
-
-    char buf[25];
-    ClockDateTime dt = clock_get();
-    snprintf(buf, sizeof buf, "%04d/%02d/%02d %02d:%02d:%02d\n", (2000 + dt.yy), dt.mm, dt.dd, dt.hh, dt.nn, dt.ss);
-    lcd_print(buf);
-    puts(buf);
-
-    bool sdcard_ok = sdcard_setup();
-    if (!sdcard_ok)
-        puts_P(PSTR("SDCard initialization failed."));
-    puts_P(PSTR("SDCard initialized."));
-
-    /*
-    uint8_t buffer[512];
-    for (int i = 0; i < 512; ++i)
-        buffer[i] = i;
-    sdcard_write_block(1, buffer);
-
-    for (int i = 0; i < 512; ++i)
-        buffer[i] = 0;
-    */
-    sdcard_read_block(1, NULL);
-    puts_P(PSTR("SDCard read." ));
+    if (sdcard_setup())
+        puts_P(PSTR("SDCard initialized."));
+    else
+        puts_P(PSTR(RED "Error initializing SDCard." RST));
+    putchar('\n');
 
     sei();
+
+#ifdef MONITOR
+    monitor();  // TODO - move to USR1 event
+#endif
 
     while (1) {
         switch (last_event) {

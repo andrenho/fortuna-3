@@ -45,10 +45,12 @@ static void debug(char app, Direction direction, uint8_t sz, uint32_t byte)
 void debug_reset_reason(void)
 {
 #ifdef DEBUG_RESET
+    /*
     puts_P(PSTR(""));
     for (int i = 0; i < 30; ++i)
         putchar('-');
     puts_P(PSTR(""));
+    */
 
     print_P(PSTR("Reset reason: "));
     if (MCUSR & _BV(JTRF))
