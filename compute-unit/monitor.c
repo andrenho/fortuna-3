@@ -141,11 +141,13 @@ static size_t input_bytes(uint8_t* bytes, size_t max_sz)
     }
     buffer[pos] = '\0';
 
-    bytes[0] = 0x00;
-    bytes[1] = 0x10;
-    bytes[2] = 0x20;
-    bytes[3] = 0x30;
-    return 4;
+    size_t count = 0;
+    for (size_t i = 0; i <= pos; i += 3) {
+        char* endptr = (char *) &buffer[i+1];
+        bytes[i / 3] = strtoul((char *) &buffer[i], &endptr, 16);
+        ++count;
+    }
+    return count;
 }
 
 //
@@ -164,7 +166,7 @@ static void help(void)
     puts_P(PSTR("    line[1,2] TEXT          Replace line 1 of the LCD with this text"));
     puts_P(PSTR("  sd"));
     puts_P(PSTR("    get BLOCK               Read SDCard block"));
-    puts_P(PSTR("    set BLOCK OFFSET        Write bytes to SDCard, starting at offset"));
+    puts_P(PSTR("    write BLOCK OFFSET      Write bytes to SDCard, starting at offset"));
 }
 
 //
@@ -241,7 +243,7 @@ static void sd_get(UserInput *u)
     print_array(bytes, 512);
 }
 
-static void sd_set(UserInput *u)
+static void sd_write(UserInput *u)
 {
     int block = xtoi(u->par[1]);
     int offset = xtoi(u->par[2]);
@@ -305,8 +307,8 @@ static void execute(UserInput *u)
     } else if (strcmp_P(u->command, PSTR("sd")) == 0) {
         if (u->npars == 2 && strcmp_P(u->par[0], PSTR("get")) == 0)
             sd_get(u);
-        else if (u->npars == 3 && strcmp_P(u->par[0], PSTR("set")) == 0)
-            sd_set(u);
+        else if (u->npars == 3 && strcmp_P(u->par[0], PSTR("write")) == 0)
+            sd_write(u);
         else
             syntax_error();
     } else {
