@@ -10,6 +10,7 @@
 
 #include "debug.h"
 #include "lcd.h"
+#include "ram.h"
 #include "rtc.h"
 #include "sdcard.h"
 #include "uart.h"
@@ -167,6 +168,10 @@ static void help(void)
     puts_P(PSTR("  sd"));
     puts_P(PSTR("    get BLOCK               Read SDCard block"));
     puts_P(PSTR("    write BLOCK OFFSET      Write bytes to SDCard, starting at offset"));
+    puts_P(PSTR("  ram"));
+    puts_P(PSTR("    bank BANK               Set RAM bank [0..7]"));
+    puts_P(PSTR("    get BLOCK               Read RAM block"));
+    puts_P(PSTR("    write BLOCK OFFSET      Write bytes to RAM, starting at offset"));
 }
 
 //
@@ -250,7 +255,7 @@ static void sd_write(UserInput *u)
     if (block < 0 || offset < 0)
         return;
 
-    size_t max_sz = 32;
+    size_t max_sz = 64;
     if (512 - offset < 32)
         max_sz = 512 - offset;
     uint8_t ibytes[max_sz];
@@ -269,6 +274,60 @@ static void sd_write(UserInput *u)
     }
 
     sd_get(u);
+}
+
+// 
+// RAM
+//
+
+static void ram_print_bank(void)
+{
+    print_P(PSTR("RAM bank is "));
+    printdec(ram_bank(), 0);
+    puts_P(PSTR("."));
+}
+
+static void ram_bank_set(UserInput *u)
+{
+    int bank = xtoi(u->par[1]);
+    if (bank == -1)
+        return;
+    bank &= 0x7;
+
+    ram_set_bank(bank);
+    ram_print_bank();
+}
+
+static void ram_get(UserInput *u)
+{
+    int block = xtoi(u->par[1]);
+    if (block == -1)
+        return;
+
+    uint8_t bytes[256] = { 0 };
+    ram_get_block(block, bytes);
+
+    ram_print_bank();
+    print_array(bytes, 256);
+}
+
+static void ram_write(UserInput *u)
+{
+    int block = xtoi(u->par[1]);
+    int offset = xtoi(u->par[2]);
+    if (block < 0 || offset < 0)
+        return;
+
+    size_t max_sz = 64;
+    if (512 - offset < 32)
+        max_sz = 512 - offset;
+    uint8_t ibytes[max_sz];
+    size_t sz = input_bytes(ibytes, max_sz);
+
+    for (size_t i = 0; i < sz; ++i)
+        ram_set_byte(block * 0x100 + i + offset, ibytes[i]);
+
+    ram_get(u);
 }
 
 //
@@ -309,6 +368,15 @@ static void execute(UserInput *u)
             sd_get(u);
         else if (u->npars == 3 && strcmp_P(u->par[0], PSTR("write")) == 0)
             sd_write(u);
+        else
+            syntax_error();
+    } else if (strcmp_P(u->command, PSTR("ram")) == 0) {
+        if (u->npars == 2 && strcmp_P(u->par[0], PSTR("bank")) == 0)
+            ram_bank_set(u);
+        else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("get")) == 0)
+            ram_get(u);
+        else if (u->npars == 3 && strcmp_P(u->par[0], PSTR("write")) == 0)
+            ram_write(u);
         else
             syntax_error();
     } else {

@@ -9,6 +9,7 @@
 #include "event.h"
 #include "lcd.h"
 #include "monitor.h"
+#include "ram.h"
 #include "sdcard.h"
 #include "spi.h"
 #include "uart.h"
@@ -28,6 +29,7 @@ int main(void)
     lcd_init();
     rtc_init();
     spi_init();
+    ram_init();
     sdcard_init();
 
     if (sdcard_setup())

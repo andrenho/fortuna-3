@@ -2,7 +2,7 @@
 PROJECT=avr-skeleton
 
 # Object files (one for each source file)
-OBJECTS=main.o uart.o spi.o usr.o lcd.o rtc.o debug.o sdcard.o monitor.o
+OBJECTS=main.o uart.o spi.o usr.o lcd.o rtc.o debug.o sdcard.o ram.o monitor.o
 
 # Avrdude configuration to connect on the PI. See avrdude_gpio.conf.
 # Can be one of: pi_rst, pi_cs0, pi_cs1 or pi_gpio, depending on the RESET line in AVR.
