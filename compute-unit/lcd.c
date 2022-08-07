@@ -21,22 +21,30 @@ void lcd_init(void)
     clear_E();
     set_DATA(0);
 
+    lcd_command(0, 0b0011);
+    _delay_ms(5);
+    lcd_command(0, 0b0011);
+    lcd_command(0, 0b0011);
+
     lcd_command(0, 0b0010);   // set to 4-bit operation
+
     lcd_command(0, 0b0010);   // function set: 4 bits, 2 lines, 5x11 font
     lcd_command(0, 0b1000);
+    
     lcd_command(0, 0b0000);   // display/cursor on
     lcd_command(0, 0b1100); 
 
+    lcd_clear();
+
     lcd_command(0, 0b0000);   // entry mode
     lcd_command(0, 0b0110); 
-
-    lcd_clear();
 }
 
 void lcd_clear(void)
 {
     lcd_command(0, 0b0000);
     lcd_command(0, 0b0001); 
+    _delay_ms(5);
 }
 
 void lcd_print_char(uint8_t c)
@@ -61,12 +69,28 @@ void lcd_command(bool rs, uint8_t data)
     debug_lcd(data);
 }
 
+void lcd_full_command(uint8_t data)
+{
+    lcd_command(0, data >> 4);
+    lcd_command(0, data & 0xf);
+}
+
 void lcd_print_line1(char* str)
 {
+    lcd_full_command(0b10);  // move to home
+    for (size_t i = 0; i < 16; ++i)
+        lcd_print_char(' ');
+    lcd_full_command(0b10);
+    lcd_print(str);
 }
 
 void lcd_print_line2(char* str)
 {
+    lcd_full_command(0xa8);  // move to beginning of line 2
+    for (size_t i = 0; i < 16; ++i)
+        lcd_print_char(' ');
+    lcd_full_command(0xa8);
+    lcd_print(str);
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

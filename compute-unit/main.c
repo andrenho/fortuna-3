@@ -18,7 +18,7 @@ volatile Event last_event = EV_NONE;
 
 int main(void)
 {
-    _delay_ms(100);
+    _delay_ms(200);
 
     uart_init();
     puts_P(PSTR("\e[1;1H\e[2JWelcome to Fortuna-3!\n"));
