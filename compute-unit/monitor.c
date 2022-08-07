@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <avr/interrupt.h>
 
@@ -110,6 +111,15 @@ static void input(UserInput *uinput, char* buffer, size_t sz)
     parse_input(uinput, buffer, pos);
 }
 
+static size_t input_bytes(uint8_t* bytes, size_t max_sz)
+{
+    bytes[0] = 0;
+    bytes[1] = 1;
+    bytes[2] = 2;
+    bytes[3] = 3;
+    return 4;
+}
+
 //
 // HELP
 //
@@ -205,6 +215,29 @@ static void sd_get(UserInput *u)
 
 static void sd_set(UserInput *u)
 {
+    int block = xtoi(u->par[2]);
+    int offset = xtoi(u->par[3]);
+    if (block < 0 || offset < 0)
+        return;
+
+    size_t max_sz = 32;
+    if (512 - offset < 32)
+        max_sz = 512 - offset;
+    uint8_t ibytes[max_sz];
+    size_t sz = input_bytes(ibytes, max_sz);
+
+    uint8_t bytes[512];
+    if (!sdcard_read_block(block, bytes)) {
+        puts_P(PSTR(RED "Error reading from SDCard." RST));
+        return;
+    }
+    memcpy(&bytes[offset], ibytes, sz);
+    if (!sdcard_write_block(block, bytes)) {
+        puts_P(PSTR(RED "Error writing to SDCard." RST));
+        return;
+    }
+
+    sd_get(u);
 }
 
 //
