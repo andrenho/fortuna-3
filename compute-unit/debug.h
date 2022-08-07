@@ -17,6 +17,7 @@ void debug_spi_send(uint8_t sent, uint8_t recvd);
 void print_P(PGM_P p);
 void printbin(uint8_t value);
 void printhex(uint8_t value);
+void printhex16(uint16_t value);
 void printdec(uint8_t value, size_t digits);
 
 #endif

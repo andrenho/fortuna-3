@@ -135,6 +135,12 @@ void printhex(uint8_t value)
         putchar((value & 0xf) + 'A' - 10);
 }
 
+void printhex16(uint16_t value)
+{
+    printhex(value >> 8);
+    printhex(value & 0xff);
+}
+
 void printdec(uint8_t value, size_t digits)
 {
     if (value >= 100 || digits > 2) {

@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "lcd.h"
 #include "rtc.h"
+#include "sdcard.h"
 
 typedef struct {
     char*    command;
@@ -83,6 +84,9 @@ static void help(void)
     puts_P(PSTR("    clear                   Clear LCD screen"));
     puts_P(PSTR("    cmd BYTE                Send a command to the LCD (1602)"));
     puts_P(PSTR("    line[1,2] TEXT          Replace line 1 of the LCD with this text"));
+    puts_P(PSTR("  sd"));
+    puts_P(PSTR("    get BLOCK               Read SDCard block"));
+    puts_P(PSTR("    set BLOCK OFFSET        Write bytes to SDCard, starting at offset"));
 }
 
 //
@@ -100,22 +104,22 @@ static void rtc_read(void)
 
 static void rtc_store(UserInput* u)
 {
-    long yy = strtol(u->par[1], NULL, 10);
-    long mm = strtol(u->par[2], NULL, 10);
-    long dd = strtol(u->par[3], NULL, 10);
+    unsigned long yy = strtoul(u->par[1], NULL, 10);
+    unsigned long mm = strtoul(u->par[2], NULL, 10);
+    unsigned long dd = strtoul(u->par[3], NULL, 10);
 
     ClockDateTime dt = { .yy = yy, .mm = mm, .dd = dd };
 
     if (yy == 0 || mm == 0 || dd == 0)
         goto error;
 
-    dt.hh = strtol(u->par[4], NULL, 10);
+    dt.hh = strtoul(u->par[4], NULL, 10);
     if (errno != 0)
         goto error;
-    dt.nn = strtol(u->par[5], NULL, 10);
+    dt.nn = strtoul(u->par[5], NULL, 10);
     if (errno != 0)
         goto error;
-    dt.ss = strtol(u->par[6], NULL, 10);
+    dt.ss = strtoul(u->par[6], NULL, 10);
     if (errno != 0)
         goto error;
 
@@ -131,15 +135,51 @@ error:
 // LCD
 // 
 
-static void lcd_cmd(UserInput* u)
+static void lcd_cmd(UserInput *u)
 {
-    long cmd = strtol(u->par[2], NULL, 16);
+    unsigned long cmd = strtoul(u->par[2], NULL, 16);
     if (errno != 0) {
         puts_P(PSTR("Invalid byte"));
         return;
     } 
 
     lcd_command(1, cmd);
+}
+
+//
+// SD CARD
+// 
+
+static void sd_get(UserInput *u)
+{
+    unsigned long block = strtoul(u->par[2], NULL, 16);
+    if (errno != 0) {
+        puts_P(PSTR("Invalid block"));
+        return;
+    } 
+
+    uint8_t bytes[512];
+    if (!sdcard_read_block(block, bytes)) {
+        puts_P(PSTR("Error reading from SDCard."));
+        return;
+    }
+
+    for (size_t i = 0; i < 6; ++i) putchar(' ');
+    for (size_t i = 0; i < 16; ++i) {
+        print_P(PSTR(" _"));
+        putchar(i + (i < 10 ? '0' : 'A' - 10));
+    }
+    putchar('\n');
+
+    for (uint16_t i = 0; i < 32; ++i) {
+        printhex16(i * 0x10);
+        print_P(PSTR(": "));
+        for (uint8_t j = 0; j < 16; ++j) {
+            putchar(' ');
+            printhex(bytes[i * 0x10 + j]);
+        }
+        putchar('\n');
+    }
 }
 
 //
@@ -166,6 +206,9 @@ static void execute(UserInput *u)
             lcd_print_line1(u->par[1]);
         else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("line2")) == 0)
             lcd_print_line2(u->par[1]);
+    } else if (strcmp_P(u->command, PSTR("sd")) == 0) {
+        if (u->npars == 2 && strcmp_P(u->par[0], PSTR("get")) == 0)
+            sd_get(u);
     } else {
         puts_P(PSTR("Syntax error."));
     }
