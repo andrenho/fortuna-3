@@ -11,6 +11,7 @@
 #include "lcd.h"
 #include "rtc.h"
 #include "sdcard.h"
+#include "uart.h"
 
 typedef struct {
     char*    command;
@@ -19,6 +20,45 @@ typedef struct {
     uint16_t ipar[8];
     uint16_t hpar[8];
 } UserInput;
+
+//
+// UTIL
+//
+
+static void print_array(uint8_t* bytes, size_t sz)
+{
+    print_P(PSTR(BOLD));
+    for (size_t i = 0; i < 6; ++i) putchar(' ');
+    for (size_t i = 0; i < 16; ++i) {
+        print_P(PSTR(" _"));
+        putchar(i + (i < 10 ? '0' : 'A' - 10));
+    }
+    puts_P(PSTR(RST));
+
+    for (uint16_t i = 0; i < sz / 16; ++i) {
+        print_P(PSTR(BOLD));
+        printhex16(i * 0x10);
+        print_P(PSTR(": "));
+        print_P(PSTR(RST));
+        for (uint8_t j = 0; j < 16; ++j) {
+            putchar(' ');
+            if (j == 8)
+                putchar(' ');
+            printhex(bytes[i * 0x10 + j]);
+        }
+        putchar('\n');
+    }
+}
+
+static int xtoi(char* value)
+{
+    unsigned long xvalue = strtoul(value, NULL, 16);
+    if (errno != 0) {
+        puts_P(PSTR(RED "Invalid number" RST));
+        return -1;
+    } 
+    return (int) xvalue;
+}
 
 // 
 // INPUT/OUTPUT
@@ -128,7 +168,7 @@ static void rtc_store(UserInput* u)
     return;
 
 error:
-    puts_P(PSTR("Invalid date value"));
+    puts_P(PSTR(RED "Invalid date value" RST));
 }
 
 //
@@ -137,11 +177,9 @@ error:
 
 static void lcd_cmd(UserInput *u)
 {
-    unsigned long cmd = strtoul(u->par[2], NULL, 16);
-    if (errno != 0) {
-        puts_P(PSTR("Invalid byte"));
+    int cmd = xtoi(u->par[2]);
+    if (cmd == -1)
         return;
-    } 
 
     lcd_command(1, cmd);
 }
@@ -152,39 +190,31 @@ static void lcd_cmd(UserInput *u)
 
 static void sd_get(UserInput *u)
 {
-    unsigned long block = strtoul(u->par[2], NULL, 16);
-    if (errno != 0) {
-        puts_P(PSTR("Invalid block"));
+    int block = xtoi(u->par[2]);
+    if (block == -1)
         return;
-    } 
 
     uint8_t bytes[512];
     if (!sdcard_read_block(block, bytes)) {
-        puts_P(PSTR("Error reading from SDCard."));
+        puts_P(PSTR(RED "Error reading from SDCard." RST));
         return;
     }
 
-    for (size_t i = 0; i < 6; ++i) putchar(' ');
-    for (size_t i = 0; i < 16; ++i) {
-        print_P(PSTR(" _"));
-        putchar(i + (i < 10 ? '0' : 'A' - 10));
-    }
-    putchar('\n');
+    print_array(bytes, 512);
+}
 
-    for (uint16_t i = 0; i < 32; ++i) {
-        printhex16(i * 0x10);
-        print_P(PSTR(": "));
-        for (uint8_t j = 0; j < 16; ++j) {
-            putchar(' ');
-            printhex(bytes[i * 0x10 + j]);
-        }
-        putchar('\n');
-    }
+static void sd_set(UserInput *u)
+{
 }
 
 //
 // EXECUTE COMMANDS
 // 
+
+static void syntax_error(void)
+{
+    puts_P(PSTR(RED "Syntax error." RST));
+}
 
 static void execute(UserInput *u)
 {
@@ -197,6 +227,8 @@ static void execute(UserInput *u)
             rtc_read();
         else if (u->npars == 7 && strcmp_P(u->par[0], PSTR("set")) == 0)
             rtc_store(u);
+        else
+            syntax_error();
     } else if (strcmp_P(u->command, PSTR("lcd")) == 0) {
         if (u->npars == 1 && strcmp_P(u->par[0], PSTR("clear")) == 0)
             lcd_clear();
@@ -206,11 +238,17 @@ static void execute(UserInput *u)
             lcd_print_line1(u->par[1]);
         else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("line2")) == 0)
             lcd_print_line2(u->par[1]);
+        else
+            syntax_error();
     } else if (strcmp_P(u->command, PSTR("sd")) == 0) {
         if (u->npars == 2 && strcmp_P(u->par[0], PSTR("get")) == 0)
             sd_get(u);
+        else if (u->npars == 3 && strcmp_P(u->par[0], PSTR("set")) == 0)
+            sd_set(u);
+        else
+            syntax_error();
     } else {
-        puts_P(PSTR("Syntax error."));
+        syntax_error();
     }
 }
 
