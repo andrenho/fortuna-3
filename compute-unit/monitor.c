@@ -113,10 +113,10 @@ static void input(UserInput *uinput, char* buffer, size_t sz)
 
 static size_t input_bytes(uint8_t* bytes, size_t max_sz)
 {
-    bytes[0] = 0;
-    bytes[1] = 1;
-    bytes[2] = 2;
-    bytes[3] = 3;
+    bytes[0] = 0x00;
+    bytes[1] = 0x10;
+    bytes[2] = 0x20;
+    bytes[3] = 0x30;
     return 4;
 }
 
@@ -200,11 +200,11 @@ static void lcd_cmd(UserInput *u)
 
 static void sd_get(UserInput *u)
 {
-    int block = xtoi(u->par[2]);
+    int block = xtoi(u->par[1]);
     if (block == -1)
         return;
 
-    uint8_t bytes[512];
+    uint8_t bytes[512] = { 0 };
     if (!sdcard_read_block(block, bytes)) {
         puts_P(PSTR(RED "Error reading from SDCard." RST));
         return;
@@ -215,8 +215,8 @@ static void sd_get(UserInput *u)
 
 static void sd_set(UserInput *u)
 {
-    int block = xtoi(u->par[2]);
-    int offset = xtoi(u->par[3]);
+    int block = xtoi(u->par[1]);
+    int offset = xtoi(u->par[2]);
     if (block < 0 || offset < 0)
         return;
 
@@ -226,12 +226,13 @@ static void sd_set(UserInput *u)
     uint8_t ibytes[max_sz];
     size_t sz = input_bytes(ibytes, max_sz);
 
-    uint8_t bytes[512];
+    uint8_t bytes[512] = { 0 };
     if (!sdcard_read_block(block, bytes)) {
         puts_P(PSTR(RED "Error reading from SDCard." RST));
         return;
     }
     memcpy(&bytes[offset], ibytes, sz);
+
     if (!sdcard_write_block(block, bytes)) {
         puts_P(PSTR(RED "Error writing to SDCard." RST));
         return;
