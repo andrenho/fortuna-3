@@ -113,6 +113,34 @@ static void input(UserInput *uinput, char* buffer, size_t sz)
 
 static size_t input_bytes(uint8_t* bytes, size_t max_sz)
 {
+    size_t max_input = max_sz * 3 - 1;
+    char buffer[max_input + 1];
+    buffer[0] = '\0';
+    size_t pos = 0;
+
+    print_P(PSTR("Type up to "));
+    printdec(max_sz, 0);
+    puts_P(PSTR(" bytes here (format: 00 00 00...):"));
+
+    for (;;) {
+        char c = getchar();
+        if (c == 10 || c == 13) {
+            putchar('\n');
+            break;
+        } else if ((pos % 3 == 0 || pos % 3 == 1) && 
+                ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))) {
+            putchar(c);
+            buffer[pos++] = c;
+        } else if (pos % 3 == 2 && c == ' ') {
+            putchar(c);
+            buffer[pos++] = c;
+        } else if (c == 127 && pos > 0) {
+            print_P(PSTR("\b \b"));
+            --pos;
+        }    
+    }
+    buffer[pos] = '\0';
+
     bytes[0] = 0x00;
     bytes[1] = 0x10;
     bytes[2] = 0x20;
