@@ -15,6 +15,8 @@
 #include "uart.h"
 #include "usr.h"
 
+#include "fsfat/ff.h"
+
 volatile Event last_event = EV_NONE;
 
 int main(void)
@@ -32,13 +34,11 @@ int main(void)
     ram_init();
     sdcard_init();
 
-    /*
     if (sdcard_setup())
         puts_P(PSTR("SDCard initialized."));
     else
         puts_P(PSTR(RED "Error initializing SDCard." RST));
     putchar('\n');
-    */
 
     sei();
 

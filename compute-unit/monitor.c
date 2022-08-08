@@ -14,6 +14,7 @@
 #include "rtc.h"
 #include "sdcard.h"
 #include "uart.h"
+#include "fsfat/ff.h"
 
 typedef struct {
     char*    command;
@@ -172,6 +173,7 @@ static void help(void)
     puts_P(PSTR("    bank BANK               Set RAM bank [0..7]"));
     puts_P(PSTR("    get BLOCK               Read RAM block"));
     puts_P(PSTR("    write BLOCK OFFSET      Write bytes to RAM, starting at offset"));
+    puts_P(PSTR("  format                    Create a single partition disk, and format it"));
 }
 
 //
@@ -331,6 +333,38 @@ static void ram_write(UserInput *u)
 }
 
 //
+// DISK OPERATIONS
+//
+
+#define CHECK(r) if (check(r) != FR_OK) return;
+
+static FRESULT check(FRESULT r) {
+    if (r != FR_OK)
+        print_P(PSTR(RED));
+    switch (r) {
+        case FR_OK: break;
+        case FR_DISK_ERR: print_P(PSTR("DISK_ERR")); break;
+        case FR_NOT_READY: print_P(PSTR("NOT_READY")); break;
+        case FR_INVALID_PARAMETER: print_P(PSTR("INVALID_PARAMETER")); break;
+        case FR_NOT_ENOUGH_CORE: print_P(PSTR("NOT_ENOUGH_CORE")); break;
+        case FR_INVALID_DRIVE: print_P(PSTR("INVALID_DRIVE")); break;
+        case FR_MKFS_ABORTED: print_P(PSTR("MKFS_ABORTED")); break;
+        default: print_P(PSTR("UNEXPECTED_ERROR")); break;
+    }
+    if (r != FR_OK)
+        puts_P(PSTR(RST));
+    return r;
+}
+
+static void format(void)
+{
+    BYTE work[FF_MAX_SS];
+    LBA_t plist[] = { 100, 0 };
+    CHECK(f_fdisk(0, plist, work))
+    CHECK(f_mkfs("0:", 0, work, sizeof work))
+}
+
+//
 // EXECUTE COMMANDS
 // 
 
@@ -379,6 +413,8 @@ static void execute(UserInput *u)
             ram_write(u);
         else
             syntax_error();
+    } else if (strcmp_P(u->command, PSTR("format")) == 0) {
+        format();
     } else {
         syntax_error();
     }

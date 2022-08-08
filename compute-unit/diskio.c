@@ -3,6 +3,10 @@
 
 #include "sdcard.h"
 
+PARTITION VolToPart[FF_VOLUMES] = {
+    {0, 1},    /* "0:" ==> 1st partition in PD#0 */
+};
+
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
 /*-----------------------------------------------------------------------*/
@@ -28,11 +32,7 @@ DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-    (void) pdrv;
-    if (sdcard_setup())
-        return 0;
-    else
-        return STA_NOINIT;
+    return disk_status(pdrv);  // we assume the disk was already initialized
 }
 
 
@@ -97,7 +97,7 @@ DRESULT disk_ioctl (
         case CTRL_SYNC:
             break;
         case GET_SECTOR_COUNT:
-            sz = 1024 * 1024;  // let's use 512 MB for now
+            sz = 16 * 1024;  // 8 MB - TODO
             *(LBA_t *) buff = sz;
             break;
         case GET_BLOCK_SIZE:
