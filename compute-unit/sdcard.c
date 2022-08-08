@@ -13,6 +13,8 @@
 #define MAX_READ_ATTEMPTS   20
 #define MAX_WRITE_ATTEMPTS 100
 
+static bool was_initialized = false;
+
 static void command(uint8_t cmd, uint32_t args, uint8_t crc)
 {
     spi_send(cmd | 0x40);
@@ -147,6 +149,7 @@ bool sdcard_setup(void)
     return false;
 
 initialized:
+    was_initialized = true;
     return true;
 }
 
@@ -201,7 +204,7 @@ read_data:
     return true;
 }
 
-bool sdcard_write_block(uint32_t block, uint8_t* buffer)
+bool sdcard_write_block(uint32_t block, uint8_t const* buffer)
 {
     clear_CE();
 
@@ -269,6 +272,11 @@ response_data_received:
 #endif
     
     return true;
+}
+
+bool sdcard_was_initialized(void)
+{
+    return was_initialized;
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

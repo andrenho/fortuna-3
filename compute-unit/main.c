@@ -32,11 +32,13 @@ int main(void)
     ram_init();
     sdcard_init();
 
+    /*
     if (sdcard_setup())
         puts_P(PSTR("SDCard initialized."));
     else
         puts_P(PSTR(RED "Error initializing SDCard." RST));
     putchar('\n');
+    */
 
     sei();
 
