@@ -9,8 +9,9 @@
 #include <string.h>
 
 #include <avr/interrupt.h>
+#include <avr/pgmspace.h>
 
-#include "debug.h"
+#include "ansi.h"
 #include "fs.h"
 #include "lcd.h"
 #include "ram.h"
@@ -33,24 +34,17 @@ typedef struct {
 
 static void print_array(uint8_t* bytes, size_t sz)
 {
-    print_P(PSTR(BOLD));
-    for (size_t i = 0; i < 6; ++i) putchar(' ');
-    for (size_t i = 0; i < 16; ++i) {
-        print_P(PSTR(" _"));
-        putchar(i + (i < 10 ? '0' : 'A' - 10));
-    }
+    printf_P(PSTR(BOLD "%6c"), ' ');
+    for (size_t i = 0; i < 16; ++i)
+        printf_P(PSTR(" _%X"), i);
     puts_P(PSTR(RST));
 
     for (uint16_t i = 0; i < sz / 16; ++i) {
-        print_P(PSTR(BOLD));
-        printhex16(i * 0x10);
-        print_P(PSTR(": "));
-        print_P(PSTR(RST));
+        printf_P(PSTR(BOLD "%04X: " RST), i * 0x10);
         for (uint8_t j = 0; j < 16; ++j) {
-            putchar(' ');
             if (j == 8)
                 putchar(' ');
-            printhex(bytes[i * 0x10 + j]);
+            printf_P(PSTR(" %02X"), bytes[i * 0x10 + j]);
         }
         putchar('\n');
     }
@@ -72,9 +66,7 @@ static long long xtoi(char* value)
 
 static void prompt(void)
 {
-    print_P(PSTR("[F3] "));
-    putchar('/');                   // TODO - use current directory
-    print_P(PSTR("> "));
+    printf_P(PSTR("[F3] %s> "), "/");  // TODO - use current directory
 }
 
 static void parse_input(UserInput *uinput, char* buffer, size_t sz)
@@ -107,7 +99,7 @@ static void input(UserInput *uinput, char* buffer, size_t sz)
                 buffer[pos++] = c;
             }
         } else if (c == 127 && pos > 0) {
-            print_P(PSTR("\b \b"));
+            printf_P(PSTR("\b \b"));
             --pos;
         }
     }
@@ -123,9 +115,7 @@ static size_t input_bytes(uint8_t* bytes, size_t max_sz)
     buffer[0] = '\0';
     size_t pos = 0;
 
-    print_P(PSTR("Type up to "));
-    printdec(max_sz, 0);
-    puts_P(PSTR(" bytes here (format: 00 00 00...):"));
+    printf_P(PSTR("Type up to %d bytes here (format: 00 00 00...):"), max_sz);
 
     for (;;) {
         char c = getchar();
@@ -140,7 +130,7 @@ static size_t input_bytes(uint8_t* bytes, size_t max_sz)
             putchar(c);
             buffer[pos++] = c;
         } else if (c == 127 && pos > 0) {
-            print_P(PSTR("\b \b"));
+            printf_P(PSTR("\b \b"));
             --pos;
         }    
     }
@@ -186,10 +176,7 @@ static void help(void)
 static void rtc_read(void)
 {
     ClockDateTime dt = rtc_get();
-    printdec(dt.mm, 2); putchar('/'); printdec(dt.dd, 2); putchar('/'); printdec(dt.yy, 2);
-    putchar(' ');
-    printdec(dt.hh, 2); putchar(':'); printdec(dt.nn, 2); putchar(':'); printdec(dt.ss, 2);
-    putchar('\n');
+    printf_P(PSTR("%02d/%02d/%02d %02d:%02d:%02d\n"), dt.mm, dt.dd, dt.yy, dt.hh, dt.nn, dt.ss);
 }
 
 static void rtc_store(UserInput* u)
@@ -287,9 +274,7 @@ static void sd_write(UserInput *u)
 
 static void ram_print_bank(void)
 {
-    print_P(PSTR("RAM bank is "));
-    printdec(ram_bank(), 0);
-    puts_P(PSTR("."));
+    printf_P(PSTR("RAM bank is %d.\n"), ram_bank());
 }
 
 static void ram_bank_set(UserInput *u)

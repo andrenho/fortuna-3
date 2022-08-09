@@ -4,6 +4,7 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
+#include "ansi.h"
 #include "config.h"
 #include "debug.h"
 #include "event.h"
@@ -36,13 +37,12 @@ static void initialize(void)
     rtc_init();
     spi_init();
     ram_init();
-    sdcard_init();
 
+    sdcard_init();
     if (!sdcard_setup()) {
         puts_P(PSTR(RED "Error initializing SDCard." RST));
         for (;;);
     }
-
     if (!fs_mount()) {
         puts_P(PSTR(RED "Error mounting partition." RST));
         for (;;);

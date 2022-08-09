@@ -6,6 +6,7 @@
 
 void debug_reset_reason(void);
 
+/*
 void debug_lcd(uint8_t data);
 void debug_mcu2rtc(uint8_t data);
 void debug_rtc2mcu(uint8_t data);
@@ -20,6 +21,7 @@ void printhex(uint8_t value);
 void printhex16(uint16_t value);
 void printhex32(uint32_t value);
 void printdec(uint8_t value, size_t digits);
+*/
 
 #endif
 

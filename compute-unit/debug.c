@@ -5,6 +5,25 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
+void debug_reset_reason(void)
+{
+    printf_P(PSTR("Reset reason: "));
+    if (MCUSR & _BV(JTRF))
+        printf_P(PSTR("JTAG "));
+    if (MCUSR & _BV(WDRF))
+        printf_P(PSTR("watchdog "));
+    if (MCUSR & _BV(BORF))
+        printf_P(PSTR("brown-out "));
+    if (MCUSR & _BV(EXTRF))
+        printf_P(PSTR("external reset "));
+    if (MCUSR & _BV(PORF))
+        printf_P(PSTR("power-on "));
+    putchar('\n');
+
+    MCUSR = 0;
+}
+
+/*
 typedef enum { FROM_MCU, TO_MCU } Direction;
 
 void print_P(PGM_P p) {
@@ -40,32 +59,6 @@ static void debug(char app, Direction direction, uint8_t sz, uint32_t byte)
     putchar(app);
     putchar(':');
     debug_data(direction, sz, byte);
-}
-
-void debug_reset_reason(void)
-{
-#ifdef DEBUG_RESET
-    /*
-    puts_P(PSTR(""));
-    for (int i = 0; i < 30; ++i)
-        putchar('-');
-    puts_P(PSTR(""));
-    */
-
-    print_P(PSTR("Reset reason: "));
-    if (MCUSR & _BV(JTRF))
-        print_P(PSTR("JTAG "));
-    if (MCUSR & _BV(WDRF))
-        print_P(PSTR("watchdog "));
-    if (MCUSR & _BV(BORF))
-        print_P(PSTR("brown-out "));
-    if (MCUSR & _BV(EXTRF))
-        print_P(PSTR("external reset "));
-    if (MCUSR & _BV(PORF))
-        print_P(PSTR("power-on "));
-    puts_P(PSTR(""));
-#endif
-    MCUSR = 0;
 }
 
 void debug_lcd(uint8_t data) {
@@ -159,5 +152,6 @@ void printdec(uint8_t value, size_t digits)
     }
     putchar(value + '0');
 }
+*/
 
 // vim:ts=4:sts=4:sw=4:expandtab
