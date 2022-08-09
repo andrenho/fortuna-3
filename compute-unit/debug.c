@@ -141,6 +141,12 @@ void printhex16(uint16_t value)
     printhex(value & 0xff);
 }
 
+void printhex32(uint32_t value)
+{
+    printhex16(value >> 16);
+    printhex16(value & 0xffff);
+}
+
 void printdec(uint8_t value, size_t digits)
 {
     if (value >= 100 || digits > 2) {

@@ -197,7 +197,7 @@ read_data:
 
 #ifdef DEBUG_SDCARD
     print_P(PSTR("\n[SDCard block 0x"));
-    printhex(block);
+    printhex32(block);
     print_P(PSTR(" read.]\n"));
 #endif
     
@@ -267,7 +267,7 @@ response_data_received:
     set_CE();
 #ifdef DEBUG_SDCARD
     print_P(PSTR("\n[SDCard block 0x"));
-    printhex(block);
+    printhex32(block);
     print_P(PSTR(" written.]\n"));
 #endif
     

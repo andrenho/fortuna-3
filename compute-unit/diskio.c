@@ -97,7 +97,7 @@ DRESULT disk_ioctl (
         case CTRL_SYNC:
             break;
         case GET_SECTOR_COUNT:
-            sz = 16 * 1024;  // 8 MB - TODO
+            sz = 24 * 1024;  // 8 MB - TODO
             *(LBA_t *) buff = sz;
             break;
         case GET_BLOCK_SIZE:

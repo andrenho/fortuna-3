@@ -7,6 +7,7 @@
 #include "rtc.h"
 #include "debug.h"
 #include "event.h"
+#include "fs.h"
 #include "lcd.h"
 #include "monitor.h"
 #include "ram.h"
@@ -38,6 +39,11 @@ int main(void)
         puts_P(PSTR("SDCard initialized."));
     else
         puts_P(PSTR(RED "Error initializing SDCard." RST));
+
+    if (fs_mount())
+        puts_P(PSTR("Partition mounted."));
+    else
+        puts_P(PSTR(RED "Error mounting partition." RST));
     putchar('\n');
 
     sei();

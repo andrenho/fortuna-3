@@ -1,5 +1,7 @@
 #include "monitor.h"
 
+#define _GNU_SOURCE
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -9,6 +11,7 @@
 #include <avr/interrupt.h>
 
 #include "debug.h"
+#include "fs.h"
 #include "lcd.h"
 #include "ram.h"
 #include "rtc.h"
@@ -53,14 +56,14 @@ static void print_array(uint8_t* bytes, size_t sz)
     }
 }
 
-static int xtoi(char* value)
+static long long xtoi(char* value)
 {
     unsigned long xvalue = strtoul(value, NULL, 16);
     if (errno != 0) {
         puts_P(PSTR(RED "Invalid number" RST));
         return -1;
     } 
-    return (int) xvalue;
+    return (long long) xvalue;
 }
 
 // 
@@ -173,7 +176,7 @@ static void help(void)
     puts_P(PSTR("    bank BANK               Set RAM bank [0..7]"));
     puts_P(PSTR("    get BLOCK               Read RAM block"));
     puts_P(PSTR("    write BLOCK OFFSET      Write bytes to RAM, starting at offset"));
-    puts_P(PSTR("  format                    Create a single partition disk, and format it"));
+    // puts_P(PSTR("  format                    Create a single partition disk, and format it"));
 }
 
 //
@@ -237,7 +240,7 @@ static void lcd_cmd(UserInput *u)
 
 static void sd_get(UserInput *u)
 {
-    int block = xtoi(u->par[1]);
+    long long block = xtoi(u->par[1]);
     if (block == -1)
         return;
 
@@ -336,38 +339,6 @@ static void ram_write(UserInput *u)
 // DISK OPERATIONS
 //
 
-#define CHECK(r) if (check(r) != FR_OK) return;
-
-static FRESULT check(FRESULT r) {
-    if (r != FR_OK)
-        print_P(PSTR(RED));
-    switch (r) {
-        case FR_OK: break;
-        case FR_DISK_ERR: print_P(PSTR("DISK_ERR")); break;
-        case FR_NOT_READY: print_P(PSTR("NOT_READY")); break;
-        case FR_INVALID_PARAMETER: print_P(PSTR("INVALID_PARAMETER")); break;
-        case FR_NOT_ENOUGH_CORE: print_P(PSTR("NOT_ENOUGH_CORE")); break;
-        case FR_INVALID_DRIVE: print_P(PSTR("INVALID_DRIVE")); break;
-        case FR_MKFS_ABORTED: print_P(PSTR("MKFS_ABORTED")); break;
-        default: print_P(PSTR("UNEXPECTED_ERROR")); break;
-    }
-    if (r != FR_OK)
-        puts_P(PSTR(RST));
-    return r;
-}
-
-static void format(void)
-{
-    BYTE work[FF_MAX_SS];
-    LBA_t plist[] = { 100, 0 };
-    CHECK(f_fdisk(0, plist, work))
-    CHECK(f_mkfs("0:", 0, work, sizeof work))
-}
-
-//
-// EXECUTE COMMANDS
-// 
-
 static void syntax_error(void)
 {
     puts_P(PSTR(RED "Syntax error." RST));
@@ -414,7 +385,7 @@ static void execute(UserInput *u)
         else
             syntax_error();
     } else if (strcmp_P(u->command, PSTR("format")) == 0) {
-        format();
+        fs_format();
     } else {
         syntax_error();
     }
