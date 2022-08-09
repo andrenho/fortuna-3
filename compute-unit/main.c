@@ -40,10 +40,12 @@ int main(void)
     else
         puts_P(PSTR(RED "Error initializing SDCard." RST));
 
+    /*
     if (fs_mount())
         puts_P(PSTR("Partition mounted."));
     else
         puts_P(PSTR(RED "Error mounting partition." RST));
+    */
     putchar('\n');
 
     sei();

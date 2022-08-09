@@ -386,6 +386,8 @@ static void execute(UserInput *u)
             syntax_error();
     } else if (strcmp_P(u->command, PSTR("format")) == 0) {
         fs_format();
+    } else if (strcmp_P(u->command, PSTR("mount")) == 0) {
+        fs_mount();
     } else {
         syntax_error();
     }
