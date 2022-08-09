@@ -4,13 +4,14 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
-#include "rtc.h"
+#include "config.h"
 #include "debug.h"
 #include "event.h"
 #include "fs.h"
 #include "lcd.h"
 #include "monitor.h"
 #include "ram.h"
+#include "rtc.h"
 #include "sdcard.h"
 #include "spi.h"
 #include "uart.h"
@@ -20,13 +21,15 @@
 
 volatile Event last_event = EV_NONE;
 
-int main(void)
+static void initialize(void)
 {
     _delay_ms(200);
 
     uart_init();
-    puts_P(PSTR("\e[1;1H\e[2JWelcome to Fortuna-3!\n"));
+
+#if DEBUG_RESET_REASON
     debug_reset_reason();
+#endif
 
     usr_init();
     lcd_init();
@@ -35,21 +38,28 @@ int main(void)
     ram_init();
     sdcard_init();
 
-    if (sdcard_setup())
-        puts_P(PSTR("SDCard initialized."));
-    else
+    if (!sdcard_setup()) {
         puts_P(PSTR(RED "Error initializing SDCard." RST));
+        for (;;);
+    }
 
-    if (fs_mount())
-        puts_P(PSTR("Partition mounted."));
-    else
+    if (!fs_mount()) {
         puts_P(PSTR(RED "Error mounting partition." RST));
+        for (;;);
+    }
     putchar('\n');
+
+    puts_P(PSTR("\e[1;1H\e[2JWelcome to Fortuna-3!\n"));
+}
+
+int main(void)
+{
+    initialize();
 
     sei();
 
-#ifdef MONITOR
-    monitor();  // TODO - move to USR1 event
+#if INCLUDE_MONITOR && RUN_MONITOR_AT_START
+    monitor();
 #endif
 
     while (1) {
@@ -60,7 +70,7 @@ int main(void)
 
             case EV_USR0:
                 cli();
-                usr0_on_press();
+                // TODO - do something?
                 last_event = EV_NONE;
                 _delay_ms(80);
                 sei();
@@ -68,7 +78,9 @@ int main(void)
 
             case EV_USR1:
                 cli();
-                usr1_on_press();
+#if INCLUDE_MONITOR
+                monitor();
+#endif
                 last_event = EV_NONE;
                 _delay_ms(80);
                 sei();
