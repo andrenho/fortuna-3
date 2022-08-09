@@ -1,0 +1,5 @@
+#define INCLUDE_MONITOR 1
+
+#define RUN_MONITOR_AT_START 1
+
+#define DEBUG_RESET_REASON 1
