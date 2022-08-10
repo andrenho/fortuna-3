@@ -4,11 +4,12 @@
 #include <util/delay.h>
 #include <stdio.h>
 
-#include "debug.h"
+#include "ansi.h"
+#include "config.h"
 #include "spi.h"
 
-#define set_CE()   { PORTG |= _BV(PG5); debug_spi_inactive(PSTR("SD")); }
-#define clear_CE() { PORTG &= ~_BV(PG5); debug_spi_active(PSTR("SD")); }
+#define set_CE()   { PORTG |= _BV(PG5); /* debug_spi_inactive(PSTR("SD")); */ }
+#define clear_CE() { PORTG &= ~_BV(PG5); /* debug_spi_active(PSTR("SD")); */ }
 
 #define MAX_READ_ATTEMPTS   20
 #define MAX_WRITE_ATTEMPTS 100
@@ -25,17 +26,17 @@ static void command(uint8_t cmd, uint32_t args, uint8_t crc)
     spi_send(crc | 0x1);
 }
 
-#ifdef DEBUG_SDCARD
+#if DEBUG_SDCARD >= 1
 static void print_sdcard_state(uint8_t r1)
 {
-    if (r1 == 0) print_P(PSTR("ok "));
-    if (r1 & (1 << 0)) print_P(PSTR("idle "));
-    if (r1 & (1 << 1)) print_P(PSTR("erase_reset "));
-    if (r1 & (1 << 2)) print_P(PSTR("illegal_command "));
-    if (r1 & (1 << 3)) print_P(PSTR("command_crc_error "));
-    if (r1 & (1 << 4)) print_P(PSTR("erase_seq_error "));
-    if (r1 & (1 << 5)) print_P(PSTR("addr_error "));
-    if (r1 & (1 << 6)) print_P(PSTR("param_error "));
+    if (r1 == 0) printf_P(PSTR("ok "));
+    if (r1 & (1 << 0)) printf_P(PSTR("idle "));
+    if (r1 & (1 << 1)) printf_P(PSTR("erase_reset "));
+    if (r1 & (1 << 2)) printf_P(PSTR("illegal_command "));
+    if (r1 & (1 << 3)) printf_P(PSTR("command_crc_error "));
+    if (r1 & (1 << 4)) printf_P(PSTR("erase_seq_error "));
+    if (r1 & (1 << 5)) printf_P(PSTR("addr_error "));
+    if (r1 & (1 << 6)) printf_P(PSTR("param_error "));
 }
 #endif
 
@@ -56,8 +57,8 @@ static void sdcard_poweron(void)
     set_CE();
     spi_send(0xff);
 
-#ifdef DEBUG_SDCARD
-    puts_P(PSTR("\n[SDCard powered on] "));
+#if DEBUG_SDCARD >= 1
+    printf_P(PSTR(CYN "[SDCard powered on] " RST));
 #endif
 }
 
@@ -68,10 +69,10 @@ static bool sdcard_software_reset(void)
     uint8_t r1 = spi_recv_ignore_ff();
     set_CE();
 
-#ifdef DEBUG_SDCARD
-    print_P(PSTR("\n[SDCard CMD0 issued: "));
+#if DEBUG_SDCARD >= 1
+    printf_P(PSTR(CYN "[SDCard CMD0 issued: "));
     print_sdcard_state(r1);
-    print_P(PSTR("] "));
+    printf_P(PSTR("] " RST));
 #endif
 
     return r1 == 0x1;
@@ -86,10 +87,10 @@ static bool sdcard_check_voltage_range(void)
         spi_send(0xff);
     set_CE();
 
-#ifdef DEBUG_SDCARD
-    print_P(PSTR("\n[SDCard CMD8 issued: "));
+#if DEBUG_SDCARD >= 1
+    printf_P(PSTR(CYN "[SDCard CMD8 issued: "));
     print_sdcard_state(r1);
-    print_P(PSTR("] "));
+    printf_P(PSTR("] " RST));
 #endif
 
     return r1 == 0x1;
@@ -102,15 +103,15 @@ static bool sdcard_initialize(void)
     uint8_t r1 = spi_recv_ignore_ff();
     set_CE();
     if (r1 != 1) {
-#ifdef DEBUG_SDCARD
-        puts_P(PSTR("\n[Command CMD55 not supported by SDCard.]\n"));
+#if DEBUG_SDCARD >= 1
+        printf_P(PSTR(RED "[Command CMD55 not supported by SDCard.] " RST));
 #endif
         return false;
     }
-#ifdef DEBUG_SDCARD
-    print_P(PSTR("\n[Command CMD55 accepted: " ));
+#if DEBUG_SDCARD >= 1
+    printf_P(PSTR(CYN "[Command CMD55 accepted: "));
     print_sdcard_state(r1);
-    print_P(PSTR("]\n"));
+    printf_P(PSTR(CYN "] " RST));
 #endif
 
     clear_CE();
@@ -118,18 +119,18 @@ static bool sdcard_initialize(void)
     r1 = spi_recv_ignore_ff();
     set_CE();
     if (r1 != 0) {
-#ifdef DEBUG_SDCARD
-        print_P(PSTR("\n[Error initializing SDCard (ACMD41): "));
+#if DEBUG_SDCARD >= 1
+        printf_P(PSTR(RED "[Error initializing SDCard (ACMD41): "));
         print_sdcard_state(r1);
-        print_P(PSTR("]\n"));
+        printf_P(PSTR("] " RST));
 #endif
         return false;
     }
 
-#ifdef DEBUG_SDCARD
-    print_P(PSTR("\n[SDCard initialized (ACMD41): "));
+#if DEBUG_SDCARD >= 1
+    printf_P(PSTR(CYN "[SDCard initialized (ACMD41): "));
     print_sdcard_state(r1);
-    print_P(PSTR("]\n"));
+    printf_P(PSTR("] " RST));
 #endif
 
     return true;
@@ -162,10 +163,8 @@ bool sdcard_read_block(uint32_t block, uint8_t* buffer)
     uint8_t r = spi_recv_ignore_ff();
     if (r != 0) {
         set_CE();
-#ifdef DEBUG_SDCARD
-        print_P(PSTR("\n[SDCard read rejected with 0x"));
-        printhex(r);
-        print_P(PSTR("]\n"));
+#if DEBUG_SDCARD >= 1
+        printf_P(PSTR(RED "[SDCard read rejected with 0x%X] " RST), r);
 #endif
         return false;
     }
@@ -177,8 +176,8 @@ bool sdcard_read_block(uint32_t block, uint8_t* buffer)
             goto read_data;
         _delay_ms(10);
     }
-#ifdef DEBUG_SDCARD
-    puts_P(PSTR("\n[Timeout while reading from SDCard.]\n"));
+#if DEBUG_SDCARD >= 1
+    printf_P(PSTR(RED "[Timeout while reading from SDCard.] " RST));
 #endif
     set_CE();
     return false;
@@ -195,10 +194,8 @@ read_data:
     spi_send(0xff);
     set_CE();
 
-#ifdef DEBUG_SDCARD
-    print_P(PSTR("\n[SDCard block 0x"));
-    printhex32(block);
-    print_P(PSTR(" read.]\n"));
+#if DEBUG_SDCARD >= 1
+    printf_P(PSTR(CYN "[SDCard block 0x%X read.] " RST), block);
 #endif
     
     return true;
@@ -213,10 +210,8 @@ bool sdcard_write_block(uint32_t block, uint8_t const* buffer)
     uint8_t r1 = spi_recv_ignore_ff();
     if (r1 != 0) {
         set_CE();
-#ifdef DEBUG_SDCARD
-        print_P(PSTR("\n[SDCard write rejected with 0x"));
-        printhex(r1);
-        print_P(PSTR("]\n"));
+#if DEBUG_SDCARD >= 1
+        printf_P(PSTR(RED "[SDCard write rejected with 0x%02X] " RST), r1);
 #endif
         return false;
     }
@@ -233,18 +228,18 @@ bool sdcard_write_block(uint32_t block, uint8_t const* buffer)
             goto response_received;
         _delay_ms(10);
     }
-#ifdef DEBUG_SDCARD
-    puts_P(PSTR("\n[Timeout while writing to SDCard.]\n"));
+#if DEBUG_SDCARD >= 1
+    printf_P(PSTR(RED "[Timeout while writing to SDCard.] " RST));
 #endif
     set_CE();
     return false;
 
 response_received:
     if ((r1 & 0x1f) != 0x5) {
-#ifdef DEBUG_SDCARD
-        print_P(PSTR("\n[Data write rejected to SDCard: "));
+#if DEBUG_SDCARD >= 1
+        printf_P(PSTR(RED "[Data write rejected to SDCard: "));
         print_sdcard_state(r1);
-        puts_P(PSTR("]\n"));
+        printf_P(PSTR("] " RST));
 #endif
         set_CE();
         return false;
@@ -257,18 +252,16 @@ response_received:
             goto response_data_received;
         _delay_ms(10);
     }
-#ifdef DEBUG_SDCARD
-    puts_P(PSTR("\n[Timeout while waiting for write to SDCard.]\n"));
+#if DEBUG_SDCARD >= 1
+    printf_P(PSTR(RED "[Timeout while waiting for write to SDCard.] " RST));
 #endif
     set_CE();
     return false;
 
 response_data_received:
     set_CE();
-#ifdef DEBUG_SDCARD
-    print_P(PSTR("\n[SDCard block 0x"));
-    printhex32(block);
-    print_P(PSTR(" written.]\n"));
+#if DEBUG_SDCARD >= 1
+    printf_P(PSTR(CYN "[SDCard block 0x%X written.]" RST), block);
 #endif
     
     return true;

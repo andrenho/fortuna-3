@@ -9,8 +9,10 @@
 #include <string.h>
 
 #include <avr/interrupt.h>
+#include <avr/pgmspace.h>
 
-#include "debug.h"
+#include "ansi.h"
+#include "config.h"
 #include "fs.h"
 #include "lcd.h"
 #include "ram.h"
@@ -33,24 +35,17 @@ typedef struct {
 
 static void print_array(uint8_t* bytes, size_t sz)
 {
-    print_P(PSTR(BOLD));
-    for (size_t i = 0; i < 6; ++i) putchar(' ');
-    for (size_t i = 0; i < 16; ++i) {
-        print_P(PSTR(" _"));
-        putchar(i + (i < 10 ? '0' : 'A' - 10));
-    }
+    printf_P(PSTR(BOLD "%6c"), ' ');
+    for (size_t i = 0; i < 16; ++i)
+        printf_P(PSTR(" _%X"), i);
     puts_P(PSTR(RST));
 
     for (uint16_t i = 0; i < sz / 16; ++i) {
-        print_P(PSTR(BOLD));
-        printhex16(i * 0x10);
-        print_P(PSTR(": "));
-        print_P(PSTR(RST));
+        printf_P(PSTR(BOLD "%04X: " RST), i * 0x10);
         for (uint8_t j = 0; j < 16; ++j) {
-            putchar(' ');
             if (j == 8)
                 putchar(' ');
-            printhex(bytes[i * 0x10 + j]);
+            printf_P(PSTR(" %02X"), bytes[i * 0x10 + j]);
         }
         putchar('\n');
     }
@@ -72,9 +67,7 @@ static long long xtoi(char* value)
 
 static void prompt(void)
 {
-    print_P(PSTR("[F3] "));
-    putchar('/');                   // TODO - use current directory
-    print_P(PSTR("> "));
+    printf_P(PSTR("[F3] %s> "), "/");  // TODO - use current directory
 }
 
 static void parse_input(UserInput *uinput, char* buffer, size_t sz)
@@ -107,7 +100,7 @@ static void input(UserInput *uinput, char* buffer, size_t sz)
                 buffer[pos++] = c;
             }
         } else if (c == 127 && pos > 0) {
-            print_P(PSTR("\b \b"));
+            printf_P(PSTR("\b \b"));
             --pos;
         }
     }
@@ -123,9 +116,7 @@ static size_t input_bytes(uint8_t* bytes, size_t max_sz)
     buffer[0] = '\0';
     size_t pos = 0;
 
-    print_P(PSTR("Type up to "));
-    printdec(max_sz, 0);
-    puts_P(PSTR(" bytes here (format: 00 00 00...):"));
+    printf_P(PSTR("Type up to %d bytes here (format: 00 00 00...):"), max_sz);
 
     for (;;) {
         char c = getchar();
@@ -140,7 +131,7 @@ static size_t input_bytes(uint8_t* bytes, size_t max_sz)
             putchar(c);
             buffer[pos++] = c;
         } else if (c == 127 && pos > 0) {
-            print_P(PSTR("\b \b"));
+            printf_P(PSTR("\b \b"));
             --pos;
         }    
     }
@@ -169,14 +160,16 @@ static void help(void)
     puts_P(PSTR("    clear                   Clear LCD screen"));
     puts_P(PSTR("    cmd BYTE                Send a command to the LCD (1602)"));
     puts_P(PSTR("    line[1,2] TEXT          Replace line 1 of the LCD with this text"));
-    puts_P(PSTR("  sd"));
-    puts_P(PSTR("    get BLOCK               Read SDCard block"));
-    puts_P(PSTR("    write BLOCK OFFSET      Write bytes to SDCard, starting at offset"));
     puts_P(PSTR("  ram"));
     puts_P(PSTR("    bank BANK               Set RAM bank [0..7]"));
     puts_P(PSTR("    get BLOCK               Read RAM block"));
     puts_P(PSTR("    write BLOCK OFFSET      Write bytes to RAM, starting at offset"));
+#if INCLUDE_SDCARD
+    puts_P(PSTR("  sd"));
+    puts_P(PSTR("    get BLOCK               Read SDCard block"));
+    puts_P(PSTR("    write BLOCK OFFSET      Write bytes to SDCard, starting at offset"));
     // puts_P(PSTR("  format                    Create a single partition disk, and format it"));
+#endif
 }
 
 //
@@ -186,10 +179,7 @@ static void help(void)
 static void rtc_read(void)
 {
     ClockDateTime dt = rtc_get();
-    printdec(dt.mm, 2); putchar('/'); printdec(dt.dd, 2); putchar('/'); printdec(dt.yy, 2);
-    putchar(' ');
-    printdec(dt.hh, 2); putchar(':'); printdec(dt.nn, 2); putchar(':'); printdec(dt.ss, 2);
-    putchar('\n');
+    printf_P(PSTR("%02d/%02d/%02d %02d:%02d:%02d\n"), dt.mm, dt.dd, dt.yy, dt.hh, dt.nn, dt.ss);
 }
 
 static void rtc_store(UserInput* u)
@@ -231,12 +221,14 @@ static void lcd_cmd(UserInput *u)
     if (cmd == -1)
         return;
 
-    lcd_command(1, cmd);
+    lcd_command(cmd);
 }
 
 //
 // SD CARD
 // 
+
+#if INCLUDE_SDCARD
 
 static void sd_get(UserInput *u)
 {
@@ -281,15 +273,15 @@ static void sd_write(UserInput *u)
     sd_get(u);
 }
 
+#endif
+
 // 
 // RAM
 //
 
 static void ram_print_bank(void)
 {
-    print_P(PSTR("RAM bank is "));
-    printdec(ram_bank(), 0);
-    puts_P(PSTR("."));
+    printf_P(PSTR("RAM bank is %d.\n"), ram_bank());
 }
 
 static void ram_bank_set(UserInput *u)
@@ -363,16 +355,9 @@ static void execute(UserInput *u)
         else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("cmd")) == 0)
             lcd_cmd(u);
         else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("line1")) == 0)
-            lcd_print_line1(u->par[1]);
+            lcd_print_line(0, u->par[1]);
         else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("line2")) == 0)
-            lcd_print_line2(u->par[1]);
-        else
-            syntax_error();
-    } else if (strcmp_P(u->command, PSTR("sd")) == 0) {
-        if (u->npars == 2 && strcmp_P(u->par[0], PSTR("get")) == 0)
-            sd_get(u);
-        else if (u->npars == 3 && strcmp_P(u->par[0], PSTR("write")) == 0)
-            sd_write(u);
+            lcd_print_line(1, u->par[1]);
         else
             syntax_error();
     } else if (strcmp_P(u->command, PSTR("ram")) == 0) {
@@ -384,10 +369,17 @@ static void execute(UserInput *u)
             ram_write(u);
         else
             syntax_error();
+#if INCLUDE_SDCARD
+    } else if (strcmp_P(u->command, PSTR("sd")) == 0) {
+        if (u->npars == 2 && strcmp_P(u->par[0], PSTR("get")) == 0)
+            sd_get(u);
+        else if (u->npars == 3 && strcmp_P(u->par[0], PSTR("write")) == 0)
+            sd_write(u);
+        else
+            syntax_error();
     } else if (strcmp_P(u->command, PSTR("format")) == 0) {
         fs_format();
-    } else if (strcmp_P(u->command, PSTR("mount")) == 0) {
-        fs_mount();
+#endif
     } else {
         syntax_error();
     }
