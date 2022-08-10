@@ -16,7 +16,7 @@
 //   (0 - no debugging, 1 - high level debugging, 2 - low level debugging)
 //
 
-#define DEBUG_RESET_REASON 1
+#define DEBUG_RESET_REASON 0
 #define DEBUG_RTC          0
 #define DEBUG_LCD          0
-#define DEBUG_SDCARD       2
+#define DEBUG_SDCARD       0

@@ -1,8 +1,13 @@
 #include "spi.h"
 
+#include <stdio.h>
+
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 #include <util/delay.h>
+
+#include "ansi.h"
+#include "config.h"
 
 void spi_init(void)
 {
@@ -18,7 +23,12 @@ uint8_t spi_send(uint8_t byte)
     SPDR = byte;
     loop_until_bit_is_set(SPSR, SPIF);
     uint8_t r = SPDR;
-    // debug_spi_send(byte, r);
+#if DEBUG_SDCARD >= 2
+    if (byte != 0xff)
+        printf_P(PSTR(GRN "%02X:" RED "%02X "), byte, r);
+    else
+        printf_P(PSTR(RED "%02X "), r);
+#endif
     return r;
 }
 
