@@ -3,6 +3,7 @@
 #define _GNU_SOURCE
 
 #include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -170,6 +171,7 @@ static void help(void)
     puts_P(PSTR("    write BLOCK OFFSET      Write bytes to SDCard, starting at offset"));
     // puts_P(PSTR("  format                    Create a single partition disk, and format it"));
 #endif
+    puts_P(PSTR("  exit                      Exit monitor and continue execution"));
 }
 
 //
@@ -336,7 +338,7 @@ static void syntax_error(void)
     puts_P(PSTR(RED "Syntax error." RST));
 }
 
-static void execute(UserInput *u)
+static void execute(UserInput *u, bool* quit)
 {
     if (u->npars == 0 && strcmp_P(u->command, PSTR("")) == 0) {
         return;
@@ -380,6 +382,8 @@ static void execute(UserInput *u)
     } else if (strcmp_P(u->command, PSTR("format")) == 0) {
         fs_format();
 #endif
+    } else if (strcmp_P(u->command, PSTR("exit")) == 0) {
+        *quit = true;
     } else {
         syntax_error();
     }
@@ -396,10 +400,11 @@ void monitor(void)
 
     puts_P(PSTR("Fortuna-3 monitor program initialized. Type 'help' for help."));
 
-    while (1) {
+    bool quit = false;
+    while (!quit) {
         prompt();
         input(&uinput, buffer, sizeof buffer);
-        execute(&uinput);
+        execute(&uinput, &quit);
     }
 }
 

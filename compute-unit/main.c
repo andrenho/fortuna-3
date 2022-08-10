@@ -16,6 +16,7 @@
 #include "spi.h"
 #include "uart.h"
 #include "usr.h"
+#include "z80.h"
 
 #include "fsfat/ff.h"
 
@@ -54,6 +55,7 @@ static void initialize(void)
     rtc_init();
     spi_init();
     ram_init();
+    z80_init();
 
     lcd_init();
     lcd_print_line_P(0, PSTR("Welcome to"));
@@ -81,8 +83,12 @@ int main(void)
 
     sei();
 
+    z80_start();
+
 #if INCLUDE_MONITOR && RUN_MONITOR_AT_START
+    z80_release_bus();
     monitor();
+    z80_continue_execution();
 #endif
 
     while (1) {
@@ -102,7 +108,9 @@ int main(void)
             case EV_USR1:
                 cli();
 #if INCLUDE_MONITOR
+                z80_release_bus();
                 monitor();
+                z80_continue_execution();
 #endif
                 last_event = EV_NONE;
                 _delay_ms(80);
