@@ -12,6 +12,7 @@
 #include <avr/pgmspace.h>
 
 #include "ansi.h"
+#include "config.h"
 #include "fs.h"
 #include "lcd.h"
 #include "ram.h"
@@ -159,14 +160,16 @@ static void help(void)
     puts_P(PSTR("    clear                   Clear LCD screen"));
     puts_P(PSTR("    cmd BYTE                Send a command to the LCD (1602)"));
     puts_P(PSTR("    line[1,2] TEXT          Replace line 1 of the LCD with this text"));
-    puts_P(PSTR("  sd"));
-    puts_P(PSTR("    get BLOCK               Read SDCard block"));
-    puts_P(PSTR("    write BLOCK OFFSET      Write bytes to SDCard, starting at offset"));
     puts_P(PSTR("  ram"));
     puts_P(PSTR("    bank BANK               Set RAM bank [0..7]"));
     puts_P(PSTR("    get BLOCK               Read RAM block"));
     puts_P(PSTR("    write BLOCK OFFSET      Write bytes to RAM, starting at offset"));
+#if INCLUDE_SDCARD
+    puts_P(PSTR("  sd"));
+    puts_P(PSTR("    get BLOCK               Read SDCard block"));
+    puts_P(PSTR("    write BLOCK OFFSET      Write bytes to SDCard, starting at offset"));
     // puts_P(PSTR("  format                    Create a single partition disk, and format it"));
+#endif
 }
 
 //
@@ -218,12 +221,14 @@ static void lcd_cmd(UserInput *u)
     if (cmd == -1)
         return;
 
-    lcd_command(1, cmd);
+    lcd_command(cmd);
 }
 
 //
 // SD CARD
 // 
+
+#if INCLUDE_SDCARD
 
 static void sd_get(UserInput *u)
 {
@@ -267,6 +272,8 @@ static void sd_write(UserInput *u)
 
     sd_get(u);
 }
+
+#endif
 
 // 
 // RAM
@@ -348,16 +355,9 @@ static void execute(UserInput *u)
         else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("cmd")) == 0)
             lcd_cmd(u);
         else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("line1")) == 0)
-            lcd_print_line1(u->par[1]);
+            lcd_print_line(0, u->par[1]);
         else if (u->npars == 2 && strcmp_P(u->par[0], PSTR("line2")) == 0)
-            lcd_print_line2(u->par[1]);
-        else
-            syntax_error();
-    } else if (strcmp_P(u->command, PSTR("sd")) == 0) {
-        if (u->npars == 2 && strcmp_P(u->par[0], PSTR("get")) == 0)
-            sd_get(u);
-        else if (u->npars == 3 && strcmp_P(u->par[0], PSTR("write")) == 0)
-            sd_write(u);
+            lcd_print_line(1, u->par[1]);
         else
             syntax_error();
     } else if (strcmp_P(u->command, PSTR("ram")) == 0) {
@@ -369,8 +369,17 @@ static void execute(UserInput *u)
             ram_write(u);
         else
             syntax_error();
+#if INCLUDE_SDCARD
+    } else if (strcmp_P(u->command, PSTR("sd")) == 0) {
+        if (u->npars == 2 && strcmp_P(u->par[0], PSTR("get")) == 0)
+            sd_get(u);
+        else if (u->npars == 3 && strcmp_P(u->par[0], PSTR("write")) == 0)
+            sd_write(u);
+        else
+            syntax_error();
     } else if (strcmp_P(u->command, PSTR("format")) == 0) {
         fs_format();
+#endif
     } else {
         syntax_error();
     }

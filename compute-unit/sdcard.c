@@ -4,11 +4,10 @@
 #include <util/delay.h>
 #include <stdio.h>
 
-#include "debug.h"
 #include "spi.h"
 
-#define set_CE()   { PORTG |= _BV(PG5); debug_spi_inactive(PSTR("SD")); }
-#define clear_CE() { PORTG &= ~_BV(PG5); debug_spi_active(PSTR("SD")); }
+#define set_CE()   { PORTG |= _BV(PG5); /* debug_spi_inactive(PSTR("SD")); */ }
+#define clear_CE() { PORTG &= ~_BV(PG5); /* debug_spi_active(PSTR("SD")); */ }
 
 #define MAX_READ_ATTEMPTS   20
 #define MAX_WRITE_ATTEMPTS 100

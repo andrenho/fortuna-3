@@ -4,8 +4,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "debug.h"
-
 void spi_init(void)
 {
     DDRB |= (1 << DDB0) | (1 << DDB1) | (1 << DDB2);   // MOSI, SCK: output
@@ -20,7 +18,7 @@ uint8_t spi_send(uint8_t byte)
     SPDR = byte;
     loop_until_bit_is_set(SPSR, SPIF);
     uint8_t r = SPDR;
-    debug_spi_send(byte, r);
+    // debug_spi_send(byte, r);
     return r;
 }
 

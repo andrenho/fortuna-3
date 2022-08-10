@@ -6,7 +6,6 @@
 
 #include "ansi.h"
 #include "config.h"
-#include "debug.h"
 #include "event.h"
 #include "fs.h"
 #include "lcd.h"
@@ -22,22 +21,45 @@
 
 volatile Event last_event = EV_NONE;
 
+static void debug_reset_reason(void)
+{
+    printf_P(PSTR("Reset reason: "));
+    if (MCUSR & _BV(JTRF))
+        printf_P(PSTR("JTAG "));
+    if (MCUSR & _BV(WDRF))
+        printf_P(PSTR("watchdog "));
+    if (MCUSR & _BV(BORF))
+        printf_P(PSTR("brown-out "));
+    if (MCUSR & _BV(EXTRF))
+        printf_P(PSTR("external reset "));
+    if (MCUSR & _BV(PORF))
+        printf_P(PSTR("power-on "));
+    putchar('\n');
+
+    MCUSR = 0;
+}
+
 static void initialize(void)
 {
     _delay_ms(200);
 
     uart_init();
+    puts_P(PSTR("\e[1;1H\e[2J"));   // clear screen
 
 #if DEBUG_RESET_REASON
     debug_reset_reason();
 #endif
 
     usr_init();
-    lcd_init();
     rtc_init();
     spi_init();
     ram_init();
 
+    lcd_init();
+    lcd_print_line_P(0, PSTR("Welcome to"));
+    lcd_print_line_P(1, PSTR("Fortuna-3! :)"));
+
+#if INCLUDE_SDCARD
     sdcard_init();
     if (!sdcard_setup()) {
         puts_P(PSTR(RED "Error initializing SDCard." RST));
@@ -48,8 +70,9 @@ static void initialize(void)
         for (;;);
     }
     putchar('\n');
+#endif
 
-    puts_P(PSTR("\e[1;1H\e[2JWelcome to Fortuna-3!\n"));
+    puts_P(PSTR("Welcome to Fortuna-3!\n"));
 }
 
 int main(void)
