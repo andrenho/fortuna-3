@@ -2,7 +2,7 @@
 #define EVENT_H_
 
 typedef enum {
-    EV_NONE, EV_USR0, EV_USR1,
+    EV_NONE, EV_USR0, EV_USR1, EV_IORQ,
 } Event;
 
 #endif

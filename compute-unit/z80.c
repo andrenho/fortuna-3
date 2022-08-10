@@ -19,6 +19,9 @@
 
 void z80_init(void)
 {
+    EICRB |= _BV(ISC41);  // fire interrupt INT4 (IORQ) on falling edge
+    EIMSK |= _BV(INT4);   // enable interrupt INT4
+
     clear_RST();
     set_BUSRQ();
     DDRB |= _BV(DDB4);
@@ -53,6 +56,13 @@ void z80_continue_execution(void)
     loop_until_bit_is_set(PINE, PINE3);
 #if DEBUG_Z80 >= 1
     printf_P(PSTR(CYN "[Z80 has taken over the bus] " RST));
+#endif
+}
+
+void z80_iorq(void)
+{
+#if DEBUG_Z80 >= 1
+    printf_P(PSTR(CYN "[Z80 has made an I/O request] " RST));
 #endif
 }
 

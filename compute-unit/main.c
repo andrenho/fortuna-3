@@ -114,6 +114,13 @@ int main(void)
                 _delay_ms(80);
                 sei();
                 break;
+
+            case EV_IORQ:
+                cli();
+                z80_iorq();
+                last_event = EV_NONE;
+                sei();
+                break;
         }
 
     }
@@ -134,6 +141,11 @@ ISR(INT0_vect)
 ISR(INT1_vect)
 {
     last_event = EV_USR1;
+}
+
+ISR(INT4_vect)
+{
+    last_event = EV_IORQ;
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

@@ -418,10 +418,9 @@ void monitor(void)
         execute(&uinput, &quit, &reset_z80);
     }
 
+    z80_continue_execution();
     if (reset_z80)
         z80_reset();
-    else
-        z80_continue_execution();
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab
