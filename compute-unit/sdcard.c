@@ -58,7 +58,7 @@ static void sdcard_poweron(void)
     spi_send(0xff);
 
 #if DEBUG_SDCARD >= 1
-    puts_P(PSTR(CYN "[SDCard powered on] " RST));
+    printf_P(PSTR(CYN "[SDCard powered on] " RST));
 #endif
 }
 
@@ -104,14 +104,14 @@ static bool sdcard_initialize(void)
     set_CE();
     if (r1 != 1) {
 #if DEBUG_SDCARD >= 1
-        puts_P(PSTR(RED "[Command CMD55 not supported by SDCard.] " RST));
+        printf_P(PSTR(RED "[Command CMD55 not supported by SDCard.] " RST));
 #endif
         return false;
     }
 #if DEBUG_SDCARD >= 1
-    printf_P(PSTR(CYN "[Command CMD55 accepted: " RST));
+    printf_P(PSTR(CYN "[Command CMD55 accepted: "));
     print_sdcard_state(r1);
-    printf_P(PSTR(CYN "]\n" RST));
+    printf_P(PSTR(CYN "] " RST));
 #endif
 
     clear_CE();
@@ -177,7 +177,7 @@ bool sdcard_read_block(uint32_t block, uint8_t* buffer)
         _delay_ms(10);
     }
 #if DEBUG_SDCARD >= 1
-    puts_P(PSTR(RED "[Timeout while reading from SDCard.] " RST));
+    printf_P(PSTR(RED "[Timeout while reading from SDCard.] " RST));
 #endif
     set_CE();
     return false;
@@ -229,7 +229,7 @@ bool sdcard_write_block(uint32_t block, uint8_t const* buffer)
         _delay_ms(10);
     }
 #if DEBUG_SDCARD >= 1
-    puts_P(PSTR(RED "[Timeout while writing to SDCard.] " RST));
+    printf_P(PSTR(RED "[Timeout while writing to SDCard.] " RST));
 #endif
     set_CE();
     return false;
@@ -239,7 +239,7 @@ response_received:
 #if DEBUG_SDCARD >= 1
         printf_P(PSTR(RED "[Data write rejected to SDCard: "));
         print_sdcard_state(r1);
-        puts_P(PSTR("] " RST));
+        printf_P(PSTR("] " RST));
 #endif
         set_CE();
         return false;
@@ -253,7 +253,7 @@ response_received:
         _delay_ms(10);
     }
 #if DEBUG_SDCARD >= 1
-    puts_P(PSTR(RED "[Timeout while waiting for write to SDCard.] " RST));
+    printf_P(PSTR(RED "[Timeout while waiting for write to SDCard.] " RST));
 #endif
     set_CE();
     return false;
