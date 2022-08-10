@@ -22,6 +22,7 @@
 
 volatile Event last_event = EV_NONE;
 
+#if DEBUG_RESET_REASON
 static void debug_reset_reason(void)
 {
     printf_P(PSTR("Reset reason: "));
@@ -39,6 +40,7 @@ static void debug_reset_reason(void)
 
     MCUSR = 0;
 }
+#endif
 
 static void initialize(void)
 {
@@ -83,12 +85,10 @@ int main(void)
 
     sei();
 
-    z80_start();
+    z80_reset();
 
 #if INCLUDE_MONITOR && RUN_MONITOR_AT_START
-    z80_release_bus();
     monitor();
-    z80_continue_execution();
 #endif
 
     while (1) {
@@ -108,9 +108,7 @@ int main(void)
             case EV_USR1:
                 cli();
 #if INCLUDE_MONITOR
-                z80_release_bus();
                 monitor();
-                z80_continue_execution();
 #endif
                 last_event = EV_NONE;
                 _delay_ms(80);

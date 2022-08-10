@@ -20,6 +20,7 @@
 #include "rtc.h"
 #include "sdcard.h"
 #include "uart.h"
+#include "z80.h"
 #include "fsfat/ff.h"
 
 typedef struct {
@@ -165,6 +166,8 @@ static void help(void)
     puts_P(PSTR("    bank BANK               Set RAM bank [0..7]"));
     puts_P(PSTR("    get BLOCK               Read RAM block"));
     puts_P(PSTR("    write BLOCK OFFSET      Write bytes to RAM, starting at offset"));
+    puts_P(PSTR("  z80"));
+    puts_P(PSTR("    reset                   Resets the CPU"));
 #if INCLUDE_SDCARD
     puts_P(PSTR("  sd"));
     puts_P(PSTR("    get BLOCK               Read SDCard block"));
@@ -338,7 +341,7 @@ static void syntax_error(void)
     puts_P(PSTR(RED "Syntax error." RST));
 }
 
-static void execute(UserInput *u, bool* quit)
+static void execute(UserInput *u, bool* quit, bool *reset_z80)
 {
     if (u->npars == 0 && strcmp_P(u->command, PSTR("")) == 0) {
         return;
@@ -371,6 +374,11 @@ static void execute(UserInput *u, bool* quit)
             ram_write(u);
         else
             syntax_error();
+    } else if (strcmp_P(u->command, PSTR("z80")) == 0) {
+        if (u->npars == 1 && strcmp_P(u->par[0], PSTR("reset")) == 0) {
+            puts_P(PSTR("Z80 will be reset after monitor finishes."));
+            *reset_z80 = true;
+        }
 #if INCLUDE_SDCARD
     } else if (strcmp_P(u->command, PSTR("sd")) == 0) {
         if (u->npars == 2 && strcmp_P(u->par[0], PSTR("get")) == 0)
@@ -398,14 +406,22 @@ void monitor(void)
     char buffer[255];
     UserInput uinput;
 
+    z80_release_bus();
+
     puts_P(PSTR("Fortuna-3 monitor program initialized. Type 'help' for help."));
 
     bool quit = false;
+    bool reset_z80 = false;
     while (!quit) {
         prompt();
         input(&uinput, buffer, sizeof buffer);
-        execute(&uinput, &quit);
+        execute(&uinput, &quit, &reset_z80);
     }
+
+    if (reset_z80)
+        z80_reset();
+    else
+        z80_continue_execution();
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab
