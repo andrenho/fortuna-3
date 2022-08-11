@@ -5,7 +5,7 @@ The computer contains:
 
  - A Z80 microprocessor running at 6 Mhz.
  - 512 kB of RAM (divided in banks of 64 kB)
- - A control unit (ATMEGA 2560) that provides:
+ - A main control unit (ATMEGA 2560) that provides:
    - ROM startup code
    - Serial interface (UART)
    - Interface to a real time clock (DS1602)
@@ -21,12 +21,27 @@ The computer contains:
    - Audio output
    - Wi-Fi and TCP/IP stack, plus support for common protocols
 
-## MCU internal registers
+## MCU (main control unit)
+
+### Registers
 
 Registers can be read/set with `IN` and OUT `Z80` instructions.
 
 | I/O address | Register | Pourpose |
 |-------------|----------|----------|
+
+### OUT operations
+
+| I/O address | Operation name | Pourpose | Data byte |
+|-------------|----------------|----------|-----------|
+| `0x0`       | `SER_OUT`      | Send a character to the serial port | The character to print |
+
+### IN operations
+
+| I/O address | Operation name | Pourpose | Data byte |
+|-------------|----------------|----------|-----------|
+| `0x0`       | `SER_IN_BLK`   | Read a character to the serial port, blocking | The character read |
+| `0x1`       | `SER_IN_NBLK`  | Read a character to the serial port, non blocking | The character read, or `0x0` if nothing was read |
 
 
 ## Emulator / Debugger
