@@ -88,6 +88,7 @@ int main(void)
     z80_reset();
 
 #if INCLUDE_MONITOR && RUN_MONITOR_AT_START
+    _delay_ms(10);
     monitor();
 #endif
 

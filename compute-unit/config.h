@@ -3,7 +3,7 @@
 //
 
 #define INCLUDE_MONITOR 1
-#define INCLUDE_SDCARD  0
+#define INCLUDE_SDCARD  1
 
 //
 // startup behaviour
@@ -19,5 +19,5 @@
 #define DEBUG_RESET_REASON 0
 #define DEBUG_RTC          0
 #define DEBUG_LCD          0
-#define DEBUG_SDCARD       0
+#define DEBUG_SDCARD       1
 #define DEBUG_Z80          1

@@ -56,6 +56,7 @@ void z80_reset(void)
 void z80_release_bus(void)
 {
     clear_BUSRQ();
+    reset_wait();
     loop_until_bit_is_clear(PINE, PINE3);
 #if DEBUG_Z80 >= 1
     printf_P(PSTR(CYN "[Z80 has released the bus] " RST));
@@ -91,7 +92,7 @@ void z80_iorq(void)
 #endif
     }
     
-    getchar();
+    // getchar();
 
     // continue execution
     clear_IOCONT();
