@@ -26,7 +26,8 @@ The computer contains:
 Registers can be read/set with `IN` and OUT `Z80` instructions.
 
 | I/O address | Register | Pourpose |
--------------------------------------
+|-------------|----------|----------|
+
 
 ## Emulator / Debugger
 
