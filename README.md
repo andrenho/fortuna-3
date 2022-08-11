@@ -40,8 +40,8 @@ Registers can be read/set with `IN` and OUT `Z80` instructions.
 
 | I/O address | Operation name | Pourpose | Data byte |
 |-------------|----------------|----------|-----------|
-| `0x0`       | `SER_IN_BLK`   | Read a character to the serial port, blocking | The character read |
-| `0x1`       | `SER_IN_NBLK`  | Read a character to the serial port, non blocking | The character read, or `0x0` if nothing was read |
+| `0x0`       | `SER_IN_SYNC`  | Read a character to the serial port, blocking | The character read |
+| `0x1`       | `SER_IN_ASYNC` | Read a character to the serial port, non blocking | The character read, or `0x0` if nothing was read |
 
 
 ## Emulator / Debugger
