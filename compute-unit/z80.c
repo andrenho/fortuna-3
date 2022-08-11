@@ -10,12 +10,23 @@
 #include "ansi.h"
 #include "config.h"
 
-#define clear_RST()   PORTB &= ~_BV(PB4)
-#define set_RST()     PORTB |= _BV(PB4)
-#define clear_BUSRQ() PORTF &= ~_BV(PF4)
-#define set_BUSRQ()   PORTF |= _BV(PF4)
+#define clear_RST()    PORTB &= ~_BV(PB4)
+#define set_RST()      PORTB |= _BV(PB4)
+#define clear_BUSRQ()  PORTF &= ~_BV(PF4)
+#define set_BUSRQ()    PORTF |= _BV(PF4)
+#define clear_IOCONT() PORTF &= ~_BV(PF3)
+#define set_IOCONT()   PORTF |= _BV(PF3)
 
 #define get_BUSACK()  (PINE & _BV(PINE3))
+#define get_WR()      (PINF & _BV(PINF5))
+#define get_RD()      (PINF & _BV(PINF6))
+
+static void reset_wait(void)
+{
+    set_IOCONT();
+    clear_IOCONT();
+    set_IOCONT();
+}
 
 void z80_init(void)
 {
@@ -25,7 +36,8 @@ void z80_init(void)
     clear_RST();
     set_BUSRQ();
     DDRB |= _BV(DDB4);
-    DDRF |= _BV(DDF4);
+    DDRF |= _BV(DDF3) | _BV(DDF4);
+    reset_wait();
 #if DEBUG_Z80 >= 1
     printf_P(PSTR(CYN "[Z80 initialized] " RST));
 #endif
@@ -61,9 +73,30 @@ void z80_continue_execution(void)
 
 void z80_iorq(void)
 {
+    uint16_t addr = PINA | (PINC << 8);
+    if (get_WR() == 0) {
+        uint16_t data = PINL;
 #if DEBUG_Z80 >= 1
-    printf_P(PSTR(CYN "[Z80 has made an I/O request] " RST));
+        printf_P(PSTR(CYN "[Z80 has made an I/O request (output: addr 0x%04X, data 0x%02X)] " RST), addr, data);
 #endif
+
+    } else if (get_RD() == 0) {
+#if DEBUG_Z80 >= 1
+        printf_P(PSTR(CYN "[Z80 has made an I/O request (input: addr 0x%04X)] " RST), addr);
+#endif
+
+    } else {
+#if DEBUG_Z80 >= 1
+        printf_P(PSTR(RED "[Z80 has made an I/O request, but is neither an input nor an output] " RST));
+#endif
+    }
+    
+    getchar();
+
+    // continue execution
+    clear_IOCONT();
+    loop_until_bit_is_set(PINE, PINE4);  // wait until IORQ is 1
+    set_IOCONT();
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

@@ -101,7 +101,7 @@ static void input(UserInput *uinput, char* buffer, size_t sz)
                 putchar(c);
                 buffer[pos++] = c;
             }
-        } else if (c == 127 && pos > 0) {
+        } else if ((c == 127 || c == 8) && pos > 0) {
             printf_P(PSTR("\b \b"));
             --pos;
         }
@@ -118,7 +118,7 @@ static size_t input_bytes(uint8_t* bytes, size_t max_sz)
     buffer[0] = '\0';
     size_t pos = 0;
 
-    printf_P(PSTR("Type up to %d bytes here (format: 00 00 00...):"), max_sz);
+    printf_P(PSTR("Type up to %d bytes here (format: 00 00 00...): "), max_sz);
 
     for (;;) {
         char c = getchar();
