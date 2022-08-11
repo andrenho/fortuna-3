@@ -1,4 +1,4 @@
-# fortuna-3
+# Fortuna-3
 A homemade Z80 computer.
 
 The computer contains:
@@ -20,6 +20,13 @@ The computer contains:
    - Video output (text, 2d output with sprites, 3d support)
    - Audio output
    - Wi-Fi and TCP/IP stack, plus support for common protocols
+
+## MCU internal registers
+
+Registers can be read/set with `IN` and OUT `Z80` instructions.
+
+| I/O address | Register | Pourpose |
+-------------------------------------
 
 ## Emulator / Debugger
 
