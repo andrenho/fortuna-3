@@ -24,8 +24,6 @@ int main(void)
     sei();
 
 #if INCLUDE_MONITOR && RUN_MONITOR_AT_START
-    for (uint16_t j = 0; j < 256; ++j)
-        ram_set_byte(j, 0);
     z80_reset();
     monitor();
 #endif

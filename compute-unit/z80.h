@@ -3,6 +3,7 @@
 
 void z80_init(void);
 
+void z80_shutdown(void);
 void z80_reset(void);
 
 void z80_release_bus(void);

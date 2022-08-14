@@ -75,7 +75,7 @@ void ram_set_byte(uint16_t addr, uint8_t data)
     release_bus();
 }
 
-void ram_get_block(uint16_t block, uint8_t* bytes)
+void ram_read_block(uint16_t block, uint8_t* bytes)
 {
     take_bus();
     DDRL = 0x0;   // data bus: read
@@ -89,6 +89,24 @@ void ram_get_block(uint16_t block, uint8_t* bytes)
         bytes[i] = PINL;
     }
     set_OE();
+    set_CE();
+    release_bus();
+}
+
+void ram_write_block(uint16_t block, uint8_t* bytes)
+{
+    take_bus();
+    DDRL = 0xff;   // data bus: write
+    clear_CE();
+    for (uint16_t i = 0; i < 256; ++i) {
+        uint16_t addr = (block * 0x100) + i;
+        PORTA = (addr & 0xff);
+        PORTC = (addr >> 8);
+        PORTL = bytes[i];
+        clear_WE();
+        _delay_us(1);
+        set_WE();
+    }
     set_CE();
     release_bus();
 }

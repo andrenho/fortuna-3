@@ -308,7 +308,7 @@ static void ram_get(UserInput *u)
         return;
 
     uint8_t bytes[256] = { 0 };
-    ram_get_block(block, bytes);
+    ram_read_block(block, bytes);
 
     ram_print_bank();
     print_array(bytes, 256);

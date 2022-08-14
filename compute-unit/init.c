@@ -82,6 +82,21 @@ static void test_rtc(void)
 
 static void test_ram(void)
 {
+    uint8_t block1[256], block2[256];
+    for (size_t i = 0; i < 256; ++i)
+        block1[i] = random();
+
+    post_checking(PSTR("RAM"));
+    ram_write_block(0, block1);
+    ram_read_block(0, block2);
+
+    for (size_t i = 0; i < 256; ++i) {
+        if (block1[i] != block2[i]) {
+            post_error(PSTR("RAM ckeck"), PSTR("failed"));
+            return;
+        }
+    }
+    post_ok();
 }
 
 static void test_sdcard(void)
@@ -89,6 +104,31 @@ static void test_sdcard(void)
 }
 
 static void test_z80(void)
+{
+    post_checking(PSTR("Z80"));
+
+    uint8_t expected = random();
+
+    z80_shutdown();
+    ram_set_byte(0, 0x3e); // ld a, 0x45
+    ram_set_byte(1, expected);
+    ram_set_byte(2, 0x32); // ld (0x1234), a
+    ram_set_byte(3, 0x34);
+    ram_set_byte(4, 0x12);
+    ram_set_byte(5, 0x18); // jr -2
+    ram_set_byte(6, 0xfe);
+
+    z80_reset();
+    _delay_ms(1);
+    z80_shutdown();
+
+    if (ram_get_byte(0x1234) == expected)
+        post_ok();
+    else
+        post_error(PSTR("Z80 execution"), PSTR("failed"));
+}
+
+static void test_z80_io(void)
 {
 }
 
@@ -99,6 +139,7 @@ static void post(void)
     test_ram();
     test_sdcard();
     test_z80();
+    test_z80_io();
 }
 
 static void setup_sdcard(void)

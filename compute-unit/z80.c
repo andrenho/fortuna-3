@@ -43,10 +43,18 @@ void z80_init(void)
 #endif
 }
 
+void z80_shutdown(void)
+{
+    clear_RST();
+#if DEBUG_Z80 >= 1
+    printf_P(PSTR(CYN "[Z80 has been shut down] " RST));
+#endif
+}
+
 void z80_reset(void)
 {
     clear_RST();
-    _delay_ms(50);
+    _delay_ms(1);
     set_RST();
 #if DEBUG_Z80 >= 1
     printf_P(PSTR(CYN "[Z80 has been reset and taken over the bus] " RST));
