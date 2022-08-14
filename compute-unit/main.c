@@ -1,94 +1,32 @@
 #include <stdio.h>
 
+#include <util/delay.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
-#include <util/delay.h>
 
-#include "ansi.h"
 #include "config.h"
-#include "event.h"
-#include "fs.h"
-#include "lcd.h"
+#include "init.h"
 #include "monitor.h"
 #include "ram.h"
-#include "rtc.h"
-#include "sdcard.h"
-#include "spi.h"
 #include "uart.h"
-#include "usr.h"
 #include "z80.h"
 
-#include "fsfat/ff.h"
-
+typedef enum {
+    EV_NONE, EV_USR0, EV_USR1, EV_IORQ,
+} Event;
 volatile Event last_event = EV_NONE;
-
-#if DEBUG_RESET_REASON
-static void debug_reset_reason(void)
-{
-    printf_P(PSTR("Reset reason: "));
-    if (MCUSR & _BV(JTRF))
-        printf_P(PSTR("JTAG "));
-    if (MCUSR & _BV(WDRF))
-        printf_P(PSTR("watchdog "));
-    if (MCUSR & _BV(BORF))
-        printf_P(PSTR("brown-out "));
-    if (MCUSR & _BV(EXTRF))
-        printf_P(PSTR("external reset "));
-    if (MCUSR & _BV(PORF))
-        printf_P(PSTR("power-on "));
-    putchar('\n');
-
-    MCUSR = 0;
-}
-#endif
-
-static void initialize(void)
-{
-    _delay_ms(200);
-
-    uart_init();
-    puts_P(PSTR("\e[1;1H\e[2J"));   // clear screen
-
-#if DEBUG_RESET_REASON
-    debug_reset_reason();
-#endif
-
-    usr_init();
-    rtc_init();
-    spi_init();
-    ram_init();
-    z80_init();
-
-    lcd_init();
-    lcd_print_line_P(0, PSTR("Welcome to"));
-    lcd_print_line_P(1, PSTR("Fortuna-3! :)"));
-
-#if INCLUDE_SDCARD
-    sdcard_init();
-    if (!sdcard_setup()) {
-        puts_P(PSTR(RED "Error initializing SDCard." RST));
-        for (;;);
-    }
-    if (!fs_mount()) {
-        puts_P(PSTR(RED "Error mounting partition." RST));
-        for (;;);
-    }
-    putchar('\n');
-#endif
-
-    puts_P(PSTR("Welcome to Fortuna-3!\n"));
-}
 
 int main(void)
 {
     initialize();
+    puts_P(PSTR("Welcome to Fortuna-3!\n"));
 
     sei();
 
-    z80_reset();
-
 #if INCLUDE_MONITOR && RUN_MONITOR_AT_START
-    _delay_ms(10);
+    for (uint16_t j = 0; j < 256; ++j)
+        ram_set_byte(j, 0);
+    z80_reset();
     monitor();
 #endif
 
