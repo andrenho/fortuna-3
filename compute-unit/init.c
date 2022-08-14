@@ -44,7 +44,7 @@ static void post_checking(PGM_P dev)
 {
     printf_P(PSTR("Checking "));
     printf_P(dev);
-    printf_P(PSTR("..."));
+    printf_P(PSTR("... "));
 }
 
 static void post_ok(void)
@@ -60,7 +60,7 @@ static void post_error(PGM_P line1, PGM_P line2)
     printf_P(line2);
     puts_P(PSTR(RST));
     lcd_print_line_P(0, line1);
-    lcd_print_line_P(0, line2);
+    lcd_print_line_P(1, line2);
 }
 
 static void test_lcd(void)
