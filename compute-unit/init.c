@@ -11,6 +11,7 @@
 #include "fs.h"
 #include "lcd.h"
 #include "ram.h"
+#include "random.h"
 #include "rtc.h"
 #include "sdcard.h"
 #include "spi.h"
@@ -125,6 +126,9 @@ void initialize(void)
 #if DEBUG_RESET_REASON
     debug_reset_reason();
 #endif
+
+    uint32_t seed = random_init();
+    printf_P(PSTR("Random seed is 0x%lX.\n"), seed);
 
     usr_init();
     rtc_init();

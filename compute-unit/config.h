@@ -3,7 +3,7 @@
 //
 
 #define INCLUDE_MONITOR 1
-#define INCLUDE_SDCARD  1
+#define INCLUDE_SDCARD  0
 
 //
 // startup behaviour
