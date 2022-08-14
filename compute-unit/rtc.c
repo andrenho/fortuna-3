@@ -9,17 +9,18 @@
 #include "ansi.h"
 #include "config.h"
 
-#define set_SCLK()   PORTD |= _BV(PD2)
-#define clear_SCLK() PORTD &= ~_BV(PD2)
-#define set_CE()     PORTD |= _BV(PD3)
-#define clear_CE()   PORTD &= ~_BV(PD3)
+#define set_SCLK()   PORTJ |= _BV(PJ0)
+#define clear_SCLK() PORTJ &= ~_BV(PJ0)
+#define set_CE()     PORTJ |= _BV(PJ1)
+#define clear_CE()   PORTJ &= ~_BV(PJ1)
 #define set_IO()     PORTD |= _BV(PD7)
 #define clear_IO()   PORTD &= ~_BV(PD7)
 #define get_IO()     (PIND & _BV(PIND7))
 
 void rtc_init(void)
 {
-    DDRD |= _BV(DDD2) | _BV(DDD3) | _BV(DDD7);
+    DDRD |= _BV(DDD7);
+    DDRJ |= _BV(DDJ0) | _BV(DDJ1);
 }
 
 static uint8_t rtc_cmd_get(uint8_t cmd)

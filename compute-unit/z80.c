@@ -21,6 +21,8 @@
 #define get_WR()      (PINF & _BV(PINF5))
 #define get_RD()      (PINF & _BV(PINF6))
 
+static uint8_t post_test = 0x0;
+
 static void reset_wait(void)
 {
     set_IOCONT();
@@ -82,12 +84,14 @@ void z80_continue_execution(void)
 
 void z80_iorq(void)
 {
-    uint16_t addr = PINA | (PINC << 8);
+    uint16_t addr = (uint16_t) PINA | ((uint16_t) PINC << 8);
     if (get_WR() == 0) {
         uint16_t data = PINL;
 #if DEBUG_Z80 >= 1
         printf_P(PSTR(CYN "[Z80 has made an I/O request (output: addr 0x%04X, data 0x%02X)] " RST), addr, data);
 #endif
+        if (addr == 0xff)
+            post_test = data;
 
     } else if (get_RD() == 0) {
 #if DEBUG_Z80 >= 1
@@ -99,13 +103,18 @@ void z80_iorq(void)
         printf_P(PSTR(RED "[Z80 has made an I/O request, but is neither an input nor an output] " RST));
 #endif
     }
-    
+
     // getchar();
 
     // continue execution
     clear_IOCONT();
     loop_until_bit_is_set(PINE, PINE4);  // wait until IORQ is 1
     set_IOCONT();
+}
+
+uint8_t z80_post_test(void)
+{
+    return post_test;
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab
