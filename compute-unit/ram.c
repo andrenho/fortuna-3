@@ -1,7 +1,7 @@
 #include "ram.h"
 
 #include <avr/io.h>
-#include <util/delay.h>
+#include <avr/cpufunc.h>
 
 #define clear_OE() PORTF &= ~_BV(PF5)
 #define set_OE()   PORTF |= _BV(PF5)
@@ -52,7 +52,7 @@ uint8_t ram_get_byte(uint16_t addr)
     PORTC = (addr >> 8);
     clear_CE();
     clear_OE();
-    _delay_us(1);
+    _NOP();
     uint8_t data = PINL;
     set_OE();
     set_CE();
@@ -69,7 +69,7 @@ void ram_set_byte(uint16_t addr, uint8_t data)
     PORTL = data;
     clear_CE();
     clear_WE();
-    _delay_us(1);
+    _NOP();
     set_WE();
     set_CE();
     release_bus();
@@ -85,7 +85,7 @@ void ram_read_block(uint16_t block, uint8_t* bytes)
         uint16_t addr = (block * 0x100) + i;
         PORTA = (addr & 0xff);
         PORTC = (addr >> 8);
-        _delay_us(1);
+        _NOP();
         bytes[i] = PINL;
     }
     set_OE();
@@ -104,7 +104,7 @@ void ram_write_block(uint16_t block, uint8_t* bytes)
         PORTC = (addr >> 8);
         PORTL = bytes[i];
         clear_WE();
-        _delay_us(1);
+        _NOP();
         set_WE();
     }
     set_CE();
