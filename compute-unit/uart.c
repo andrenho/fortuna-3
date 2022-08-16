@@ -34,6 +34,12 @@ void uart_init(void)
     UCSR0C = /* (1<<URSEL) | */ (1<<UCSZ01) | (1<<UCSZ00);   // Async-mode 
     UCSR0B = (1<<RXEN0) | (1<<TXEN0);     // Enable Receiver and Transmitter
 
+#if USE_2X
+    UCSR0A |= (1 << U2X0);
+#else
+    UCSR0A &= ~(1 << U2X0);
+#endif
+
     static FILE uart = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
     stdin = stdout = &uart;
 

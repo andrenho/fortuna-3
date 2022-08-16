@@ -21,7 +21,8 @@ MCU_AVRDUDE=atmega2560
 F_CPU=16000000UL
 
 # Serial speed, in baud. Used by avr-libc for UART speed calculation.
-BAUD=38400
+# BAUD=38400
+BAUD=1000000
 
 #
 # Rules
