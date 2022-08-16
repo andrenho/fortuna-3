@@ -23,7 +23,14 @@ The computer contains:
    - Audio output
    - Wi-Fi and TCP/IP stack, plus support for common protocols
 
-## MCU (main control unit)
+# User interface
+
+The back panel contains three buttons:
+
+- **RESET**: resets the computer
+- **MONITOR**: enters a mode that allows uploading programs, reading/writing to RAM and SDCard, and interacting with the RTC and LCD
+
+# MCU (main control unit)
 
 ### Registers
 
