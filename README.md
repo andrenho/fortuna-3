@@ -1,6 +1,8 @@
 # Fortuna-3
 A homemade Z80 computer.
 
+![Fortuna-3](fortuna-3.jpg)
+
 The computer contains:
 
  - A Z80 microprocessor running at 6 Mhz.
