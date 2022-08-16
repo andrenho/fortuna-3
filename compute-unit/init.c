@@ -175,21 +175,6 @@ static void post(void)
 #endif
 }
 
-static void setup_sdcard(void)
-{
-#if INCLUDE_SDCARD
-    if (!sdcard_setup()) {
-        puts_P(PSTR(RED "Error initializing SDCard." RST));
-        for (;;);
-    }
-    if (!fs_mount()) {
-        puts_P(PSTR(RED "Error mounting partition." RST));
-        for (;;);
-    }
-    putchar('\n');
-#endif
-}
-
 void initialize(void)
 {
     _delay_ms(150);
@@ -213,11 +198,22 @@ void initialize(void)
 
 #if INCLUDE_SDCARD
     sdcard_init();
+
+    if (!sdcard_setup()) {
+        puts_P(PSTR(RED "Error initializing SDCard." RST));
+        for (;;);
+    }
 #endif
 
     post();
 
-    setup_sdcard();
+#if INCLUDE_SDCARD
+    if (!fs_mount()) {
+        puts_P(PSTR(RED "Error mounting partition." RST));
+        for (;;);
+    }
+    putchar('\n');
+#endif
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab
