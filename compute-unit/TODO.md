@@ -1,4 +1,4 @@
-- USR0 / USR1 (ok)
-- LCD
-- Realtime clock
-- SD Card
+- ASM application builder
+- Uploads (files/RAM)
+- I/O requests
+- Raspberry Pi
