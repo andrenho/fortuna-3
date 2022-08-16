@@ -1,4 +1,11 @@
-- ASM application builder
-- Uploads (files/RAM)
+- Increase UART speed
+- Documentation (wiki)
+- Monitor application
+  - Define commands/protocl
+  - Create command line application
+    - Curses interface for memory / SDCard / RTC / LCD
+    - Commandline arguments for uploading code
+- Compiler application
+  - Compile from YAML file
 - I/O requests
 - Raspberry Pi
