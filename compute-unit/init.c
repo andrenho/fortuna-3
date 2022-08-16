@@ -139,7 +139,9 @@ static void test_z80_io(void)
     ram_set_byte(5, 0xfe);
 
     z80_reset();
-    _delay_ms(50);
+    z80_loop_while_iorq_high();
+    z80_iorq();
+    _delay_ms(1);
     z80_shutdown();
     
     if (z80_post_test() == expected)
@@ -150,6 +152,15 @@ static void test_z80_io(void)
 
 static void test_sdcard(void)
 {
+    post_checking(PSTR("SD Card"));
+
+    uint8_t buffer[512];
+    if (!sdcard_read_block(0, buffer))
+        post_error(PSTR("SD Card error"), PSTR("on reading block"));
+    else if (buffer[510] != 0x55 || buffer[511] != 0xaa)
+        post_error(PSTR("SD Card boot"), PSTR("sector not found"));
+    else
+        post_ok();
 }
 
 static void post(void)
@@ -159,7 +170,9 @@ static void post(void)
     test_ram();
     test_z80();
     test_z80_io();
+#if INCLUDE_SDCARD
     test_sdcard();
+#endif
 }
 
 static void setup_sdcard(void)
@@ -179,7 +192,7 @@ static void setup_sdcard(void)
 
 void initialize(void)
 {
-    _delay_ms(200);
+    _delay_ms(150);
 
     uart_init();
     puts_P(PSTR("\e[1;1H\e[2J"));   // clear screen

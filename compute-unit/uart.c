@@ -26,8 +26,6 @@ static int uart_getchar(FILE* f)
 
 void uart_init(void)
 {
-    _delay_ms(100);
-    
     // set speed
     UBRR0H = UBRRH_VALUE;
     UBRR0L = UBRRL_VALUE;

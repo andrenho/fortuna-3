@@ -70,12 +70,12 @@ ISR(BADISR_vect)
     uart_badisr();
 }
 
-ISR(INT0_vect)
+ISR(INT2_vect)
 {
     last_event = EV_USR0;
 }
 
-ISR(INT1_vect)
+ISR(INT3_vect)
 {
     last_event = EV_USR1;
 }

@@ -14,6 +14,7 @@ void z80_continue_execution(void);
 void z80_iorq(void);
 
 uint8_t z80_post_test(void);
+void z80_loop_while_iorq_high(void);
 
 #endif
 

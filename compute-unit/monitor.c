@@ -24,6 +24,8 @@
 #include "z80.h"
 #include "fsfat/ff.h"
 
+bool in_monitor = false;
+
 typedef struct {
     char*    command;
     size_t   npars;

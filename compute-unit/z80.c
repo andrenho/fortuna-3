@@ -16,17 +16,21 @@
 #define set_BUSRQ()    PORTF |= _BV(PF4)
 #define clear_IOCONT() PORTF &= ~_BV(PF3)
 #define set_IOCONT()   PORTF |= _BV(PF3)
+#define clear_NMI()    PORTF &= ~_BV(PF2)
+#define set_NMI()      PORTF |= _BV(PF2)
 
 #define get_BUSACK()  (PINE & _BV(PINE3))
-#define get_WR()      (PINF & _BV(PINF5))
-#define get_RD()      (PINF & _BV(PINF6))
+#define get_WR()      (PINF & _BV(PINF6))
+#define get_RD()      (PINF & _BV(PINF5))
 
 static uint8_t post_test = 0x0;
 
 static void reset_wait(void)
 {
     set_IOCONT();
+    _delay_us(1);
     clear_IOCONT();
+    _delay_us(1);
     set_IOCONT();
 }
 
@@ -37,8 +41,9 @@ void z80_init(void)
 
     clear_RST();
     set_BUSRQ();
+    set_NMI();
     DDRB |= _BV(DDB4);
-    DDRF |= _BV(DDF3) | _BV(DDF4);
+    DDRF |= _BV(DDF2) | _BV(DDF3) | _BV(DDF4);
     reset_wait();
 #if DEBUG_Z80 >= 1
     printf_P(PSTR(CYN "[Z80 initialized] " RST));
@@ -115,6 +120,11 @@ void z80_iorq(void)
 uint8_t z80_post_test(void)
 {
     return post_test;
+}
+
+void z80_loop_while_iorq_high(void)
+{
+    loop_until_bit_is_clear(PINE, PINE4);  // wait until IORQ is 0
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab
