@@ -8,11 +8,12 @@
 #include "init.h"
 #include "monitor.h"
 #include "ram.h"
+#include "remote.h"
 #include "uart.h"
 #include "z80.h"
 
 typedef enum {
-    EV_NONE, EV_USR0, EV_USR1, EV_IORQ,
+    EV_NONE, EV_MONITOR, EV_USR1, EV_IORQ, EV_REMOTE,
 } Event;
 volatile Event last_event = EV_NONE;
 
@@ -25,7 +26,9 @@ int main(void)
 
 #if INCLUDE_MONITOR && RUN_MONITOR_AT_START
     z80_reset();
+    cli();
     monitor();
+    sei();
 #endif
 
     while (1) {
@@ -34,9 +37,8 @@ int main(void)
             case EV_NONE:
                 break;
 
-            case EV_USR0:
+            case EV_MONITOR:
                 cli();
-                // TODO - do something?
                 last_event = EV_NONE;
                 _delay_ms(80);
                 sei();
@@ -58,6 +60,13 @@ int main(void)
                 last_event = EV_NONE;
                 sei();
                 break;
+
+            case EV_REMOTE:
+                cli();
+                remote();
+                last_event = EV_NONE;
+                sei();
+                break;
         }
 
     }
@@ -72,7 +81,7 @@ ISR(BADISR_vect)
 
 ISR(INT2_vect)
 {
-    last_event = EV_USR0;
+    last_event = EV_MONITOR;
 }
 
 ISR(INT3_vect)
@@ -83,6 +92,15 @@ ISR(INT3_vect)
 ISR(INT4_vect)
 {
     last_event = EV_IORQ;
+}
+
+static uint8_t latest_char = 0;
+ISR(USART0_RX_vect)
+{
+    uint8_t udr = UDR0;
+    if (latest_char == 0xfe && udr == 0xf0)
+        last_event = EV_REMOTE;
+    latest_char = udr;
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab
