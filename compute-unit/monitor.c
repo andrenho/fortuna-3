@@ -41,8 +41,11 @@ typedef struct {
 static void print_array(uint8_t* bytes, size_t sz)
 {
     printf_P(PSTR(BOLD "%6c"), ' ');
-    for (size_t i = 0; i < 16; ++i)
+    for (size_t i = 0; i < 16; ++i) {
         printf_P(PSTR(" _%X"), i);
+        if (i == 7)
+            putchar(' ');
+    }
     puts_P(PSTR(RST));
 
     for (uint16_t i = 0; i < sz / 16; ++i) {
@@ -175,6 +178,8 @@ static void help(void)
     puts_P(PSTR("  sd"));
     puts_P(PSTR("    get BLOCK               Read SDCard block"));
     puts_P(PSTR("    write BLOCK OFFSET      Write bytes to SDCard, starting at offset"));
+    puts_P(PSTR("  fat"));
+    puts_P(PSTR("    create FILENAME         Create a file in SD Card"));
     // puts_P(PSTR("  format                    Create a single partition disk, and format it"));
 #endif
     puts_P(PSTR("  exit                      Exit monitor and continue execution"));
@@ -232,11 +237,11 @@ static void lcd_cmd(UserInput *u)
     lcd_command(cmd);
 }
 
+#if INCLUDE_SDCARD
+
 //
 // SD CARD
 // 
-
-#if INCLUDE_SDCARD
 
 static void sd_get(UserInput *u)
 {
@@ -390,8 +395,6 @@ static void execute(UserInput *u, bool* quit, bool *reset_z80)
             sd_write(u);
         else
             syntax_error();
-    } else if (strcmp_P(u->command, PSTR("format")) == 0) {
-        fs_format();
 #endif
     } else if (strcmp_P(u->command, PSTR("exit")) == 0) {
         *quit = true;

@@ -9,7 +9,7 @@ static FATFS fs;
 #ifdef DEBUG_FS_ERRORS
 #  include "debug.h"
 #  include "uart.h"
-#  define FS_CHECK(r) { if (fs_check(r) != FR_OK) return false; }
+#  define FS_CHECK(r) { if (fs_check(r) != FR_OK) return r; }
 
   static FRESULT fs_check(FRESULT r) {
       if (r != FR_OK)
@@ -31,10 +31,10 @@ static FATFS fs;
       return r;
   }
 #else
-#  define FS_CHECK(r) { if ((r) != FR_OK) return false; }
+#  define FS_CHECK(r) { if ((r) != FR_OK) return r; }
 #endif
 
-bool fs_format(void)
+FRESULT fs_format(void)
 {
     BYTE work[FF_MAX_SS];
     LBA_t plist[] = { 100, 0 };
@@ -44,7 +44,7 @@ bool fs_format(void)
     return true;
 }
 
-bool fs_mount(void)
+FRESULT fs_mount(void)
 {
     FS_CHECK(f_mount(&fs, "0:", 1))
     return true;

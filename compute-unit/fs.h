@@ -2,10 +2,14 @@
 #define FS_H_
 
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
-bool fs_format(void);
+#include "fsfat/ff.h"
 
-bool fs_mount(void);
+FRESULT fs_format(void);
+
+FRESULT fs_mount(void);
 
 #endif
 
