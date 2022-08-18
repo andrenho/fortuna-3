@@ -36,7 +36,7 @@ static void reset_wait(void)
 
 void z80_init(void)
 {
-    EICRB |= _BV(ISC41);  // fire interrupt INT4 (IORQ) on falling edge
+    
     EIMSK |= _BV(INT4);   // enable interrupt INT4
 
     clear_RST();

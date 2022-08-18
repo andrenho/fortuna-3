@@ -31,8 +31,8 @@ void uart_init(void)
     UBRR0L = UBRRL_VALUE;
 
     // set config
-    UCSR0C = /* (1<<URSEL) | */ (1<<UCSZ01) | (1<<UCSZ00);   // Async-mode 
-    UCSR0B = (1<<RXEN0) | (1<<TXEN0) | (1<<RXCIE0);  // Enable Receiver (+ interrupt) and Transmitter
+    UCSR0C = (1<<UCSZ01) | (1<<UCSZ00);   // Async-mode 
+    UCSR0B = (1<<TXEN0) | (1<<RXCIE0);    // Enable Receiver (+ interrupt) and Transmitter
 
 #if USE_2X
     UCSR0A |= (1 << U2X0);

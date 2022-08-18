@@ -22,9 +22,19 @@ typedef struct {
 
 volatile Events events = { false, false, false, false };
 
+static void setup_interrupts(void)
+{
+    EICRA |= _BV(ISC21) | _BV(ISC31);  // fire interrupt INT2 and INT3 on falling edge
+    EICRB |= _BV(ISC41);  // fire interrupt INT4 (IORQ) on falling edge
+    EIMSK |= _BV(INT2) | _BV(INT3);    // enable interrupts INT2 and INT3
+    UCSR0B |= (1<<RXEN0); // enable interrupt for UART
+}
+
 int main(void)
 {
     initialize();
+    setup_interrupts();
+
     puts_P(PSTR("Welcome to Fortuna-3!\n"));
 
     z80_reset();
@@ -94,8 +104,9 @@ static uint8_t latest_char = 0;
 ISR(USART0_RX_vect)
 {
     uint8_t udr = UDR0;
-    if (latest_char == 0xfe && udr == 0xf0)
+    if (latest_char == 0xfe && udr == 0xf0) {
         events.remote = true;
+    }
     latest_char = udr;
 }
 

@@ -22,7 +22,10 @@
 
 static void upload_to_ram(void)
 {
+    lcd_print_line_P(0, PSTR("Uploadgin RAM"));
+
     uint8_t bank = getchar();
+
     uint16_t location = getchar();
     location |= ((uint16_t) getchar()) << 8;
     uint16_t sz = getchar();
@@ -33,7 +36,6 @@ static void upload_to_ram(void)
         return;
     }
 
-    lcd_print_line_P(0, PSTR("XXX"));
     ram_set_bank(bank);
     for (size_t i = 0; i < sz; ++i)
         ram_set_byte(i + location, getchar());
@@ -46,17 +48,14 @@ void remote(void)
     z80_shutdown();
     _delay_ms(1);
 
-    lcd_print_line_P(0, PSTR("Remote control"));
-    
     while (true) {
         uint8_t c = getchar();
         switch (c) {
             case CMD_UPLOAD_RAM:
-                lcd_print_line_P(0, PSTR("Uploading RAM"));
                 upload_to_ram();
                 break;
             case CMD_EXIT:
-                lcd_clear();
+                lcd_print_line_P(0, PSTR("Remote complete"));
                 return;
             default:
                 putchar(ERR_INVALID_CMD);
