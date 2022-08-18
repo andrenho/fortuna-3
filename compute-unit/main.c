@@ -61,6 +61,7 @@ int main(void)
         if (events.remote) {
             cli();
             remote();
+            z80_reset();
             events.remote = false;
             sei();
         }
