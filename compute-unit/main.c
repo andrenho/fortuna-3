@@ -13,6 +13,9 @@
 #include "uart.h"
 #include "z80.h"
 
+extern char _binary_bios_bin_start;
+extern int _binary_bios_bin_size;
+
 typedef struct {
     bool monitor : 1;
     bool usr     : 1;
@@ -30,10 +33,17 @@ static void setup_interrupts(void)
     UCSR0B |= (1<<RXEN0); // enable interrupt for UART
 }
 
+static void load_bios(void)
+{
+    for (int i = 0; i < _binary_bios_bin_size; ++i)
+        ram_set_byte(i, (&_binary_bios_bin_start)[i]);
+}
+
 int main(void)
 {
     initialize();
     setup_interrupts();
+    load_bios();
 
     puts_P(PSTR("Welcome to Fortuna-3!\n"));
 

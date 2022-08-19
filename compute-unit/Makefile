@@ -18,6 +18,7 @@ FUSES=-U lfuse:w:0xff:m -U hfuse:w:0xd8:m -U efuse:w:0xfd:m
 # Microcontroller
 MCU_GCC=atmega2560
 MCU_AVRDUDE=atmega2560
+MCU_LD=avr6
 
 # Microcontroller speed, in Hz. Used by avr-libc for delays.
 F_CPU=16000000UL
@@ -42,11 +43,14 @@ CPPFLAGS=-std=c11 ${WARNINGS} -Os -DF_CPU=${F_CPU} -DBAUD=${BAUD} -mmcu=${MCU_GC
 
 all: ${PROJECT}.hex
 
+bios.o: bios.bin
+	avr-ld -r -b binary -o $@ $< -m${MCU_LD}
+
 ${PROJECT}.hex: ${PROJECT}.elf
 	avr-objcopy -j .text -j .data -O ihex $< $@
 	arm-linux-gnueabihf-size ${PROJECT}.hex
 
-${PROJECT}.elf: ${OBJECTS}
+${PROJECT}.elf: ${OBJECTS} bios.o
 	$(CC) -mmcu=${MCU_GCC} ${CFLAGS} -o $@ $^ -Wl,--gc-sections
 	avr-size -C --mcu=${MCU_GCC} ${PROJECT}.elf	
 
