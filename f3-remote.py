@@ -55,6 +55,12 @@ def execute(serial_port, commands):
                 ser.write(len(b).to_bytes(2, 'little'))
                 ser.write(b)
     ser.write(b"\xff")
+    c = ser.read(1)
+    if c[0] == 0:
+        print('File ' + cmd[3] + ' uploaded to RAM successfully.')
+    else:
+        print('There was an error uploading file ' + cmd[3] + ': ' + str(c[0]))
+        sys.exit(1)
     ser.close()
 
 if __name__ == "__main__":

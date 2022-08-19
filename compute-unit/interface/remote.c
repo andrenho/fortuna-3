@@ -37,6 +37,8 @@ static void upload_to_ram(void)
     ram_set_bank(bank);
     for (size_t i = 0; i < sz; ++i)
         ram_set_byte(i + location, getchar());
+
+    putchar(OK);
 }
 
 void remote(void)
