@@ -1,0 +1,10 @@
+Sections:
+section .text (attr=<acrx> align=1):
+       0: data(2): 3e 41 
+       2: data(2): d3 00 
+       4: data(1): 76 
+Symbols:
+SER_OUT EXPR(0=0x0) EQU 
+__RPTCNT EXPR(-1=0xffff) INTERNAL 
+__VASM EXPR(0=0x0) INTERNAL 
+__UNIXFS EXPR(0=0x0) INTERNAL 
