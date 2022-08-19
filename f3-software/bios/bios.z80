@@ -1,7 +1,13 @@
 SER_OUT = 0x0
 
-	ld	a, 'A'
-	out	(SER_OUT), a
+	ld	hl, hello
+	ld	c, SER_OUT
+	ld	b, hello_len - hello
+	otir
 	halt
+
+hello:
+	string	"Hello world!"
+hello_len:
 
 ; vim:ts=8:sts=8:sw=8:noexpandtab
