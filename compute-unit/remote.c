@@ -22,8 +22,6 @@
 
 static void upload_to_ram(void)
 {
-    lcd_print_line_P(0, PSTR("Uploadgin RAM"));
-
     uint8_t bank = getchar();
 
     uint16_t location = getchar();
@@ -43,8 +41,6 @@ static void upload_to_ram(void)
 
 void remote(void)
 {
-    lcd_clear();
-
     z80_shutdown();
     _delay_ms(1);
 
@@ -55,7 +51,11 @@ void remote(void)
                 upload_to_ram();
                 break;
             case CMD_EXIT:
+                lcd_clear();
                 lcd_print_line_P(0, PSTR("Remote complete"));
+                lcd_print_line_P(1, PSTR("Press USR"));
+                loop_until_bit_is_clear(PIND, PIND3);
+                lcd_clear();
                 return;
             default:
                 putchar(ERR_INVALID_CMD);

@@ -16,7 +16,6 @@
 #include "sdcard.h"
 #include "spi.h"
 #include "uart.h"
-#include "usr.h"
 #include "z80.h"
 
 #include "fsfat/ff.h"
@@ -189,7 +188,6 @@ void initialize(void)
     uint32_t seed = random_init();
     printf_P(PSTR("Random seed is 0x%lX.\n"), seed);
 
-    usr_init();
     rtc_init();
     spi_init();
     ram_init();
