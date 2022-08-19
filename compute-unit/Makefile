@@ -2,9 +2,11 @@
 PROJECT=avr-skeleton
 
 # Object files (one for each source file)
-OBJECTS=main.o init.o uart.o spi.o lcd.o rtc.o sdcard.o ram.o monitor.o fs.o z80.o \
-	random.o remote.o \
-	diskio.o fsfat/ff.o fsfat/ffunicode.o
+OBJECTS=main.o init.o \
+	dev/uart.o dev/spi.o dev/lcd.o dev/rtc.o dev/sdcard.o dev/ram.o dev/z80.o \
+	interface/monitor.o interface/remote.o \
+	io/io.o io/random.o io/fs.o \
+	fsfat/diskio.o fsfat/ff.o fsfat/ffunicode.o
 
 # Avrdude configuration to connect on the PI. See avrdude_gpio.conf.
 # Can be one of: pi_rst, pi_cs0, pi_cs1 or pi_gpio, depending on the RESET line in AVR.
@@ -23,6 +25,8 @@ F_CPU=16000000UL
 # Serial speed, in baud. Used by avr-libc for UART speed calculation.
 # BAUD=38400
 BAUD=1000000
+
+CFLAGS=-I. -Idev -Ifsfat -Iinterface -Iio
 
 #
 # Rules
@@ -43,7 +47,7 @@ ${PROJECT}.hex: ${PROJECT}.elf
 	arm-linux-gnueabihf-size ${PROJECT}.hex
 
 ${PROJECT}.elf: ${OBJECTS}
-	$(CC) -mmcu=${MCU_GCC} -o $@ $^ -Wl,--gc-sections
+	$(CC) -mmcu=${MCU_GCC} ${CFLAGS} -o $@ $^ -Wl,--gc-sections
 	avr-size -C --mcu=${MCU_GCC} ${PROJECT}.elf	
 
 test-connection:

@@ -9,6 +9,7 @@
 
 #include "ansi.h"
 #include "config.h"
+#include "io.h"
 
 #define clear_RST()    PORTB &= ~_BV(PB4)
 #define set_RST()      PORTB |= _BV(PB4)
@@ -91,17 +92,20 @@ void z80_iorq(void)
 {
     uint8_t addr = PINA;
     if (get_WR() == 0) {
-        uint16_t data = PINL;
+        uint8_t data = PINL;
 #if DEBUG_Z80 >= 1
         printf_P(PSTR(CYN "[Z80 has made an I/O request (output: addr 0x%02X, data 0x%02X)] " RST), addr, data);
 #endif
         if (addr == 0xff)
             post_test = data;
+        else
+            io_write(addr, data);
 
     } else if (get_RD() == 0) {
 #if DEBUG_Z80 >= 1
         printf_P(PSTR(CYN "[Z80 has made an I/O request (input: addr 0x%02X)] " RST), addr);
 #endif
+        PINL = io_read(addr);
 
     } else {
 #if DEBUG_Z80 >= 1

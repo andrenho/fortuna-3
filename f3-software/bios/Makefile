@@ -5,7 +5,7 @@ SERIAL_PORT=/dev/serial0
 all: ${DST}
 
 %.bin: %.z80
-	vasmz80_oldstyle -o $@ $<
+	vasmz80_oldstyle -Fbin -o $@ $<
 
 upload: ${DST}
 	../../f3-remote.py ${SERIAL_PORT} upload-ram 0 0 ${DST}

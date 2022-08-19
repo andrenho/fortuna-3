@@ -1,20 +1,11 @@
-/*-----------------------------------------------------------------------*/
-/* Low level disk I/O module SKELETON for FatFs     (C)ChaN, 2019        */
-/*-----------------------------------------------------------------------*/
-/* If a working storage control module is available, it should be        */
-/* attached to the FatFs via a glue function rather than modifying it.   */
-/* This is an example of glue functions to attach various exsisting      */
-/* storage control modules to the FatFs module with a defined API.       */
-/*-----------------------------------------------------------------------*/
+#include "fsfat/ff.h"			/* Obtains integer types */
+#include "fsfat/diskio.h"		/* Declarations of disk functions */
 
-#include "ff.h"			/* Obtains integer types */
-#include "diskio.h"		/* Declarations of disk functions */
+#include "sdcard.h"
 
-/* Definitions of physical drive number for each drive */
-#define DEV_RAM		0	/* Example: Map Ramdisk to physical drive 0 */
-#define DEV_MMC		1	/* Example: Map MMC/SD card to physical drive 1 */
-#define DEV_USB		2	/* Example: Map USB MSD to physical drive 2 */
-
+PARTITION VolToPart[FF_VOLUMES] = {
+    {0, 1},    /* "0:" ==> 1st partition in PD#0 */
+};
 
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
@@ -24,32 +15,11 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
-	DSTATUS stat;
-	int result;
-
-	switch (pdrv) {
-	case DEV_RAM :
-		result = RAM_disk_status();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_MMC :
-		result = MMC_disk_status();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_USB :
-		result = USB_disk_status();
-
-		// translate the reslut code here
-
-		return stat;
-	}
-	return STA_NOINIT;
+    (void) pdrv;
+    if (sdcard_was_initialized())
+        return 0;
+    else
+        return STA_NOINIT;
 }
 
 
@@ -62,32 +32,7 @@ DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-	DSTATUS stat;
-	int result;
-
-	switch (pdrv) {
-	case DEV_RAM :
-		result = RAM_disk_initialize();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_MMC :
-		result = MMC_disk_initialize();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_USB :
-		result = USB_disk_initialize();
-
-		// translate the reslut code here
-
-		return stat;
-	}
-	return STA_NOINIT;
+    return disk_status(pdrv);  // we assume the disk was already initialized
 }
 
 
@@ -103,39 +48,11 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
-	DRESULT res;
-	int result;
-
-	switch (pdrv) {
-	case DEV_RAM :
-		// translate the arguments here
-
-		result = RAM_disk_read(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-
-	case DEV_MMC :
-		// translate the arguments here
-
-		result = MMC_disk_read(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-
-	case DEV_USB :
-		// translate the arguments here
-
-		result = USB_disk_read(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-	}
-
-	return RES_PARERR;
+    (void) pdrv;
+    for (LBA_t i = sector; i < (sector + count); ++i)
+        if (!sdcard_read_block(i, &buff[i * 512]))
+            return RES_ERROR;
+    return RES_OK;
 }
 
 
@@ -153,39 +70,11 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
-	DRESULT res;
-	int result;
-
-	switch (pdrv) {
-	case DEV_RAM :
-		// translate the arguments here
-
-		result = RAM_disk_write(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-
-	case DEV_MMC :
-		// translate the arguments here
-
-		result = MMC_disk_write(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-
-	case DEV_USB :
-		// translate the arguments here
-
-		result = USB_disk_write(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-	}
-
-	return RES_PARERR;
+    (void) pdrv;
+    for (LBA_t i = sector; i < (sector + count); ++i)
+        if (!sdcard_write_block(i, &buff[i * 512]))
+            return RES_ERROR;
+    return RES_OK;
 }
 
 #endif
@@ -201,29 +90,23 @@ DRESULT disk_ioctl (
 	void *buff		/* Buffer to send/receive control data */
 )
 {
-	DRESULT res;
-	int result;
+    (void) pdrv;
+    LBA_t sz;
 
-	switch (pdrv) {
-	case DEV_RAM :
-
-		// Process of the command for the RAM drive
-
-		return res;
-
-	case DEV_MMC :
-
-		// Process of the command for the MMC/SD card
-
-		return res;
-
-	case DEV_USB :
-
-		// Process of the command the USB drive
-
-		return res;
-	}
-
-	return RES_PARERR;
+    switch (cmd) {
+        case CTRL_SYNC:
+            break;
+        case GET_SECTOR_COUNT:
+            sz = 24 * 1024;  // 8 MB - TODO
+            *(LBA_t *) buff = sz;
+            break;
+        case GET_BLOCK_SIZE:
+            *(WORD *) buff = 512;
+            break;
+        default: 
+            return RES_PARERR;
+    }
+    return RES_OK;
 }
 
+// vim:ts=4:sts=4:sw=4:expandtab
