@@ -45,7 +45,7 @@ int main(void)
     setup_interrupts();
     load_bios();
 
-    puts_P(PSTR("Welcome to Fortuna-3!\n"));
+    puts_P(PSTR("\nWelcome to Fortuna-3!\n"));
 
     z80_reset();
 
