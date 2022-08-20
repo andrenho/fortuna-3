@@ -2,10 +2,16 @@
 
 #include <stdio.h>
 
+#include "ops.h"
+#include "uart.h"
+
 void io_write(uint8_t addr, uint8_t data)
 {
     switch (addr) {
-        case 0x0:  // SER_OUT
+
+        // serial
+
+        case S_PUT:
             putchar(data);
             break;
     }
@@ -13,7 +19,19 @@ void io_write(uint8_t addr, uint8_t data)
 
 uint8_t io_read(uint8_t addr)
 {
+    printf(">>%02X<<", addr);
     switch (addr) {
+        
+        // serial
+
+        case S_GET:
+            return uart_getchar_nonblocking();
+
+        case S_GET_BLK:
+            // return getchar();
+            // getchar();
+            return 'A';
+
     }
     return 0;
 }

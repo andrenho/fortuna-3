@@ -28,9 +28,9 @@ volatile Events events = { false, false, false, false };
 static void setup_interrupts(void)
 {
     EICRA |= _BV(ISC21) | _BV(ISC31);  // fire interrupt INT2 and INT3 on falling edge
-    EICRB |= _BV(ISC41);  // fire interrupt INT4 (IORQ) on falling edge
+    EICRB |= _BV(ISC41);               // fire interrupt INT4 (IORQ) on falling edge
     EIMSK |= _BV(INT2) | _BV(INT3);    // enable interrupts INT2 and INT3
-    UCSR0B |= (1<<RXEN0); // enable interrupt for UART
+    // UCSR0B |= (1<<RXEN0);              // enable interrupt for UART
 }
 
 static void load_bios(void)

@@ -1,9 +1,16 @@
-SER_OUT = 0x0
+	include ../ops.z80
 
 	ld	hl, hello
-	ld	c, SER_OUT
+	ld	c, S_PUT
 	ld	b, hello_len - hello
 	otir
+
+next:
+	in	a, (S_GET_BLK)
+	inc	a
+	out	(S_PUT), a
+	; jp	next
+
 	halt
 
 hello:

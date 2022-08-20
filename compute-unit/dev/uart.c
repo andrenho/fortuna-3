@@ -24,6 +24,11 @@ static int uart_getchar(FILE* f)
     return UDR0;
 }
 
+uint8_t uart_getchar_nonblocking(void)
+{
+    return UDR0;
+}
+
 void uart_init(void)
 {
     // set speed
