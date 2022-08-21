@@ -13,8 +13,8 @@
 #include "uart.h"
 #include "z80.h"
 
-extern char _binary_bios_bin_start;
-extern int _binary_bios_bin_size;
+extern uint8_t _binary_bios_bin_start[];
+extern uint8_t _binary_bios_bin_end[];
 
 typedef struct {
     bool monitor : 1;
@@ -30,22 +30,26 @@ static void setup_interrupts(void)
     EICRA |= _BV(ISC21) | _BV(ISC31);  // fire interrupt INT2 and INT3 on falling edge
     EICRB |= _BV(ISC41);               // fire interrupt INT4 (IORQ) on falling edge
     EIMSK |= _BV(INT2) | _BV(INT3);    // enable interrupts INT2 and INT3
-    // UCSR0B |= (1<<RXEN0);              // enable interrupt for UART
+    UCSR0B |= (1<<RXEN0);              // enable interrupt for UART
 }
 
 static void load_bios(void)
 {
-    for (int i = 0; i < _binary_bios_bin_size; ++i)
-        ram_set_byte(i, (&_binary_bios_bin_start)[i]);
+    uint16_t i = 0;
+    for (uint8_t* p = _binary_bios_bin_start; p != _binary_bios_bin_end; ++p) {
+        printf("%02X.", *p);
+        ram_set_byte(i++, *p);
+    }
 }
 
 int main(void)
 {
     initialize();
     setup_interrupts();
-    load_bios();
 
     puts_P(PSTR("\nWelcome to Fortuna-3!\n"));
+
+    load_bios();
 
     z80_reset();
 
