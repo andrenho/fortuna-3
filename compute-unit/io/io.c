@@ -19,7 +19,6 @@ void io_write(uint8_t addr, uint8_t data)
 
 uint8_t io_read(uint8_t addr)
 {
-    printf(">>%02X<<", addr);
     switch (addr) {
         
         // serial
@@ -28,9 +27,7 @@ uint8_t io_read(uint8_t addr)
             return uart_getchar_nonblocking();
 
         case S_GET_BLK:
-            // return getchar();
-            // getchar();
-            return 'A';
+            return getchar();
 
     }
     return 0;

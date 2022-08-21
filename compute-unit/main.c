@@ -30,16 +30,14 @@ static void setup_interrupts(void)
     EICRA |= _BV(ISC21) | _BV(ISC31);  // fire interrupt INT2 and INT3 on falling edge
     EICRB |= _BV(ISC41);               // fire interrupt INT4 (IORQ) on falling edge
     EIMSK |= _BV(INT2) | _BV(INT3);    // enable interrupts INT2 and INT3
-    UCSR0B |= (1<<RXEN0);              // enable interrupt for UART
+    // UCSR0B |= (1<<RXCIE0);             // enable interrupt for UART
 }
 
 static void load_bios(void)
 {
     uint16_t i = 0;
-    for (uint8_t* p = _binary_bios_bin_start; p != _binary_bios_bin_end; ++p) {
-        printf("%02X.", *p);
+    for (uint8_t* p = _binary_bios_bin_start; p != _binary_bios_bin_end; ++p)
         ram_set_byte(i++, *p);
-    }
 }
 
 int main(void)

@@ -102,18 +102,17 @@ void z80_iorq(void)
             io_write(addr, data);
 
     } else if (get_RD() == 0) {
+        uint8_t data = io_read(addr);
+        PINL = data;
 #if DEBUG_Z80 >= 1
-        printf_P(PSTR(CYN "[Z80 has made an I/O request (input: addr 0x%02X)] " RST), addr);
+        printf_P(PSTR(CYN "[Z80 has made an I/O request (input: addr 0x%02X, data 0x%02X)] " RST), addr, data);
 #endif
-        PINL = io_read(addr);
 
     } else {
 #if DEBUG_Z80 >= 1
         printf_P(PSTR(RED "[Z80 has made an I/O request, but is neither an input nor an output] " RST));
 #endif
     }
-
-    // getchar();
 
     // continue execution
     clear_IOCONT();

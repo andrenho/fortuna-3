@@ -1,10 +1,5 @@
 	include ../ops.z80
 
-	ld	a, 0x24
-	out	(0xaf), a
-	in	a, (0x84)
-	halt
-
 	ld	hl, hello
 	ld	c, S_PUT
 	ld	b, hello_len - hello
@@ -14,7 +9,7 @@ next:
 	in	a, (S_GET_BLK)
 	inc	a
 	out	(S_PUT), a
-	; jp	next
+	jp	next
 
 	halt
 
