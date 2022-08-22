@@ -19,6 +19,8 @@
 #define set_IOCONT()   PORTF |= _BV(PF3)
 #define clear_NMI()    PORTF &= ~_BV(PF2)
 #define set_NMI()      PORTF |= _BV(PF2)
+#define clear_INT()    PORTE &= ~_BV(PE5)
+#define set_INT()      PORTE |= _BV(PE5)
 
 #define get_BUSACK()  (PINE & _BV(PINE3))
 #define get_WR()      (PINF & _BV(PINF6))
@@ -43,7 +45,9 @@ void z80_init(void)
     clear_RST();
     set_BUSRQ();
     set_NMI();
+    set_INT();
     DDRB |= _BV(DDB4);
+    DDRE |= _BV(DDE5);
     DDRF |= _BV(DDF2) | _BV(DDF3) | _BV(DDF4);
     reset_wait();
 #if DEBUG_Z80 >= 1
@@ -62,7 +66,7 @@ void z80_shutdown(void)
 void z80_reset(void)
 {
     clear_RST();
-    _delay_ms(1);
+    _delay_ms(10);
     set_RST();
 #if DEBUG_Z80 >= 1
     printf_P(PSTR(CYN "[Z80 has been reset and taken over the bus] " RST));
@@ -102,8 +106,9 @@ void z80_iorq(void)
             io_write(addr, data);
 
     } else if (get_RD() == 0) {
+        DDRL = 0xff;
         uint8_t data = io_read(addr);
-        PINL = data;
+        PORTL = data;
 #if DEBUG_Z80 >= 1
         printf_P(PSTR(CYN "[Z80 has made an I/O request (input: addr 0x%02X, data 0x%02X)] " RST), addr, data);
 #endif
@@ -116,6 +121,7 @@ void z80_iorq(void)
 
     // continue execution
     clear_IOCONT();
+    DDRL = 0x0;
     loop_until_bit_is_set(PINE, PINE4);  // wait until IORQ is 1
     set_IOCONT();
 }

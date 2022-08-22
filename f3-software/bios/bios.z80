@@ -8,6 +8,7 @@
 next:
 	in	a, (S_GET_BLK)
 	inc	a
+	inc	a
 	out	(S_PUT), a
 	jp	next
 

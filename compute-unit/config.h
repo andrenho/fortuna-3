@@ -20,4 +20,4 @@
 #define DEBUG_RTC          0
 #define DEBUG_LCD          0
 #define DEBUG_SDCARD       0
-#define DEBUG_Z80          1
+#define DEBUG_Z80          0
