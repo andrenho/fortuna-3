@@ -1,37 +1,26 @@
 #ifndef OPS_H_
 #define OPS_H_
 
-#define Pa0 0x00
-#define Pa1 0x01
-#define Pb0 0x02
-#define Pb1 0x03
-#define Qa0 0x04
-#define Qa1 0x05
-#define Qb0 0x06
-#define Qb1 0x07
-#define Ra0 0x08
-#define Ra1 0x09
-#define Rb0 0x0a
-#define Rb1 0x0b
-
 #define S_PUT 0x10
 #define S_GET 0x10
 #define S_GET_BLK 0x11
+#define S_PRINT_Z 0x11
+#define S_PRINT_LEN 0x12
 
-#define RTC_SET 0x12
-#define RTC_GET_DATE 0x12
-#define RTC_GET_TIME 0x13
+#define RTC_SET 0x15
+#define RTC_GET_DATE 0x16
+#define RTC_GET_TIME 0x17
 
-#define LCD_LINE1 0x14
-#define LCD_LINE2 0x15
-#define LCD_CLEAR 0x16
-#define LCD_CHAR 0x17
-#define LCD_CMD 0x18
+#define LCD_LINE1 0x18
+#define LCD_LINE2 0x19
+#define LCD_CLEAR 0x1A
+#define LCD_CHAR 0x1B
+#define LCD_CMD 0x1C
 
-#define RANDOM 0x19
+#define RANDOM 0x1D
 
-#define SD_READ 0x1A
-#define SD_WRITE 0x1B
+#define SD_READ 0x1E
+#define SD_WRITE 0x1F
 
 #define FS_MOUNT 0x20
 #define FS_OPEN_R 0x21
@@ -62,18 +51,21 @@
 #define MM_STRSUB 0x42
 #define MM_STRCHR 0x43
 #define MM_SET 0x45
+#define MM_TO_DEC 0x46
+#define MM_TO_HEX 0x47
+#define MM_TO_BIN 0x48
 
-#define SUM 0x4A
-#define SUBTRACT 0x4B
-#define MULTIPLY 0x4C
-#define DIVIDE 0x4D
-#define MODULO 0x4E
-#define COMPARE_16 0x4A
-#define COMPARE_32 0x4B
+#define SUM 0x50
+#define SUBTRACT 0x51
+#define MULTIPLY 0x52
+#define DIVIDE 0x53
+#define MODULO 0x54
+#define COMPARE_16 0x55
+#define COMPARE_32 0x56
 
-#define TIMER0_SET 0x50
-#define TIMER1_SET 0x51
-#define TIMER0_GET 0x50
-#define TIMER1_GET 0x51
+#define TIMER0_SET 0x60
+#define TIMER1_SET 0x61
+#define TIMER0_GET 0x62
+#define TIMER1_GET 0x63
 
 #endif
