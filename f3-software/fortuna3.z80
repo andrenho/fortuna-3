@@ -73,3 +73,5 @@ TIMER0_SET = 0x60
 TIMER1_SET = 0x61
 TIMER0_GET = 0x62
 TIMER1_GET = 0x63
+
+; vim:ts=8:sts=8:sw=8:noexpandtab

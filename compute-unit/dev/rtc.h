@@ -1,5 +1,5 @@
-#ifndef RTC_H_
-#define RTC_H_
+#ifndef DEV_RTC_H_
+#define DEV_RTC_H_
 
 #include <stdint.h>
 

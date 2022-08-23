@@ -2,10 +2,11 @@
 
 #include <stdio.h>
 
+#include "dev/rtc.h"
 #include "dev/uart.h"
 #include "io/ops.h"
-#include "io/serial.h"
 #include "io/ioregs.h"
+#include "io/serial.h"
 
 static IO_Regs ioregs;
 
@@ -22,6 +23,19 @@ bool io_write(uint8_t addr, uint8_t data)
 
         case S_PUT:
             putchar(data);
+            break;
+
+        // rtc
+
+        case RTC_SET: 
+            rtc_set((ClockDateTime) {
+                .yy = ioregs.Pa0,
+                .mm = ioregs.Pa1,
+                .dd = ioregs.Pb0,
+                .hh = ioregs.Pb1,
+                .nn = ioregs.Qa0,
+                .ss = ioregs.Qa1,
+            });
             break;
 
         // operations that require the control of the bus
@@ -59,11 +73,17 @@ uint8_t io_read(uint8_t addr)
         
         // serial
 
-        case S_GET:
-            return uart_getchar_nonblocking();
+        case S_GET:         return uart_getchar_nonblocking();
+        case S_GET_BLK:     return getchar();
 
-        case S_GET_BLK:
-            return getchar();
+        // RTC
+
+        case RTC_GET_YEAR:    return rtc_get().yy;
+        case RTC_GET_MONTH:   return rtc_get().mm;
+        case RTC_GET_DAY:     return rtc_get().dd;
+        case RTC_GET_HOUR:    return rtc_get().hh;
+        case RTC_GET_MINUTES: return rtc_get().nn;
+        case RTC_GET_SECONDS: return rtc_get().ss;
     }
     
     return 0;
