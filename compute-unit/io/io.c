@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "dev/lcd.h"
+#include "dev/ram.h"
 #include "dev/rtc.h"
 #include "dev/uart.h"
 #include "io/ops.h"
