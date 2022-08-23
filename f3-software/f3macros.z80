@@ -1,0 +1,9 @@
+	macro PRINT_Z, str
+		ld	a, \str & 0xff
+		out	(Pa0), a
+		ld	a, \str / 0x100
+		out	(Pa1), a
+		out	(S_PRINT_Z), a
+	endmacro
+
+; vim:ts=8:sts=8:sw=8:noexpandtab
