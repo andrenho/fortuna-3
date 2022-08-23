@@ -2,6 +2,7 @@
 	include f3macros.z80
 
 	PRINT_Z hello2
+	out	(LCD_LINE1), a
 
 	in	a, (RTC_GET_HOUR)
 	add	a, 'A'

@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+#include "dev/lcd.h"
 #include "dev/rtc.h"
 #include "dev/uart.h"
 #include "io/ops.h"
@@ -38,9 +39,25 @@ bool io_write(uint8_t addr, uint8_t data)
             });
             break;
 
+        // lcd
+
+        case LCD_CLEAR:
+            lcd_clear();
+            break;
+
+        case LCD_CHAR:
+            lcd_print_char(data);
+            break;
+
+        case LCD_CMD:
+            lcd_command(data);
+            break;
+
         // operations that require the control of the bus
         case S_PRINT_Z:
         case S_PRINT_LEN:
+        case LCD_LINE1:
+        case LCD_LINE2:
             return true;
     }
 
@@ -53,13 +70,13 @@ void io_write_bus(uint8_t addr, uint8_t data)
 
         // serial
         
-        case S_PRINT_Z:
-            io_serial_print_z(&ioregs);
-            break;
+        case S_PRINT_Z:     io_serial_print_z(&ioregs); break;
+        case S_PRINT_LEN:   io_serial_print_len(&ioregs); break;
 
-        case S_PRINT_LEN:
-            io_serial_print_len(&ioregs);
-            break;
+        // LCD
+
+        case LCD_LINE1:     io_lcd_print_line(0, Pa(&ioregs)); break;
+        case LCD_LINE2:     io_lcd_print_line(1, Pa(&ioregs)); break;
     }
 }
 
@@ -73,17 +90,17 @@ uint8_t io_read(uint8_t addr)
         
         // serial
 
-        case S_GET:         return uart_getchar_nonblocking();
-        case S_GET_BLK:     return getchar();
+        case S_GET:             return uart_getchar_nonblocking();
+        case S_GET_BLK:         return getchar();
 
         // RTC
 
-        case RTC_GET_YEAR:    return rtc_get().yy;
-        case RTC_GET_MONTH:   return rtc_get().mm;
-        case RTC_GET_DAY:     return rtc_get().dd;
-        case RTC_GET_HOUR:    return rtc_get().hh;
-        case RTC_GET_MINUTES: return rtc_get().nn;
-        case RTC_GET_SECONDS: return rtc_get().ss;
+        case RTC_GET_YEAR:      return rtc_get().yy;
+        case RTC_GET_MONTH:     return rtc_get().mm;
+        case RTC_GET_DAY:       return rtc_get().dd;
+        case RTC_GET_HOUR:      return rtc_get().hh;
+        case RTC_GET_MINUTES:   return rtc_get().nn;
+        case RTC_GET_SECONDS:   return rtc_get().ss;
     }
     
     return 0;

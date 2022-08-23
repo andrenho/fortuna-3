@@ -9,7 +9,6 @@ void io_serial_print_z(IO_Regs* r)
     uint16_t addr = Pa(r);
     for (;;) {
         uint8_t chr = ram_get_byte(addr++);
-        // printf("--%04X = %02X--\n", addr - 1, chr);
         if (chr == 0)
             return;
         putchar(chr);
