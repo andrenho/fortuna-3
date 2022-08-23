@@ -6,7 +6,10 @@
 #include "dev/rtc.h"
 #include "dev/uart.h"
 #include "io/ops.h"
+#include "io/iolcd.h"
+#include "io/iomemory.h"
 #include "io/ioregs.h"
+#include "io/random.h"
 #include "io/serial.h"
 
 static IO_Regs ioregs;
@@ -22,9 +25,7 @@ bool io_write(uint8_t addr, uint8_t data)
 
         // serial
 
-        case S_PUT:
-            putchar(data);
-            break;
+        case S_PUT:         putchar(data); break;
 
         // rtc
 
@@ -41,23 +42,30 @@ bool io_write(uint8_t addr, uint8_t data)
 
         // lcd
 
-        case LCD_CLEAR:
-            lcd_clear();
-            break;
+        case LCD_CLEAR:     lcd_clear(); break;
+        case LCD_CHAR:      lcd_print_char(data); break;
+        case LCD_CMD:       lcd_command(data); break;
 
-        case LCD_CHAR:
-            lcd_print_char(data);
-            break;
-
-        case LCD_CMD:
-            lcd_command(data);
-            break;
+        // memory
+        case MM_BANK_SET:   ram_set_bank(data & 7); break;
 
         // operations that require the control of the bus
         case S_PRINT_Z:
         case S_PRINT_LEN:
         case LCD_LINE1:
         case LCD_LINE2:
+        case MM_CPY:
+        case MM_CPY_FAR:
+        case MM_STRCPY:
+        case MM_STRCPY_FAR:
+        case MM_STRLEN:
+        case MM_STRCMP:
+        case MM_STRSUB:
+        case MM_STRCHR:
+        case MM_SET:
+        case MM_TO_DEC:
+        case MM_TO_HEX:
+        case MM_TO_BIN:
             return true;
     }
 
@@ -77,6 +85,20 @@ void io_write_bus(uint8_t addr, uint8_t data)
 
         case LCD_LINE1:     io_lcd_print_line(0, Pa(&ioregs)); break;
         case LCD_LINE2:     io_lcd_print_line(1, Pa(&ioregs)); break;
+
+        // memory
+        case MM_CPY: 		io_mm_cpy(&ioregs); break;
+        case MM_CPY_FAR: 	io_mm_cpy_far(&ioregs); break;
+        case MM_STRCPY: 	io_mm_strcpy(&ioregs); break;
+        case MM_STRCPY_FAR: io_mm_strcpy_far(&ioregs); break;
+        case MM_STRLEN: 	io_mm_strlen(&ioregs); break;
+        case MM_STRCMP: 	io_mm_strcmp(&ioregs); break;
+        case MM_STRSUB: 	io_mm_strsub(&ioregs); break;
+        case MM_STRCHR: 	io_mm_strchr(&ioregs); break;
+        case MM_SET: 		io_mm_set(&ioregs); break;
+        case MM_TO_DEC: 	io_mm_to_dec(&ioregs); break;
+        case MM_TO_HEX: 	io_mm_to_hex(&ioregs); break;
+        case MM_TO_BIN: 	io_mm_to_bin(&ioregs); break;
     }
 }
 
@@ -101,6 +123,14 @@ uint8_t io_read(uint8_t addr)
         case RTC_GET_HOUR:      return rtc_get().hh;
         case RTC_GET_MINUTES:   return rtc_get().nn;
         case RTC_GET_SECONDS:   return rtc_get().ss;
+
+        // random
+
+        case RANDOM:            return set_R(&ioregs, random()) & 0xff;
+
+        // memory
+
+        case MM_BANK_GET:       return ram_bank() & 7;
     }
     
     return 0;

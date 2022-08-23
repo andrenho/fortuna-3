@@ -16,4 +16,8 @@ uint16_t Qb(IO_Regs* r);
 uint32_t P(IO_Regs* r);
 uint32_t Q(IO_Regs* r);
 
+uint16_t set_Ra(IO_Regs* r, uint16_t value);
+uint16_t set_Rb(IO_Regs* r, uint16_t value);
+uint32_t set_R(IO_Regs* r, uint32_t value);
+
 #endif

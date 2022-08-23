@@ -39,7 +39,8 @@
 #define FS_READDIR 0x2E
 #define FS_FREE 0x20
 #define FS_FORMAT 0x30
-#define MM_BANK 0x40
+#define MM_BANK_SET 0x40
+#define MM_BANK_GET 0x40
 #define MM_CPY 0x41
 #define MM_CPY_FAR 0x42
 #define MM_STRCPY 0x43

@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void ram_init(void);
+void    ram_init(void);
 
 uint8_t ram_bank(void);
 void    ram_set_bank(uint8_t bank);
