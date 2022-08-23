@@ -75,7 +75,7 @@ void ram_set_byte(uint16_t addr, uint8_t data)
     release_bus();
 }
 
-void ram_read_block(uint16_t block, uint8_t* bytes)
+void ram_read_block(uint16_t block, uint8_t* bytes, uint16_t sz)
 {
     take_bus();
     DDRL = 0x0;   // data bus: read
@@ -93,7 +93,7 @@ void ram_read_block(uint16_t block, uint8_t* bytes)
     release_bus();
 }
 
-void ram_write_block(uint16_t block, uint8_t* bytes)
+void ram_write_block(uint16_t block, uint8_t* bytes, uint16_t sz)
 {
     take_bus();
     DDRL = 0xff;   // data bus: write

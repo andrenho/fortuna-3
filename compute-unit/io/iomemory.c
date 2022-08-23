@@ -2,6 +2,7 @@
 
 void io_mm_cpy(IO_Regs* r)
 {
+    uint8_t block[256];
 }
 
 void io_mm_cpy_far(IO_Regs* r)

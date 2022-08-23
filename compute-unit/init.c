@@ -83,8 +83,8 @@ static void test_ram(void)
         block1[i] = random();
 
     post_checking(PSTR("RAM"));
-    ram_write_block(0, block1);
-    ram_read_block(0, block2);
+    ram_write_block(0, block1, 256);
+    ram_read_block(0, block2, 256);
 
     for (size_t i = 0; i < 256; ++i) {
         if (block1[i] != block2[i]) {
