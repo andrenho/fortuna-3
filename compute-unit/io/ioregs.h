@@ -11,5 +11,9 @@ typedef struct {
 
 uint16_t Pa(IO_Regs* r);
 uint16_t Pb(IO_Regs* r);
+uint16_t Qa(IO_Regs* r);
+uint16_t Qb(IO_Regs* r);
+uint32_t P(IO_Regs* r);
+uint32_t Q(IO_Regs* r);
 
 #endif
