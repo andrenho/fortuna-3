@@ -8,17 +8,14 @@
 
 #include "ansi.h"
 #include "config.h"
-#include "fs.h"
-#include "lcd.h"
-#include "ram.h"
-#include "random.h"
-#include "rtc.h"
-#include "sdcard.h"
-#include "spi.h"
-#include "uart.h"
-#include "z80.h"
-
-#include "fsfat/ff.h"
+#include "dev/lcd.h"
+#include "dev/ram.h"
+#include "dev/rtc.h"
+#include "dev/sdcard.h"
+#include "dev/spi.h"
+#include "dev/uart.h"
+#include "dev/z80.h"
+#include "io/random.h"
 
 #if DEBUG_RESET_REASON
 static void debug_reset_reason(void)
@@ -204,14 +201,6 @@ void initialize(void)
 #endif
 
     post();
-
-#if INCLUDE_SDCARD
-    if (!fs_mount()) {
-        puts_P(PSTR(RED "Error mounting partition." RST));
-        for (;;);
-    }
-    putchar('\n');
-#endif
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

@@ -5,9 +5,9 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
-#include "lcd.h"
-#include "ram.h"
-#include "z80.h"
+#include "dev/lcd.h"
+#include "dev/ram.h"
+#include "dev/z80.h"
 
 #define CMD_UPLOAD_RAM  0x1
 #define CMD_FORMAT_SD   0x2

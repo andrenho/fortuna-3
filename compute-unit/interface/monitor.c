@@ -15,13 +15,12 @@
 
 #include "ansi.h"
 #include "config.h"
-#include "fs.h"
-#include "lcd.h"
-#include "ram.h"
-#include "rtc.h"
-#include "sdcard.h"
-#include "uart.h"
-#include "z80.h"
+#include "dev/lcd.h"
+#include "dev/ram.h"
+#include "dev/rtc.h"
+#include "dev/sdcard.h"
+#include "dev/uart.h"
+#include "dev/z80.h"
 #include "fsfat/ff.h"
 
 bool in_monitor = false;

@@ -6,7 +6,7 @@
 
 #include "ansi.h"
 #include "config.h"
-#include "spi.h"
+#include "dev/spi.h"
 
 #define set_CE()   { PORTG |= _BV(PG5); /* debug_spi_inactive(PSTR("SD")); */ }
 #define clear_CE() { PORTG &= ~_BV(PG5); /* debug_spi_active(PSTR("SD")); */ }

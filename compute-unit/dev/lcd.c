@@ -7,8 +7,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "ansi.h" 
 #include "config.h"
+#include "ansi.h" 
 
 #define set_E()    PORTK |= _BV(PK0)
 #define clear_E()  PORTK &= ~_BV(PK0)

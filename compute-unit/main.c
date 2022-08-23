@@ -7,11 +7,11 @@
 
 #include "config.h"
 #include "init.h"
-#include "monitor.h"
-#include "ram.h"
-#include "remote.h"
-#include "uart.h"
-#include "z80.h"
+#include "dev/ram.h"
+#include "dev/uart.h"
+#include "dev/z80.h"
+#include "interface/monitor.h"
+#include "interface/remote.h"
 
 extern uint8_t _binary_bios_bin_start[];
 extern uint8_t _binary_bios_bin_end[];
@@ -30,7 +30,7 @@ static void setup_interrupts(void)
     EICRA |= _BV(ISC21) | _BV(ISC31);  // fire interrupt INT2 and INT3 on falling edge
     EICRB |= _BV(ISC41);               // fire interrupt INT4 (IORQ) on falling edge
     EIMSK |= _BV(INT2) | _BV(INT3);    // enable interrupts INT2 and INT3
-    // UCSR0B |= (1<<RXCIE0);             // enable interrupt for UART
+    UCSR0B |= (1<<RXCIE0);             // enable interrupt for UART
 }
 
 static void load_bios(void)

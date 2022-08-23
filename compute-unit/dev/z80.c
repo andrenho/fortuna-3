@@ -9,7 +9,7 @@
 
 #include "ansi.h"
 #include "config.h"
-#include "io.h"
+#include "io/io.h"
 
 #define clear_RST()    PORTB &= ~_BV(PB4)
 #define set_RST()      PORTB |= _BV(PB4)

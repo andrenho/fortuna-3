@@ -5,7 +5,7 @@ PROJECT=avr-skeleton
 OBJECTS=main.o init.o \
 	dev/uart.o dev/spi.o dev/lcd.o dev/rtc.o dev/sdcard.o dev/ram.o dev/z80.o \
 	interface/monitor.o interface/remote.o \
-	io/io.o io/ioregs.o io/random.o io/fs.o io/serial.o \
+	io/io.o io/ioregs.o io/random.o io/serial.o \
 	fsfat/diskio.o fsfat/ff.o fsfat/ffunicode.o
 
 # Avrdude configuration to connect on the PI. See avrdude_gpio.conf.
