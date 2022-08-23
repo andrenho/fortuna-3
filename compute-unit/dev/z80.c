@@ -92,31 +92,58 @@ void z80_continue_execution(void)
 #endif
 }
 
+static void z80_iorq_wr(uint8_t addr)
+{
+    uint8_t data = PINL;
+
+#if DEBUG_Z80 >= 1
+    printf_P(PSTR(CYN "[Z80 has made an I/O request (output: addr 0x%02X, data 0x%02X)] " RST), addr, data);
+#endif
+
+    bool requires_bus = io_write(addr, data);
+
+    if (addr == 0xff)
+        post_test = data;
+
+    if (requires_bus) {
+        z80_release_bus();
+        io_write_bus(addr, data);
+        z80_continue_execution();
+    } else {
+        clear_IOCONT();
+        loop_until_bit_is_set(PINE, PINE4);  // wait until IORQ is 1
+        set_IOCONT();
+    }
+}
+
+static void z80_iorq_rd(uint8_t addr)
+{
+    DDRL = 0xff;
+    uint8_t data = io_read(addr);
+    PORTL = data;
+
+#if DEBUG_Z80 >= 1
+    printf_P(PSTR(CYN "[Z80 has made an I/O request (input: addr 0x%02X, data 0x%02X)] " RST), addr, data);
+#endif
+
+    // continue execution
+    clear_IOCONT();
+    DDRL = 0x0;
+    loop_until_bit_is_set(PINE, PINE4);  // wait until IORQ is 1
+    set_IOCONT();
+}
+
 void z80_iorq(void)
 {
     uint8_t addr = PINA;
     if (get_WR() == 0) {
-        uint8_t data = PINL;
-#if DEBUG_Z80 >= 1
-        printf_P(PSTR(CYN "[Z80 has made an I/O request (output: addr 0x%02X, data 0x%02X)] " RST), addr, data);
-#endif
-        if (addr == 0xff)
-            post_test = data;
-        else
-            io_write(addr, data);
-
+        z80_iorq_wr(addr);
     } else if (get_RD() == 0) {
-        DDRL = 0xff;
-        uint8_t data = io_read(addr);
-        PORTL = data;
-#if DEBUG_Z80 >= 1
-        printf_P(PSTR(CYN "[Z80 has made an I/O request (input: addr 0x%02X, data 0x%02X)] " RST), addr, data);
-#endif
-
+        z80_iorq_rd(addr);
     } else {
-#if DEBUG_Z80 >= 1
+        // TODO - deal with interruptions
         printf_P(PSTR(RED "[Z80 has made an I/O request, but is neither an input nor an output] " RST));
-#endif
+        for (;;);
     }
 
     // continue execution

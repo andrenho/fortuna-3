@@ -9,10 +9,11 @@
 
 static IO_Regs ioregs;
 
-void io_write(uint8_t addr, uint8_t data)
+bool io_write(uint8_t addr, uint8_t data)
 {
     if (addr <= 0xb) {
         ((uint8_t*) &ioregs)[addr] = data;
+        return false;
     }
 
     switch (addr) {
@@ -23,6 +24,21 @@ void io_write(uint8_t addr, uint8_t data)
             putchar(data);
             break;
 
+        // operations that require the control of the bus
+        case S_PRINT_Z:
+        case S_PRINT_LEN:
+            return true;
+    }
+
+    return false;
+}
+
+void io_write_bus(uint8_t addr, uint8_t data)
+{
+    switch (addr) {
+
+        // serial
+        
         case S_PRINT_Z:
             io_serial_print_z(&ioregs);
             break;
@@ -48,8 +64,8 @@ uint8_t io_read(uint8_t addr)
 
         case S_GET_BLK:
             return getchar();
-
     }
+    
     return 0;
 }
 

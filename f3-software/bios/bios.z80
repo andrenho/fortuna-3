@@ -1,16 +1,16 @@
 	include ../ops.z80
 
-	ld	a, hello & 0xff
+	ld	a, hello2 & 0xff
 	out	(Pa0), a
-	ld	a, hello / 0x100
+	ld	a, hello2 / 0x100
 	out	(Pa1), a
 	out	(S_PRINT_Z), a
 
-;	ld	hl, hello
-;	ld	c, S_PUT
-;	ld	b, hello_len - hello
-;	otir
-;
+	ld	hl, hello
+	ld	c, S_PUT
+	ld	b, hello_len - hello
+	otir
+
 next:
 	in	a, (S_GET_BLK)
 	out	(S_PUT), a
@@ -19,7 +19,9 @@ next:
 	halt
 
 hello:
-	asciiz	"Hello life!"
+	string	"Hello world!"
 hello_len:
+
+hello2: asciiz	"Hello life!"
 
 ; vim:ts=8:sts=8:sw=8:noexpandtab
