@@ -52,7 +52,6 @@
 #define MM_SET 0x49
 #define MM_TO_DEC 0x4A
 #define MM_TO_HEX 0x4B
-#define MM_TO_BIN 0x4C
 #define SUM 0x50
 #define SUBTRACT 0x51
 #define MULTIPLY 0x52
@@ -64,5 +63,7 @@
 #define TIMER1_SET 0x61
 #define TIMER0_GET 0x62
 #define TIMER1_GET 0x63
+#define EEPROM_SET 0x6F
+#define EEPROM_GET 0x6F
 
 #endif

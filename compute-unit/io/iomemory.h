@@ -13,8 +13,7 @@ void io_mm_strsub(IO_Regs* r);
 void io_mm_strchr(IO_Regs* r, uint8_t data);
 void io_mm_set(IO_Regs* r, uint8_t data);
 void io_mm_to_dec(IO_Regs* r);
-void io_mm_to_hex(IO_Regs* r);
-void io_mm_to_bin(IO_Regs* r);
+void io_mm_to_hex(IO_Regs* r, uint8_t data);
 
 #endif
 

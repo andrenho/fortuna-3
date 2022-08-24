@@ -1,5 +1,6 @@
 #include "io/io.h"
 
+#include <avr/eeprom.h>
 #include <stdio.h>
 
 #include "dev/lcd.h"
@@ -48,7 +49,12 @@ bool io_write(uint8_t addr, uint8_t data)
         case LCD_CMD:       lcd_command(data); break;
 
         // memory
+        
         case MM_BANK_SET:   ram_set_bank(data & 7); break;
+
+        // eeprom
+
+        case EEPROM_SET:    eeprom_write_byte((uint8_t *) Pa(&ioregs), data);
 
         // operations that require the control of the bus
         case S_PRINT_Z:
@@ -66,7 +72,6 @@ bool io_write(uint8_t addr, uint8_t data)
         case MM_SET:
         case MM_TO_DEC:
         case MM_TO_HEX:
-        case MM_TO_BIN:
             return true;
     }
 
@@ -98,8 +103,7 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case MM_STRCHR: 	io_mm_strchr(&ioregs, data); break;
         case MM_SET: 		io_mm_set(&ioregs, data); break;
         case MM_TO_DEC: 	io_mm_to_dec(&ioregs); break;
-        case MM_TO_HEX: 	io_mm_to_hex(&ioregs); break;
-        case MM_TO_BIN: 	io_mm_to_bin(&ioregs); break;
+        case MM_TO_HEX: 	io_mm_to_hex(&ioregs, data); break;
     }
 }
 
@@ -132,6 +136,18 @@ uint8_t io_read(uint8_t addr)
         // memory
 
         case MM_BANK_GET:       return ram_bank() & 7;
+
+        // math
+
+        case SUM:               return P(&ioregs) + Q(&ioregs);
+        case SUBTRACT:          return P(&ioregs) - Q(&ioregs);
+        case MULTIPLY:          return P(&ioregs) * Q(&ioregs);
+        case DIVIDE:            return P(&ioregs) / Q(&ioregs);
+        case MODULO:            return P(&ioregs) % Q(&ioregs);
+
+        // eeprom
+
+        case EEPROM_GET:        return eeprom_read_byte((uint8_t *) Pa(&ioregs));
     }
     
     return 0;

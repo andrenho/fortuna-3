@@ -1,7 +1,11 @@
 #include "io/iomemory.h"
 
+#include <avr/pgmspace.h>
+#include <inttypes.h>
 #include <stddef.h>
+#include <stdio.h>
 
+#include "ansi.h"
 #include "dev/ram.h"
 
 void io_mm_cpy(IO_Regs* r)
@@ -110,7 +114,8 @@ void io_mm_strcmp(IO_Regs* r)
 
 void io_mm_strsub(IO_Regs* r)
 {
-    // TODO
+    printf_P(PSTR(RED "SUBSTR not implemented yet" RST));  // TODO
+    for (;;);
 }
 
 void io_mm_strchr(IO_Regs* r, uint8_t data)
@@ -140,14 +145,28 @@ void io_mm_set(IO_Regs* r, uint8_t data)
 
 void io_mm_to_dec(IO_Regs* r)
 {
+    uint16_t addr = Qa(r);
+
+    char buf[16];
+    snprintf_P(buf, sizeof buf, PSTR("%"PRIu32), P(r));
+
+    char* p = buf;
+    do {
+        ram_set_byte(addr++, *p);
+    } while ((*p)++ != 0);
 }
 
-void io_mm_to_hex(IO_Regs* r)
+void io_mm_to_hex(IO_Regs* r, uint8_t data)
 {
-}
+    uint16_t addr = Qa(r);
 
-void io_mm_to_bin(IO_Regs* r)
-{
+    char buf[9];
+    snprintf_P(buf, sizeof buf, PSTR("%0.*X"), data * 2, P(r));
+
+    char* p = buf;
+    do {
+        ram_set_byte(addr++, *p);
+    } while ((*p)++ != 0);
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab
