@@ -109,9 +109,8 @@ void io_write_bus(uint8_t addr, uint8_t data)
 
 uint8_t io_read(uint8_t addr)
 {
-    if (addr <= 0xb) {
+    if (addr <= 0xb)
         return ((uint8_t*) &ioregs)[addr];
-    }
 
     switch (addr) {
         
