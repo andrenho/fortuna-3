@@ -95,8 +95,8 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case MM_STRLEN: 	io_mm_strlen(&ioregs); break;
         case MM_STRCMP: 	io_mm_strcmp(&ioregs); break;
         case MM_STRSUB: 	io_mm_strsub(&ioregs); break;
-        case MM_STRCHR: 	io_mm_strchr(&ioregs); break;
-        case MM_SET: 		io_mm_set(&ioregs); break;
+        case MM_STRCHR: 	io_mm_strchr(&ioregs, data); break;
+        case MM_SET: 		io_mm_set(&ioregs, data); break;
         case MM_TO_DEC: 	io_mm_to_dec(&ioregs); break;
         case MM_TO_HEX: 	io_mm_to_hex(&ioregs); break;
         case MM_TO_BIN: 	io_mm_to_bin(&ioregs); break;
