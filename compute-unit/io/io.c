@@ -8,6 +8,7 @@
 #include "dev/rtc.h"
 #include "dev/uart.h"
 #include "io/ops.h"
+#include "io/iofs.h"
 #include "io/iolcd.h"
 #include "io/iomemory.h"
 #include "io/ioregs.h"
@@ -54,9 +55,17 @@ bool io_write(uint8_t addr, uint8_t data)
 
         // eeprom
 
-        case EEPROM_SET:    eeprom_write_byte((uint8_t *) Pa(&ioregs), data);
+        case EEPROM_SET:    eeprom_write_byte((uint8_t *) Pa(&ioregs), data); break;
+
+		// sdcard
+
+        case FS_CLOSE:      io_fs_close(&ioregs); break;
+        case FS_SIZE:       io_fs_size(&ioregs); break;
+        case FS_FREE:       io_fs_free(&ioregs); break;
+        case FS_FORMAT:     io_fs_format(&ioregs); break;
 
         // operations that require the control of the bus
+
         case S_PRINT_Z:
         case S_PRINT_LEN:
         case LCD_LINE1:
@@ -72,6 +81,19 @@ bool io_write(uint8_t addr, uint8_t data)
         case MM_SET:
         case MM_TO_DEC:
         case MM_TO_HEX:
+        case FS_OPEN_R:
+        case FS_OPEN_W:
+        case FS_OPEN_A:
+        case FS_READ:
+        case FS_WRITE:
+        case FS_SEEK:
+        case FS_STAT:
+        case FS_UNLINK:
+        case FS_RENAME:
+        case FS_CHDIR:
+        case FS_MKDIR:
+        case FS_OPENDIR:
+        case FS_READDIR:
             return true;
     }
 
@@ -93,6 +115,7 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case LCD_LINE2:     io_lcd_print_line(1, Pa(&ioregs)); break;
 
         // memory
+
         case MM_CPY: 		io_mm_cpy(&ioregs); break;
         case MM_CPY_FAR: 	io_mm_cpy_far(&ioregs); break;
         case MM_STRCPY: 	io_mm_strcpy(&ioregs); break;
@@ -104,6 +127,25 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case MM_SET: 		io_mm_set(&ioregs, data); break;
         case MM_TO_DEC: 	io_mm_to_dec(&ioregs); break;
         case MM_TO_HEX: 	io_mm_to_hex(&ioregs, data); break;
+
+		// sdcard
+
+        case FS_OPEN_R:     io_fs_open_r(&ioregs); break;
+        case FS_OPEN_W:     io_fs_open_w(&ioregs); break;
+        case FS_OPEN_A:     io_fs_open_a(&ioregs); break;
+        case FS_CLOSE:      io_fs_close(&ioregs); break;
+        case FS_READ:       io_fs_read(&ioregs); break;
+        case FS_WRITE:      io_fs_write(&ioregs); break;
+        case FS_SEEK:       io_fs_seek(&ioregs); break;
+        case FS_SIZE:       io_fs_size(&ioregs); break;
+        case FS_STAT:       io_fs_stat(&ioregs); break;
+        case FS_UNLINK:     io_fs_unlink(&ioregs); break;
+        case FS_RENAME:     io_fs_rename(&ioregs); break;
+        case FS_CHDIR:      io_fs_chdir(&ioregs); break;
+        case FS_MKDIR:      io_fs_mkdir(&ioregs); break;
+        case FS_OPENDIR:    io_fs_opendir(&ioregs); break;
+        case FS_READDIR:    io_fs_readdir(&ioregs); break;
+
     }
 }
 

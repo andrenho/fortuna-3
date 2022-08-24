@@ -277,7 +277,7 @@ static void sd_write(UserInput *u)
     }
     memcpy(&bytes[offset], ibytes, sz);
 
-    if (!sdcard_write_block(block, bytes, 256)) {
+    if (!sdcard_write_block(block, bytes)) {
         puts_P(PSTR(RED "Error writing to SDCard." RST));
         return;
     }
