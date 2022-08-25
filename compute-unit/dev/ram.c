@@ -93,6 +93,28 @@ void ram_read_block(uint16_t block, uint8_t* bytes, uint16_t sz)
     release_bus();
 }
 
+uint16_t ram_get_string(uint16_t addr, uint8_t* buf, uint16_t max_sz)
+{
+    take_bus();
+    DDRL = 0x0;   // data bus: read
+    clear_CE();
+    clear_OE();
+    uint16_t i;
+    for (i = 0; i < max_sz; ++i) {
+        uint16_t addri = addr + i;
+        PORTA = (addri & 0xff);
+        PORTC = (addri >> 8);
+        _NOP();
+        buf[i] = PINL;
+        if (buf[i] == 0x0)
+            break;
+    }
+    set_OE();
+    set_CE();
+    release_bus();
+    return i;
+}
+
 void ram_write_block(uint16_t block, uint8_t* bytes, uint16_t sz)
 {
     take_bus();

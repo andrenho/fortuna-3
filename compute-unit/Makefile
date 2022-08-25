@@ -51,7 +51,7 @@ ${PROJECT}.hex: ${PROJECT}.elf
 	arm-linux-gnueabihf-size ${PROJECT}.hex
 
 ${PROJECT}.elf: ${OBJECTS} bios.o
-	$(CC) -mmcu=${MCU_GCC} ${CFLAGS} -o $@ $^ -Wl,--gc-sections
+	$(CC) -mmcu=${MCU_GCC} ${CFLAGS} ${CPPFLAGS} -o $@ $^ -Wl,--gc-sections
 	avr-size -C --mcu=${MCU_GCC} ${PROJECT}.elf	
 
 test-connection:

@@ -62,7 +62,7 @@ bool io_write(uint8_t addr, uint8_t data)
 
 #if INCLUDE_SDCARD
         case FS_MOUNT:      io_fs_mount(&ioregs); break;
-        case FS_CLOSE:      io_fs_close(&ioregs); break;
+        case FS_CLOSE:      io_fs_close(&ioregs, data); break;
         case FS_SIZE:       io_fs_size(&ioregs); break;
         case FS_FREE:       io_fs_free(&ioregs); break;
         case FS_FORMAT:     io_fs_format(&ioregs); break;
@@ -138,7 +138,6 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case FS_OPEN_R:     io_fs_open_r(&ioregs); break;
         case FS_OPEN_W:     io_fs_open_w(&ioregs); break;
         case FS_OPEN_A:     io_fs_open_a(&ioregs); break;
-        case FS_CLOSE:      io_fs_close(&ioregs); break;
         case FS_READ:       io_fs_read(&ioregs); break;
         case FS_WRITE:      io_fs_write(&ioregs); break;
         case FS_SEEK:       io_fs_seek(&ioregs); break;
