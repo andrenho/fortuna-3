@@ -1,12 +1,10 @@
 	include fortuna3.z80
 	include f3macros.z80
 
-	PRINT_Z hello2
+	PRINT_Z hello
 	out	(LCD_LINE1), a
 
-	in	a, (RTC_GET_HOUR)
-	add	a, 'A'
-	out	(S_PUT), a
+	out	(FS_MOUNT), a
 
 next:
 	in	a, (S_GET_BLK)
@@ -16,9 +14,6 @@ next:
 	halt
 
 hello:
-	string	"Hello world!"
-hello_len:
-
-hello2: asciiz	"Hello life!"
+	asciiz	"Hello world!"
 
 ; vim:ts=8:sts=8:sw=8:noexpandtab

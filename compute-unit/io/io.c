@@ -3,6 +3,7 @@
 #include <avr/eeprom.h>
 #include <stdio.h>
 
+#include "config.h"
 #include "dev/lcd.h"
 #include "dev/ram.h"
 #include "dev/rtc.h"
@@ -59,10 +60,13 @@ bool io_write(uint8_t addr, uint8_t data)
 
 		// sdcard
 
+#if INCLUDE_SDCARD
+        case FS_MOUNT:      io_fs_mount(&ioregs); break;
         case FS_CLOSE:      io_fs_close(&ioregs); break;
         case FS_SIZE:       io_fs_size(&ioregs); break;
         case FS_FREE:       io_fs_free(&ioregs); break;
         case FS_FORMAT:     io_fs_format(&ioregs); break;
+#endif
 
         // operations that require the control of the bus
 
@@ -130,6 +134,7 @@ void io_write_bus(uint8_t addr, uint8_t data)
 
 		// sdcard
 
+#if INCLUDE_SDCARD
         case FS_OPEN_R:     io_fs_open_r(&ioregs); break;
         case FS_OPEN_W:     io_fs_open_w(&ioregs); break;
         case FS_OPEN_A:     io_fs_open_a(&ioregs); break;
@@ -145,6 +150,7 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case FS_MKDIR:      io_fs_mkdir(&ioregs); break;
         case FS_OPENDIR:    io_fs_opendir(&ioregs); break;
         case FS_READDIR:    io_fs_readdir(&ioregs); break;
+#endif
 
     }
 }
