@@ -4,7 +4,7 @@
 	PRINT_Z hello
 	out	(LCD_LINE1), a
 
-	out	(FS_MOUNT), a
+	; out	(FS_MOUNT), a
 
 next:
 	in	a, (S_GET_BLK)

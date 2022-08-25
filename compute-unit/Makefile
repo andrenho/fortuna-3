@@ -6,7 +6,7 @@ OBJECTS=main.o init.o \
 	dev/uart.o dev/spi.o dev/lcd.o dev/rtc.o dev/sdcard.o dev/ram.o dev/z80.o \
 	interface/monitor.o interface/remote.o \
 	io/io.o io/ioregs.o io/random.o io/serial.o io/iolcd.o io/iomemory.o io/iofs.o \
-	fsfat/diskio.o fsfat/ff.o fsfat/ffunicode.o
+	fsfat/diskio.o fsfat/ff.o
 
 # Avrdude configuration to connect on the PI. See avrdude_gpio.conf.
 # Can be one of: pi_rst, pi_cs0, pi_cs1 or pi_gpio, depending on the RESET line in AVR.

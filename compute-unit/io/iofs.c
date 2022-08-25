@@ -8,7 +8,7 @@
 #include "config.h"
 #include "dev/ram.h"
 
-#define MAX_FP 2
+#define MAX_FP 4
 
 static FATFS fs;
 static FIL files[MAX_FP];
@@ -50,31 +50,25 @@ void io_fs_mount(IO_Regs* r)
 
 void io_fs_open_r(IO_Regs* r)
 {
-    /*
     uint8_t filename[255];
     ram_get_string(Qa(r), filename, sizeof filename);
     r->Ra0 = fresult(f_open(&files[r->Pa0 % MAX_FP], (const char *) filename, FA_READ));
-    */
 }
 
 
 void io_fs_open_w(IO_Regs* r)
 {
-    /*
     uint8_t filename[255];
     ram_get_string(Qa(r), filename, sizeof filename);
     r->Ra0 = fresult(f_open(&files[r->Pa0 % MAX_FP], (const char *) filename, FA_WRITE | FA_CREATE_NEW));
-    */
 }
 
 
 void io_fs_open_a(IO_Regs* r)
 {
-    /*
     uint8_t filename[255];
     ram_get_string(Qa(r), filename, sizeof filename);
     r->Ra0 = fresult(f_open(&files[r->Pa0 % MAX_FP], (const char *) filename, FA_WRITE | FA_OPEN_APPEND));
-    */
 }
 
 
