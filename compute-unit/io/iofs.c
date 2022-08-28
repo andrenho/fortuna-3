@@ -44,7 +44,7 @@ FRESULT fresult(FRESULT r)
 
 void io_fs_mount(IO_Regs* r)
 {
-    r->Ra0 = fresult(f_mount(&fs, "", 1));
+    r->Ra0 = fresult(f_mount(&fs, "0:", 1));
 }
 
 
@@ -140,8 +140,15 @@ void io_fs_free(IO_Regs* r)
 
 void io_fs_format(IO_Regs* r)
 {
-}
+    LBA_t plist[] = { 0x1000000, 0 };
 
+    uint8_t buffer[FF_MAX_SS];
+    r->Ra0 = fresult(f_fdisk(0, plist, buffer));
+    if (r->Ra0 != FR_OK)
+        return;
+
+    r->Ra0 = fresult(f_mkfs("0:", 0, buffer, sizeof buffer));
+}
 
 
 // vim:ts=4:sts=4:sw=4:expandtab

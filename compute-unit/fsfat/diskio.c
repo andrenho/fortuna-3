@@ -4,7 +4,7 @@
 #include "sdcard.h"
 
 PARTITION VolToPart[FF_VOLUMES] = {
-    {0, 1},    /* "0:" ==> 1st partition in PD#0 */
+    {0, 0},    /* "0:" ==> 1st partition in PD#0 */
 };
 
 /*-----------------------------------------------------------------------*/
