@@ -1,9 +1,9 @@
 OBJ = main.o fsfat/ff.o fsfat/ffsystem.o fsfat/diskio.o
 
-CFLAGS=-Wall -Wextra
+CFLAGS=-Wall -Wextra -I.
 
 test: ${OBJ}
-	gcc -o $@ $<
+	gcc -o $@ $^
 
 clean:
 	rm -f *.o test

@@ -1,7 +1,9 @@
 #include "fsfat/ff.h"			/* Obtains integer types */
 #include "fsfat/diskio.h"		/* Declarations of disk functions */
 
-#include "sdcard.h"
+#include <stdio.h>
+
+static FILE* f = NULL;
 
 PARTITION VolToPart[FF_VOLUMES] = {
     {0, 1},    /* "0:" ==> 1st partition in PD#0 */
@@ -15,24 +17,22 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
-    (void) pdrv;
-    if (sdcard_was_initialized())
-        return 0;
-    else
-        return STA_NOINIT;
+    return FR_OK;
 }
 
 
 
 /*-----------------------------------------------------------------------*/
-/* Inidialize a Drive                                                    */
+/* Initialize a Drive                                                    */
 /*-----------------------------------------------------------------------*/
 
 DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-    return disk_status(pdrv);  // we assume the disk was already initialized
+    f = fopen("/tmp/image.img", "w+b");
+    printf("[Disk initialized.]\n");
+    return FR_OK;
 }
 
 
@@ -48,10 +48,14 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
-    (void) pdrv;
-    for (LBA_t i = sector; i < (sector + count); ++i)
-        if (!sdcard_read_block(i, &buff[i * 512]))
-            return RES_ERROR;
+    if (fseek(f, sector * 512, SEEK_SET) != 0)
+        perror("fseek");
+
+    if (fread(buff, 512, count, f) != count)
+        perror("fwrite");
+
+    printf("[Sector %d (size %d) read.]\n", sector, count);
+
     return RES_OK;
 }
 
@@ -70,10 +74,14 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
-    (void) pdrv;
-    for (LBA_t i = sector; i < (sector + count); ++i)
-        if (!sdcard_write_block(i, &buff[i * 512]))
-            return RES_ERROR;
+    if (fseek(f, sector * 512, SEEK_SET) != 0)
+        perror("fseek");
+
+    if (fwrite(buff, 512, count, f) != count)
+        perror("fwrite");
+
+    printf("[Sector %d (size %d) written.]\n", sector, count);
+
     return RES_OK;
 }
 
