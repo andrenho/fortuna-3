@@ -17,6 +17,7 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
+    (void) pdrv;
     return FR_OK;
 }
 
@@ -30,7 +31,10 @@ DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-    f = fopen("/tmp/image.img", "w+b");
+    (void) pdrv;
+    f = fopen("/tmp/image.img", "a+b");
+    if (!f)
+        perror("fopen");
     printf("[Disk initialized.]\n");
     return FR_OK;
 }
@@ -48,6 +52,8 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
+    (void) pdrv;
+
     if (fseek(f, sector * 512, SEEK_SET) != 0)
         perror("fseek");
 
@@ -74,6 +80,8 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
+    (void) pdrv;
+    
     if (fseek(f, sector * 512, SEEK_SET) != 0)
         perror("fseek");
 
@@ -107,14 +115,22 @@ DRESULT disk_ioctl (
         case GET_SECTOR_COUNT:
             sz = 24 * 1024;  // 8 MB - TODO
             *(LBA_t *) buff = sz;
+            printf("Got sector count of %d.\n", sz);
             break;
         case GET_BLOCK_SIZE:
             *(WORD *) buff = 512;
+            printf("Got erase block size of 512.\n");
             break;
         default: 
+            printf("Invalid parameter %d.\n", cmd);
             return RES_PARERR;
     }
     return RES_OK;
+}
+
+void finalize()
+{
+    fclose(f);
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

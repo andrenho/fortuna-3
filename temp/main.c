@@ -31,17 +31,23 @@ FRESULT fresult(FRESULT r)
 
 static FATFS fs;
 
+extern void finalize();
+
 int main() 
 {
-    LBA_t plist[] = { 0x1000000, 0 };
+    LBA_t plist[] = { 100, 0 };
 
     uint8_t buffer[FF_MAX_SS];
+    /*
     FRESULT r = fresult(f_fdisk(0, plist, buffer));
     if (r != FR_OK)
         return 1;
+    */
 
     fresult(f_mkfs("0:", 0, buffer, sizeof buffer));
     fresult(f_mount(&fs, "0:", 1));
+
+    finalize();
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

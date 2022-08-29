@@ -6,6 +6,6 @@ test: ${OBJ}
 	gcc -o $@ $^
 
 clean:
-	rm -f *.o test
+	rm -f *.o **/*.o test
 
 # vim:ts=8:sts=8:sw=8:noexpandtab
