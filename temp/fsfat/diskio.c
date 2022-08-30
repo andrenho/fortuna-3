@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-static FILE* f = NULL;
+FILE* f = NULL;
 
 PARTITION VolToPart[FF_VOLUMES] = {
     {0, 1},    /* "0:" ==> 1st partition in PD#0 */
@@ -32,10 +32,6 @@ DSTATUS disk_initialize (
 )
 {
     (void) pdrv;
-    f = fopen("/tmp/image.img", "a+b");
-    if (!f)
-        perror("fopen");
-    printf("[Disk initialized.]\n");
     return FR_OK;
 }
 
@@ -54,11 +50,16 @@ DRESULT disk_read (
 {
     (void) pdrv;
 
-    if (fseek(f, sector * 512, SEEK_SET) != 0)
+    if (fseek(f, sector * 512, SEEK_SET) != 0) {
         perror("fseek");
+        return RES_ERROR;
+    }
 
-    if (fread(buff, 512, count, f) != count)
-        perror("fwrite");
+    size_t r = fread(buff, 512, count, f);
+    if (r != count) {
+        printf("fread returned %zu.\n", r);
+        return RES_ERROR;
+    }
 
     printf("[Sector %d (size %d) read.]\n", sector, count);
 
@@ -81,13 +82,18 @@ DRESULT disk_write (
 )
 {
     (void) pdrv;
-    
-    if (fseek(f, sector * 512, SEEK_SET) != 0)
+
+    if (fseek(f, sector * 512, SEEK_SET) != 0) {
         perror("fseek");
+        return RES_ERROR;
+    }
 
-    if (fwrite(buff, 512, count, f) != count)
-        perror("fwrite");
-
+    size_t r = fwrite(buff, 512, count, f);
+    if (r != count) {
+        printf("fwrite returned %zu.\n", r);
+        return RES_ERROR;
+    }
+    
     printf("[Sector %d (size %d) written.]\n", sector, count);
 
     return RES_OK;
@@ -113,7 +119,7 @@ DRESULT disk_ioctl (
         case CTRL_SYNC:
             break;
         case GET_SECTOR_COUNT:
-            sz = 24 * 1024;  // 8 MB - TODO
+            sz = 8000 * 2 * 1024;  // 200 MB (?)
             *(LBA_t *) buff = sz;
             printf("Got sector count of %d.\n", sz);
             break;
@@ -126,11 +132,6 @@ DRESULT disk_ioctl (
             return RES_PARERR;
     }
     return RES_OK;
-}
-
-void finalize()
-{
-    fclose(f);
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

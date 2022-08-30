@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <stdio.h>
 
 #include "fsfat/ff.h"
@@ -31,33 +32,30 @@ FRESULT fresult(FRESULT r)
 
 static FATFS fs;
 
-extern void finalize();
+extern FILE* f;
 
 int main() 
 {
+    f = fopen("/tmp/image.img", "w+");
+    if (!f)
+        perror("fopen");
+    printf("[Disk initialized.]\n");
+
     LBA_t plist[] = { 100, 0 };
 
     uint8_t buffer[FF_MAX_SS];
-    /*
+    printf("====== fdisk ======\n");
     FRESULT r = fresult(f_fdisk(0, plist, buffer));
     if (r != FR_OK)
         return 1;
-    */
 
     printf("====== mkfs ======\n");
-    MKFS_PARM opt = {
-        .fmt = FM_FAT | FM_FAT32 | FM_SFD,
-        .n_fat = 2,
-        .align = 512,
-        .au_size = 0,
-        .n_root = 0,
-    };
-    fresult(f_mkfs("", &opt, buffer, sizeof buffer));
+    fresult(f_mkfs("0:", 0, buffer, sizeof buffer));
 
     printf("====== mount ======\n");
-    fresult(f_mount(&fs, "", 0));
+    fresult(f_mount(&fs, "0:", 0));
 
-    finalize();
+    fclose(f);
 }
 
 // vim:ts=4:sts=4:sw=4:expandtab

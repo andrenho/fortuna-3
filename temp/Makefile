@@ -1,6 +1,6 @@
 OBJ = main.o fsfat/ff.o fsfat/ffsystem.o fsfat/diskio.o
 
-CFLAGS=-Wall -Wextra -I.
+CFLAGS=-Wall -Wextra -I. -ggdb -O0
 
 test: ${OBJ}
 	gcc -o $@ $^
