@@ -44,8 +44,18 @@ int main()
         return 1;
     */
 
-    fresult(f_mkfs("0:", 0, buffer, sizeof buffer));
-    fresult(f_mount(&fs, "0:", 1));
+    printf("====== mkfs ======\n");
+    MKFS_PARM opt = {
+        .fmt = FM_FAT | FM_FAT32 | FM_SFD,
+        .n_fat = 2,
+        .align = 512,
+        .au_size = 0,
+        .n_root = 0,
+    };
+    fresult(f_mkfs("", &opt, buffer, sizeof buffer));
+
+    printf("====== mount ======\n");
+    fresult(f_mount(&fs, "", 0));
 
     finalize();
 }
