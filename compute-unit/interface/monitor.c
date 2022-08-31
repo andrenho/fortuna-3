@@ -37,7 +37,7 @@ typedef struct {
 // UTIL
 //
 
-static void print_array(uint8_t* bytes, size_t sz)
+static void print_array(uint8_t* bytes, size_t sz, size_t starting_addr)
 {
     printf_P(PSTR(BOLD "%6c"), ' ');
     for (size_t i = 0; i < 16; ++i) {
@@ -48,7 +48,7 @@ static void print_array(uint8_t* bytes, size_t sz)
     puts_P(PSTR(RST));
 
     for (uint16_t i = 0; i < sz / 16; ++i) {
-        printf_P(PSTR(BOLD "%04X: " RST), i * 0x10);
+        printf_P(PSTR(BOLD "%04X: " RST), i * 0x10 + starting_addr);
         for (uint8_t j = 0; j < 16; ++j) {
             if (j == 8)
                 putchar(' ');
@@ -254,7 +254,7 @@ static void sd_get(UserInput *u)
         return;
     }
 
-    print_array(bytes, 512);
+    print_array(bytes, 512, block * 512);
 }
 
 static void sd_write(UserInput *u)
@@ -317,7 +317,7 @@ static void ram_get(UserInput *u)
     ram_read_block(block, bytes, 256);
 
     ram_print_bank();
-    print_array(bytes, 256);
+    print_array(bytes, 256, block * 256);
 }
 
 static void ram_write(UserInput *u)

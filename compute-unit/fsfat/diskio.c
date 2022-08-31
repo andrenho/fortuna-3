@@ -1,10 +1,11 @@
 #include "fsfat/ff.h"			/* Obtains integer types */
 #include "fsfat/diskio.h"		/* Declarations of disk functions */
 
-#include "sdcard.h"
+#include "config.h"
+#include "dev/sdcard.h"
 
 PARTITION VolToPart[FF_VOLUMES] = {
-    {0, 0},    /* "0:" ==> 1st partition in PD#0 */
+    {0, 1},    /* "0:" ==> 1st partition in PD#0 */
 };
 
 /*-----------------------------------------------------------------------*/
@@ -97,7 +98,7 @@ DRESULT disk_ioctl (
         case CTRL_SYNC:
             break;
         case GET_SECTOR_COUNT:
-            sz = 24 * 1024;  // 8 MB - TODO
+            sz = PARTITION_0_SIZE_IN_MB * 2 * 1024;
             *(LBA_t *) buff = sz;
             break;
         case GET_BLOCK_SIZE:

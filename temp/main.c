@@ -36,7 +36,7 @@ extern FILE* f;
 
 int main() 
 {
-    f = fopen("/tmp/image.img", "w+");
+    f = fopen("/tmp/image.img", "a+");
     if (!f)
         perror("fopen");
     printf("[Disk initialized.]\n");

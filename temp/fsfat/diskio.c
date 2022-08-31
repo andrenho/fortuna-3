@@ -119,7 +119,7 @@ DRESULT disk_ioctl (
         case CTRL_SYNC:
             break;
         case GET_SECTOR_COUNT:
-            sz = 8000 * 2 * 1024;  // 200 MB (?)
+            sz = 10 * 2 * 1024;  // 10 MB (?)
             *(LBA_t *) buff = sz;
             printf("Got sector count of %d.\n", sz);
             break;

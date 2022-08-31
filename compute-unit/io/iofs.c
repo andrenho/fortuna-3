@@ -140,7 +140,7 @@ void io_fs_free(IO_Regs* r)
 
 void io_fs_format(IO_Regs* r)
 {
-    LBA_t plist[] = { 0x1000000, 0 };
+    LBA_t plist[] = { 100, 0 };
 
     uint8_t buffer[FF_MAX_SS];
     r->Ra0 = fresult(f_fdisk(0, plist, buffer));

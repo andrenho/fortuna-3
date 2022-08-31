@@ -2,7 +2,7 @@
 // features included
 //
 
-#define INCLUDE_MONITOR 0
+#define INCLUDE_MONITOR 1
 #define INCLUDE_SDCARD  1
 
 //
@@ -10,6 +10,12 @@
 //
 
 #define RUN_MONITOR_AT_START 0
+
+//
+// configuration
+//
+
+#define PARTITION_0_SIZE_IN_MB 10
 
 //
 // Debugging
