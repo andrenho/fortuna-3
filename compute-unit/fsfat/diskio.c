@@ -51,7 +51,7 @@ DRESULT disk_read (
 {
     (void) pdrv;
     for (LBA_t i = sector; i < (sector + count); ++i)
-        if (!sdcard_read_block(i, &buff[i * 512]))
+        if (!sdcard_read_block(i, buff))
             return RES_ERROR;
     return RES_OK;
 }
@@ -73,7 +73,7 @@ DRESULT disk_write (
 {
     (void) pdrv;
     for (LBA_t i = sector; i < (sector + count); ++i)
-        if (!sdcard_write_block(i, &buff[i * 512]))
+        if (!sdcard_write_block(i, buff))
             return RES_ERROR;
     return RES_OK;
 }
