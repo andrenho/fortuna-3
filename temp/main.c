@@ -36,6 +36,8 @@ extern FILE* f;
 
 int main() 
 {
+    printf("%d\n", sizeof(LBA_t));
+
     f = fopen("/tmp/image.img", "a+");
     if (!f)
         perror("fopen");

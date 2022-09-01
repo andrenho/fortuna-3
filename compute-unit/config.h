@@ -15,7 +15,7 @@
 // configuration
 //
 
-#define PARTITION_0_SIZE_IN_MB 10
+#define PARTITION_0_SIZE_IN_MB 1000
 
 //
 // Debugging

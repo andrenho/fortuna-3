@@ -98,7 +98,7 @@ DRESULT disk_ioctl (
         case CTRL_SYNC:
             break;
         case GET_SECTOR_COUNT:
-            sz = PARTITION_0_SIZE_IN_MB * 2 * 1024;
+            sz = (LBA_t) PARTITION_0_SIZE_IN_MB * (LBA_t) 2048;
             *(LBA_t *) buff = sz;
             break;
         case GET_BLOCK_SIZE:
