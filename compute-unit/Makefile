@@ -48,7 +48,7 @@ bios.o: bios.bin
 
 ${PROJECT}.hex: ${PROJECT}.elf
 	avr-objcopy -j .text -j .data -O ihex $< $@
-	arm-linux-gnueabihf-size ${PROJECT}.hex
+	avr-size -C --mcu=${MCU_GCC} ${PROJECT}.hex
 
 ${PROJECT}.elf: ${OBJECTS} bios.o
 	$(CC) -mmcu=${MCU_GCC} ${CFLAGS} ${CPPFLAGS} -o $@ $^ -Wl,--gc-sections

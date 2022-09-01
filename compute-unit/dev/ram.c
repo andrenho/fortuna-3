@@ -75,24 +75,6 @@ void ram_set_byte(uint16_t addr, uint8_t data)
     release_bus();
 }
 
-void ram_read_block(uint16_t block, uint8_t* bytes, uint16_t sz)
-{
-    take_bus();
-    DDRL = 0x0;   // data bus: read
-    clear_CE();
-    clear_OE();
-    for (uint16_t i = 0; i < 256; ++i) {
-        uint16_t addr = (block * 0x100) + i;
-        PORTA = (addr & 0xff);
-        PORTC = (addr >> 8);
-        _NOP();
-        bytes[i] = PINL;
-    }
-    set_OE();
-    set_CE();
-    release_bus();
-}
-
 uint16_t ram_get_string(uint16_t addr, uint8_t* buf, uint16_t max_sz)
 {
     take_bus();
@@ -115,13 +97,31 @@ uint16_t ram_get_string(uint16_t addr, uint8_t* buf, uint16_t max_sz)
     return i;
 }
 
-void ram_write_block(uint16_t block, uint8_t* bytes, uint16_t sz)
+void ram_read_array(uint16_t initial_addr, uint8_t* bytes, uint16_t sz)
+{
+    take_bus();
+    DDRL = 0x0;   // data bus: read
+    clear_CE();
+    clear_OE();
+    for (uint16_t i = 0; i < 256; ++i) {
+        uint16_t addr = initial_addr + i;
+        PORTA = (addr & 0xff);
+        PORTC = (addr >> 8);
+        _NOP();
+        bytes[i] = PINL;
+    }
+    set_OE();
+    set_CE();
+    release_bus();
+}
+
+void ram_write_array(uint16_t initial_addr, uint8_t* bytes, uint16_t sz)
 {
     take_bus();
     DDRL = 0xff;   // data bus: write
     clear_CE();
     for (uint16_t i = 0; i < 256; ++i) {
-        uint16_t addr = (block * 0x100) + i;
+        uint16_t addr = initial_addr + i;
         PORTA = (addr & 0xff);
         PORTC = (addr >> 8);
         PORTL = bytes[i];

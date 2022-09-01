@@ -13,7 +13,7 @@ void    ram_set_byte(uint16_t addr, uint8_t data);
 
 uint16_t ram_get_string(uint16_t addr, uint8_t* buf, uint16_t max_sz);
 
-void    ram_read_block(uint16_t block, uint8_t* bytes, uint16_t sz);
-void    ram_write_block(uint16_t block, uint8_t* bytes, uint16_t sz);
+void    ram_read_array(uint16_t initial_addr, uint8_t* bytes, uint16_t sz);
+void    ram_write_array(uint16_t initial_addr, uint8_t* bytes, uint16_t sz);
 
 #endif

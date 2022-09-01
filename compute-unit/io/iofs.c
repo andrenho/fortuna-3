@@ -10,6 +10,20 @@
 
 #define MAX_FP 4
 
+#define max(a,b)             \
+({                           \
+    __typeof__ (a) _a = (a); \
+    __typeof__ (b) _b = (b); \
+    _a > _b ? _a : _b;       \
+})
+
+#define min(a,b)             \
+({                           \
+    __typeof__ (a) _a = (a); \
+    __typeof__ (b) _b = (b); \
+    _a < _b ? _a : _b;       \
+})
+
 static FATFS fs;
 static FIL files[MAX_FP];
 
@@ -80,6 +94,18 @@ void io_fs_close(IO_Regs* r, uint8_t data)
 
 void io_fs_read(IO_Regs* r)
 {
+    FIL* fil = &files[r->Pa0 % MAX_FP];
+    uint8_t buff[512];
+    UINT n_bytes = min((uint16_t) 512, Pa(r));
+	UINT bytes_read;
+
+    r->Ra0 = fresult(f_read(fil, buff, n_bytes, &bytes_read));
+    set_Rb(r, bytes_read);
+
+    uint8_t original_bank = ram_bank();
+    ram_set_bank(r->Qb0);
+    ram_write_array(Qa(r), buff, bytes_read);
+    ram_set_bank(original_bank);
 }
 
 
