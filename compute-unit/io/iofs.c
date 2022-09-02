@@ -128,36 +128,54 @@ void io_fs_write(IO_Regs* r)
 
 void io_fs_seek(IO_Regs* r)
 {
+    FIL* fil = &files[r->Pa0 % MAX_FP];
+    r->Ra0 = fresult(f_lseek(fil, Qa(r)));
 }
 
 
 void io_fs_size(IO_Regs* r)
 {
+    FIL* fil = &files[r->Pa0 % MAX_FP];
+    set_R(r, f_size(fil));
 }
 
 
 void io_fs_stat(IO_Regs* r)
 {
+    uint8_t filename[255];
+    ram_get_string(Pa(r), filename, sizeof filename);
+    r->Ra0 = fresult(f_stat((const char *) filename, NULL));
 }
 
 
 void io_fs_unlink(IO_Regs* r)
 {
+    uint8_t filename[255];
+    ram_get_string(Pa(r), filename, sizeof filename);
+    r->Ra0 = fresult(f_unlink((const char *) filename));
 }
 
 
 void io_fs_rename(IO_Regs* r)
 {
+    uint8_t old[255], new[255];
+    r->Ra0 = fresult(f_rename((const char *) old, (const char *) new));
 }
 
 
 void io_fs_chdir(IO_Regs* r)
 {
+    uint8_t filename[255];
+    ram_get_string(Pa(r), filename, sizeof filename);
+    r->Ra0 = fresult(f_chdir((const char *) filename));
 }
 
 
 void io_fs_mkdir(IO_Regs* r)
 {
+    uint8_t filename[255];
+    ram_get_string(Pa(r), filename, sizeof filename);
+    r->Ra0 = fresult(f_mkdir((const char *) filename));
 }
 
 
