@@ -26,6 +26,7 @@
 
 static FATFS fs;
 static FIL files[MAX_FP];
+static DIR dirs[MAX_FP];
 
 FRESULT fresult(FRESULT r)
 {
@@ -181,18 +182,37 @@ void io_fs_mkdir(IO_Regs* r)
 
 void io_fs_opendir(IO_Regs* r)
 {
+    DIR* dir = &dirs[r->Pa0 % MAX_FP];
+    uint8_t dirname[255];
+    ram_get_string(Pa(r), dirname, sizeof dirname);
+    r->Ra0 = fresult(f_opendir(dir, (const char *) dirname));
 }
 
 
 void io_fs_readdir(IO_Regs* r)
 {
+    DIR* dir = &dirs[r->Pa0 % MAX_FP];
+    FILINFO fno;
+    r->Ra0 = fresult(f_readdir(dir, &fno));
+
+    ram_write_array(Qa(r), (uint8_t *) &fno, sizeof fno);
 }
 
+void io_fs_closedir(IO_Regs* r, uint8_t data)
+{
+    fresult(f_closedir(&dirs[data]));
+}
 
 void io_fs_free(IO_Regs* r)
 {
-}
+    FATFS* fatfs;
+    DWORD fre_clust;
 
+    fresult(f_getfree("", &fre_clust, &fatfs));
+
+    DWORD fre_sect = fre_clust * fatfs->csize;
+    set_R(r, fre_sect / 2);
+}
 
 void io_fs_format(IO_Regs* r)
 {

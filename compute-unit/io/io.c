@@ -64,6 +64,7 @@ bool io_write(uint8_t addr, uint8_t data)
         case FS_MOUNT:      io_fs_mount(&ioregs); break;
         case FS_CLOSE:      io_fs_close(&ioregs, data); break;
         case FS_SIZE:       io_fs_size(&ioregs); break;
+        case FS_CLOSEDIR:   io_fs_closedir(&ioregs, data); break;
         case FS_FREE:       io_fs_free(&ioregs); break;
         case FS_FORMAT:     io_fs_format(&ioregs); break;
 #endif

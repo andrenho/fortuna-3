@@ -37,8 +37,9 @@
 #define FS_MKDIR 0x2E
 #define FS_OPENDIR 0x2F
 #define FS_READDIR 0x30
-#define FS_FREE 0x31
-#define FS_FORMAT 0x32
+#define FS_CLOSEDIR 0x31
+#define FS_FREE 0x32
+#define FS_FORMAT 0x33
 #define MM_BANK_SET 0x40
 #define MM_BANK_GET 0x40
 #define MM_CPY 0x41

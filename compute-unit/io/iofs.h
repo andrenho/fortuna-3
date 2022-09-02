@@ -21,6 +21,7 @@ void io_fs_chdir(IO_Regs* r);
 void io_fs_mkdir(IO_Regs* r);
 void io_fs_opendir(IO_Regs* r);
 void io_fs_readdir(IO_Regs* r);
+void io_fs_closedir(IO_Regs* r, uint8_t data);
 void io_fs_free(IO_Regs* r);
 void io_fs_format(IO_Regs* r);
 
