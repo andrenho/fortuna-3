@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public record SourceLineDTO(Integer address, String line, @JsonIgnore byte[] byteArray) {
 
-    public List<Integer> getBytes() {
+    public List<Integer> bytes() {
         if (byteArray == null)
             return null;
 
@@ -20,4 +20,8 @@ public record SourceLineDTO(Integer address, String line, @JsonIgnore byte[] byt
         return bytes;
     }
 
+    @Override
+    public int hashCode() {
+        return line.hashCode();
+    }
 }
