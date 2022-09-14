@@ -8,23 +8,27 @@ import java.util.stream.Collectors;
 
 @Component
 public class OutputMapper {
+
     public DebuggingInfoDTO mapSourceProjectsToDebuggingInfo(Map<String, SourceProjectDTO> projects, ProjectFileDTO.SDCardDTO sdcard) {
 
-        DebuggingInfoDTO debuggingInfo = new DebuggingInfoDTO();
+        boolean isSuccess = projects.values().stream().allMatch(SourceProjectDTO::isSuccess);
+        if (isSuccess) {
 
-        debuggingInfo.setSuccess(projects.values().stream().allMatch(SourceProjectDTO::isSuccess));
-        if (debuggingInfo.isSuccess()) {
-
-            debuggingInfo.setProjects(projects);
-            debuggingInfo.setSdCardSizeInMB(sdcard.getSizeInMB());
+            return DebuggingInfoDTO.builder()
+                            .success(isSuccess)
+                            .projects(projects)
+                            .sdCardSizeInMB(sdcard.sizeInMB())
+                            .build();
         } else {
 
-            debuggingInfo.setErrorMessage(projects.values()
-                            .stream().filter(p -> !p.isSuccess())
-                            .map(SourceProjectDTO::getCompilerError)
-                            .collect(Collectors.joining("\n")));
+            var errorMessage = projects.values()
+                    .stream().filter(p -> !p.isSuccess())
+                    .map(SourceProjectDTO::getCompilerError)
+                    .collect(Collectors.joining("\n"));
+            return DebuggingInfoDTO.builder()
+                            .success(isSuccess)
+                            .errorMessage(errorMessage)
+                            .build();
         }
-
-        return debuggingInfo;
     }
 }

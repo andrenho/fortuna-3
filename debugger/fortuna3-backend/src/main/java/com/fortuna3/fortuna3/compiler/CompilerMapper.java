@@ -20,12 +20,12 @@ public class CompilerMapper {
     public SourceProjectDTO mapRawToSourceProject(RawCompilerOutputDTO rawCompilerOutput, Integer address) {
 
         SourceProjectDTO sourceProject = new SourceProjectDTO();
-        sourceProject.setSuccess(rawCompilerOutput.getStatus() == 0);
-        sourceProject.setMainSourceFile(rawCompilerOutput.getMainSourceFile());
+        sourceProject.setSuccess(rawCompilerOutput.status() == 0);
+        sourceProject.setMainSourceFile(rawCompilerOutput.mainSourceFile());
         sourceProject.setAddress(address);
-        if (rawCompilerOutput.getStatus() != 0)
-            sourceProject.setCompilerError(rawCompilerOutput.getCompilerError());
-        sourceProject.setBinary(rawCompilerOutput.getRom());
+        if (rawCompilerOutput.status() != 0)
+            sourceProject.setCompilerError(rawCompilerOutput.compilerError());
+        sourceProject.setBinary(rawCompilerOutput.rom());
 
         try {
             mapListingFiletoSourceProject(rawCompilerOutput, sourceProject);
@@ -43,7 +43,7 @@ public class CompilerMapper {
         String currentFile = null;
         int nline = 1;
 
-        for (String line: rawCompilerOutput.getListing().split("\n")) {
+        for (String line: rawCompilerOutput.listing().split("\n")) {
 
             line = line.replace("\r", "");
 
@@ -74,25 +74,28 @@ public class CompilerMapper {
 
     private SourceLineDTO parseLine(String line) {
 
-        SourceLineDTO sourceLineDTO = new SourceLineDTO();
-
+        Integer address = null;
         try {
-            sourceLineDTO.setAddress(HexFormat.fromHexDigits(line.substring(3, 7)));
+            address = HexFormat.fromHexDigits(line.substring(3, 7));
         } catch (IllegalArgumentException ignored) {}
 
+        String newLine = "";
         try {
-            sourceLineDTO.setLine(line.substring(33));
-        } catch (IndexOutOfBoundsException e) {
-            sourceLineDTO.setLine("");
-        }
+            newLine = line.substring(33);
+        } catch (IndexOutOfBoundsException ignored) {}
 
+        byte[] byteArray = new byte[0];
         try {
-            sourceLineDTO.setByteArray(HexFormat.of().parseHex(line.substring(8, 16).trim()));
+            byteArray = HexFormat.of().parseHex(line.substring(8, 16).trim());
         } catch (IllegalArgumentException ignored) {}
-        if (sourceLineDTO.getByteArray().length == 0)
-            sourceLineDTO.setByteArray(null);
+        if (byteArray.length == 0)
+            byteArray = null;
 
-        return sourceLineDTO;
+        return SourceLineDTO.builder()
+                .address(address)
+                .line(newLine)
+                .byteArray(byteArray)
+                .build();
     }
 
     private void addLabel(String line, Map<String, Integer> labels) {

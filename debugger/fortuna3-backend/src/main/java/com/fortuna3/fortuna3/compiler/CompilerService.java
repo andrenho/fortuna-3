@@ -50,16 +50,16 @@ public class CompilerService {
         record SourceProjectIndex(String name, SourceProjectDTO sourceProject) {}
 
         List<CompletableFuture<SourceProjectIndex>> futures = new ArrayList<>();
-        for (Map.Entry<String, ProjectDTO> project: projectFile.getProjects().entrySet()) {
+        for (Map.Entry<String, ProjectDTO> project: projectFile.projects().entrySet()) {
             futures.add(CompletableFuture.supplyAsync(() -> new SourceProjectIndex(
                     project.getKey(),
-                    compile(path + "/" + project.getValue().getSource(), project.getValue().getAddress()))));
+                    compile(path + "/" + project.getValue().source(), project.getValue().address()))));
         }
 
         Map<String, SourceProjectDTO> projects = futures
                 .stream().map(CompletableFuture::join).toList()
                 .stream().collect(Collectors.toMap(SourceProjectIndex::name, SourceProjectIndex::sourceProject));
-        return outputMapper.mapSourceProjectsToDebuggingInfo(projects, projectFile.getSdcard());
+        return outputMapper.mapSourceProjectsToDebuggingInfo(projects, projectFile.sdcard());
     }
 
     private SourceProjectDTO compile(String biosSource, Integer address) {
@@ -70,8 +70,6 @@ public class CompilerService {
 
     private RawCompilerOutputDTO runCompiler(String mainSourceFile) {
 
-        RawCompilerOutputDTO rawCompilerOutput = new RawCompilerOutputDTO();
-
         String commandLine =
                 compilerExecutableService.getCompilerPath() +
                 " -chklabels -L listing.txt -Llo -nosym -x -Fbin -o rom.bin " +
@@ -79,26 +77,32 @@ public class CompilerService {
 
         try {
             Process process = Runtime.getRuntime().exec(commandLine);
+            int status = process.waitFor();
 
-            rawCompilerOutput.setMainSourceFile(Path.of(mainSourceFile).getFileName().toString());
-            rawCompilerOutput.setCompilerOutput(getOutput(process.getInputStream()));
-            rawCompilerOutput.setCompilerError(getOutput(process.getErrorStream()));
-            rawCompilerOutput.setStatus(process.waitFor());
-
+            String listing = null;
             if (Files.exists(Path.of("listing.txt"))) {
-                rawCompilerOutput.setListing(Files.readString(Path.of("listing.txt")));
+                listing = Files.readString(Path.of("listing.txt"));
                 new File("listing.txt").delete();
             }
+
+            byte[] rom = null;
             if (Files.exists(Path.of("rom.bin"))) {
-                rawCompilerOutput.setRom(Files.readAllBytes(Path.of("rom.bin")));
+                rom = Files.readAllBytes(Path.of("rom.bin"));
                 new File("rom.bin").delete();
             }
+
+            return RawCompilerOutputDTO.builder()
+                    .mainSourceFile(Path.of(mainSourceFile).getFileName().toString())
+                    .compilerOutput(getOutput(process.getInputStream()))
+                    .compilerError(getOutput(process.getErrorStream()))
+                    .status(status)
+                    .listing(listing)
+                    .rom(rom)
+                    .build();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        return rawCompilerOutput;
     }
 
     private String getOutput(InputStream inputStream) throws IOException {
@@ -119,7 +123,7 @@ public class CompilerService {
     public Integer getHash() {
 
         if (currentDebuggingInfo != null)
-            return currentDebuggingInfo.getHash();
+            return currentDebuggingInfo.hash();
         else
             return 0;
     }

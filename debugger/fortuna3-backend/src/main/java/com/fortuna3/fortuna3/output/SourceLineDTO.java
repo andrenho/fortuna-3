@@ -2,25 +2,14 @@ package com.fortuna3.fortuna3.output;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Builder;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-@Data
-@EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SourceLineDTO {
-
-    private Integer address;
-    private String line;
-
-    @JsonIgnore
-    private byte[] byteArray;
+@Builder
+public record SourceLineDTO(Integer address, String line, @JsonIgnore byte[] byteArray) {
 
     public List<Integer> getBytes() {
         if (byteArray == null)
@@ -30,4 +19,5 @@ public class SourceLineDTO {
         for (byte b : byteArray) bytes.add(Byte.toUnsignedInt(b));
         return bytes;
     }
+
 }
