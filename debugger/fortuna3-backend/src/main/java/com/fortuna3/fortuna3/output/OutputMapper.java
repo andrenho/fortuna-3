@@ -11,7 +11,7 @@ public class OutputMapper {
 
     public DebuggingInfoDTO mapSourceProjectsToDebuggingInfo(Map<String, SourceProjectDTO> projects, ProjectFileDTO.SDCardDTO sdcard) {
 
-        boolean isSuccess = projects.values().stream().allMatch(SourceProjectDTO::isSuccess);
+        var isSuccess = projects.values().stream().allMatch(SourceProjectDTO::isSuccess);
         if (isSuccess) {
 
             return DebuggingInfoDTO.builder()

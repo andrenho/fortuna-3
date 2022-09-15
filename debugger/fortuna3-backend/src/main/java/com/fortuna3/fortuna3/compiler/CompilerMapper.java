@@ -19,7 +19,7 @@ public class CompilerMapper {
 
     public SourceProjectDTO mapRawToSourceProject(RawCompilerOutputDTO rawCompilerOutput, Integer address) {
 
-        SourceProjectDTO sourceProject = new SourceProjectDTO();
+        var sourceProject = new SourceProjectDTO();
         sourceProject.setSuccess(rawCompilerOutput.status() == 0);
         sourceProject.setMainSourceFile(rawCompilerOutput.mainSourceFile());
         sourceProject.setAddress(address);
@@ -39,11 +39,11 @@ public class CompilerMapper {
 
     private void mapListingFiletoSourceProject(RawCompilerOutputDTO rawCompilerOutput, SourceProjectDTO sourceProject) throws InvalidListingFormatException {
 
-        Section currentSection = Section.NONE;
+        var currentSection = Section.NONE;
         String currentFile = null;
         int nline = 1;
 
-        for (String line: rawCompilerOutput.listing().split("\n")) {
+        for (var line: rawCompilerOutput.listing().split("\n")) {
 
             line = line.replace("\r", "");
 
@@ -84,7 +84,7 @@ public class CompilerMapper {
             newLine = line.substring(33);
         } catch (IndexOutOfBoundsException ignored) {}
 
-        byte[] byteArray = new byte[0];
+        var byteArray = new byte[0];
         try {
             byteArray = HexFormat.of().parseHex(line.substring(8, 16).trim());
         } catch (IllegalArgumentException ignored) {}
