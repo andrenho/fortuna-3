@@ -46,7 +46,7 @@ export default class FortunaStore {
     constructor() {
         makeAutoObservable(this);
         // TODO - where are SDCard image size and type coming from?
-        Fortuna3Emulator.initialize(`${process.env.PUBLIC_URL}/fortuna`).then(emulator => {
+        Fortuna3Emulator.initialize(`${process.env.PUBLIC_URL}/fortuna`).then((emulator : Fortuna3Emulator) => {
             runInAction(() => {
                 this.emulator = emulator;
                 this.updateEmulatorState();
