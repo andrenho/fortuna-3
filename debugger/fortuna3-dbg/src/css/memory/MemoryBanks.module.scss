@@ -1,0 +1,24 @@
+.main {
+  display: flex;
+  align-items: center;
+  padding-top: 12px;
+  gap: 3px;
+}
+
+.bank {
+  border: 1px grey solid;
+  height: 44px;
+  width: 32px;
+}
+
+.bankInternal {
+  padding: 4px;
+  height: 36px;
+  width: 24px;
+  text-align: center;
+}
+
+.bankActive {
+  padding: 0;
+  border: 4px solid paleturquoise;
+}

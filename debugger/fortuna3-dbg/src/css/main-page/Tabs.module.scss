@@ -1,0 +1,49 @@
+.tabs {
+  display: flex;
+  flex-direction: row;
+  white-space: nowrap;
+};
+
+.tabStart {
+  border-bottom: 1px black solid;
+  width: 24px;
+};
+
+.tabEnd {
+  border-bottom: 1px black solid;
+  width: 100%;
+};
+
+@mixin tab {
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+  padding: 6px 14px;
+  cursor: pointer;
+  background: lightgray;
+  font-weight: bold;
+  box-shadow: 6px 6px 6px lightgray;
+};
+
+.tab {
+  @include tab;
+}
+
+.tabSelected {
+  @include tab;
+  background: white;
+  border-width: 1px 1px 0 1px;
+};
+
+.tabMiddle {
+  border-bottom: 1px black solid;
+  width: 24px;
+};
+
+.whiteBox {
+  background: white;
+  position: relative;
+  height: 10px;
+  z-index: 1;
+};
+

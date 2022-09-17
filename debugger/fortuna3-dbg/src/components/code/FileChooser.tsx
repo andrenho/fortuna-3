@@ -1,6 +1,6 @@
 import {observer} from "mobx-react-lite";
 import useStore from "hooks/useStore";
-import css from "css/common/Box.module.scss"
+import css from "css/code/FileChooser.module.scss";
 
 type FileChooserProps = {
     selectedFile: string | undefined,
@@ -11,7 +11,7 @@ const FileChooser : React.FC<FileChooserProps> = observer(({selectedFile, onSele
 
     const { currentProject } = useStore();
 
-    return <div style={css.files}>
+    return <div className={css.files}>
         { currentProject && Object.keys(currentProject!.source).map((filename, i) =>
             <div
                 className={css.file}
