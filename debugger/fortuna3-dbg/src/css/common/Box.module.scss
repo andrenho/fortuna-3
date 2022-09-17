@@ -1,0 +1,22 @@
+.box {
+  border: 1px solid black;
+  padding: 16px;
+  width: fit-content;
+  box-shadow: 6px 6px 6px lightgray;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.arrow {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.arrow-open {
+  transform: rotate(90deg);
+}
+
