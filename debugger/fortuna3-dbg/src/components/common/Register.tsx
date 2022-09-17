@@ -1,4 +1,6 @@
-import {hex} from "../../util/hex";
+import React from "react";
+import {hex} from "util/hex";
+import css from "./css/Register.module.scss"
 
 type RegisterProps = {
     name: string,
@@ -6,11 +8,11 @@ type RegisterProps = {
     size: number,
 }
 
-const Register = (props: RegisterProps) : JSX.Element => {
-    return (<div>
-        <div style={{fontWeight: "bold", fontSize: "11px"}}>{ props.name }</div>
-        <div style={{border: "1px black solid", padding: "2px"}}>{ hex(props.value, props.size) }</div>
-    </div>);
+const Register : React.FC<RegisterProps> = ({ name, value, size }) => {
+    return <div>
+        <div className={css.name}>{ name }</div>
+        <div className={css.value}>{ hex(value, size) }</div>
+    </div>;
 };
 
 export default Register;

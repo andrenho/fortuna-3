@@ -21,7 +21,7 @@ const RAM = observer(() : JSX.Element => {
             currentPage={store.ramPage}
             totalPages={256}
             rows={16}
-            data={state?.ramPage!}
+            bytes={state?.ramPage!}
             highlightOffset={highlights}
             onPageChange={(n) => store.setRamPage(n)}
         >

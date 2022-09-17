@@ -1,0 +1,53 @@
+.spaceAfter {
+    padding-right: 12px;
+    padding-left: 4px
+}
+
+.titleRow {
+    display: flex;
+    gap: 4px;
+    align-items: baseline;
+    margin-bottom: 24px;
+}
+
+.address {
+    font-weight: bold;
+}
+
+.data {
+    text-align: center;
+}
+
+.zero {
+    color: lightgray;
+}
+
+.error {
+    background-color: lightcoral;
+}
+
+.highlighted {
+    background-color: mediumspringgreen;
+}
+
+.input {
+    font-size: medium
+}
+
+.th {
+    width: 21px;
+    min-width: 21px;
+    vertical-align: top;
+    text-align: left;
+}
+
+.firstColumn {
+    width: 54px;
+    min-width: 54px;
+    height: 28px;
+}
+
+.asciiColumn {
+    width: 150px;
+    text-align: left;
+}

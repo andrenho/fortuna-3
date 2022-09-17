@@ -3,11 +3,11 @@ type FlagProps = {
     value: boolean,
 };
 
-const Flag = (props: FlagProps) : JSX.Element => {
-    return (<label>
-        <input type="checkbox" onChange={() => false} checked={props.value} />
-        <span>{ props.name }</span>
-    </label>);
+const Flag : React.FC<FlagProps> = ({ name, value }) => {
+    return <label>
+        <input type="checkbox" onChange={() => false} checked={value} />
+        <span>{ name }</span>
+    </label>;
 };
 
 export default Flag;

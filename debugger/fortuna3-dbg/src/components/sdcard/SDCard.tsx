@@ -14,7 +14,7 @@ const SDCard = observer(() : JSX.Element => {
             currentPage={store.sdCardPage}
             totalPages={store.debuggingInfo.sdCardSizeInMB * 2048}
             rows={32}
-            data={state?.sdCardPage!}
+            bytes={state?.sdCardPage!}
             onPageChange={n => store.setSdCardPage(n)}
             topRightElement={<SDCardImageDownloader />}
         />);

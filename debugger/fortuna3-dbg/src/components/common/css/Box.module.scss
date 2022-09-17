@@ -11,12 +11,16 @@
   margin-bottom: 16px;
 }
 
+.titleText {
+  padding-left: 8px;
+}
+
 .arrow {
   cursor: pointer;
   display: inline-block;
 }
 
-.arrow-open {
+.arrowOpen {
   transform: rotate(90deg);
 }
 
