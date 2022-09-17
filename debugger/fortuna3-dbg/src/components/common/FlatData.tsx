@@ -3,7 +3,7 @@ import Box from "./Box";
 import {hex} from "util/hex";
 import {range} from "util/array";
 import CSS from "csstype";
-import css from "./css/FlatData.module.scss"
+import css from "css/common/FlatData.module.scss"
 
 export type Highlights = {[key: number]: string};
 

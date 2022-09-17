@@ -1,0 +1,47 @@
+@mixin td {
+  border: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
+.code {
+  border: 1px black solid;
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-height: 600px;
+  height: 100%;
+  box-shadow: 6px 6px 6px lightgray;
+}
+
+.breakpoint {
+  @include td;
+  width: 21px;
+  padding: 0;
+  border-right: 1px black solid;
+  cursor: pointer;
+}
+
+.address {
+  @include td;
+  width: 35px;
+  border-right: 1px black solid;
+  font-weight: bold;
+}
+
+.line {
+  @include td;
+  width: 500px;
+  max-width: 500px;
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+.bytes {
+  @include td;
+  border-left: 1px black solid;
+  width: 120px;
+}
+
+.lastLine {
+  height: 100%;
+}

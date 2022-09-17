@@ -1,0 +1,17 @@
+.files {
+  display: flex;
+  flex-direction: column;
+  width: 140px;
+}
+
+.file {
+  font-size: 14px;
+  border: 1px black solid;
+  border-right: 0;
+  border-bottom: 0;
+  padding: 2px 8px;
+  cursor: pointer;
+  box-shadow: 6px 6px 6px lightgray;
+  background-color: white;
+  height: 16px;
+}
