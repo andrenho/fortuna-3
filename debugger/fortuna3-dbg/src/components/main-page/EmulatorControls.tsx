@@ -1,5 +1,5 @@
 import React from "react";
-import useStore from "../../hooks/useStore";
+import useStore from "hooks/useStore";
 import css from "css/main-page/EmulatorControls.module.scss";
 
 const Spacing = () => <div style={{width: "8px"}}></div>;

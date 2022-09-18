@@ -1,23 +1,14 @@
-import {observer} from "mobx-react-lite";
-import useStore from "../hooks/useStore";
-import {StyleSet} from "../util/types";
 import React from "react";
+import {observer} from "mobx-react-lite";
+import useStore from "hooks/useStore";
+import css from "css/ErrorMessage.module.scss";
 
-const style : StyleSet = {
-    error: {
-        color: "red",
-        fontSize: "x-large",
-        border: "2px red solid",
-        padding: "16px",
-    }
-};
-
-const ErrorMessage = observer(() : JSX.Element => {
+const ErrorMessage : React.FC = observer(() => {
 
     const { currentError } = useStore();
 
     if (currentError != null)
-        return <div style={style.error}>{ currentError }</div>;
+        return <div className={css.error}>{ currentError }</div>;
     else
         return <></>;
 });

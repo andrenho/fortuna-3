@@ -2,7 +2,7 @@ import {createContext} from "react";
 import {EmulatorState, Fortuna3Emulator} from "fortuna3-emu";
 import {makeAutoObservable, runInAction} from "mobx";
 import DebuggingInfo, {initialDebuggingInfo, SourceProject} from "./types/debuggingInfo";
-import {fetchBackendCompilation, fetchBackendCrc} from "../service/backendService";
+import {fetchBackendCompilation, fetchBackendCrc} from "service/backendService";
 import UartTerminal from "./types/uartTerminal";
 
 const terminalSize = {

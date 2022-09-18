@@ -1,36 +1,27 @@
 import {observer} from "mobx-react-lite";
 import Box from "./common/Box";
-import {StyleSet} from "../util/types";
-import useStore from "../hooks/useStore";
 import Register from "./common/Register";
 import Flag from "./common/Flag";
+import useStore from "hooks/useStore";
+import CSS from "csstype";
+import css from "css/CPU.module.scss";
 
 const columns = 7;
 const rows = 2;
 
-const style : StyleSet = {
-    registers: {
-        display: "grid",
-        gridTemplateColumns: "auto ".repeat(columns),
-        gridTemplateRows: "auto ".repeat(rows),
-        gridTemplateAreas: (`"${". ".repeat(columns)}" `).repeat(rows) + `"${"flags ".repeat(columns)}"`,
-        justifyContent: "start",
-        columnGap: "10px",
-        rowGap: "14px",
-    },
-    flags: {
-        display: "flex",
-        gap: "12px",
-    },
-};
+const gridStyle : CSS.Properties = {
+    gridTemplateColumns: "auto ".repeat(columns),
+    gridTemplateRows: "auto ".repeat(rows),
+    gridTemplateAreas: (`"${". ".repeat(columns)}" `).repeat(rows) + `"${"flags ".repeat(columns)}"`,
+}
 
-const CPU = observer(() : JSX.Element => {
+const CPU : React.FC = observer(() => {
 
     const { state } = useStore();
     const { cpu } = state;
 
     return (<Box title="Z80">
-        <div style={style.registers}>
+        <div style={gridStyle} className={css.registers}>
             <Register name="AF" value={cpu.af} size={4} />
             <Register name="BC" value={cpu.bc} size={4} />
             <Register name="DE" value={cpu.de} size={4} />
@@ -45,7 +36,7 @@ const CPU = observer(() : JSX.Element => {
             <Register name="IX" value={cpu.ix} size={4} />
             <Register name="IY" value={cpu.iy} size={4} />
         </div>
-        <div style={style.flags}>
+        <div className={css.flags}>
             <Flag name="C" value={cpu.c} />
             <Flag name="N" value={cpu.n} />
             <Flag name="P/V" value={cpu.pv} />

@@ -1,4 +1,5 @@
-import useStore from "../../hooks/useStore";
+import React from "react";
+import useStore from "hooks/useStore";
 import {hex} from "util/hex";
 import css from "css/memory/Stack.module.scss";
 

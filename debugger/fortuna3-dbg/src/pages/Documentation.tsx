@@ -1,17 +1,11 @@
-import {StyleSet} from "../util/types";
 import React from 'react';
+import css from "css/pages/Documentation.module.scss";
 
-const style : StyleSet = {
-    th: {
-        textAlign: "left",
-    },
-}
-
-const TD = (props: React.PropsWithChildren) : JSX.Element => (
-    <td style={{ paddingRight: "16px" }}>{ props.children }</td>
+const TD : React.FC<React.PropsWithChildren> = ({ children }) => (
+    <td style={{ paddingRight: "16px" }}>{ children }</td>
 );
 
-const Documentation = () : JSX.Element => {
+const Documentation : React.FC = () => {
     return (<>
         <h2>Fortuna-3</h2>
         <ul>
@@ -23,30 +17,38 @@ const Documentation = () : JSX.Element => {
 
         <h2>Z80 Output</h2>
         <table>
-            <tr>
-                <th style={style.th}>Hex</th>
-                <th style={style.th}>Bin</th>
-                <th style={style.th}>Description</th>
-            </tr>
-            <tr>
-                <TD>00</TD>
-                <TD>00000000</TD>
-                <TD>UART serial output (print char)</TD>
-            </tr>
+            <thead>
+                <tr>
+                    <th className={css.th}>Hex</th>
+                    <th className={css.th}>Bin</th>
+                    <th className={css.th}>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <TD>00</TD>
+                    <TD>00000000</TD>
+                    <TD>UART serial output (print char)</TD>
+                </tr>
+            </tbody>
         </table>
 
         <h2>Z80 Input</h2>
         <table>
-            <tr>
-                <th style={style.th}>Hex</th>
-                <th style={style.th}>Bin</th>
-                <th style={style.th}>Description</th>
-            </tr>
-            <tr>
-                <TD>00</TD>
-                <TD>00000000</TD>
-                <TD>UART serial input (get input from keyboard)</TD>
-            </tr>
+            <thead>
+                <tr>
+                    <th className={css.th}>Hex</th>
+                    <th className={css.th}>Bin</th>
+                    <th className={css.th}>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <TD>00</TD>
+                    <TD>00000000</TD>
+                    <TD>UART serial input (get input from keyboard)</TD>
+                </tr>
+            </tbody>
         </table>
 
     </>);
