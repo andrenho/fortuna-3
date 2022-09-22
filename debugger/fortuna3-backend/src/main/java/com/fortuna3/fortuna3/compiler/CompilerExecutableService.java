@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.lang.model.util.ElementScanner14;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Objects;
@@ -19,10 +21,18 @@ public class CompilerExecutableService {
 
         tmpdir = Files.createTempDirectory("fortuna").toFile().getAbsolutePath();
 
-        // TODO - what about linux?
-        compilerPath = tmpdir + "/vasmz80_oldstyle-win32.exe";
+        String compilerName;
+        if (System.getProperty("os.name").indexOf("win") >= 0)
+            compilerName = "/vasmz80_oldstyle-win32.exe";
+        else if (System.getProperty("os.name").equals("Linux"))
+            compilerName = "/vasmz80_oldstyle-linux";
+        else
+            throw new RuntimeException("Sorry, operating system unsupported.");
+
+        compilerPath = tmpdir + compilerName;
+
         System.out.println("Compiler extracted to " + compilerPath);
-        try (var is = Objects.requireNonNull(getClass().getResource("/compiler/vasmz80_oldstyle-win32.exe")).openStream();
+        try (var is = Objects.requireNonNull(getClass().getResource("/compiler" + compilerName)).openStream();
              var os = new FileOutputStream(compilerPath)) {
             var b = new byte[2048];
             int length;
@@ -30,6 +40,8 @@ public class CompilerExecutableService {
             while ((length = is.read(b)) != -1)
                 os.write(b, 0, length);
         }
+
+        new File(compilerPath).setExecutable(true);
     }
 
     @PreDestroy
