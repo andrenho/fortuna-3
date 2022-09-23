@@ -1,5 +1,5 @@
 import React, {PropsWithChildren, useState} from "react";
-import css from "css/common/Box.module.scss"
+import css from "./Box.module.scss"
 
 type BoxProps = {
     title: string,

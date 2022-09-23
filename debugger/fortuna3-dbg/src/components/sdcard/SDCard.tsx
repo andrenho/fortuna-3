@@ -1,6 +1,6 @@
 import {observer} from "mobx-react-lite";
 import useStore from "hooks/useStore";
-import FlatData from "components/common/FlatData";
+import FlatData from "components/common/flat-data/FlatData";
 import SDCardImageDownloader from "./SDCardImageDownloader";
 
 const SDCard : React.FC = observer(() => {

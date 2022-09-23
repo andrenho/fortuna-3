@@ -1,7 +1,7 @@
 import React from "react";
 import useStore from "hooks/useStore";
 import {hex} from "util/hex";
-import css from "css/memory/Stack.module.scss";
+import css from "./Stack.module.scss";
 
 const Stack : React.FC = () => {
 

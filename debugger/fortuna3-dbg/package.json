@@ -9,7 +9,8 @@
     "mobx": "^6.6.0",
     "mobx-react-lite": "^3.4.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "tsconfig-paths-webpack-plugin": "^4.0.0"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^6.5.12",

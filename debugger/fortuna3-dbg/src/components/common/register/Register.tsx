@@ -1,6 +1,6 @@
 import React from "react";
 import {hex} from "util/hex";
-import css from "css/common/Register.module.scss"
+import css from "./Register.module.scss"
 
 type RegisterProps = {
     name: string,

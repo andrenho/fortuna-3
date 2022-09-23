@@ -1,9 +1,9 @@
-import Box from "./common/Box";
+import Box from "components/common/box/Box";
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {range} from "util/array";
 import useStore from "hooks/useStore";
-import css from "css/UART.module.scss";
+import css from "./UART.module.scss";
 
 type CharacterProps = {
     char: string,

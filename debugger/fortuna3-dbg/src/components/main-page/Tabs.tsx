@@ -1,5 +1,5 @@
 import React from "react";
-import css from "css/main-page/Tabs.module.scss";
+import css from "./Tabs.module.scss";
 
 type TabProps = {
     selected: number,

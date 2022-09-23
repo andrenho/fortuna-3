@@ -2,7 +2,7 @@ import {observer} from "mobx-react-lite";
 import useStore from "hooks/useStore";
 import {SourceLine} from "store/types/debuggingInfo";
 import {hex} from "util/hex";
-import css from "css/code/Code.module.scss";
+import css from "./Code.module.scss";
 
 const sourceFileNotFound : SourceLine[] = [ { line: "Source file not found in debugging info." } ];
 const projectNotSelected : SourceLine[] = [ { line: "No project is selected." } ];

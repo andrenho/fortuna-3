@@ -1,5 +1,5 @@
 import React from 'react';
-import css from "css/pages/Documentation.module.scss";
+import css from "./Documentation.module.scss";
 
 const TD : React.FC<React.PropsWithChildren> = ({ children }) => (
     <td style={{ paddingRight: "16px" }}>{ children }</td>

@@ -1,6 +1,6 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
-import FlatData, {Highlights} from "components/common/FlatData";
+import FlatData, {Highlights} from "components/common/flat-data/FlatData";
 import useStore from "hooks/useStore";
 import Stack from "./Stack";
 import MemoryBanks from "./MemoryBanks";

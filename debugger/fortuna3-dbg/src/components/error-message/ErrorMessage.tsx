@@ -1,7 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import useStore from "hooks/useStore";
-import css from "css/ErrorMessage.module.scss";
+import css from "./ErrorMessage.module.scss";
 
 const ErrorMessage : React.FC = observer(() => {
 

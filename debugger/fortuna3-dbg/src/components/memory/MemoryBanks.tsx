@@ -1,8 +1,8 @@
+import React from "react";
 import {hex} from "util/hex";
 import {range} from "util/array";
 import useStore from "hooks/useStore";
-import css from "css/memory/MemoryBanks.module.scss";
-import React from "react";
+import css from "./MemoryBanks.module.scss";
 
 interface MemoryBankProps {
     index: number,

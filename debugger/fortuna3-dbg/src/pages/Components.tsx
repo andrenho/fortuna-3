@@ -1,9 +1,9 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import RAM from "components/memory/Ram";
-import CPU from "components/Cpu";
+import CPU from "components/cpu/Cpu";
 import Debugger from "components/code/Debugger";
-import UART from "components/UART";
+import UART from "components/uart/UART";
 import useStore from "hooks/useStore";
 
 const Components : React.FC = observer(() => {

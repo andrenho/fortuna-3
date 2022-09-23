@@ -1,10 +1,10 @@
 import {observer} from "mobx-react-lite";
-import Box from "./common/Box";
-import Register from "./common/Register";
-import Flag from "./common/Flag";
+import Box from "components/common/box/Box";
+import Register from "components/common/register/Register";
+import Flag from "components/common/flag/Flag";
 import useStore from "hooks/useStore";
 import CSS from "csstype";
-import css from "css/CPU.module.scss";
+import css from "./Cpu.module.scss";
 
 const columns = 7;
 const rows = 2;

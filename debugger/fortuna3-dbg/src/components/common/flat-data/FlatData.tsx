@@ -1,9 +1,9 @@
 import React, {PropsWithChildren, useEffect, useState} from "react";
-import Box from "./Box";
+import Box from "components/common/box/Box";
 import {hex} from "util/hex";
 import {range} from "util/array";
 import CSS from "csstype";
-import css from "css/common/FlatData.module.scss"
+import css from "./FlatData.module.scss"
 
 export type Highlights = {[key: number]: string};
 
