@@ -6,7 +6,7 @@ export default {
     component: Flag,
 } as ComponentMeta<typeof Flag>;
 
-const Template: ComponentStory<typeof Flag> = (args) => <Flag {...args}><p>My content</p></Flag>;
+const Template: ComponentStory<typeof Flag> = (args) => <Flag {...args} />;
 
 export const MyFlag = Template.bind({});
 MyFlag.args = {
