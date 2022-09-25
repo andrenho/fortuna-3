@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import Tabs from "../components/main-page/Tabs";
 import Components from "./Components";
-import SDCard from "components/sdcard/SDCard";
 import {observer} from "mobx-react-lite";
 import EmulatorControls from "components/main-page/EmulatorControls";
 import ErrorMessage from "components/error-message/ErrorMessage";
 import Documentation from "./Documentation";
 import useStore from 'hooks/useStore';
+import SDCardPage from './SDCardPage';
 
 const App : React.FC = observer(() => {
 
@@ -19,7 +19,7 @@ const App : React.FC = observer(() => {
         <ErrorMessage currentError={store.currentError} />
         <div style={{padding:"16px"}}>
             {selectedTab === 0 && <Components />}
-            {selectedTab === 1 && <SDCard />}
+            {selectedTab === 1 && <SDCardPage />}
             {selectedTab === 2 && <Documentation />}
         </div>
     </>;

@@ -8,13 +8,13 @@ import useStore from "hooks/useStore";
 
 const Components : React.FC = observer(() => {
 
-    const { uartTerminal } = useStore();
+    const { uartTerminal, state } = useStore();
 
     return <div style={{display: "flex", flexDirection: "row", gap: "16px", flexWrap: "wrap", alignItems: "flex-start"}}>
         <Debugger />
         <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
             <UART rows={uartTerminal.terminalRows} columns={uartTerminal.terminalColumns} />
-            <CPU />
+            <CPU cpu={state.cpu} />
             <RAM />
         </div>
     </div>;
