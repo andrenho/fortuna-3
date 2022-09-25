@@ -5,6 +5,11 @@ import Flag from "components/common/flag/Flag";
 import useStore from "hooks/useStore";
 import CSS from "csstype";
 import css from "./Cpu.module.scss";
+import {Z80State} from "fortuna3-emu";
+
+type CpuProps = {
+    cpu: Z80State,
+}
 
 const columns = 7;
 const rows = 2;
@@ -15,10 +20,7 @@ const gridStyle : CSS.Properties = {
     gridTemplateAreas: (`"${". ".repeat(columns)}" `).repeat(rows) + `"${"flags ".repeat(columns)}"`,
 }
 
-const CPU : React.FC = observer(() => {
-
-    const { state } = useStore();
-    const { cpu } = state;
+const CPU : React.FC<CpuProps> = observer(({ cpu }) => {
 
     return (<Box title="Z80">
         <div style={gridStyle} className={css.registers}>

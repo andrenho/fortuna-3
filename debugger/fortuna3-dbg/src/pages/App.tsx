@@ -6,15 +6,17 @@ import {observer} from "mobx-react-lite";
 import EmulatorControls from "components/main-page/EmulatorControls";
 import ErrorMessage from "components/error-message/ErrorMessage";
 import Documentation from "./Documentation";
+import useStore from 'hooks/useStore';
 
 const App : React.FC = observer(() => {
 
     const [selectedTab, setSelectedTab] = useState(0);
+    const store = useStore();
 
     return <>
         <EmulatorControls />
         <Tabs tabs={["Components", "SD Card", "Documentation"]} selected={selectedTab} onChange={i => setSelectedTab(i)} />
-        <ErrorMessage />
+        <ErrorMessage currentError={store.currentError} />
         <div style={{padding:"16px"}}>
             {selectedTab === 0 && <Components />}
             {selectedTab === 1 && <SDCard />}

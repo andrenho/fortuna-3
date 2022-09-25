@@ -5,7 +5,7 @@ export interface FortunaModule extends EmscriptenModule {
 }
 declare var Module : FortunaModule;
 
-interface Z80State {
+export interface Z80State {
     af: number,
     bc: number,
     de: number,
