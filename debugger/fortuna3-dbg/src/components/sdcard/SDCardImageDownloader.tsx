@@ -1,23 +1,10 @@
+import React from "react";
 import {observer} from "mobx-react-lite";
-import {StyleSet} from "../../util/types";
-import useStore from "../../hooks/useStore";
+import useStore from "hooks/useStore";
 import FileSaver from "file-saver";
+import css from "./SDCardImageDownloader.module.scss";
 
-const style : StyleSet = {
-    container: {
-        paddingRight: "8px",
-        width: "100%",
-        textAlign: "right",
-    },
-    link: {
-        color: "blue",
-        textDecoration: "none",
-        cursor: "pointer",
-    }
-}
-
-
-const SDCardImageDownloader = observer(() : JSX.Element => {
+const SDCardImageDownloader : React.FC = observer(() => {
 
     const store = useStore();
 
@@ -29,7 +16,9 @@ const SDCardImageDownloader = observer(() : JSX.Element => {
         }
     };
 
-    return <div style={style.container}><span style={style.link} onClick={linkClicked}>&#x1f4be; Download disk image</span></div>;
+    return <div className={css.container}>
+        <span className={css.link} onClick={linkClicked}>&#x1f4be; Download disk image</span>
+    </div>;
 });
 
 export default SDCardImageDownloader;

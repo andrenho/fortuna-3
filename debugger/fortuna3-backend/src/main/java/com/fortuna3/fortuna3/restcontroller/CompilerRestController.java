@@ -2,16 +2,16 @@ package com.fortuna3.fortuna3.restcontroller;
 
 import com.fortuna3.fortuna3.compiler.CompilerService;
 import com.fortuna3.fortuna3.output.DebuggingInfoDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class CompilerRestController {
 
-    @Autowired
-    private CompilerService compilerService;
+    private final CompilerService compilerService;
 
     @GetMapping("/compiler/crc")
     public ResponseEntity<Integer> getCrc() {

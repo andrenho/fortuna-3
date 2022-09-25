@@ -1,13 +1,14 @@
 package com.fortuna3.fortuna3.compiler;
 
-import lombok.Data;
+import lombok.Builder;
 
-@Data
-public class RawCompilerOutputDTO {
-    private int status;
-    private String compilerOutput;
-    private String compilerError;
-    private String listing;
-    private byte[] rom;
-    private String mainSourceFile;
+@Builder
+public record RawCompilerOutputDTO(
+    int status,
+    String compilerOutput,
+    String compilerError,
+    String listing,
+    byte[] rom,
+    String mainSourceFile
+) {
 }

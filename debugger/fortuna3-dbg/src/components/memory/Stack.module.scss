@@ -1,0 +1,19 @@
+.main {
+  padding-top: 12px;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  justify-content: start;
+  flex-direction: column;
+}
+
+.title {
+  font-weight: bold;
+  padding-right: 12px;
+}
+
+.arrow {
+  grid-column: 2;
+  font-weight: bold;
+  font-size: 10px;
+}

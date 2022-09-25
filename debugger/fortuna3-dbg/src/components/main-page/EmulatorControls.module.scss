@@ -1,0 +1,17 @@
+.buttons {
+  position: fixed;
+  top: 0;
+  right: 0;
+  border-left: 2px solid black;
+  border-bottom: 2px solid black;
+  padding: 12px;
+  background: white;
+  z-index: 100;
+  box-shadow: 6px 6px 6px lightgray;
+  display: flex;
+}
+
+.button {
+  height: 32px;
+  width: 48px;
+}

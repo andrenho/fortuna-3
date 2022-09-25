@@ -1,28 +1,9 @@
-import useStore from "../../hooks/useStore";
-import {StyleSet} from "../../util/types";
-import {hex} from "../../util/hex";
+import React from "react";
+import useStore from "hooks/useStore";
+import {hex} from "util/hex";
+import css from "./Stack.module.scss";
 
-const style : StyleSet = {
-    main : {
-        paddingTop: "12px",
-        display: "grid",
-        gridTemplateColumns: "auto auto",
-        gridTemplateRows: "auto auto",
-        justifyContent: "start",
-        flexDirection: "column",
-    },
-    title : {
-        fontWeight: "bold",
-        paddingRight: "12px",
-    },
-    arrow : {
-        gridColumn: "2",
-        fontWeight: "bold",
-        fontSize: "10px",
-    },
-}
-
-export default function Stack() : JSX.Element {
+const Stack : React.FC = () => {
 
     const { state } = useStore();
 
@@ -30,9 +11,11 @@ export default function Stack() : JSX.Element {
     for (let i = 0; i < state.stack.length; i += 2)
         values.push(hex(state.stack[i] | (state.stack[i + 1] << 8), 4));
 
-    return (<div style={style.main}>
-        <div style={style.title}>Stack:</div>
+    return <div className={css.main}>
+        <div className={css.title}>Stack:</div>
         <div>{ values.join(" ") }</div>
-        <div style={style.arrow}>PUSH <span style={{letterSpacing: "-2px"}}>--&gt;</span></div>
-    </div>);
+        <div className={css.arrow}>PUSH <span style={{letterSpacing: "-2px"}}>--&gt;</span></div>
+    </div>;
 }
+
+export default Stack;

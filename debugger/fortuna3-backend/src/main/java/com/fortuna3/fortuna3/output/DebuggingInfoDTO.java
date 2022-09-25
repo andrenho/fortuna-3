@@ -1,22 +1,14 @@
 package com.fortuna3.fortuna3.output;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Builder;
 
 import java.util.Map;
 
-@Data
-@EqualsAndHashCode
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DebuggingInfoDTO {
-
-    private boolean success;
-    private Map<String, SourceProjectDTO> projects;
-    private String errorMessage;
-    private Integer sdCardSizeInMB;
-
-    public Integer getHash() {
+public record DebuggingInfoDTO(boolean success, Map<String, SourceProjectDTO> projects, String errorMessage, Integer sdCardSizeInMB) {
+    public Integer hash() {
         return hashCode();
     }
 }

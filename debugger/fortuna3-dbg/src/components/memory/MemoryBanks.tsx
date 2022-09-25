@@ -1,57 +1,35 @@
-import {PropsWithChildren} from "react";
-import {StyleSet} from "../../util/types";
-import {hex} from "../../util/hex";
-import {range} from "../../util/array";
-import useStore from "../../hooks/useStore";
-
-const style : StyleSet = {
-    main: {
-        display: "flex",
-        alignItems: "center",
-        paddingTop: "12px",
-        gap: "3px",
-    },
-    bank: {
-        border: "1px grey solid",
-        height: "44px",
-        width: "32px",
-    },
-    bankInternal: {
-        padding: "4px",
-        height: "36px",
-        width: "24px",
-        textAlign: "center",
-    },
-    bankActive: {
-        padding: "0px",
-        border: "4px solid paleturquoise",
-    },
-}
+import React from "react";
+import {hex} from "util/hex";
+import {range} from "util/array";
+import useStore from "hooks/useStore";
+import css from "./MemoryBanks.module.scss";
 
 interface MemoryBankProps {
     index: number,
     assignedTo?: number | undefined,
 }
 
-function MemoryBank(props: MemoryBankProps) : JSX.Element {
+const MemoryBank : React.FC<MemoryBankProps> = ({ index, assignedTo }) => {
 
-    let internalStyle = {...style.bankInternal};
-    if (props.assignedTo !== undefined)
-        internalStyle = {...internalStyle, ...style.bankActive};
+    let internalClass = css.bankInternal + ' ';
+    if (assignedTo !== undefined)
+        internalClass += css.bankActive;
 
-    return (<div style={style.bank}>
-        <div style={internalStyle}>
-            {hex(props.index, 1)}
-            {props.assignedTo !== undefined && `\n[${hex(props.assignedTo, 1)}]`}
+    return <div className={css.bank}>
+        <div className={internalClass}>
+            {hex(index, 1)}
+            {assignedTo !== undefined && `\n[${hex(assignedTo, 1)}]`}
         </div>
-    </div>);
+    </div>;
 }
 
-export default function MemoryBanks(props: PropsWithChildren) : JSX.Element {
+const MemoryBanks : React.FC = () => {
 
     const { state } = useStore();
 
-    return (<div style={style.main}>
-        { range(16).map(v => <MemoryBank key={`memoryBank_${v}`} index={v} assignedTo={state.ramBanks.find(w => w === v)} />) }
-    </div>);
+    return <div className={css.main}>
+        { range(16).map(v => <MemoryBank key={`memoryBank_${v}`} index={v} assignedTo={state.ramBanks.find((w : number) => w === v)} />) }
+    </div>;
 }
+
+export default MemoryBanks;

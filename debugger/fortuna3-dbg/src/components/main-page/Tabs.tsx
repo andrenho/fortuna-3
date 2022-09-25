@@ -1,70 +1,25 @@
-import CSS from "csstype";
 import React from "react";
+import css from "./Tabs.module.scss";
 
-const tabs : CSS.Properties = {
-    display: "flex",
-    flexDirection: "row",
-    whiteSpace: "nowrap",
-};
-
-const tabStart : CSS.Properties = {
-    borderBottom: "1px black solid",
-    width: "24px",
-};
-
-const tabEnd : CSS.Properties = {
-    borderBottom: "1px black solid",
-    width: "100%",
-};
-
-const tab : CSS.Properties = {
-    borderWidth: "1px",
-    borderStyle: "solid",
-    borderColor: "black",
-    padding: "6px 14px",
-    cursor: "pointer",
-    background: "lightgray",
-    fontWeight: "bold",
-    boxShadow: "6px 6px 6px lightgray",
-};
-
-const tabSelected : CSS.Properties = {
-    ...tab,
-    background: "white",
-    borderWidth: "1px 1px 0 1px",
-};
-
-const tabMiddle : CSS.Properties = {
-    borderBottom: "1px black solid",
-    width: "24px",
-};
-
-const whiteBox : CSS.Properties = {
-    background: "white",
-    position: "relative",
-    height: "10px",
-    zIndex: "1",
-};
-
-interface TabProps {
+type TabProps = {
     selected: number,
     tabs: string[],
     onChange: (selectedElement: number) => void,
 }
 
-function Tab(props: TabProps) : JSX.Element {
+const Tab : React.FC<TabProps> = ({ selected, tabs, onChange }) => {
 
-    return (<>
-        <div style={tabs}>
-            <div style={tabStart}></div>
-            { props.tabs.map((text, i) => (<React.Fragment key={i}>
-                <div style={props.selected === i ? tabSelected : tab} onClick={() => props.onChange(i)}>{ text }</div>
-                <div style={tabMiddle} />
+    return <>
+        <div className={css.tabs}>
+            <div className={css.tabStart}></div>
+            { tabs.map((text, i) => (<React.Fragment key={i}>
+                <div className={selected === i ? css.tabSelected : css.tab} onClick={() => onChange(i)}>{ text }</div>
+                <div className={css.tabMiddle} />
             </React.Fragment>)) }
-            <div style={tabEnd}></div>
+            <div className={css.tabEnd}></div>
         </div>
-        <div style={whiteBox}></div>
-    </>);
+        <div className={css.whiteBox}></div>
+    </>;
 }
 
 export default Tab;

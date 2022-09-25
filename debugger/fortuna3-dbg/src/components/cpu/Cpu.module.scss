@@ -1,0 +1,11 @@
+.registers {
+  display: grid;
+  justify-content: start;
+  column-gap: 10px;
+  row-gap: 14px;
+}
+
+.flags {
+  display: flex;
+  gap: 12px;
+}

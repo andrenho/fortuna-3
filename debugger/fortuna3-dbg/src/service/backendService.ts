@@ -1,4 +1,4 @@
-import DebuggingInfo from "../store/types/debuggingInfo";
+import DebuggingInfo from "store/types/debuggingInfo";
 
 function backendHostname() {
     return window.location.href.replace("8024", "8025");
