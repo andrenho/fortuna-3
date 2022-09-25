@@ -5,14 +5,17 @@ import useStore from 'hooks/useStore';
 
 const SDCardPage : React.FC = observer(() => {
 
-    const { sdCardPage, setSdCardPage, downloadSdCardImage, debuggingInfo, state } = useStore();
+    const store = useStore();
+
+    if (store.debuggingInfo === undefined)
+        return <></>;
 
     return <SDCard
-        currentPage={sdCardPage}
-        sdCardSizeInMB={debuggingInfo.sdCardSizeInMB}
-        currentPageBytes={state.sdCardPage}
-        onPageChange={n => setSdCardPage(n)}
-        getCompressedImageBytes={downloadSdCardImage}
+        currentPage={store.sdCardPage}
+        sdCardSizeInMB={store.debuggingInfo.sdCardSizeInMB}
+        currentPageBytes={store.state.sdCardPage}
+        onPageChange={n => store.setSdCardPage(n)}
+        getCompressedImageBytes={() => store.downloadSdCardImage()}
     />;
 });
 

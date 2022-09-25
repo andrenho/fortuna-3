@@ -21,7 +21,7 @@ const SDCard : React.FC<SDCardProps> = observer(({ currentPage, sdCardSizeInMB, 
         }
     };
 
-    const SDCardDownloadLink = () => <div className={css.container}>
+    const SDCardDownloadLink : React.FC = () => <div className={css.container}>
         <span className={css.link} onClick={downloadLinkClicked}>&#x1f4be; Download disk image</span>
     </div>;
 

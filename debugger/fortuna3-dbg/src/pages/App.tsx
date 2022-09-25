@@ -11,12 +11,12 @@ import SDCardPage from './SDCardPage';
 const App : React.FC = observer(() => {
 
     const [selectedTab, setSelectedTab] = useState(0);
-    const store = useStore();
+    const {currentError} = useStore();
 
     return <>
         <EmulatorControls />
         <Tabs tabs={["Components", "SD Card", "Documentation"]} selected={selectedTab} onChange={i => setSelectedTab(i)} />
-        <ErrorMessage currentError={store.currentError} />
+        <ErrorMessage currentError={currentError} />
         <div style={{padding:"16px"}}>
             {selectedTab === 0 && <Components />}
             {selectedTab === 1 && <SDCardPage />}
