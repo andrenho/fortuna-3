@@ -1,15 +1,16 @@
 import React from "react";
-import useStore from "hooks/useStore";
 import {hex} from "util/hex";
 import css from "./Stack.module.scss";
 
-const Stack : React.FC = () => {
+type StackProps = {
+    stack: Uint8Array;
+}
 
-    const { state } = useStore();
+const Stack : React.FC<StackProps> = ({ stack }) => {
 
     const values : string[] = [];
-    for (let i = 0; i < state.stack.length; i += 2)
-        values.push(hex(state.stack[i] | (state.stack[i + 1] << 8), 4));
+    for (let i = 0; i < stack.length; i += 2)
+        values.push(hex(stack[i] | (stack[i + 1] << 8), 4));
 
     return <div className={css.main}>
         <div className={css.title}>Stack:</div>

@@ -24,8 +24,8 @@ const RAM : React.FC = observer(() => {
             highlightOffset={highlights}
             onPageChange={(n) => store.setRamPage(n)}
         >
-            <Stack />
-            <MemoryBanks />
+            <Stack stack={store.state.stack} />
+            <MemoryBanks ramBanks={store.state.ramBanks} bankCount={16} />
         </FlatData>;
 
 });
