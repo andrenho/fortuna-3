@@ -1,4 +1,5 @@
 import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
+import { useState } from "react";
 import RAM from "./Ram";
 
 export default {
@@ -7,14 +8,18 @@ export default {
     argTypes: {
         bytes: { control: false },
         stack: { control: false },
+        ramPage: { control: false },
         onPageChange: { type: "function" }
     }
 } as ComponentMeta<typeof RAM>;
 
-const array = new Uint8Array(256);
+const array = new Uint8Array(64 * 1024);
 window.crypto.getRandomValues(array);
 
-const Template: ComponentStory<typeof RAM> = (args) => <RAM {...args} />;
+const Template: ComponentStory<typeof RAM> = (args) => {
+    const [ramPage, setRamPage] = useState(0);
+    return <RAM {...args} ramPage={ramPage} onPageChange={n => setRamPage(n)} bytes={array.slice(ramPage * 256, (ramPage + 1) * 256)} />;
+}
 
 export const MyRAM = Template.bind({});
 MyRAM.args = {
