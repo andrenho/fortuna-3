@@ -13,7 +13,13 @@ const Components : React.FC = observer(() => {
     return <div style={{display: "flex", flexDirection: "row", gap: "16px", flexWrap: "wrap", alignItems: "flex-start"}}>
         <Debugger />
         <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
-            <UART rows={store.uartTerminal.terminalRows} columns={store.uartTerminal.terminalColumns} />
+            <UART 
+                rows={store.uartTerminal.terminalRows}
+                columns={store.uartTerminal.terminalColumns} 
+                cursorX={store.uartTerminal.cursorX}
+                cursorY={store.uartTerminal.cursorY}
+                lines={store.uartTerminal.lines}
+            />
             <CPU cpu={store.state.cpu} />
             <RAM
                 pc={store.state.cpu.pc}
