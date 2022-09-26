@@ -8,20 +8,20 @@ import useStore from "hooks/useStore";
 
 const Components : React.FC = observer(() => {
 
-    const { state, uartTerminal, setRamPage, ramPage } = useStore();
+    const store = useStore();
 
     return <div style={{display: "flex", flexDirection: "row", gap: "16px", flexWrap: "wrap", alignItems: "flex-start"}}>
         <Debugger />
         <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
-            <UART rows={uartTerminal.terminalRows} columns={uartTerminal.terminalColumns} />
-            <CPU cpu={state.cpu} />
+            <UART rows={store.uartTerminal.terminalRows} columns={store.uartTerminal.terminalColumns} />
+            <CPU cpu={store.state.cpu} />
             <RAM
-                pc={state.cpu.pc}
-                ramPage={ramPage}
-                ramBanks={state.ramBanks}
-                stack={state.stack}
-                bytes={state.ramPage}
-                onPageChange={setRamPage}
+                pc={store.state.cpu.pc}
+                ramPage={store.ramPage}
+                ramBanks={store.state.ramBanks}
+                stack={store.state.stack}
+                bytes={store.state.ramPage}
+                onPageChange={n => store.setRamPage(n)}
             />
         </div>
     </div>;

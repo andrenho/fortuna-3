@@ -5,12 +5,12 @@ import Stack from "./Stack";
 import MemoryBanks from "./MemoryBanks";
 
 type RAMProps = {
-    pc: number,
-    ramPage: number,
-    bytes: Uint8Array,
-    stack: Uint8Array,
-    ramBanks: number[],
-    onPageChange: (n: number) => void,
+    pc: number;
+    ramPage: number;
+    bytes: Uint8Array;
+    stack: Uint8Array;
+    ramBanks: number[];
+    onPageChange: (n: number) => void;
 }
 
 const RAM : React.FC<RAMProps> = observer(({pc, ramPage, bytes, stack, ramBanks, onPageChange}) => {

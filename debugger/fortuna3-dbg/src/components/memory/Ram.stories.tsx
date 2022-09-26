@@ -7,6 +7,7 @@ export default {
     argTypes: {
         bytes: { control: false },
         stack: { control: false },
+        onPageChange: { type: "function" }
     }
 } as ComponentMeta<typeof RAM>;
 
