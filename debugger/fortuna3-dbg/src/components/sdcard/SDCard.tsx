@@ -7,8 +7,8 @@ type SDCardProps = {
     currentPage: number,
     sdCardSizeInMB: number,
     currentPageBytes: Uint8Array,
-    onPageChange : (n : number) => void;
-    getCompressedImageBytes : () => Uint8Array;
+    onPageChange : (n : number) => void,
+    getCompressedImageBytes : () => Uint8Array,
 }
 
 const SDCard : React.FC<SDCardProps> = observer(({ currentPage, sdCardSizeInMB, currentPageBytes, getCompressedImageBytes, onPageChange}) => {
