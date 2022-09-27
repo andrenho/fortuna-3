@@ -1,6 +1,5 @@
 import {observer} from "mobx-react-lite";
 import css from "./FileChooser.module.scss";
-import { Source } from "store/types/debuggingInfo";
 
 type FileChooserProps = {
     selectedFile: string | undefined,

@@ -5,6 +5,9 @@ import FileChooser from "./FileChooser";
 export default {
     title: 'code/FileChooser',
     component: FileChooser,
+    argTypes: {
+        selectedFile: { control: false }
+    }
 } as ComponentMeta<typeof FileChooser>;
 
 const Template: ComponentStory<typeof FileChooser> = (args) => {
@@ -13,7 +16,7 @@ const Template: ComponentStory<typeof FileChooser> = (args) => {
     return <FileChooser 
         {...args}
         selectedFile={selectedFile}
-        onSelectFile={n => setSelectedFile(selectedFile)}
+        onSelectFile={newFile => setSelectedFile(newFile)}
     />;
 };
 
