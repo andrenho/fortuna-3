@@ -9,7 +9,6 @@ export default {
         bytes: { control: false },
         stack: { control: false },
         ramPage: { control: false },
-        onPageChange: { type: "function" }
     }
 } as ComponentMeta<typeof RAM>;
 

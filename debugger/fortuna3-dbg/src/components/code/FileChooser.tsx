@@ -1,22 +1,21 @@
 import {observer} from "mobx-react-lite";
-import useStore from "hooks/useStore";
 import css from "./FileChooser.module.scss";
+import { Source } from "store/types/debuggingInfo";
 
 type FileChooserProps = {
     selectedFile: string | undefined,
     onSelectFile: (filename: string) => void;
+    fileList: string[];
 };
 
-const FileChooser : React.FC<FileChooserProps> = observer(({selectedFile, onSelectFile}) => {
-
-    const { currentProject } = useStore();
+const FileChooser : React.FC<FileChooserProps> = observer(({selectedFile, onSelectFile, fileList}) => {
 
     return <div className={css.files}>
-        { currentProject && Object.keys(currentProject!.source).map((filename, i) =>
+        { fileList.map((filename, i) =>
             <div
                 className={css.file}
                 style={{
-                    ...(i === Object.keys(currentProject!.source).length - 1) ? {borderBottom: "1px black solid"} : undefined,
+                    ...(i === fileList.length - 1) ? {borderBottom: "1px black solid"} : undefined,
                     ...(filename === selectedFile) ? {backgroundColor: "aquamarine"} : undefined,
                 }}
                 key={`fc_${filename}`}
