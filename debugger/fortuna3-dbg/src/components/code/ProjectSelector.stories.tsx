@@ -6,7 +6,7 @@ export default {
     title: 'code/ProjectSelector',
     component: ProjectSelector,
     argTypes: {
-        selectedFile: { control: false }
+        selectedProject: { control: false }
     }
 } as ComponentMeta<typeof ProjectSelector>;
 
