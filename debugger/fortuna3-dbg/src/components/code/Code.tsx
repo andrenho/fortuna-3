@@ -2,7 +2,6 @@ import {observer} from "mobx-react-lite";
 import {SourceLine} from "store/types/debuggingInfo";
 import {hex} from "util/hex";
 import css from "./Code.module.scss";
-import { Source } from "store/types/debuggingInfo";
 
 const sourceFileNotFound : SourceLine[] = [ { line: "Source file not found in debugging info." } ];
 
