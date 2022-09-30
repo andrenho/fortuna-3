@@ -14,7 +14,7 @@ const Stack : React.FC<StackProps> = ({ stack }) => {
 
     return <div className={css.main}>
         <div className={css.title}>Stack:</div>
-        <div>{ values.map(v => <Hex value={v} spaceAfter />) }</div>
+        <div>{ values.map((v, i) => <Hex key={`stack_${i}`} value={v} spaceAfter />) }</div>
         <div className={css.arrow}>PUSH <span style={{letterSpacing: "-2px"}}>--&gt;</span></div>
     </div>;
 }

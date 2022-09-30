@@ -39,9 +39,15 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
                         style={{background: (breakpoints.includes(line.address!)) ? "red" : undefined}}
                         onClick={() => line.address !== undefined && swapBreakpoint(line.address)}>
                     </td>
-                    <td className={css.address}>{ line.address != null ? <Hex value={line.address} pad={4} /> : undefined }</td>
-                    <td className={css.line}>{ parseCode(line.line) }</td>
-                    <td className={css.bytes}>{ line.bytes != null ? line.bytes.map(v => <Hex value={v} spaceAfter />) : undefined }</td>
+                    <td className={css.address}>
+                        { line.address != null ? <Hex key={`addr_${line.address}`} value={line.address} pad={4} /> : undefined }
+                    </td>
+                    <td className={css.line}>
+                        { parseCode(line.line) }
+                    </td>
+                    <td className={css.bytes}>
+                        { line.bytes != null ? line.bytes.map((v, j) => <Hex key={`b_${i}_${j}`} value={v} spaceAfter />) : undefined }
+                    </td>
                 </tr>
             ))}
             <tr style={{backgroundColor: "white"}}>

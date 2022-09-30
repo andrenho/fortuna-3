@@ -7,7 +7,8 @@ export default {
     title: 'code/Code',
     component: Code,
     argTypes: {
-        selectedFile: { control: false }
+        selectedFile: { control: false },
+        breakpoints: { control: false }
     }
 } as ComponentMeta<typeof Code>;
 
