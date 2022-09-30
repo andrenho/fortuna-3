@@ -1,5 +1,5 @@
 import React from "react";
-import {hex} from "util/hex";
+import Hex from "../hex/Hex";
 import css from "./Register.module.scss"
 
 type RegisterProps = {
@@ -11,7 +11,7 @@ type RegisterProps = {
 const Register : React.FC<RegisterProps> = ({ name, value, size }) => {
     return <div>
         <div className={css.name}>{ name }</div>
-        <div className={css.value}>{ hex(value, size) }</div>
+        <div className={css.value}><Hex value={value} pad={size} /></div>
     </div>;
 };
 

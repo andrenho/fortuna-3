@@ -1,6 +1,6 @@
+import Hex from "components/common/hex/Hex";
 import {observer} from "mobx-react-lite";
 import {SourceLine} from "store/types/debuggingInfo";
-import {hex} from "util/hex";
 import css from "./Code.module.scss";
 
 const sourceFileNotFound : SourceLine[] = [ { line: "Source file not found in debugging info." } ];
@@ -39,9 +39,9 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
                         style={{background: (breakpoints.includes(line.address!)) ? "red" : undefined}}
                         onClick={() => line.address !== undefined && swapBreakpoint(line.address)}>
                     </td>
-                    <td className={css.address}>{ line.address != null ? hex(line.address, 4) : undefined }</td>
+                    <td className={css.address}>{ line.address != null ? <Hex value={line.address} pad={4} /> : undefined }</td>
                     <td className={css.line}>{ parseCode(line.line) }</td>
-                    <td className={css.bytes}>{ line.bytes != null ? line.bytes.map(v => hex(v, 2)).join(" ") : undefined }</td>
+                    <td className={css.bytes}>{ line.bytes != null ? line.bytes.map(v => <Hex value={v} spaceAfter />) : undefined }</td>
                 </tr>
             ))}
             <tr style={{backgroundColor: "white"}}>
