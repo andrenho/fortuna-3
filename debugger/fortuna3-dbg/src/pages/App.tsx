@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import Tabs from "../components/main-page/Tabs";
-import Components from "./Components";
+import DebuggerPage from "./DebuggerPage";
 import {observer} from "mobx-react-lite";
-import EmulatorControls from "components/main-page/EmulatorControls";
 import ErrorMessage from "components/error-message/ErrorMessage";
 import Documentation from "./Documentation";
 import useStore from 'hooks/useStore';
@@ -14,11 +13,10 @@ const App : React.FC = observer(() => {
     const {currentError} = useStore();
 
     return <>
-        <EmulatorControls />
         <Tabs tabs={["Components", "SD Card", "Documentation"]} selected={selectedTab} onChange={i => setSelectedTab(i)} />
         <ErrorMessage currentError={currentError} />
         <div style={{padding:"16px"}}>
-            {selectedTab === 0 && <Components />}
+            {selectedTab === 0 && <DebuggerPage />}
             {selectedTab === 1 && <SDCardPage />}
             {selectedTab === 2 && <Documentation />}
         </div>
