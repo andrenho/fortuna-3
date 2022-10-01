@@ -29,7 +29,7 @@ const Toolbar : React.FC<ToolbarProps> = ({icons, active, onToggle}) => {
                 if (icon === "separator") {
 
                     first = true;
-                    return <div className={css.separator} />;
+                    return <div key="separator" className={css.separator} />;
 
                 } else {
 
