@@ -21,7 +21,6 @@ export const ToolbarToggle : React.FC<ToolbarToggleProps> = ({value, icon, text,
     >
         { icon && <FontAwesomeIcon
             icon={icon}
-            size="lg"
             fixedWidth
             color={color || 'black'}
             className={css.icon}
@@ -37,10 +36,10 @@ type ToolbarButtonProps = {
     text?: string;
     color?: string;
     title?: string;
-    onClick: () => void;
+    onClick?: () => void;
 }
 
-export const ToolbarButton : React.FC<ToolbarButtonProps> = ({icon, text, color, title, onClick}) => {
+export const ToolbarButton : React.FC<ToolbarButtonProps> = ({icon, text, color, title, onClick=()=>{}}) => {
 
     const [value, setValue] = useState(false);
     const onToggle = () => {

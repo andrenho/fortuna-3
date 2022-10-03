@@ -9,6 +9,7 @@
     text-align: center;
     cursor: pointer;
     margin-right: -1px;
+    user-select: none;
 }
 
 .active {
@@ -23,7 +24,7 @@
 }
 
 .icon {
-    padding: 7px 0;
+    padding: 9px 0;
 }
 
 .separator {

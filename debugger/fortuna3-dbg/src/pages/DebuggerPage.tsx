@@ -6,7 +6,8 @@ import Debugger from "components/debugger/Debugger";
 import UART from "components/uart/UART";
 import useStore from "hooks/useStore";
 import css from './DebuggerPage.module.scss';
-import Toolbar, { ToolbarToggle } from "components/main-page/Toolbar";
+import Toolbar, { ToolbarToggle, ToolbarButton, ToolbarSeparator } from "components/main-page/Toolbar";
+import { faPowerOff, faForwardStep, faSquareCaretRight, faForward } from '@fortawesome/free-solid-svg-icons'
 
 const Components : React.FC = observer(() => {
 
@@ -16,12 +17,23 @@ const Components : React.FC = observer(() => {
     const [showUart, setShowUart] = useState(true);
     const [showRam, setShowRam] = useState(false);
 
+    const onReset = () => {
+        if (window.confirm("Are you sure you want to reset the emulation?"))
+            store.reset();
+    }
+
     return <>
         <div className={css.toolbar}>
             <Toolbar>
                 <ToolbarToggle text="CPU" value={showCpu} onToggle={() => setShowCpu(!showCpu)} />
                 <ToolbarToggle text="RAM" value={showRam} onToggle={() => setShowRam(!showRam)} />
                 <ToolbarToggle text="UART" value={showUart} onToggle={() => setShowUart(!showUart)} />
+                <ToolbarSeparator />
+                <ToolbarButton icon={faPowerOff} title="Reset emulator" onClick={onReset} />
+                <ToolbarSeparator />
+                <ToolbarButton icon={faForwardStep} title="Step one instruction" onClick={() => store.step()} />
+                <ToolbarButton icon={faSquareCaretRight} title="Step one screenful" onClick={() => store.stepOneScreenful()} />
+                <ToolbarButton icon={faForward} title="Run" onClick={() => store.run()} />
             </Toolbar>
         </div>
 
