@@ -42,6 +42,7 @@ export default class FortunaStore {
     currentError: string | undefined;
 
     lastUpdated = "never";
+    loading = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -162,10 +163,16 @@ export default class FortunaStore {
     private async updateDebuggingInfoFromBackend() : Promise<void> {
         try {
             const newHash = await fetchBackendCrc();
+
             if (newHash !== this.lastCompilationHash) {
+
+                runInAction(() => this.loading = true);
                 const debuggingInfo = await fetchBackendCompilation();
+                runInAction(() => this.loading = false);
+
                 console.debug("Debugging info updated from backend:");
                 console.debug(debuggingInfo);
+
                 runInAction(() => {
                     this.lastCompilationHash = newHash;
                     this.lastUpdated = new Date().toLocaleTimeString();
@@ -180,7 +187,10 @@ export default class FortunaStore {
                 });
             }
         } catch (e) {
-            runInAction(() => { this.currentError = (e as Error).message; });
+            runInAction(() => { 
+                this.loading = false;
+                this.currentError = (e as Error).message;
+            });
         }
     }
 }

@@ -4,6 +4,8 @@ import useStore from "hooks/useStore";
 import {observer} from "mobx-react-lite";
 import React from "react";
 import ProjectSelector from "../code/ProjectSelector";
+import { faSync } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Debugger : React.FC = observer(() => {
 
@@ -34,7 +36,10 @@ const Debugger : React.FC = observer(() => {
             />
         </div>
 
-        <p style={{margin: 0, fontSize: "13px", textAlign: "right"}}>Last updated at <b>{store.lastUpdated}</b>.</p>
+        <p style={{margin: 0, fontSize: "13px", textAlign: "right"}}>
+            Last updated at <b>{store.lastUpdated}</b>.
+            { store.loading && <span style={{display: "inline-block"}}><FontAwesomeIcon icon={faSync} spin /></span> }
+        </p>
 
     </div>;
 });
