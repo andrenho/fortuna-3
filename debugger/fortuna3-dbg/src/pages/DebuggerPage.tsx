@@ -6,48 +6,37 @@ import Debugger from "components/debugger/Debugger";
 import UART from "components/uart/UART";
 import useStore from "hooks/useStore";
 import css from './DebuggerPage.module.scss';
-import Toolbar, { ToolbarActive, ToolbarIconOrSeparator } from "components/main-page/Toolbar";
-
-const toolbarIcons : ToolbarIconOrSeparator[] = [
-    { key: "cpu", text: "CPU" },
-    { key: "ram", text: "RAM" },
-    { key: "uart", text: "UART" }
-];
+import Toolbar, { ToolbarToggle } from "components/main-page/Toolbar";
 
 const Components : React.FC = observer(() => {
 
     const store = useStore();
 
-    const [activeIcons, setActiveIcons] = useState<ToolbarActive>({
-        "cpu": true,
-        "uart": true,
-    });
-
-    const activateComponent = (key: string) => {
-        setActiveIcons({...activeIcons, [key]: !activeIcons[key]});
-    };
+    const [showCpu, setShowCpu] = useState(true);
+    const [showUart, setShowUart] = useState(true);
+    const [showRam, setShowRam] = useState(false);
 
     return <>
         <div className={css.toolbar}>
-            <Toolbar
-                icons={toolbarIcons}
-                active={activeIcons}
-                onToggle={(key) => activateComponent(key)}
-            />
+            <Toolbar>
+                <ToolbarToggle text="CPU" value={showCpu} onToggle={() => setShowCpu(!showCpu)} />
+                <ToolbarToggle text="RAM" value={showRam} onToggle={() => setShowRam(!showRam)} />
+                <ToolbarToggle text="UART" value={showUart} onToggle={() => setShowUart(!showUart)} />
+            </Toolbar>
         </div>
 
         <div style={{display: "flex", flexDirection: "row", gap: "16px", flexWrap: "wrap", alignItems: "flex-start"}}>
             <Debugger />
             <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
-                { activeIcons["cpu"] && <CPU cpu={store.state.cpu} /> }
-                { activeIcons["uart"] && <UART 
+                { showCpu && <CPU cpu={store.state.cpu} /> }
+                { showUart && <UART 
                     rows={store.uartTerminal.terminalRows}
                     columns={store.uartTerminal.terminalColumns} 
                     cursorX={store.uartTerminal.cursorX}
                     cursorY={store.uartTerminal.cursorY}
                     lines={store.uartTerminal.lines}
                 /> }
-                { activeIcons["ram"] && <RAM
+                { showRam && <RAM
                     pc={store.state.cpu.pc}
                     ramPage={store.ramPage}
                     ramBanks={store.state.ramBanks}

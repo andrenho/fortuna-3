@@ -1,63 +1,63 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PropsWithChildren, useState } from "react";
 import css from "./Toolbar.module.scss";
 
-type ToolbarIcon = {
-    key: string,
-    icon?: IconProp,
-    text?: string,
-    color?: string,
-    description?: string,
-};
-
-export type ToolbarIconOrSeparator = ToolbarIcon | "separator";
-export type ToolbarActive = {[key: string]: boolean};
-
-type ToolbarProps = {
-    icons: ToolbarIconOrSeparator[];
-    active: ToolbarActive;
-    onToggle: (key: string) => void;
+type ToolbarToggleProps = {
+    value: boolean;
+    icon?: IconProp;
+    text?: string;
+    color?: string;
+    title?: string;
+    onToggle?: () => void;
 }
 
-const Toolbar : React.FC<ToolbarProps> = ({icons, active, onToggle}) => {
-    let first = true;
+export const ToolbarToggle : React.FC<ToolbarToggleProps> = ({value, icon, text, color="black", onToggle=()=>{}}, title) => {
+
+    return <div 
+        title={title}
+        onClick={onToggle}
+        className={`${css.button} ${value ? css.active : ''}`}
+    >
+        { icon && <FontAwesomeIcon
+            icon={icon}
+            size="lg"
+            fixedWidth
+            color={color || 'black'}
+            className={css.icon}
+        /> }
+        { text && <span className={css.buttonText}>
+            { text }
+        </span> }
+    </div>;
+};
+
+type ToolbarButtonProps = {
+    icon?: IconProp;
+    text?: string;
+    color?: string;
+    title?: string;
+    onClick: () => void;
+}
+
+export const ToolbarButton : React.FC<ToolbarButtonProps> = ({icon, text, color, title, onClick}) => {
+
+    const [value, setValue] = useState(false);
+    const onToggle = () => {
+        onClick();
+        setValue(true);
+        setTimeout(() => setValue(false), 50);
+    };
+
+    return <ToolbarToggle value={value} icon={icon} text={text} color={color} title={title} onToggle={onToggle} />;
+};
+
+export const ToolbarSeparator : React.FC = () => <div key="separator" className={css.separator} />;
+
+const Toolbar : React.FC<PropsWithChildren> = ({children}) => {
 
     return <div className={css.toolbar}>
-        {
-            icons.map(icon => {
-
-                if (icon === "separator") {
-
-                    first = true;
-                    return <div key="separator" className={css.separator} />;
-
-                } else {
-
-                    const i = icon as ToolbarIcon;
-
-                    const element = <div 
-                        key={`title_${i.key}`}
-                        title={i.description}
-                        onClick={() => onToggle(i.key)}
-                        className={`${css.button} ${first ? css.first : ''} ${active[i.key] ? css.active : ''}`}
-                    >
-                        { i.icon && <FontAwesomeIcon
-                            icon={i.icon}
-                            size="lg"
-                            fixedWidth
-                            color={i.color || 'black'}
-                            className={css.icon}
-                        /> }
-                        { i.text && <span className={css.buttonText}>
-                            { i.text }
-                        </span> }
-                    </div>;
-
-                    first = false;
-                    return element;
-                }
-            })
-        }
+        { children }
     </div>;
 };
 

@@ -6,13 +6,9 @@
     min-width: 36px;
     height: 36px;
     border: 1px silver solid;
-    border-left: 0;
     text-align: center;
     cursor: pointer;
-}
-
-.first {
-    border-left: 1px silver solid !important;
+    margin-right: -1px;
 }
 
 .active {
