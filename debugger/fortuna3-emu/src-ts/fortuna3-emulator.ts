@@ -27,6 +27,12 @@ export interface Z80State {
     s: boolean,
 }
 
+export interface ComputeUnit {
+    p: number,
+    q: number,
+    r: number,
+}
+
 export interface EmulatorState {
     cpu: Z80State,
     breakpoints: number[],
@@ -34,6 +40,7 @@ export interface EmulatorState {
     ramPage: Uint8Array,
     stack: Uint8Array,
     sdCardPage: Uint8Array,
+    computeUnit: ComputeUnit,
     lastError: string | undefined,
 }
 
@@ -84,6 +91,7 @@ export class Fortuna3Emulator {
             error = undefined;
 
         const pair = (n: number) : number => state[n] + (state[n+1] << 8);
+        const quad = (n: number) : number => state[n] + (state[n+1] << 8) + (state[n+2] << 16) + (state[n+3] << 24);
 
         const result : EmulatorState = {
             cpu: {
@@ -106,6 +114,11 @@ export class Fortuna3Emulator {
                 h: !!((state[0] >> 4) & 1),
                 z: !!((state[0] >> 6) & 1),
                 s: !!((state[0] >> 7) & 1),
+            },
+            computeUnit: {
+                p: quad(0x1a),
+                q: quad(0x1e),
+                r: quad(0x22),
             },
             breakpoints: [],
             ramBanks: Array.from(state.slice(0xe4, 0xe8)),

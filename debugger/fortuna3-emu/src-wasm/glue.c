@@ -49,7 +49,8 @@ EMSCRIPTEN_KEEPALIVE FinishReason step_cycles(int cycles)
 
 /* State format:
  *
- *  [0x000 - 0x???] : Z80
+ *  [0x000 - 0x018] : Z80
+ *  [0x01a - 0x026] : Compute unit
  *  [0x080 - 0x0e3] : Breakpoints (16-bit)
  *  [0x0e4 - 0x0e7] : RAM banks
  *  [0x0e8 - 0x0ff] : Stack
@@ -84,6 +85,11 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     data[0x16] = z80.HL1.B.l;
     data[0x17] = z80.HL1.B.h;
     data[0x18] = z80.I;
+
+    // Compute unit
+    *((uint32_t *) &data[0x1a]) = 0;  // TODO
+    *((uint32_t *) &data[0x1e]) = 0;  // TODO
+    *((uint32_t *) &data[0x22]) = 0;  // TODO
 
     // Breakpoints
     for (size_t i = 0; i < MAX_BKPS; ++i) {
