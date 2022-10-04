@@ -2,7 +2,6 @@ import {observer} from "mobx-react-lite";
 import Box from "components/common/box/Box";
 import Register from "components/common/register/Register";
 import Flag from "components/common/flag/Flag";
-import useStore from "hooks/useStore";
 import CSS from "csstype";
 import css from "./Cpu.module.scss";
 import {Z80State} from "fortuna3-emu";
@@ -22,7 +21,7 @@ const gridStyle : CSS.Properties = {
 
 const CPU : React.FC<CpuProps> = observer(({ cpu }) => {
 
-    return (<Box title="Z80">
+    return <Box title="Z80">
         <div style={gridStyle} className={css.registers}>
             <Register name="AF" value={cpu.af} size={4} />
             <Register name="BC" value={cpu.bc} size={4} />
@@ -46,7 +45,7 @@ const CPU : React.FC<CpuProps> = observer(({ cpu }) => {
             <Flag name="Z" value={cpu.z} />
             <Flag name="S" value={cpu.s} />
         </div>
-    </Box>);
+    </Box>;
 });
 
 export default CPU;
