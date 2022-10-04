@@ -1,6 +1,5 @@
 #include "io/io.h"
 
-#include <avr/eeprom.h>
 #include <stdio.h>
 
 #include "config.h"
@@ -8,6 +7,7 @@
 #include "dev/ram.h"
 #include "dev/rtc.h"
 #include "dev/uart.h"
+#include "io/eeprom.h"
 #include "io/ops.h"
 #include "io/iofs.h"
 #include "io/iolcd.h"
@@ -56,7 +56,7 @@ bool io_write(uint8_t addr, uint8_t data)
 
         // eeprom
 
-        case EEPROM_SET:    eeprom_write_byte((uint8_t *) Pa(&ioregs), data); break;
+        case EEPROM_SET:    eeprom_write(Pa(&ioregs), data); break;
 
 		// sdcard
 
@@ -194,7 +194,7 @@ uint8_t io_read(uint8_t addr)
 
         // eeprom
 
-        case EEPROM_GET:        return eeprom_read_byte((uint8_t *) Pa(&ioregs));
+        case EEPROM_GET:        return eeprom_read(Pa(&ioregs));
     }
     
     return 0;

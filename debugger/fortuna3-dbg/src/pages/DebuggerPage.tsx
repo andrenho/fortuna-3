@@ -8,12 +8,14 @@ import useStore from "hooks/useStore";
 import css from './DebuggerPage.module.scss';
 import Toolbar, { ToolbarToggle, ToolbarButton, ToolbarSeparator } from "components/main-page/Toolbar";
 import { faPowerOff, faForwardStep, faSquareCaretRight, faForward } from '@fortawesome/free-solid-svg-icons'
+import ComputeUnit from "components/compute-unit/ComputeUnit";
 
 const Components : React.FC = observer(() => {
 
     const store = useStore();
 
     const [showCpu, setShowCpu] = useState(true);
+    const [showCompute, setShowCompute] = useState(true);
     const [showUart, setShowUart] = useState(true);
     const [showRam, setShowRam] = useState(false);
 
@@ -26,8 +28,9 @@ const Components : React.FC = observer(() => {
         <div className={css.toolbar}>
             <Toolbar>
                 <ToolbarToggle text="CPU" value={showCpu} onToggle={() => setShowCpu(!showCpu)} />
-                <ToolbarToggle text="RAM" value={showRam} onToggle={() => setShowRam(!showRam)} />
+                <ToolbarToggle text="Comp" value={showCompute} onToggle={() => setShowCompute(!showCompute)} />
                 <ToolbarToggle text="UART" value={showUart} onToggle={() => setShowUart(!showUart)} />
+                <ToolbarToggle text="RAM" value={showRam} onToggle={() => setShowRam(!showRam)} />
                 <ToolbarSeparator />
                 <ToolbarButton icon={faPowerOff} title="Reset emulator" onClick={onReset} />
                 <ToolbarSeparator />
@@ -41,6 +44,7 @@ const Components : React.FC = observer(() => {
             <Debugger />
             <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
                 { showCpu && <CPU cpu={store.state.cpu} /> }
+                { showCompute && <ComputeUnit p={store.state.computeUnit.p} q={store.state.computeUnit.q} r={store.state.computeUnit.r} /> }
                 { showUart && <UART 
                     rows={store.uartTerminal.terminalRows}
                     columns={store.uartTerminal.terminalColumns} 
