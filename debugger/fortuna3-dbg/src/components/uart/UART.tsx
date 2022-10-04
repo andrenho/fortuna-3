@@ -2,7 +2,6 @@ import Box from "components/common/box/Box";
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {range} from "util/array";
-import useStore from "hooks/useStore";
 import css from "./UART.module.scss";
 
 type CharacterProps = {
@@ -17,14 +16,22 @@ const Character : React.FC<CharacterProps> = observer(({ char, cursor }) => {
 type UARTProps = {
     columns: number,
     rows: number,
+    lines: string[][],
+    cursorX: number,
+    cursorY: number,
 }
 
-const UART : React.FC<UARTProps> = observer(({ columns, rows }) => {
-
-    const { uartTerminal } = useStore();
+const UART : React.FC<UARTProps> = observer(({ columns, rows, lines, cursorX, cursorY }) => {
 
     const character = (row: number, column: number) : JSX.Element => {
-        return <Character char={uartTerminal.lines[row][column]} cursor={uartTerminal.cursorX === column && uartTerminal.cursorY === row} />;
+        let c;
+        try {
+            c = lines[row][column];
+        } catch {
+            c = ' ';
+        }
+
+        return <Character char={c} cursor={cursorX === column && cursorY === row} />;
     }
 
     return (

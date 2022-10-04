@@ -4,10 +4,12 @@ export interface SourceLine {
     bytes?: number[] | undefined,
 }
 
+export type Source = {[key: string]: SourceLine[]};
+
 export interface SourceProject {
     success: boolean,
     mainSourceFile: string,
-    source: {[key: string]: SourceLine[]},
+    source: Source,
     symbols: {[key: string]: number},
     labels: {[key: string]: number},
     binary: string,

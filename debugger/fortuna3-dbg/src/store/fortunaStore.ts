@@ -22,6 +22,7 @@ export default class FortunaStore {
             af: 0, bc: 0, de: 0, hl: 0, ix: 0, iy: 0, pc: 0, sp: 0, afx: 0, bcx: 0, dex: 0, hlx: 0, i: 0,
             c: false, n: false, pv: false, h: false, z: false, s: false,
         },
+        computeUnit: { p: 0, q: 0, r: 0 },
         breakpoints: [],
         ramPage: new Uint8Array(256),
         stack: new Uint8Array(24),
@@ -42,6 +43,7 @@ export default class FortunaStore {
     currentError: string | undefined;
 
     lastUpdated = "never";
+    loading = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -162,10 +164,16 @@ export default class FortunaStore {
     private async updateDebuggingInfoFromBackend() : Promise<void> {
         try {
             const newHash = await fetchBackendCrc();
+
             if (newHash !== this.lastCompilationHash) {
+
+                runInAction(() => this.loading = true);
                 const debuggingInfo = await fetchBackendCompilation();
+                runInAction(() => this.loading = false);
+
                 console.debug("Debugging info updated from backend:");
                 console.debug(debuggingInfo);
+
                 runInAction(() => {
                     this.lastCompilationHash = newHash;
                     this.lastUpdated = new Date().toLocaleTimeString();
@@ -180,7 +188,10 @@ export default class FortunaStore {
                 });
             }
         } catch (e) {
-            runInAction(() => { this.currentError = (e as Error).message; });
+            runInAction(() => { 
+                this.loading = false;
+                this.currentError = (e as Error).message;
+            });
         }
     }
 }

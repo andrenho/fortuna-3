@@ -1,17 +1,18 @@
+import Hex from "components/common/hex/Hex";
 import {observer} from "mobx-react-lite";
-import useStore from "hooks/useStore";
 import {SourceLine} from "store/types/debuggingInfo";
-import {hex} from "util/hex";
 import css from "./Code.module.scss";
 
 const sourceFileNotFound : SourceLine[] = [ { line: "Source file not found in debugging info." } ];
-const projectNotSelected : SourceLine[] = [ { line: "No project is selected." } ];
 
 type CodeProps = {
-    selectedFile: string | undefined,
+    pc: number,
+    breakpoints: number[],
+    sourceLines: SourceLine[] | undefined,
+    swapBreakpoint: (n: number) => void,
 };
 
-const Code: React.FC<CodeProps> = observer(({selectedFile}) => {
+const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: source, swapBreakpoint}) => {
 
     const replaceChars = (text: string | undefined) : string => {
         if (text === undefined)
@@ -30,31 +31,23 @@ const Code: React.FC<CodeProps> = observer(({selectedFile}) => {
         return <><span>{ code }</span><span style={{color:"forestgreen"}}>{ comment }</span></>;
     };
 
-    const store = useStore();
-    const { state, currentProject } = store;
-
-    let currentSource : SourceLine[];
-    if (currentProject === undefined)
-        currentSource = projectNotSelected;
-    else if (selectedFile && selectedFile in currentProject.source)
-        currentSource = currentProject.source[selectedFile];
-    else
-        currentSource = sourceFileNotFound;
-
-    const swapBreakpoint = (address: number | undefined) => {
-        console.log(address);
-        if (address)
-            store.swapBreakpoint(address);
-    }
-
     return <table className={css.code}>
         <tbody>
-            { currentSource.map((line, i) => (
-                <tr key={`sl_${i}`} style={{ backgroundColor: (state.cpu.pc === line.address) ? "yellow" : "white" }}>
-                    <td className={css.breakpoint} style={{background: (state.breakpoints.includes(line.address!)) ? "red" : undefined}} onClick={() => swapBreakpoint(line.address)}></td>
-                    <td className={css.address}>{ line.address != null ? hex(line.address, 4) : undefined }</td>
-                    <td className={css.line}>{ parseCode(line.line) }</td>
-                    <td className={css.bytes}>{ line.bytes != null ? line.bytes.map(v => hex(v, 2)).join(" ") : undefined }</td>
+            { (source || sourceFileNotFound).map((line, i) => (
+                <tr key={`sl_${i}`} style={{ backgroundColor: (pc === line.address) ? "yellow" : "white" }}>
+                    <td className={css.breakpoint} 
+                        style={{background: (breakpoints.includes(line.address!)) ? "red" : undefined}}
+                        onClick={() => line.address !== undefined && swapBreakpoint(line.address)}>
+                    </td>
+                    <td className={css.address}>
+                        { line.address != null ? <Hex key={`addr_${line.address}`} value={line.address} pad={4} /> : undefined }
+                    </td>
+                    <td className={css.line}>
+                        { parseCode(line.line) }
+                    </td>
+                    <td className={css.bytes}>
+                        { line.bytes != null ? line.bytes.map((v, j) => <Hex key={`b_${i}_${j}`} value={v} spaceAfter />) : undefined }
+                    </td>
                 </tr>
             ))}
             <tr style={{backgroundColor: "white"}}>

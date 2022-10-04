@@ -1,0 +1,6 @@
+{
+    "workbench.list.openMode": "doubleClick",
+    "files.associations": {
+        "emscripten.h": "c"
+    }
+}

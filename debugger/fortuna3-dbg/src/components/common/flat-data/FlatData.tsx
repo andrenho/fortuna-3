@@ -4,6 +4,7 @@ import {hex} from "util/hex";
 import {range} from "util/array";
 import CSS from "csstype";
 import css from "./FlatData.module.scss"
+import Hex from "../hex/Hex";
 
 export type Highlights = {[key: number]: string};
 
@@ -71,7 +72,7 @@ const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ title, currentP
             <thead>
                 <tr>
                     <th key="empty" className={`${css.th} ${css.firstColumn}`}></th>
-                    {range(16).map(i => <th key={`col_${i}`} className={css.th}>_{ hex(i, 1) }</th>)}
+                    {range(16).map(i => <th key={`col_${i}`} className={css.th}><Hex value={i} pad={1} prefix="_" withPrefix/></th>)}
                     <th key="ascii" className={`${css.th} ${css.asciiColumn}`}>ASCII</th>
                 </tr>
             </thead>
@@ -80,10 +81,12 @@ const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ title, currentP
             {
                 range(rows).map(row => (
                     <tr key={`row_${row}`}>
-                        <td key={`addr_${row}`} className={css.address}>{ hex((currentPage * rows) + row, 3) }_</td>
+                        <td key={`addr_${row}`} className={css.address}>
+                            <Hex value={(currentPage * rows) + row} pad={3} postfix="_" />
+                        </td>
                         {range(16).map(col => (
                             <td key={`${row}_${col}`} className={dataStyle(row, col)} style={highlight(row, col)}>
-                                { hex(data(row, col)) }
+                                <Hex value={data(row, col)} />
                             </td>
                         ))}
                         <td key={`ascii_${row}`} className={css.data}>

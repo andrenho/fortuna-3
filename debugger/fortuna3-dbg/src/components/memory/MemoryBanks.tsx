@@ -1,10 +1,9 @@
 import React from "react";
 import {hex} from "util/hex";
 import {range} from "util/array";
-import useStore from "hooks/useStore";
 import css from "./MemoryBanks.module.scss";
 
-interface MemoryBankProps {
+type MemoryBankProps = {
     index: number,
     assignedTo?: number | undefined,
 }
@@ -23,12 +22,15 @@ const MemoryBank : React.FC<MemoryBankProps> = ({ index, assignedTo }) => {
     </div>;
 }
 
-const MemoryBanks : React.FC = () => {
+type MemoryBanksProps = {
+    ramBanks: number[],
+    bankCount: number,
+}
 
-    const { state } = useStore();
+const MemoryBanks : React.FC<MemoryBanksProps> = ({ ramBanks, bankCount }) => {
 
     return <div className={css.main}>
-        { range(16).map(v => <MemoryBank key={`memoryBank_${v}`} index={v} assignedTo={state.ramBanks.find((w : number) => w === v)} />) }
+        { range(bankCount).map(v => <MemoryBank key={`memoryBank_${v}`} index={v} assignedTo={ramBanks.find((w : number) => w === v)} />) }
     </div>;
 }
 

@@ -3,9 +3,11 @@ import {observer} from "mobx-react-lite";
 import useStore from "hooks/useStore";
 import css from "./ErrorMessage.module.scss";
 
-const ErrorMessage : React.FC = observer(() => {
+type ErrorMessageProps = {
+    currentError: string | undefined;
+}
 
-    const { currentError } = useStore();
+const ErrorMessage : React.FC<ErrorMessageProps> = observer(({ currentError }) => {
 
     if (currentError != null)
         return <div className={css.error}>{ currentError }</div>;
