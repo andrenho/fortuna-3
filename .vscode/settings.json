@@ -1,6 +1,9 @@
 {
     "workbench.list.openMode": "doubleClick",
     "files.associations": {
-        "emscripten.h": "c"
+        "emscripten.h": "c",
+        "stdint.h": "c",
+        "ram.h": "c",
+        "ioregs.h": "c"
     }
 }

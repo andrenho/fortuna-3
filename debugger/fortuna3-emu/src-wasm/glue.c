@@ -15,6 +15,7 @@
 
 #include "z80/Z80.h"
 #include "miniz/miniz.h"
+#include "io/io.h"
 
 #define KB *1024
 #define MB KB*1024
@@ -87,9 +88,8 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     data[0x18] = z80.I;
 
     // Compute unit
-    *((uint32_t *) &data[0x1a]) = 0;  // TODO
-    *((uint32_t *) &data[0x1e]) = 0;  // TODO
-    *((uint32_t *) &data[0x22]) = 0;  // TODO
+    for (size_t i = 0; i < 12; ++i)
+        data[i + 0x1a] = io_read(i);
 
     // Breakpoints
     for (size_t i = 0; i < MAX_BKPS; ++i) {
