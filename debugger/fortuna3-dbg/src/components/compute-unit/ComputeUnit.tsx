@@ -1,7 +1,9 @@
 import Box from "components/common/box/Box";
 import Register from "components/common/register/Register";
 import { observer } from "mobx-react-lite";
+import { faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import css from "./ComputeUnit.module.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type ComputeUnitProps = {
     p: number,
@@ -38,6 +40,15 @@ const ComputeUnit : React.FC<ComputeUnitProps> = observer(({ p, q, r }) => {
                 <Register name="Ra1" value={(r >> 8) & 0xff} size={2} />
                 <Register name="Rb0" value={(r >> 16) & 0xff} size={2} />
                 <Register name="Rb1" value={(r >> 24) & 0xff} size={2} />
+            </div>
+            <div className={css.row}>
+                <a
+                    href="https://docs.google.com/spreadsheets/d/1y4MHCu89Fbhpv18A4Xgcp7zTiwYp1vzCEpC4Fz_BkXo/edit?usp=sharing"
+                    target="_blank"
+                    className={css.link}
+                >
+                    <FontAwesomeIcon icon={faUpRightFromSquare} /> I/O Registers reference
+                </a>
             </div>
         </div>
     </Box>;
