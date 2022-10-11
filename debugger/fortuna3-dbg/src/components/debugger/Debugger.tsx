@@ -6,15 +6,16 @@ import React from "react";
 import ProjectSelector from "../code/ProjectSelector";
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import css from './Debugger.module.scss';
 
 const Debugger : React.FC = observer(() => {
 
     const store = useStore();
     const hasProjectSelected = store.selectedProject;
 
-    return <div style={{display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px"}}>
+    return <div className={css.debugger}>
 
-        <div style={{display: "flex", justifyContent: "flex-end", alignItems: "baseline", gap: "4px"}}>
+        <div className={css.projectSelector}>
             <ProjectSelector
                 projects={Object.keys(store.debuggingInfo.projects)}
                 selectedProject={store.selectedProject!} 
@@ -22,7 +23,7 @@ const Debugger : React.FC = observer(() => {
             />
         </div>
 
-        <div style={{display: "flex"}}>
+        <div className={css.code}>
             <FileChooser
                 selectedFile={store.selectedFile} 
                 onSelectFile={(name) => store.setSelectedFile(name)} 
@@ -36,7 +37,7 @@ const Debugger : React.FC = observer(() => {
             />
         </div>
 
-        <p style={{margin: 0, fontSize: "13px", textAlign: "right"}}>
+        <p className={css.lastUpdated}>
             Last updated at <b>{store.lastUpdated}</b>.
             { store.loading && <span style={{display: "inline-block"}}><FontAwesomeIcon icon={faSync} spin /></span> }
         </p>

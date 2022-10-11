@@ -1,5 +1,5 @@
 start:
-	ld	a, 'A'
+	ld	a, 'B'
 	out	(0x0), a
 	ld	a, 'w'
 	out	(0x0), a

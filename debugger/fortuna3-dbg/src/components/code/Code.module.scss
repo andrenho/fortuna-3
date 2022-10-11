@@ -30,7 +30,7 @@
 
 .line {
   @include td;
-  width: 500px;
+  min-width: 380px;
   max-width: 500px;
   overflow-x: hidden;
   white-space: nowrap;
@@ -39,7 +39,7 @@
 .bytes {
   @include td;
   border-left: 1px black solid;
-  width: 120px;
+  max-width: 120px;
 }
 
 .lastLine {

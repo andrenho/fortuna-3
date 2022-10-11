@@ -5,10 +5,10 @@ import CPU from "components/cpu/Cpu";
 import Debugger from "components/debugger/Debugger";
 import UART from "components/uart/UART";
 import useStore from "hooks/useStore";
-import css from './DebuggerPage.module.scss';
 import Toolbar, { ToolbarToggle, ToolbarButton, ToolbarSeparator } from "components/main-page/Toolbar";
 import { faPowerOff, faForwardStep, faSquareCaretRight, faForward } from '@fortawesome/free-solid-svg-icons'
 import ComputeUnit from "components/compute-unit/ComputeUnit";
+import css from './DebuggerPage.module.scss';
 
 const Components : React.FC = observer(() => {
 
@@ -40,9 +40,9 @@ const Components : React.FC = observer(() => {
             </Toolbar>
         </div>
 
-        <div style={{display: "flex", flexDirection: "row", gap: "16px", flexWrap: "wrap", alignItems: "flex-start"}}>
+        <div className={css.page}>
             <Debugger />
-            <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
+            <div className={css.rightSide}>
                 { showCpu && <CPU cpu={store.state.cpu} /> }
                 { showCompute && <ComputeUnit p={store.state.computeUnit.p} q={store.state.computeUnit.q} r={store.state.computeUnit.r} /> }
                 { showUart && <UART 
