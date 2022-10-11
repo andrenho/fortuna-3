@@ -1,4 +1,7 @@
 start:
+	ld		a, 0x42
+	out		(Pa0), a
+
 	ld	a, 'B'
 	out	(0x0), a
 	ld	a, 'w'
