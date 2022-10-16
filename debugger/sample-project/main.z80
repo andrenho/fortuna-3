@@ -1,3 +1,5 @@
+	include fortuna3.z80
+
 start:
 	ld		a, 0x42
 	out		(Pa0), a
