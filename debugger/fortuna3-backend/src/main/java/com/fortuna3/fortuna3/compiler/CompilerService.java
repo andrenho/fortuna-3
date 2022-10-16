@@ -66,7 +66,7 @@ public class CompilerService {
 
         var commandLine =
                 compilerExecutableService.getCompilerPath() +
-                " -chklabels -L listing.txt -Llo -nosym -x -Fbin -o rom.bin " +
+                " -chklabels -L listing.txt -Llo -nosym -x -Fbin -o rom.bin -I" + compilerExecutableService.getIncludeFilePath() + " " +
                 mainSourceFile;
 
         try {
