@@ -46,6 +46,7 @@ const ComputeUnit : React.FC<ComputeUnitProps> = observer(({ p, q, r }) => {
                     href="https://docs.google.com/spreadsheets/d/1y4MHCu89Fbhpv18A4Xgcp7zTiwYp1vzCEpC4Fz_BkXo/edit?usp=sharing"
                     target="_blank"
                     className={css.link}
+                    rel="noreferrer"
                 >
                     <FontAwesomeIcon icon={faUpRightFromSquare} /> I/O Registers reference
                 </a>
