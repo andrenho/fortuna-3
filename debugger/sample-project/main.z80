@@ -4,10 +4,13 @@ start:
 	ld		a, 0x42
 	out		(Pa0), a
 
-	ld		a, 'B'
-	out		(0x0), a
-	ld		a, 'w'
-	out		(0x0), a
+	ld		a, 0xab
+	out		(Pa1), a
+
+	; ld		a, 'B'
+	; out		(0x0), a
+	; ld		a, 'w'
+	; out		(0x0), a
 	jp		start
 
 

@@ -6,6 +6,7 @@
 #include "uart.h"
 
 #include "ram.h"
+#include "io/io.h"
 
 uint16_t bkp[MAX_BKPS];
 
@@ -44,20 +45,13 @@ word LoopZ80(Z80 *R)
 
 void OutZ80(word port, byte value)
 {
-    switch (port & 0xff) {
-        case 0x0:
-            uart_printchar(value);
-            break;
-    }
+    io_write(port, value);
+    io_write_bus(port, value);
 }
 
 byte InZ80(word port)
 {
-    switch (port & 0xff) {
-        case 0x0:
-            return uart_getchar();
-    }
-    return 0;
+    return io_read(port);
 }
 
 void WrZ80(word addr, byte value)

@@ -20,11 +20,11 @@ const ComputeUnit : React.FC<ComputeUnitProps> = observer(({ p, q, r }) => {
                 <Register name="R" value={r} size={8} className={css.register} />
             </div>
             <div className={css.row}>
-                <Register name="Pa" value={p & 0xfff} size={4} className={css.register} />
-                <Register name="Pb" value={(p >> 16) & 0xfff} size={4} className={css.register} />
-                <Register name="Qa" value={q & 0xfff} size={4} className={css.register} />
+                <Register name="Pa" value={p & 0xffff} size={4} className={css.register} />
+                <Register name="Pb" value={(p >> 16) & 0xffff} size={4} className={css.register} />
+                <Register name="Qa" value={q & 0xffff} size={4} className={css.register} />
                 <Register name="Qb" value={(q >> 16) & 0xffff} size={4} className={css.register} />
-                <Register name="Ra" value={r & 0xfff} size={4} className={css.register} />
+                <Register name="Ra" value={r & 0xffff} size={4} className={css.register} />
                 <Register name="Rb" value={(r >> 16) & 0xffff} size={4} className={css.register} />
             </div>
             <div className={css.row}>
