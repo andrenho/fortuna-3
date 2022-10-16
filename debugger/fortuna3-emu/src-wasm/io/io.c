@@ -9,7 +9,9 @@
 #include "dev/rtc.h"
 #include "dev/uart.h"
 #include "io/eeprom.h"
+*/
 #include "io/ops.h"
+/*
 #include "io/iofs.h"
 #include "io/iolcd.h"
 #include "io/iomemory.h"
@@ -166,9 +168,9 @@ uint8_t io_read(uint8_t addr)
     if (addr <= 0xb)
         return ((uint8_t*) &ioregs)[addr];
 
-    /*
     switch (addr) {
         
+        /*
         // serial
 
         case S_GET:             return uart_getchar_nonblocking();
@@ -190,6 +192,7 @@ uint8_t io_read(uint8_t addr)
         // memory
 
         case MM_BANK_GET:       return ram_bank() & 7;
+        */
 
         // math
 
@@ -199,11 +202,12 @@ uint8_t io_read(uint8_t addr)
         case DIVIDE:            return P(&ioregs) / Q(&ioregs);
         case MODULO:            return P(&ioregs) % Q(&ioregs);
 
+        /*
         // eeprom
 
         case EEPROM_GET:        return eeprom_read(Pa(&ioregs));
+        */
     }
-    */
     
     return 0;
 }
