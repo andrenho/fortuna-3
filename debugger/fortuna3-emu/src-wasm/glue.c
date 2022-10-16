@@ -32,6 +32,9 @@ EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
     ram_init(512 KB);
     bkp_clear();
 
+    for (size_t i = 0; i <= 0xb; ++i)
+        io_write(i, 0);
+
     bool r = sdcard_init(sdcard_sz_in_mb MB);
     puts("Emulator initialized.");
     return r;
