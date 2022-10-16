@@ -23,15 +23,16 @@ public class CompilerMapper {
         sourceProject.setSuccess(rawCompilerOutput.status() == 0);
         sourceProject.setMainSourceFile(rawCompilerOutput.mainSourceFile());
         sourceProject.setAddress(address);
-        if (rawCompilerOutput.status() != 0)
+        if (rawCompilerOutput.status() == 0) {
+            sourceProject.setBinary(rawCompilerOutput.rom());
+            try {
+                mapListingFiletoSourceProject(rawCompilerOutput, sourceProject);
+            } catch (InvalidListingFormatException e) {
+                sourceProject.setSuccess(false);
+                sourceProject.setCompilerError(e.getMessage());
+            }
+        } else {
             sourceProject.setCompilerError(rawCompilerOutput.compilerError());
-        sourceProject.setBinary(rawCompilerOutput.rom());
-
-        try {
-            mapListingFiletoSourceProject(rawCompilerOutput, sourceProject);
-        } catch (InvalidListingFormatException e) {
-            sourceProject.setSuccess(false);
-            sourceProject.setCompilerError(e.getMessage());
         }
 
         return sourceProject;

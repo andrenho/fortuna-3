@@ -85,14 +85,21 @@ public class CompilerService {
                 new File("rom.bin").delete();
             }
 
-            return RawCompilerOutputDTO.builder()
-                    .mainSourceFile(Path.of(mainSourceFile).getFileName().toString())
-                    .compilerOutput(getOutput(process.getInputStream()))
-                    .compilerError(getOutput(process.getErrorStream()))
-                    .status(status)
-                    .listing(listing)
-                    .rom(rom)
-                    .build();
+            if (status == 0) {
+                return RawCompilerOutputDTO.builder()
+                        .mainSourceFile(Path.of(mainSourceFile).getFileName().toString())
+                        .compilerOutput(getOutput(process.getInputStream()))
+                        .status(status)
+                        .listing(listing)
+                        .rom(rom)
+                        .build();
+            } else {
+                return RawCompilerOutputDTO.builder()
+                        .mainSourceFile(Path.of(mainSourceFile).getFileName().toString())
+                        .compilerError(getOutput(process.getErrorStream()))
+                        .status(status)
+                        .build();
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
