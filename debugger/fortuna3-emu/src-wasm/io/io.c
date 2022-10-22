@@ -196,11 +196,11 @@ uint8_t io_read(uint8_t addr)
 
         // math
 
-        case SUM:               return P(&ioregs) + Q(&ioregs);
-        case SUBTRACT:          return P(&ioregs) - Q(&ioregs);
-        case MULTIPLY:          return P(&ioregs) * Q(&ioregs);
-        case DIVIDE:            return P(&ioregs) / Q(&ioregs);
-        case MODULO:            return P(&ioregs) % Q(&ioregs);
+        case SUM:               return set_R(&ioregs, P(&ioregs) + Q(&ioregs));
+        case SUBTRACT:          return set_R(&ioregs, P(&ioregs) - Q(&ioregs));
+        case MULTIPLY:          return set_R(&ioregs, P(&ioregs) * Q(&ioregs));
+        case DIVIDE:            return set_R(&ioregs, P(&ioregs) / Q(&ioregs));
+        case MODULO:            return set_R(&ioregs, P(&ioregs) % Q(&ioregs));
 
         /*
         // eeprom

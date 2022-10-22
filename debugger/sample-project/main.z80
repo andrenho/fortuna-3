@@ -10,7 +10,7 @@ start:
 	ld		a, 0x4
 	out		(Qa0), a
 
-	out		(SUM), a
+	in		a, (MULTIPLY)
 
 	jp		start
 
