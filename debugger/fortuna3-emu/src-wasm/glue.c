@@ -9,7 +9,7 @@
 #include "globals.h"
 
 #include "cpu.h"
-#include "ram.h"
+#include "dev/ram.h"
 #include "sdcard.h"
 #include "uart.h"
 
@@ -29,7 +29,7 @@ typedef enum { NORMAL = 0, BREAKPOINT = 1 } FinishReason;
 EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
 {
     ResetZ80(&z80);
-    ram_init(512 KB);
+    ram_init();
     bkp_clear();
 
     for (size_t i = 0; i <= 0xb; ++i)

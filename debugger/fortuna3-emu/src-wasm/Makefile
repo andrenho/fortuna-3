@@ -1,11 +1,12 @@
 COMPUTE_UNIT_DIR=../../../compute-unit
-SRC=glue.c ram.c sdcard.c cpu.c uart.c z80/Z80.c fatfs/ff.c fatfs/ffsystem.c miniz/miniz.c \
-	io/io.c io/ioregs.c
+SRC=glue.c sdcard.c cpu.c uart.c z80/Z80.c fatfs/ff.c fatfs/ffsystem.c miniz/miniz.c \
+	io/io.c io/ioregs.c io/iomemory.c \
+	dev/ram.c
 
 all: fortuna.wasm
 
 fortuna.wasm: ${SRC}
-	emcc -Wall -Wextra -I. -o fortuna.js $^ --no-entry -O3 -DNDEBUG=1 -D EXECZ80=1 \
+	emcc -Wall -Wextra -I. -o fortuna.js $^ --no-entry -O3 -DNDEBUG=1 -D EXECZ80=1 -DEMULATOR=1 \
 		-s WASM=1 \
 		-s INITIAL_MEMORY=1073741824 \
 		-s ALLOW_MEMORY_GROWTH=1 \
