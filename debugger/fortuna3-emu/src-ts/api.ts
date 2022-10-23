@@ -29,7 +29,7 @@ export function loadApiFunctions(module: FortunaModule) : FortunaApi {
         stepCycles: module.cwrap("step_cycles", "number", ["number"]),
         addBreakpoint: module.cwrap("bkp_add", null, ["number"]),
         removeBreakpoint: module.cwrap("bkp_del", null, ["number"]),
-        setRam: module.cwrap("ram_set", null, ["number", "number"]),
+        setRam: module.cwrap("ram_set_byte", null, ["number", "number"]),
         unloadPrintedChars: module.cwrap("uart_unload_printed_chars", "number", ["number", "number"]),
         maxPrintedChars: module.cwrap("max_printed_chars", "number", []),
     };

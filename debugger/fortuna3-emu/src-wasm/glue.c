@@ -20,6 +20,8 @@
 #define KB *1024
 #define MB KB*1024
 
+#define RAM_PAGE_SZ 0x100
+
 static Z80 z80 = { 0 };
 
 char last_error[0x200] = { 0 };
@@ -101,14 +103,14 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     }
 
     // RAM banks
-    ram_banks(&data[0xe4]);
+    data[0xe4] = ram_bank();
 
     // stack
     for (uint16_t addr = 0; addr < 24; ++addr)
-        data[addr + 0xe8] = ram_get(z80.SP.W + addr);
+        data[addr + 0xe8] = ram_get_byte(z80.SP.W + addr);
 
     // RAM
-    ram_get_page(ram_page, &data[0x100]);
+    ram_read_array(ram_page * RAM_PAGE_SZ, &data[0x100], RAM_PAGE_SZ);
 
     // SD Card
     sdcard_copy_page(sd_page, &data[0x200]);

@@ -4,6 +4,7 @@
         "emscripten.h": "c",
         "stdint.h": "c",
         "ram.h": "c",
-        "ioregs.h": "c"
+        "ioregs.h": "c",
+        "stddef.h": "c"
     }
 }

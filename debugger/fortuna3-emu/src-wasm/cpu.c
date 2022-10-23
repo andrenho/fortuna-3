@@ -5,7 +5,7 @@
 #include "cpu.h"
 #include "uart.h"
 
-#include "ram.h"
+#include "dev/ram.h"
 #include "io/io.h"
 
 uint16_t bkp[MAX_BKPS];
@@ -56,12 +56,12 @@ byte InZ80(word port)
 
 void WrZ80(word addr, byte value)
 {
-    ram_set(addr, value);
+    ram_set_byte(addr, value);
 }
 
 byte RdZ80(word addr)
 {
-    return ram_get(addr);
+    return ram_get_byte(addr);
 }
 
 void PatchZ80(Z80 *R)
