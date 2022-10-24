@@ -26,7 +26,7 @@ export default class FortunaStore {
         breakpoints: [],
         ramPage: new Uint8Array(256),
         stack: new Uint8Array(24),
-        ramBanks: [],
+        ramBank: 0,
         sdCardPage: new Uint8Array(512),
         lastError: "",
     };

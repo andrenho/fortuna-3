@@ -26,6 +26,6 @@ MyRAM.args = {
     ramPage: 0,
     bytes: array,
     stack: array.slice(0, 16),
-    ramBanks: [0, 1, 3, 4],
+    ramBank: 0
 };
 MyRAM.storyName = 'RAM';

@@ -36,7 +36,7 @@ export interface ComputeUnit {
 export interface EmulatorState {
     cpu: Z80State,
     breakpoints: number[],
-    ramBanks: number[],
+    ramBank: number,
     ramPage: Uint8Array,
     stack: Uint8Array,
     sdCardPage: Uint8Array,
@@ -121,7 +121,7 @@ export class Fortuna3Emulator {
                 r: quad(0x22),
             },
             breakpoints: [],
-            ramBanks: Array.from(state.slice(0xe4, 0xe8)),
+            ramBank: state[0xe4],
             stack: state.slice(0xe8, 0x100),
             ramPage: state.slice(0x100, 0x200),
             sdCardPage: state.slice(0x200, 0x400),

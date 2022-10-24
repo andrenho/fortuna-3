@@ -9,11 +9,11 @@ type RAMProps = {
     ramPage: number;
     bytes: Uint8Array;
     stack: Uint8Array;
-    ramBanks: number[];
+    ramBank: number;
     onPageChange: (n: number) => void;
 }
 
-const RAM : React.FC<RAMProps> = observer(({pc, ramPage, bytes, stack, ramBanks, onPageChange}) => {
+const RAM : React.FC<RAMProps> = observer(({pc, ramPage, bytes, stack, ramBank, onPageChange}) => {
 
     const highlights : Highlights = {};
 
@@ -30,7 +30,7 @@ const RAM : React.FC<RAMProps> = observer(({pc, ramPage, bytes, stack, ramBanks,
             onPageChange={onPageChange}
         >
             <Stack stack={stack} />
-            <MemoryBanks ramBanks={ramBanks} bankCount={16} />
+            <MemoryBanks ramBank={ramBank} bankCount={8} />
         </FlatData>;
 
 });

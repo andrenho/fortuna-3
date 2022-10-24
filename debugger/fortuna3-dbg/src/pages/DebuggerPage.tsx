@@ -55,7 +55,7 @@ const Components : React.FC = observer(() => {
                 { showRam && <RAM
                     pc={store.state.cpu.pc}
                     ramPage={store.ramPage}
-                    ramBanks={store.state.ramBanks}
+                    ramBank={store.state.ramBank}
                     stack={store.state.stack}
                     bytes={store.state.ramPage}
                     onPageChange={n => store.setRamPage(n)}

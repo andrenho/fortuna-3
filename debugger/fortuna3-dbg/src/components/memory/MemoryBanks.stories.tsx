@@ -10,7 +10,7 @@ const Template: ComponentStory<typeof MemoryBanks> = (args) => <MemoryBanks {...
 
 export const MyMemoryBanks = Template.bind({});
 MyMemoryBanks.args = {
-    ramBanks: [0, 1, 3, 4],
+    ramBank: 0,
     bankCount: 8,
 };
 MyMemoryBanks.storyName = 'MemoryBanks';
