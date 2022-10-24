@@ -56,7 +56,7 @@ bool io_write(uint8_t addr, uint8_t data)
 
         // memory
         
-        // case MM_BANK_SET:   ram_set_bank(data & 7); break;
+        case MM_BANK_SET:   ram_set_bank(data & 7); break;
 
         /*
         // eeprom
@@ -129,7 +129,6 @@ void io_write_bus(uint8_t addr, uint8_t data)
     */
         // memory
 
-        /*
         case MM_CPY: 		io_mm_cpy(&ioregs); break;
         case MM_CPY_FAR: 	io_mm_cpy_far(&ioregs); break;
         case MM_STRCPY: 	io_mm_strcpy(&ioregs); break;
@@ -141,7 +140,6 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case MM_SET: 		io_mm_set(&ioregs, data); break;
         case MM_TO_DEC: 	io_mm_to_dec(&ioregs); break;
         case MM_TO_HEX: 	io_mm_to_hex(&ioregs, data); break;
-        */
 
     /*
 		// sdcard
@@ -196,7 +194,7 @@ uint8_t io_read(uint8_t addr)
 
         // memory
 
-        // case MM_BANK_GET:       return ram_bank() & 7;
+        case MM_BANK_GET:       return ram_bank() & 7;
 
         // math
 

@@ -1,16 +1,11 @@
 	include fortuna3.z80
 
 start:
-	ld		a, 0x42
-	out		(Pa0), a
+	ld		a, 0x2
+	out		(MM_BANK_SET), a
 
-	ld		a, 0xab
-	out		(Pa1), a
-
-	ld		a, 0x4
-	out		(Qa0), a
-
-	in		a, (MULTIPLY)
+	ld      a, 0
+	in      a, (MM_BANK_GET)
 
 	jp		start
 
