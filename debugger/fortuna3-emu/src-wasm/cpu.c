@@ -45,13 +45,17 @@ word LoopZ80(Z80 *R)
 
 void OutZ80(word port, byte value)
 {
+    printf("I/O write: [0x%04X] = 0x%02X\n", port, value);
+
     io_write(port, value);
     io_write_bus(port, value);
 }
 
 byte InZ80(word port)
 {
-    return io_read(port);
+    uint8_t data = io_read(port);
+    printf("I/O read: [0x%04X] = 0x%02X\n", port, data);
+    return data;
 }
 
 void WrZ80(word addr, byte value)

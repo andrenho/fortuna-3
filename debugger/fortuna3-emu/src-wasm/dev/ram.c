@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define RAM_SZ (512 * 1024)
 #define BANK_SZ (64 * 1024)
@@ -27,7 +28,8 @@ uint8_t ram_bank(void)
 
 void ram_set_bank(uint8_t bank)
 {
-    bank_ = bank & 0x8;
+    bank_ = bank & 0x7;
+    printf("Bank is now %d\n", bank_);
 }
 
 uint8_t ram_get_byte(uint16_t addr)

@@ -1,7 +1,5 @@
 #include "io/io.h"
 
-#include <stdio.h>
-
 /*
 #include "config.h"
 #include "dev/lcd.h"
@@ -17,6 +15,8 @@
 #include "io/ops.h"
 #include "io/iomemory.h"
 #include "io/ioregs.h"
+
+#include <stdio.h>
 
 static IO_Regs ioregs;
 
@@ -56,7 +56,7 @@ bool io_write(uint8_t addr, uint8_t data)
 
         // memory
         
-        case MM_BANK_SET:   ram_set_bank(data & 7); break;
+        case MM_BANK_SET:   ram_set_bank(data); break;
 
         /*
         // eeprom
