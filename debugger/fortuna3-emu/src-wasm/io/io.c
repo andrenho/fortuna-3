@@ -4,17 +4,17 @@
 #include "config.h"
 #include "dev/lcd.h"
 #include "dev/rtc.h"
-#include "dev/uart.h"
 #include "io/eeprom.h"
 #include "io/iofs.h"
 #include "io/iolcd.h"
 #include "io/random.h"
-#include "io/serial.h"
 */
 #include "dev/ram.h"
+#include "dev/uart.h"
 #include "io/ops.h"
 #include "io/iomemory.h"
 #include "io/ioregs.h"
+#include "io/serial.h"
 
 #include <stdio.h>
 
@@ -29,11 +29,11 @@ bool io_write(uint8_t addr, uint8_t data)
 
     switch (addr) {
 
-    /*
         // serial
 
-        case S_PUT:         putchar(data); break;
+        case S_PUT:         uart_printchar(data); break;
 
+    /*
         // rtc
 
         case RTC_SET: 
@@ -114,13 +114,13 @@ bool io_write(uint8_t addr, uint8_t data)
 void io_write_bus(uint8_t addr, uint8_t data)
 {
     switch (addr) {
-    /*
 
         // serial
         
         case S_PRINT_Z:     io_serial_print_z(&ioregs); break;
         case S_PRINT_LEN:   io_serial_print_len(&ioregs); break;
 
+    /*
         // LCD
 
         case LCD_LINE1:     io_lcd_print_line(0, Pa(&ioregs)); break;
@@ -172,12 +172,12 @@ uint8_t io_read(uint8_t addr)
 
     switch (addr) {
         
-        /*
         // serial
 
         case S_GET:             return uart_getchar_nonblocking();
-        case S_GET_BLK:         return getchar();
+        case S_GET_BLK:         return uart_getchar_blocking();
 
+        /*
         // RTC
 
         case RTC_GET_YEAR:      return rtc_get().yy;

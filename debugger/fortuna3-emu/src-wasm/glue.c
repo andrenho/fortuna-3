@@ -11,7 +11,7 @@
 #include "cpu.h"
 #include "dev/ram.h"
 #include "sdcard.h"
-#include "uart.h"
+#include "terminal.h"
 
 #include "z80/Z80.h"
 #include "miniz/miniz.h"
@@ -58,7 +58,7 @@ EMSCRIPTEN_KEEPALIVE FinishReason step_cycles(int cycles)
  *  [0x000 - 0x018] : Z80
  *  [0x01a - 0x026] : Compute unit
  *  [0x080 - 0x0e3] : Breakpoints (16-bit)
- *  [0x0e4 - 0x0e7] : RAM banks
+ *  [0x0e4]         : RAM banks
  *  [0x0e8 - 0x0ff] : Stack
  *  [0x100 - 0x1ff] : RAM
  *  [0x200 - 0x3ff] : SDCard

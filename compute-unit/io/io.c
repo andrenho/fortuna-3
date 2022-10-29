@@ -29,7 +29,7 @@ bool io_write(uint8_t addr, uint8_t data)
 
         // serial
 
-        case S_PUT:         putchar(data); break;
+        case S_PUT:         uart_printchar(data); break;
 
         // rtc
 
@@ -165,7 +165,7 @@ uint8_t io_read(uint8_t addr)
         // serial
 
         case S_GET:             return uart_getchar_nonblocking();
-        case S_GET_BLK:         return getchar();
+        case S_GET_BLK:         return uart_getchar_blocking();
 
         // RTC
 

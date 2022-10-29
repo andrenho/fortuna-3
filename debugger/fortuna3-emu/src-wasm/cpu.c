@@ -3,7 +3,6 @@
 
 #include "z80/Z80.h"
 #include "cpu.h"
-#include "uart.h"
 
 #include "dev/ram.h"
 #include "io/io.h"

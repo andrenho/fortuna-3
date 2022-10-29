@@ -116,6 +116,7 @@ void io_mm_strcmp(IO_Regs* r)
 
 void io_mm_strsub(IO_Regs* r)
 {
+    (void) r;
     printf_P(PSTR(RED "SUBSTR not implemented yet" RST));  // TODO
     for (;;);
 }

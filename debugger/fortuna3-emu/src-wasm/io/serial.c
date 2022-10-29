@@ -1,5 +1,7 @@
 #include "io/serial.h"
 
+#include <stdio.h>
+
 #include "dev/ram.h"
 #include "dev/uart.h"
 

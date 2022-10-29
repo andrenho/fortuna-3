@@ -5,6 +5,8 @@
         "stdint.h": "c",
         "ram.h": "c",
         "ioregs.h": "c",
-        "stddef.h": "c"
+        "stddef.h": "c",
+        "uart.h": "c",
+        "terminal.h": "c"
     }
 }

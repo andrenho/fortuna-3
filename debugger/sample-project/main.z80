@@ -1,13 +1,14 @@
 	include fortuna3.z80
 
 start:
-	ld		a, 0x2
-	out		(MM_BANK_SET), a
+	ld		a, 'H'
+	out		(S_PUT), a
 
-	ld      a, 0
-	in      a, (MM_BANK_GET)
-
+loop:
 	jp		start
+
+.hello:
+	asciiz 	"Hello world"
 
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab
