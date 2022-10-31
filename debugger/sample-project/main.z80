@@ -1,13 +1,15 @@
 	include fortuna3.z80
 
 start:
-	ld		a, 'H'
-	out		(S_PUT), a
+	ld		a, hello
+	out     (Pa0), a
+
+	out		(S_PRINT_Z), a
 
 loop:
 	jp		start
 
-.hello:
+hello:
 	asciiz 	"Hello world"
 
 
