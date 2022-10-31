@@ -6,7 +6,7 @@ import Debugger from "components/debugger/Debugger";
 import UART from "components/uart/UART";
 import useStore from "hooks/useStore";
 import Toolbar, { ToolbarToggle, ToolbarButton, ToolbarSeparator } from "components/main-page/Toolbar";
-import { faPowerOff, faForwardStep, faSquareCaretRight, faForward } from '@fortawesome/free-solid-svg-icons'
+import { faPowerOff, faForwardStep, faSquareCaretRight, faForward, faPause } from '@fortawesome/free-solid-svg-icons'
 import ComputeUnit from "components/compute-unit/ComputeUnit";
 import css from './DebuggerPage.module.scss';
 
@@ -36,7 +36,10 @@ const Components : React.FC = observer(() => {
                 <ToolbarSeparator />
                 <ToolbarButton icon={faForwardStep} title="Step one instruction" onClick={() => store.step()} />
                 <ToolbarButton icon={faSquareCaretRight} title="Step one screenful" onClick={() => store.stepOneScreenful()} />
-                <ToolbarButton icon={faForward} title="Run" onClick={() => store.run()} />
+                { store.running
+                    ? <ToolbarButton icon={faPause} title="Stop execution" onClick={() => store.stopExecution()} />
+                    : <ToolbarButton icon={faForward} title="Run" onClick={() => store.run()} />
+                }
             </Toolbar>
         </div>
 
