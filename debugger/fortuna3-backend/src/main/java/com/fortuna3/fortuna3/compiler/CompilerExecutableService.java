@@ -21,7 +21,7 @@ public class CompilerExecutableService {
         tmpdir = Files.createTempDirectory("fortuna").toFile().getAbsolutePath();
 
         String compilerName;
-        if (System.getProperty("os.name").indexOf("win") >= 0)
+        if (System.getProperty("os.name").indexOf("win") >= 0 || System.getProperty("os.name").indexOf("Win") >= 0)
             compilerName = "/vasmz80_oldstyle-win32.exe";
         else if (System.getProperty("os.name").equals("Linux"))
             compilerName = "/vasmz80_oldstyle-linux";
