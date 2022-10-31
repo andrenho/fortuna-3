@@ -87,7 +87,9 @@ public class CompilerMapper {
 
         var byteArray = new byte[0];
         try {
-            byteArray = HexFormat.of().parseHex(line.substring(8, 16).trim());
+            byteArray = HexFormat.of().parseHex(line.substring(8, 24).trim());
+        } catch (StringIndexOutOfBoundsException ignored) {
+            byteArray = HexFormat.of().parseHex(line.substring(8).trim());
         } catch (IllegalArgumentException ignored) {}
         if (byteArray.length == 0)
             byteArray = null;
