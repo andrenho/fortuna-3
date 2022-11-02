@@ -46,7 +46,7 @@ export default class FortunaStore {
     lastUpdated = "never";
     loading = false;
 
-    runRequestAnimationId = -1;
+    running = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -66,10 +66,6 @@ export default class FortunaStore {
         if (this.selectedProject === undefined)
             return undefined;
         return this.debuggingInfo.projects[this.selectedProject];
-    }
-
-    get running() : boolean {
-        return this.runRequestAnimationId !== -1;
     }
 
     reset() : void {
@@ -98,20 +94,35 @@ export default class FortunaStore {
         if (this.running)
             return;
 
-        this.runRequestAnimationId = window.requestAnimationFrame(() => {
-            if (this.emulator!.stepOneScreenful() !== FinishReason.Normal)
+        console.log("Execution started.");
+        this.running = true;
+
+        const screenfulStep = (elapsed: DOMHighResTimeStamp) => {
+            const result = this.emulator!.stepTime(elapsed);
+            if (result === FinishReason.Breakpoint) {
+                console.log("Breakpoint hit.");
                 this.stopExecution();
-            this.updateTerminal();
-        });
+            } else {
+                this.updateTerminal();
+            }
+
+            if (!this.running)
+                return;
+
+            window.requestAnimationFrame(screenfulStep);
+        };
+
+        window.requestAnimationFrame(screenfulStep);
     }
 
     stopExecution() : void {
         if (!this.running)
             return;
 
-        window.cancelAnimationFrame(this.runRequestAnimationId);
-        this.runRequestAnimationId = -1;
+        this.running = false;
         this.updateEmulatorState();
+
+        console.log("Execution stopped.");
     }
 
     setRamPage(newPage: number) : void {

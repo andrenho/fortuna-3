@@ -49,7 +49,15 @@ EMSCRIPTEN_KEEPALIVE void step()
 
 EMSCRIPTEN_KEEPALIVE FinishReason step_cycles(int cycles)
 {
-    ExecZ80(&z80, cycles);
+    if (bkp_has()) {
+        while (cycles > 0) {
+            cycles -= ExecZ80(&z80, 1);
+            if (bkp_is(z80.PC.W))
+                return BREAKPOINT;
+        }
+    } else {
+        ExecZ80(&z80, cycles);
+    }
     return NORMAL;
 }
 

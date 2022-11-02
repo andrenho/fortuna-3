@@ -8,6 +8,7 @@
 #include "io/io.h"
 
 uint16_t bkp[MAX_BKPS];
+static bool has = false;
 
 EMSCRIPTEN_KEEPALIVE void bkp_clear()
 {
@@ -24,6 +25,7 @@ EMSCRIPTEN_KEEPALIVE void bkp_add(uint16_t addr)
     for (size_t i = 0; i < MAX_BKPS; ++i) {
         if (bkp[i] == 0) {
             bkp[i] = addr;
+            has = true;
             return;
         }
     }
@@ -34,6 +36,27 @@ EMSCRIPTEN_KEEPALIVE void bkp_del(uint16_t addr)
     for (size_t i = 0; i < MAX_BKPS; ++i)
         if (bkp[i] == addr)
             bkp[i] = 0;
+
+    has = false;
+    for (size_t i = 0; i < MAX_BKPS; ++i)
+    	if (bkp[i] != 0)
+            has = true;
+}
+
+bool bkp_has()
+{
+    return has;
+}
+
+bool bkp_is(uint16_t addr)
+{
+    if (addr == 0)
+        return false;
+
+    for (size_t i = 0; i < MAX_BKPS; ++i)
+    	if (bkp[i] == addr)
+            return true;
+    return false;
 }
 
 word LoopZ80(Z80 *R)
@@ -44,7 +67,7 @@ word LoopZ80(Z80 *R)
 
 void OutZ80(word port, byte value)
 {
-    printf("I/O write: [0x%04X] = 0x%02X\n", port, value);
+    // printf("I/O write: [0x%04X] = 0x%02X\n", port, value);
 
     io_write(port, value);
     io_write_bus(port, value);
@@ -53,7 +76,7 @@ void OutZ80(word port, byte value)
 byte InZ80(word port)
 {
     uint8_t data = io_read(port);
-    printf("I/O read: [0x%04X] = 0x%02X\n", port, data);
+    // printf("I/O read: [0x%04X] = 0x%02X\n", port, data);
     return data;
 }
 

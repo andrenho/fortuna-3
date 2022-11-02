@@ -66,8 +66,12 @@ export class Fortuna3Emulator {
         this.api.step();
     }
 
-    stepOneScreenful() : FinishReason {
+    stepTime(time: DOMHighResTimeStamp) : FinishReason {
+        const cycles = Math.floor(this.speedInMhz * 1_000_000 * time);
+        return this.api.stepCycles(cycles);
+    }
 
+    stepOneScreenful() : FinishReason {
         const cycles = Math.floor(this.speedInMhz * 1_000_000 / 60);
         return this.api.stepCycles(cycles);
     }
