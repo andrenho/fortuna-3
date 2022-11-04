@@ -14,18 +14,25 @@ type CodeProps = {
 
 const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: source, swapBreakpoint}) => {
 
-    const replaceChars = (text: string | undefined) : string => {
-        if (text === undefined)
-            return "";
-        return text
-            .replaceAll(" ", "\u00A0")
-            .replaceAll("\t", "\u00A0".repeat(8));
+    const replaceTabs = (text: string) : string => {
+        let newText = "";
+        let i = 0;
+        for (let c of text) {
+            if (c === " ") {
+                c = "\u00A0";
+            } else if (c === "\t") {
+                const spacesToNextTab = 8 - (i % 8);
+                c = "\u00A0".repeat(spacesToNextTab);
+            }
+            newText += c;
+            i += c.length;
+        }
+        return newText;
     };
 
     const parseCode = (line: string) : JSX.Element => {
+        line = replaceTabs(line);
         let [code, comment] = line.split(";");
-        code = replaceChars(code);
-        comment = replaceChars(comment);
         if (comment)
             comment = `;${comment}`;
         return <><span>{ code }</span><span style={{color:"forestgreen"}}>{ comment }</span></>;
