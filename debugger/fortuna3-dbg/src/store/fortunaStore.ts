@@ -98,6 +98,7 @@ export default class FortunaStore {
         this.running = true;
 
         const screenfulStep = (elapsed: DOMHighResTimeStamp) => {
+
             const result = this.emulator!.stepTime(elapsed);
             if (result === FinishReason.Breakpoint) {
                 console.log("Breakpoint hit.");
@@ -106,10 +107,9 @@ export default class FortunaStore {
                 this.updateTerminal();
             }
 
-            if (!this.running)
-                return;
-
-            window.requestAnimationFrame(screenfulStep);
+            if (this.running) {
+                window.requestAnimationFrame(screenfulStep);
+            }
         };
 
         window.requestAnimationFrame(screenfulStep);
