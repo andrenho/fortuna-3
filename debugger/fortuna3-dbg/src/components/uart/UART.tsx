@@ -1,5 +1,5 @@
 import Box from "components/common/box/Box";
-import React from "react";
+import React, { useState } from "react";
 import {observer} from "mobx-react-lite";
 import {range} from "util/array";
 import css from "./UART.module.scss";
@@ -19,9 +19,30 @@ type UARTProps = {
     lines: string[][],
     cursorX: number,
     cursorY: number,
+    onKeyPress?: (key: number) => void,
 }
 
-const UART : React.FC<UARTProps> = observer(({ columns, rows, lines, cursorX, cursorY }) => {
+const UART : React.FC<UARTProps> = observer(({ columns, rows, lines, cursorX, cursorY, onKeyPress }) => {
+
+    const [waitingForKeypress, setWaitingForKeypress] = useState(false);
+    const [lastKeyPressed, setLastKeyPressed] = useState<string | undefined>(undefined);
+
+    const onKeydownEvent = (key: KeyboardEvent) : void => {
+        onKeyPress && onKeyPress(key.keyCode);
+        setLastKeyPressed(key.key);
+        key.stopPropagation();
+        cancelWaitForKeypress();
+    };
+
+    const waitForKeypress = () => {
+        setWaitingForKeypress(true);
+        window.addEventListener("keydown", onKeydownEvent);
+    };
+
+    const cancelWaitForKeypress = () => {
+        setWaitingForKeypress(false);
+        window.removeEventListener("keydown", onKeydownEvent);
+    };
 
     const character = (row: number, column: number) : JSX.Element => {
         let c;
@@ -43,6 +64,16 @@ const UART : React.FC<UARTProps> = observer(({ columns, rows, lines, cursorX, cu
                 )) }</tr>) }
                 </tbody>
             </table>
+            <div className={css.inputButton}>
+                { !waitingForKeypress && <>
+                    { lastKeyPressed && <span>(last: { lastKeyPressed })</span> }
+                    <button onClick={waitForKeypress}>Keyboard input</button>
+                </>}
+                { waitingForKeypress && <>
+                    <span className={css.waiting}>Waiting for keypress...</span>
+                    <button onClick={cancelWaitForKeypress}>Cancel</button>
+                </>}
+            </div>
         </Box>
     );
 });
