@@ -30,7 +30,7 @@ const UART : React.FC<UARTProps> = observer(({ columns, rows, lines, cursorX, cu
     const onKeydownEvent = (key: KeyboardEvent) : void => {
         onKeyPress && onKeyPress(key.keyCode);
         setLastKeyPressed(key.key);
-        key.stopPropagation();
+        key.preventDefault();
         cancelWaitForKeypress();
     };
 
