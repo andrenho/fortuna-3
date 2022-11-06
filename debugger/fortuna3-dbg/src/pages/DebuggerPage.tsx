@@ -54,6 +54,7 @@ const Components : React.FC = observer(() => {
                     cursorX={store.uartTerminal.cursorX}
                     cursorY={store.uartTerminal.cursorY}
                     lines={store.uartTerminal.lines}
+                    onKeyPress={chr => store.keypress(chr)}
                 /> }
                 { showRam && <RAM
                     pc={store.state.cpu.pc}

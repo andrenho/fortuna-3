@@ -182,6 +182,10 @@ export class Fortuna3Emulator {
         return r;
     }
 
+    keypress(chr: number) : void {
+        this.api.keypress(chr);
+    }
+
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
         const script = document.createElement("script");
         script.src = `${wasmFilePath}/fortuna.js`;

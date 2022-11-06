@@ -26,6 +26,8 @@ static Z80 z80 = { 0 };
 
 char last_error[0x200] = { 0 };
 
+extern volatile uint8_t uart_last_keypress;
+
 typedef enum { NORMAL = 0, BREAKPOINT = 1 } FinishReason;
 
 EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
@@ -150,6 +152,11 @@ EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
     mz_zip_writer_end(&zip);
 
     return sz;
+}
+
+EMSCRIPTEN_KEEPALIVE void keypress(uint8_t chr)
+{
+    uart_last_keypress = chr;
 }
 
 EMSCRIPTEN_KEEPALIVE size_t max_printed_chars()

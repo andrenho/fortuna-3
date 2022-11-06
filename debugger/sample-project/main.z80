@@ -1,10 +1,7 @@
 	include fortuna3.z80
 
 start:
-	ld		a, hello
-	out     (Pa0), a
-
-	out		(S_PRINT_Z), a
+	in		a, (S_GET)
 
 loop:
 	jp		start

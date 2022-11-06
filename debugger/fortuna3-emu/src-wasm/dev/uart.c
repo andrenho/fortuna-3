@@ -2,6 +2,8 @@
 
 #include "terminal.h"
 
+volatile uint8_t uart_last_keypress = 0;
+
 void uart_init(void)
 {
 }
@@ -17,10 +19,13 @@ void uart_printchar(uint8_t c)
 
 uint8_t uart_getchar_nonblocking(void)
 {
-    return 0;  // TODO
+    uint8_t v = uart_last_keypress;
+    uart_last_keypress = 0;
+    return v;
 }
 
 uint8_t uart_getchar_blocking()
 {
-    return 0;  // TODO
+    // TODO - blocking?
+    return uart_getchar_nonblocking();
 }

@@ -165,6 +165,10 @@ export default class FortunaStore {
         this.uartTerminal.addChars(printedChars);
     }
 
+    keypress(chr: number) : void {
+        this.emulator!.keypress(chr);
+    }
+
     private updateState() : void {
         this.updateEmulatorState();
         this.updateSelectedFile();
