@@ -1,6 +1,6 @@
 COMPUTE_UNIT_DIR=../../../compute-unit
 SRC=glue.c sdcard.c cpu.c terminal.c z80/Z80.c fatfs/ff.c fatfs/ffsystem.c miniz/miniz.c \
-	io/io.c io/ioregs.c io/iomemory.c io/serial.c \
+	io/io.c io/ioregs.c io/iomemory.c io/serial.c io/eeprom.c \
 	dev/ram.c dev/uart.c
 
 all: fortuna.wasm

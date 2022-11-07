@@ -4,13 +4,13 @@
 #include "config.h"
 #include "dev/lcd.h"
 #include "dev/rtc.h"
-#include "io/eeprom.h"
 #include "io/iofs.h"
 #include "io/iolcd.h"
 #include "io/random.h"
 */
 #include "dev/ram.h"
 #include "dev/uart.h"
+#include "io/eeprom.h"
 #include "io/ops.h"
 #include "io/iomemory.h"
 #include "io/ioregs.h"
@@ -58,9 +58,9 @@ bool io_write(uint8_t addr, uint8_t data)
         
         case MM_BANK_SET:   ram_set_bank(data); break;
 
-        /*
         // eeprom
 
+        /*
         case EEPROM_SET:    eeprom_write(Pa(&ioregs), data); break;
 
 		// sdcard
@@ -204,11 +204,9 @@ uint8_t io_read(uint8_t addr)
         case DIVIDE:            return set_R(&ioregs, P(&ioregs) / Q(&ioregs));
         case MODULO:            return set_R(&ioregs, P(&ioregs) % Q(&ioregs));
 
-        /*
         // eeprom
 
         case EEPROM_GET:        return eeprom_read(Pa(&ioregs));
-        */
     }
     
     return 0;
