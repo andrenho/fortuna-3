@@ -27,6 +27,7 @@ static Z80 z80 = { 0 };
 char last_error[0x200] = { 0 };
 
 extern volatile uint8_t uart_last_keypress;
+extern void eeprom_copy_page(uint8_t page, uint8_t* data);
 
 typedef enum { NORMAL = 0, BREAKPOINT = 1 } FinishReason;
 
@@ -72,9 +73,10 @@ EMSCRIPTEN_KEEPALIVE FinishReason step_cycles(int cycles)
  *  [0x0e8 - 0x0ff] : Stack
  *  [0x100 - 0x1ff] : RAM
  *  [0x200 - 0x3ff] : SDCard
- *  [0x400 - 0x600] : Last error
+ *  [0x400 - 0x5ff] : Last error
+ *  [0x600 - 0x6ff] : EEPROM
  */
-EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* data)
+EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint16_t eeprom_page, uint8_t* data)
 {
     data[0x0] = z80.AF.B.l;
     data[0x1] = z80.AF.B.h;
@@ -127,6 +129,9 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
 
     // last error
     memcpy(&data[0x400], last_error, sizeof last_error);
+
+    // eeprom
+    eeprom_copy_page(eeprom_page, &data[0x600]);
 }
 
 EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)

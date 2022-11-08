@@ -9,6 +9,7 @@ import Toolbar, { ToolbarToggle, ToolbarButton, ToolbarSeparator } from "compone
 import { faPowerOff, faForwardStep, faSquareCaretRight, faForward, faPause } from '@fortawesome/free-solid-svg-icons'
 import ComputeUnit from "components/compute-unit/ComputeUnit";
 import css from './DebuggerPage.module.scss';
+import FlatData from "components/common/flat-data/FlatData";
 
 const Components : React.FC = observer(() => {
 
@@ -18,6 +19,7 @@ const Components : React.FC = observer(() => {
     const [showCompute, setShowCompute] = useState(true);
     const [showUart, setShowUart] = useState(true);
     const [showRam, setShowRam] = useState(false);
+    const [showEeprom, setShowEeprom] = useState(false);
 
     const onReset = () => {
         if (window.confirm("Are you sure you want to reset the emulation?"))
@@ -31,6 +33,7 @@ const Components : React.FC = observer(() => {
                 <ToolbarToggle text="Comp" value={showCompute} onToggle={() => setShowCompute(!showCompute)} />
                 <ToolbarToggle text="UART" value={showUart} onToggle={() => setShowUart(!showUart)} />
                 <ToolbarToggle text="RAM" value={showRam} onToggle={() => setShowRam(!showRam)} />
+                <ToolbarToggle text="PROM" value={showEeprom} onToggle={() => setShowEeprom(!showEeprom)} />
                 <ToolbarSeparator />
                 <ToolbarButton icon={faPowerOff} title="Reset emulator" onClick={onReset} />
                 <ToolbarSeparator />
@@ -63,6 +66,14 @@ const Components : React.FC = observer(() => {
                     stack={store.state.stack}
                     bytes={store.state.ramPage}
                     onPageChange={n => store.setRamPage(n)}
+                /> }
+                { showEeprom && <FlatData
+                    bytes={store.state.eepromPage}
+                    currentPage={store.eepromPage}
+                    onPageChange={n => store.setEepromPage(n)}
+                    rows={16}
+                    title="EEPROM"
+                    totalPages={16}
                 /> }
             </div>
         </div>

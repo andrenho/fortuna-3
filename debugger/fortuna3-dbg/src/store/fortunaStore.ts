@@ -17,6 +17,7 @@ export default class FortunaStore {
 
     ramPage = 0;
     sdCardPage = 0;
+    eepromPage = 0;
 
     state : EmulatorState = {
         cpu: {
@@ -26,6 +27,7 @@ export default class FortunaStore {
         computeUnit: { p: 0, q: 0, r: 0 },
         breakpoints: [],
         ramPage: new Uint8Array(256),
+        eepromPage: new Uint8Array(256),
         stack: new Uint8Array(24),
         ramBank: 0,
         sdCardPage: new Uint8Array(512),
@@ -135,6 +137,11 @@ export default class FortunaStore {
         this.updateEmulatorState();
     }
 
+    setEepromPage(newPage: number) : void {
+        this.eepromPage = newPage;
+        this.updateEmulatorState();
+    }
+
     downloadSdCardImage() : Uint8Array {
         const bytes = this.emulator!.downloadSdCardImage();
         this.updateEmulatorState();  // update errors
@@ -175,7 +182,7 @@ export default class FortunaStore {
     }
 
     private updateEmulatorState() : void {
-        const newState = this.emulator!.getState(this.ramPage, this.sdCardPage);
+        const newState = this.emulator!.getState(this.ramPage, this.sdCardPage, this.eepromPage);
         this.state = newState;
         this.currentError = this.state.lastError;
         this.updateTerminal();

@@ -9,7 +9,7 @@ export enum FinishReason {
 
 export interface FortunaApi {
     initialize: (sdCardSizeInMB: number) => boolean,
-    getState: (ramPage: number, sdPage: number, data: pointer) => void;
+    getState: (ramPage: number, sdPage: number, eepromPage: number, data: pointer) => void;
     compressSDCard: (data: pointer, maxSize: number) => number;
     step : () => void;
     stepCycles: (numberOfCycles: number) => FinishReason;
@@ -24,7 +24,7 @@ export interface FortunaApi {
 export function loadApiFunctions(module: FortunaModule) : FortunaApi {
     return {
         initialize: module.cwrap("initialize", "boolean", ["number"]),
-        getState: module.cwrap("get_state", null, ["number", "number", "number"]),
+        getState: module.cwrap("get_state", null, ["number", "number", "number", "number"]),
         compressSDCard: module.cwrap("compress_sdcard", "number", ["number", "number"]),
         step: module.cwrap("step", null, []),
         stepCycles: module.cwrap("step_cycles", "number", ["number"]),

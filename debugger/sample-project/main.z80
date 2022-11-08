@@ -1,7 +1,14 @@
 	include fortuna3.z80
 
 start:
-	in		a, (S_GET)
+	ld		a, 0x4
+	out		(Pa0), a
+
+	ld		a, 0xaf
+	out		(EEPROM_SET), a
+
+	ld		a, 0xff
+	in		a, (EEPROM_GET)
 
 loop:
 	jp		start

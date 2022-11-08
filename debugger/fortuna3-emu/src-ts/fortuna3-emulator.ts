@@ -40,6 +40,7 @@ export interface EmulatorState {
     ramPage: Uint8Array,
     stack: Uint8Array,
     sdCardPage: Uint8Array,
+    eepromPage: Uint8Array,
     computeUnit: ComputeUnit,
     lastError: string | undefined,
 }
@@ -81,12 +82,12 @@ export class Fortuna3Emulator {
         this.api.initialize(sdCardSizeInMB);
     }
 
-    getState(ramPage: number, sdCardPage: number) : EmulatorState {
+    getState(ramPage: number, sdCardPage: number, eepromPage: number) : EmulatorState {
 
-        const bufferSize = 0x600;
+        const bufferSize = 0x700;
 
         const buf = Module._malloc(bufferSize);
-        this.api.getState(ramPage, sdCardPage, buf);
+        this.api.getState(ramPage, sdCardPage, eepromPage, buf);
         const state = new Uint8Array(Module.HEAP8.buffer, buf, bufferSize);
 
         let error : string | undefined = new TextDecoder().decode(state.slice(0x400, 0x600));
@@ -129,6 +130,7 @@ export class Fortuna3Emulator {
             stack: state.slice(0xe8, 0x100),
             ramPage: state.slice(0x100, 0x200),
             sdCardPage: state.slice(0x200, 0x400),
+            eepromPage: state.slice(0x600, 0x700),
             lastError: error,
         };
 
