@@ -1,0 +1,14 @@
+.lcd {
+    display: flex;
+    flex-direction: column;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+}
+
+.char {
+    margin: 0;
+    font-family: "LCD";
+}

@@ -60,9 +60,9 @@ bool io_write(uint8_t addr, uint8_t data)
 
         // eeprom
 
-        /*
         case EEPROM_SET:    eeprom_write(Pa(&ioregs), data); break;
 
+        /*
 		// sdcard
 
 #if INCLUDE_SDCARD

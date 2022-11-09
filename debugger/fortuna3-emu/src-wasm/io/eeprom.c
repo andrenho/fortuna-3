@@ -1,6 +1,6 @@
 #include "eeprom.h"
 
-#include <stdlib.h>
+#include <string.h>
 
 static uint8_t eeprom[4096] = {0};
 
