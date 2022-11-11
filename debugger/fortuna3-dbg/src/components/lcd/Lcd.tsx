@@ -9,7 +9,7 @@ type LcdProps = {
 
 const Lcd : React.FC<LcdProps> = ({ line1, line2 }) => {
 
-    const line = (str: string, n: number) => str.split("").map((c, i) => {
+    const line = (str: string, n: number) => (str + " ".repeat(16)).substring(0, 16).split("").map((c, i) => {
         return <pre key={`lcd_${n}_${i}`} className={css.char}>{ c }</pre>
     });
 
