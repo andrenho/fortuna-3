@@ -10,7 +10,7 @@ type LcdProps = {
 const Lcd : React.FC<LcdProps> = ({ line1, line2 }) => {
 
     const line = (str: string, n: number) => (str + " ".repeat(16)).substring(0, 16).split("").map((c, i) => {
-        return <pre key={`lcd_${n}_${i}`} className={css.char}>{ c }</pre>
+        return <pre key={`lcd_${n}_${i}`} className={css.char}>{ (c.codePointAt(0)! > 32) ? c : ' ' }</pre>
     });
 
     return <Box title="LCD">
