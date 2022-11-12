@@ -31,8 +31,11 @@ void lcd_command(uint8_t data)
 
 void lcd_print_line(uint8_t line, const char* str)
 {
-    if (line == 0)
+    if (line == 0) {
+        memset(lcd_text, ' ', 16);
         strncpy(lcd_text, str, 16);
-    else if (line == 1)
+    } else if (line == 1) {
+        memset(&lcd_text[16], ' ', 16);
         strncpy(&lcd_text[16], str, 16);
+    }
 }

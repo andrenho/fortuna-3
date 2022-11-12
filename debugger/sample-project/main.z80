@@ -6,7 +6,7 @@ start:
 
 	ld		a, hello
 	out		(Pa0), a
-	out		(LCD_LINE1), a
+	out		(LCD_LINE2), a
 
 loop:
 	jp		start
