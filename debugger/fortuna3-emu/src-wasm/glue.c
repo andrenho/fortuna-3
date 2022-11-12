@@ -17,6 +17,7 @@
 #include "miniz/miniz.h"
 #include "io/io.h"
 #include "dev/lcd.h"
+#include "dev/rtc.h"
 #include "io/random.h"
 
 #define KB *1024
@@ -45,6 +46,7 @@ EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
 
     random_init();
     lcd_init();
+    rtc_init();
 
     bool r = sdcard_init(sdcard_sz_in_mb MB);
     puts("Emulator initialized.");
@@ -145,7 +147,13 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint16_t 
     memcpy(&data[0x700], lcd_text, 32);
 
     // rtc
-    memset(&data[0x720], 1, 6);
+    ClockDateTime clk = rtc_get();
+    data[0x720] = clk.yy;
+    data[0x721] = clk.mm;
+    data[0x722] = clk.dd;
+    data[0x723] = clk.hh;
+    data[0x724] = clk.nn;
+    data[0x725] = clk.ss;
 }
 
 EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
