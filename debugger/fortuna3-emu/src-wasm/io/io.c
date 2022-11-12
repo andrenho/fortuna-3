@@ -2,18 +2,18 @@
 
 /*
 #include "config.h"
+#include "io/iofs.h"
+*/
 #include "dev/lcd.h"
 #include "dev/rtc.h"
-#include "io/iofs.h"
-#include "io/iolcd.h"
-#include "io/random.h"
-*/
 #include "dev/ram.h"
 #include "dev/uart.h"
 #include "io/eeprom.h"
+#include "io/iolcd.h"
 #include "io/ops.h"
 #include "io/iomemory.h"
 #include "io/ioregs.h"
+#include "io/random.h"
 #include "io/serial.h"
 
 #include <stdio.h>
@@ -33,7 +33,6 @@ bool io_write(uint8_t addr, uint8_t data)
 
         case S_PUT:         uart_printchar(data); break;
 
-    /*
         // rtc
 
         case RTC_SET: 
@@ -52,7 +51,6 @@ bool io_write(uint8_t addr, uint8_t data)
         case LCD_CLEAR:     lcd_clear(); break;
         case LCD_CHAR:      lcd_print_char(data); break;
         case LCD_CMD:       lcd_command(data); break;
-        */
 
         // memory
         
@@ -73,6 +71,7 @@ bool io_write(uint8_t addr, uint8_t data)
         case FS_FREE:       io_fs_free(&ioregs); break;
         case FS_FORMAT:     io_fs_format(&ioregs); break;
 #endif
+        */
 
         // operations that require the control of the bus
 
@@ -105,7 +104,6 @@ bool io_write(uint8_t addr, uint8_t data)
         case FS_OPENDIR:
         case FS_READDIR:
             return true;
-    */
     }
 
     return false;
@@ -120,13 +118,11 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case S_PRINT_Z:     io_serial_print_z(&ioregs); break;
         case S_PRINT_LEN:   io_serial_print_len(&ioregs); break;
 
-    /*
         // LCD
 
         case LCD_LINE1:     io_lcd_print_line(0, Pa(&ioregs)); break;
         case LCD_LINE2:     io_lcd_print_line(1, Pa(&ioregs)); break;
 
-    */
         // memory
 
         case MM_CPY: 		io_mm_cpy(&ioregs); break;
@@ -177,7 +173,6 @@ uint8_t io_read(uint8_t addr)
         case S_GET:             return uart_getchar_nonblocking();
         case S_GET_BLK:         return uart_getchar_blocking();
 
-        /*
         // RTC
 
         case RTC_GET_YEAR:      return rtc_get().yy;
@@ -189,8 +184,7 @@ uint8_t io_read(uint8_t addr)
 
         // random
 
-        case RANDOM:            return set_R(&ioregs, random()) & 0xff;
-        */
+        case RANDOM:            return set_R(&ioregs, random_value()) & 0xff;
 
         // memory
 

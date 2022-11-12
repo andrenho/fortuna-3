@@ -178,7 +178,7 @@ uint8_t io_read(uint8_t addr)
 
         // random
 
-        case RANDOM:            return set_R(&ioregs, random()) & 0xff;
+        case RANDOM:            return set_R(&ioregs, random_value()) & 0xff;
 
         // memory
 

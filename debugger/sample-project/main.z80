@@ -1,14 +1,12 @@
 	include fortuna3.z80
 
 start:
-	ld		a, 0x4
+	ld		a, 'X'
+	out		(LCD_CHAR), a
+
+	ld		a, hello
 	out		(Pa0), a
-
-	ld		a, 0xaf
-	out		(EEPROM_SET), a
-
-	ld		a, 0xff
-	in		a, (EEPROM_GET)
+	out		(LCD_LINE1), a
 
 loop:
 	jp		start

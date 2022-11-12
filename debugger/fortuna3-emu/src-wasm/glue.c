@@ -16,6 +16,8 @@
 #include "z80/Z80.h"
 #include "miniz/miniz.h"
 #include "io/io.h"
+#include "dev/lcd.h"
+#include "io/random.h"
 
 #define KB *1024
 #define MB KB*1024
@@ -28,6 +30,7 @@ char last_error[0x200] = { 0 };
 
 extern volatile uint8_t uart_last_keypress;
 extern void eeprom_copy_page(uint8_t page, uint8_t* data);
+extern char lcd_text[32];
 
 typedef enum { NORMAL = 0, BREAKPOINT = 1 } FinishReason;
 
@@ -39,6 +42,9 @@ EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
 
     for (size_t i = 0; i <= 0xb; ++i)
         io_write(i, 0);
+
+    random_init();
+    lcd_init();
 
     bool r = sdcard_init(sdcard_sz_in_mb MB);
     puts("Emulator initialized.");
@@ -136,8 +142,7 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint16_t 
     eeprom_copy_page(eeprom_page, &data[0x600]);
 
     // lcd
-    memset(&data[0x700], ' ', 32);
-    memcpy(&data[0x700], "Hello", 5);
+    memcpy(&data[0x700], lcd_text, 32);
 
     // rtc
     memset(&data[0x720], 1, 6);

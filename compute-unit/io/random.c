@@ -15,7 +15,7 @@ uint32_t random_init(void)
     return seed;
 }
 
-uint32_t random(void)
+uint32_t random_value(void)
 {
     uint32_t a = (next * 9301 + 49297) % 233280;
     uint32_t b = (a * 9301 + 49297) % 233280;
