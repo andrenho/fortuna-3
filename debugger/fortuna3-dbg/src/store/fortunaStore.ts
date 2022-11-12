@@ -31,6 +31,8 @@ export default class FortunaStore {
         stack: new Uint8Array(24),
         ramBank: 0,
         sdCardPage: new Uint8Array(512),
+        lcd: [" ".repeat(16), " ".repeat(16)],
+        rtc: { year: 2000, month: 1, day: 1, hours: 0, minutes: 0, seconds: 0 },
         lastError: "",
     };
 

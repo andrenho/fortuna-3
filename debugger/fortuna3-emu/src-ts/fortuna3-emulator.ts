@@ -33,6 +33,15 @@ export interface ComputeUnit {
     r: number,
 }
 
+export interface RTCState {
+    year: number,
+    month: number,
+    day: number,
+    hours: number,
+    minutes: number,
+    seconds: number,
+}
+
 export interface EmulatorState {
     cpu: Z80State,
     breakpoints: number[],
@@ -42,6 +51,8 @@ export interface EmulatorState {
     sdCardPage: Uint8Array,
     eepromPage: Uint8Array,
     computeUnit: ComputeUnit,
+    lcd: string[],
+    rtc: RTCState,
     lastError: string | undefined,
 }
 
@@ -50,6 +61,8 @@ export class Fortuna3Emulator {
     speedInMhz = 1;
 
     private api : FortunaApi;
+    private textDecoder = new TextDecoder();
+
     private constructor(private sdCardImageSizeMB) {}
 
     static async initialize(wasmFilePath: string) : Promise<Fortuna3Emulator> {
@@ -84,7 +97,7 @@ export class Fortuna3Emulator {
 
     getState(ramPage: number, sdCardPage: number, eepromPage: number) : EmulatorState {
 
-        const bufferSize = 0x700;
+        const bufferSize = 0x726;
 
         const buf = Module._malloc(bufferSize);
         this.api.getState(ramPage, sdCardPage, eepromPage, buf);
@@ -131,6 +144,18 @@ export class Fortuna3Emulator {
             ramPage: state.slice(0x100, 0x200),
             sdCardPage: state.slice(0x200, 0x400),
             eepromPage: state.slice(0x600, 0x700),
+            lcd: [
+                this.textDecoder.decode(state.slice(0x700, 0x710)),
+                this.textDecoder.decode(state.slice(0x710, 0x720)),
+            ],
+            rtc: {
+                year: state[0x720],
+                month: state[0x721],
+                day: state[0x722],
+                hours: state[0x723],
+                minutes: state[0x724],
+                seconds: state[0x725],
+            },
             lastError: error,
         };
 

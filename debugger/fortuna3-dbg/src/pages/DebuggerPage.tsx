@@ -10,6 +10,8 @@ import { faPowerOff, faForwardStep, faSquareCaretRight, faForward, faPause } fro
 import ComputeUnit from "components/compute-unit/ComputeUnit";
 import css from './DebuggerPage.module.scss';
 import FlatData from "components/common/flat-data/FlatData";
+import Lcd from "components/lcd/Lcd";
+import Rtc from "components/rtc/Rtc";
 
 const Components : React.FC = observer(() => {
 
@@ -20,6 +22,8 @@ const Components : React.FC = observer(() => {
     const [showUart, setShowUart] = useState(true);
     const [showRam, setShowRam] = useState(false);
     const [showEeprom, setShowEeprom] = useState(false);
+    const [showLcd, setShowLcd] = useState(false);
+    const [showRtc, setShowRtc] = useState(false);
 
     const onReset = () => {
         if (window.confirm("Are you sure you want to reset the emulation?"))
@@ -33,6 +37,8 @@ const Components : React.FC = observer(() => {
                 <ToolbarToggle text="Comp" value={showCompute} onToggle={() => setShowCompute(!showCompute)} />
                 <ToolbarToggle text="UART" value={showUart} onToggle={() => setShowUart(!showUart)} />
                 <ToolbarToggle text="RAM" value={showRam} onToggle={() => setShowRam(!showRam)} />
+                <ToolbarToggle text="LCD" value={showLcd} onToggle={() => setShowLcd(!showLcd)} />
+                <ToolbarToggle text="RTC" value={showRtc} onToggle={() => setShowRtc(!showRtc)} />
                 <ToolbarToggle text="PROM" value={showEeprom} onToggle={() => setShowEeprom(!showEeprom)} />
                 <ToolbarSeparator />
                 <ToolbarButton icon={faPowerOff} title="Reset emulator" onClick={onReset} />
@@ -49,8 +55,11 @@ const Components : React.FC = observer(() => {
         <div className={css.page}>
             <Debugger />
             <div className={css.rightSide}>
+
                 { showCpu && <CPU cpu={store.state.cpu} /> }
+
                 { showCompute && <ComputeUnit p={store.state.computeUnit.p} q={store.state.computeUnit.q} r={store.state.computeUnit.r} /> }
+
                 { showUart && <UART 
                     rows={store.uartTerminal.terminalRows}
                     columns={store.uartTerminal.terminalColumns} 
@@ -59,6 +68,7 @@ const Components : React.FC = observer(() => {
                     lines={store.uartTerminal.lines}
                     onKeyPress={chr => store.keypress(chr)}
                 /> }
+
                 { showRam && <RAM
                     pc={store.state.cpu.pc}
                     ramPage={store.ramPage}
@@ -67,6 +77,18 @@ const Components : React.FC = observer(() => {
                     bytes={store.state.ramPage}
                     onPageChange={n => store.setRamPage(n)}
                 /> }
+
+                { showLcd && <Lcd line1={store.state.lcd[0]} line2={store.state.lcd[1]} /> }
+
+                { showRtc && <Rtc
+                    year={store.state.rtc.year}
+                    month={store.state.rtc.month}
+                    day={store.state.rtc.day}
+                    hours={store.state.rtc.hours}
+                    minutes={store.state.rtc.minutes}
+                    seconds={store.state.rtc.seconds}
+                /> }
+
                 { showEeprom && <FlatData
                     bytes={store.state.eepromPage}
                     currentPage={store.eepromPage}
@@ -75,6 +97,7 @@ const Components : React.FC = observer(() => {
                     title="EEPROM"
                     totalPages={16}
                 /> }
+
             </div>
         </div>
     </>;

@@ -75,6 +75,8 @@ EMSCRIPTEN_KEEPALIVE FinishReason step_cycles(int cycles)
  *  [0x200 - 0x3ff] : SDCard
  *  [0x400 - 0x5ff] : Last error
  *  [0x600 - 0x6ff] : EEPROM
+ *  [0x700 - 0x71f] : LCD
+ *  [0x720 - 0x725] : RTC
  */
 EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint16_t eeprom_page, uint8_t* data)
 {
@@ -132,6 +134,13 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint16_t 
 
     // eeprom
     eeprom_copy_page(eeprom_page, &data[0x600]);
+
+    // lcd
+    memset(&data[0x700], ' ', 32);
+    memcpy(&data[0x700], "Hello", 5);
+
+    // rtc
+    memset(&data[0x720], 1, 6);
 }
 
 EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
