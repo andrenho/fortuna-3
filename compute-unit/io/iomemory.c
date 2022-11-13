@@ -1,8 +1,6 @@
 #include "io/iomemory.h"
 
-#ifndef EMULATOR
-#  include <avr/pgmspace.h>
-#endif
+#include <avr/pgmspace.h>
 #include <inttypes.h>
 #include <stddef.h>
 #include <stdio.h>
