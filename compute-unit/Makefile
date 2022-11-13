@@ -3,9 +3,9 @@ PROJECT=avr-skeleton
 
 # Object files (one for each source file)
 OBJECTS=main.o init.o \
-	dev/uart.o dev/spi.o dev/lcd.o dev/rtc.o dev/sdcard.o dev/ram.o dev/z80.o \
+	dev/uart.o dev/spi.o dev/lcd.o dev/rtc.o dev/sdcard.o dev/ram.o dev/z80.o dev/random.o dev/eeprom.o \
 	interface/monitor.o interface/remote.o \
-	io/io.o io/ioregs.o io/random.o io/serial.o io/iolcd.o io/iomemory.o io/iofs.o io/eeprom.o \
+	io/io.o io/ioregs.o io/serial.o io/iolcd.o io/iomemory.o io/iofs.o \
 	fsfat/diskio.o fsfat/ff.o
 
 # Avrdude configuration to connect on the PI. See avrdude_gpio.conf.

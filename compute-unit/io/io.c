@@ -7,13 +7,13 @@
 #include "dev/ram.h"
 #include "dev/rtc.h"
 #include "dev/uart.h"
-#include "io/eeprom.h"
+#include "dev/eeprom.h"
+#include "dev/random.h"
 #include "io/ops.h"
 #include "io/iofs.h"
 #include "io/iolcd.h"
 #include "io/iomemory.h"
 #include "io/ioregs.h"
-#include "io/random.h"
 #include "io/serial.h"
 
 static IO_Regs ioregs;

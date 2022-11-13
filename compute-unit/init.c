@@ -15,7 +15,7 @@
 #include "dev/spi.h"
 #include "dev/uart.h"
 #include "dev/z80.h"
-#include "io/random.h"
+#include "dev/random.h"
 
 #if DEBUG_RESET_REASON
 static void debug_reset_reason(void)
@@ -80,7 +80,7 @@ static void test_ram(void)
 {
     uint8_t block1[256], block2[256];
     for (size_t i = 0; i < 256; ++i)
-        block1[i] = random();
+        block1[i] = random_value();
 
     post_checking(PSTR("RAM"));
     ram_write_array(0, block1, 256);
@@ -99,7 +99,7 @@ static void test_z80(void)
 {
     post_checking(PSTR("Z80"));
 
-    uint8_t expected = random();
+    uint8_t expected = random_value();
 
     z80_shutdown();
     ram_set_byte(0, 0x3e); // ld a, RANDOM
@@ -124,7 +124,7 @@ static void test_z80_io(void)
 {
     post_checking(PSTR("Z80 I/O"));
 
-    uint8_t expected = random();
+    uint8_t expected = random_value();
 
     z80_shutdown();
     ram_set_byte(0, 0x3e); // ld a, RANDOM

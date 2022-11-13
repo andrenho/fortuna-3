@@ -4,8 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "fatfs/ff.h"
-#include "fatfs/diskio.h"
+#include "fsfat/ff.h"
+#include "fsfat/diskio.h"
 
 #include "globals.h"
 
