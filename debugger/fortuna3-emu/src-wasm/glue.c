@@ -18,7 +18,7 @@
 #include "io/io.h"
 #include "dev/lcd.h"
 #include "dev/rtc.h"
-#include "io/random.h"
+#include "dev/random.h"
 
 #define KB *1024
 #define MB KB*1024
