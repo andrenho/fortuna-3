@@ -1,12 +1,12 @@
 COMPUTE_UNIT_DIR=../../../compute-unit
 SRC=glue.c sdcard.c cpu.c terminal.c z80/Z80.c fatfs/ff.c fatfs/ffsystem.c miniz/miniz.c \
-	io/io.c io/ioregs.c io/iomemory.c io/serial.c io/eeprom.c io/iolcd.c io/random.c \
+	io/io.c io/ioregs.c io/iomemory.c io/serial.c io/eeprom.c io/iolcd.c io/random.c io/iofs.c \
 	dev/ram.c dev/uart.c dev/lcd.c dev/rtc.c
 
 all: fortuna.wasm
 
 fortuna.wasm: ${SRC}
-	emcc -Wall -Wextra -I. -o fortuna.js $^ --no-entry -O3 -DNDEBUG=1 -D EXECZ80=1 -DEMULATOR=1 \
+	emcc -Wall -Wextra -I. -o fortuna.js $^ --no-entry -O3 -DNDEBUG=1 -D EXECZ80=1 -DEMULATOR=1 -DINCLUDE_SDCARD=1 \
 		-sLLD_REPORT_UNDEFINED \
 		-s WASM=1 \
 		-s INITIAL_MEMORY=1073741824 \

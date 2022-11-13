@@ -1,9 +1,7 @@
 #include "io/io.h"
 
-/*
-#include "config.h"
+// #include "config.h"
 #include "io/iofs.h"
-*/
 #include "dev/lcd.h"
 #include "dev/rtc.h"
 #include "dev/ram.h"
@@ -60,7 +58,6 @@ bool io_write(uint8_t addr, uint8_t data)
 
         case EEPROM_SET:    eeprom_write(Pa(&ioregs), data); break;
 
-        /*
 		// sdcard
 
 #if INCLUDE_SDCARD
@@ -71,7 +68,6 @@ bool io_write(uint8_t addr, uint8_t data)
         case FS_FREE:       io_fs_free(&ioregs); break;
         case FS_FORMAT:     io_fs_format(&ioregs); break;
 #endif
-        */
 
         // operations that require the control of the bus
 
@@ -137,7 +133,6 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case MM_TO_DEC: 	io_mm_to_dec(&ioregs); break;
         case MM_TO_HEX: 	io_mm_to_hex(&ioregs, data); break;
 
-    /*
 		// sdcard
 
 #if INCLUDE_SDCARD
@@ -157,7 +152,6 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case FS_READDIR:    io_fs_readdir(&ioregs); break;
 #endif
 
-    */
     }
 }
 

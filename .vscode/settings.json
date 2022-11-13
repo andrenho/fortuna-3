@@ -8,6 +8,8 @@
         "stddef.h": "c",
         "uart.h": "c",
         "terminal.h": "c",
-        "random.h": "c"
+        "random.h": "c",
+        "lcd.h": "c",
+        "config.h": "c"
     }
 }
