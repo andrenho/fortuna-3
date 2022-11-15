@@ -19,10 +19,10 @@ const Template: ComponentStory<typeof FlatData> = (args) => <FlatData {...args} 
 
 export const MyFlatData = Template.bind({});
 MyFlatData.args = {
-    title: 'My title',
     currentPage: 0,
     totalPages: 16,
     rows: 16,
-    highlightOffset: { '0': 'lime' }
+    highlightOffset: { '0': 'lime' },
+    topRightElement: <p style={{backgroundColor: "yellow"}}>[ Top-right element ]</p>
 };
 MyFlatData.storyName = 'FlatData';

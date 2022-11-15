@@ -9,7 +9,9 @@ export default {
     }
 } as ComponentMeta<typeof SDCard>;
 
-const Template: ComponentStory<typeof SDCard> = (args) => <SDCard {...args} />;
+const Template: ComponentStory<typeof SDCard> = (args) => <SDCard {...args}>
+    <p style={{backgroundColor: 'yellow'}}>Additional component</p>
+</SDCard>;
 
 const array = new Uint8Array(64 * 1024);
 window.crypto.getRandomValues(array);

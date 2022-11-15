@@ -12,6 +12,7 @@ import css from './DebuggerPage.module.scss';
 import FlatData from "components/common/flat-data/FlatData";
 import Lcd from "components/lcd/Lcd";
 import Rtc from "components/rtc/Rtc";
+import Box from "components/common/box/Box";
 
 const Components : React.FC = observer(() => {
 
@@ -89,14 +90,15 @@ const Components : React.FC = observer(() => {
                     seconds={store.state.rtc.seconds}
                 /> }
 
-                { showEeprom && <FlatData
-                    bytes={store.state.eepromPage}
-                    currentPage={store.eepromPage}
-                    onPageChange={n => store.setEepromPage(n)}
-                    rows={16}
-                    title="EEPROM"
-                    totalPages={16}
-                /> }
+                { showEeprom && <Box title="EEPROM">
+                    <FlatData
+                        bytes={store.state.eepromPage}
+                        currentPage={store.eepromPage}
+                        onPageChange={n => store.setEepromPage(n)}
+                        rows={16}
+                        totalPages={16}
+                    />
+                </Box> }
 
             </div>
         </div>

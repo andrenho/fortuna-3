@@ -9,7 +9,6 @@ import Hex from "../hex/Hex";
 export type Highlights = {[key: number]: string};
 
 type FlatDataProps = {
-    title: string;
     currentPage: number;
     totalPages: number;
     rows: number;
@@ -19,7 +18,7 @@ type FlatDataProps = {
     topRightElement?: React.ReactNode;
 }
 
-const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ title, currentPage, totalPages, rows, bytes, onPageChange, highlightOffset, topRightElement, children }) => {
+const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ currentPage, totalPages, rows, bytes, onPageChange, highlightOffset, topRightElement, children }) => {
 
     const [pageText, setPageText] = useState("");
     useEffect(() => setPageText(hex(currentPage, 0, true)), [currentPage]);
@@ -59,7 +58,7 @@ const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ title, currentP
             updatePage(newPage);
     };
 
-    return <Box title={title}>
+    return <div>
         <div className={css.titleRow}>
             <label htmlFor="page">Page:</label>
             <button title="Previous page" className={css.input} onClick={() => updatePage(currentPage - 1)}>&lt;&lt;</button>
@@ -98,7 +97,7 @@ const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ title, currentP
             </tbody>
         </table>
         {children}
-    </Box>;
+    </div>;
 };
 
 export default FlatData;

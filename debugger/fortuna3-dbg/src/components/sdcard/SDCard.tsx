@@ -2,6 +2,7 @@ import {observer} from "mobx-react-lite";
 import FlatData from "components/common/flat-data/FlatData";
 import css from "./SDCard.module.scss";
 import FileSaver from "file-saver";
+import Box from "components/common/box/Box";
 
 type SDCardProps = {
     currentPage: number,
@@ -9,9 +10,10 @@ type SDCardProps = {
     currentPageBytes: Uint8Array,
     onPageChange : (n : number) => void,
     getCompressedImageBytes : () => Uint8Array,
+    children?: React.ReactNode
 }
 
-const SDCard : React.FC<SDCardProps> = observer(({ currentPage, sdCardSizeInMB, currentPageBytes, getCompressedImageBytes, onPageChange}) => {
+const SDCard : React.FC<SDCardProps> = observer(({ currentPage, sdCardSizeInMB, currentPageBytes, getCompressedImageBytes, onPageChange, children}) => {
 
     const downloadLinkClicked = () => {
         const bytes = getCompressedImageBytes();
@@ -21,19 +23,25 @@ const SDCard : React.FC<SDCardProps> = observer(({ currentPage, sdCardSizeInMB, 
         }
     };
 
-    const SDCardDownloadLink : React.FC = () => <div className={css.container}>
+    const SDCardDownloadLink : React.FC = () => <div className={css.linkContainer}>
         <span className={css.link} onClick={downloadLinkClicked}>&#x1f4be; Download disk image</span>
     </div>;
 
-    return <FlatData
-        title="SD Card"
-        currentPage={currentPage}
-        totalPages={sdCardSizeInMB * 2048}
-        rows={32}
-        bytes={currentPageBytes}
-        onPageChange={onPageChange}
-        topRightElement={<SDCardDownloadLink/>}
-    />;
+    return <Box title="SD Card">
+        <div className={css.mainContainer}>
+            <div className={css.flatdataWithSeparator}>
+                <FlatData
+                    currentPage={currentPage}
+                    totalPages={sdCardSizeInMB * 2048}
+                    rows={32}
+                    bytes={currentPageBytes}
+                    onPageChange={onPageChange}
+                    topRightElement={<SDCardDownloadLink/>}
+                />
+            </div>
+            { children }
+        </div>
+    </Box>;
 });
 
 export default SDCard;
