@@ -23,7 +23,7 @@ const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ currentPage, to
     const [pageText, setPageText] = useState("");
     useEffect(() => setPageText(hex(currentPage, 0, true)), [currentPage]);
 
-    const asciiChar = (datum: number) : string => (datum < 32 || datum >= 127) ? "." : String.fromCharCode(datum);
+    const asciiChar = (datum: number) : string => ((datum < 32 || datum >= 127) ? "." : String.fromCharCode(datum));
     const data = (row: number, col: number) : number => bytes[row * 16 + col];
 
     const updatePage = (newPage: number) => {
@@ -89,7 +89,7 @@ const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ currentPage, to
                             </td>
                         ))}
                         <td key={`ascii_${row}`} className={css.data}>
-                            { range(16).map(col => asciiChar(data(row, col))) }
+                            <pre className={css.predata}>{ range(16).map(col => asciiChar(data(row, col))) }</pre>
                         </td>
                     </tr>
                 ))
