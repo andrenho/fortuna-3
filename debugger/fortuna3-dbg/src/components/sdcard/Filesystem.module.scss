@@ -1,0 +1,16 @@
+.filelist {
+    border: 1px solid black;
+    padding: 8px;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
+.file {
+    cursor: pointer;
+    padding: 1px 6px;
+}
+
+.selectedFile {
+    background-color: aqua;
+}
