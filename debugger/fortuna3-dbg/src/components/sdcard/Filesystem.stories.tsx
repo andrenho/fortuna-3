@@ -30,10 +30,12 @@ const Template: ComponentStory<typeof Filesystem> = (args) => {
         {...args}
         selectedFile={selectedFile}
         selectedFileSize={selectedFile === 'BOOT.BIN' ? loremBytes.length : undefined}
-        onFileSelect={(file) => setSelectedFile(file)}
         selectedPage={page}
-        onPageChange={(n) => setPage(n)}
         pageContents={selectedFile === 'BOOT.BIN' ? data : undefined}
+        onUpdate={(file, page) => {
+            setSelectedFile(file);
+            setPage(page);
+        }}
     />;
 }
 

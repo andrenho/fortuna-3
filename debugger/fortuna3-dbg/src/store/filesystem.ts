@@ -1,3 +1,5 @@
+import { makeAutoObservable } from "mobx";
+
 export enum FileType { File, Directory };
 
 export type FFile = {
@@ -20,6 +22,10 @@ export default class Filesystem {
     selectedFile?: FFile;
     selectedPage = 0;
     pageContents?: Uint8Array;
+
+    constructor() {
+        makeAutoObservable(this);
+    }
 
     updateFromEmulator(selectedFile: string | undefined, selectedPage: number) {
         

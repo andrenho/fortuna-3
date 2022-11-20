@@ -1,4 +1,5 @@
 import FlatData from "components/common/flat-data/FlatData";
+import { observer } from "mobx-react-lite";
 import { FFile } from "store/filesystem";
 import css from "./Filesystem.module.scss";
 
@@ -8,16 +9,10 @@ type FilesystemProps = {
     selectedFileSize?: number;
     selectedPage: number;
     pageContents?: Uint8Array,
-    onFileSelect: (filename: string) => void;
-    onPageChange: (newPage: number) => void;
+    onUpdate: (filename: string | undefined, newPage: number) => void;
 }
 
-const Filesystem : React.FC<FilesystemProps> = ({fileList, selectedFile, selectedFileSize, selectedPage, pageContents, onFileSelect, onPageChange}) => {
-
-    const onSelectFile = (filename: string) => {
-        onPageChange(0);
-        onFileSelect(filename);
-    };
+const Filesystem : React.FC<FilesystemProps> = observer(({fileList, selectedFile, selectedFileSize, selectedPage, pageContents, onUpdate}) => {
 
     return <div className={css.main}>
         <div className={css.filelist}>
@@ -26,7 +21,7 @@ const Filesystem : React.FC<FilesystemProps> = ({fileList, selectedFile, selecte
                     let cssClass = `${css.file} `;
                     if (file.filename === selectedFile)
                         cssClass += css.selectedFile;
-                    return <div key={`file_${file.filename}`} className={cssClass} onClick={() => onSelectFile(file.filename)}>
+                    return <div key={`file_${file.filename}`} className={cssClass} onClick={() => onUpdate(file.filename, 0)}>
                         { file.filename }
                     </div>;
                 })
@@ -39,10 +34,10 @@ const Filesystem : React.FC<FilesystemProps> = ({fileList, selectedFile, selecte
                 totalPages={Math.ceil(selectedFileSize! / 256)}
                 rows={16}
                 bytes={pageContents}
-                onPageChange={onPageChange}
+                onPageChange={(page) => onUpdate(selectedFile, page)}
             />
         }
     </div>;
-};
+});
 
 export default Filesystem;

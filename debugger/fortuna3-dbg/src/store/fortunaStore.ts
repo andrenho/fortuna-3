@@ -67,6 +67,8 @@ export default class FortunaStore {
         });
 
         setInterval(() => this.updateDebuggingInfoFromBackend(), 1000);
+
+        this.filesystem.updateFromEmulator(undefined, 0);
     }
 
     get currentProject() : SourceProject | undefined {
@@ -85,6 +87,7 @@ export default class FortunaStore {
         }
         this.updateState();
         this.uartTerminal.reset();
+        this.filesystem.updateFromEmulator(undefined, 0);
     }
 
     step() : void {

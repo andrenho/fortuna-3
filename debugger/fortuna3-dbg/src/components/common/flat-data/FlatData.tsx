@@ -1,5 +1,4 @@
 import React, {PropsWithChildren, useEffect, useState} from "react";
-import Box from "components/common/box/Box";
 import {hex} from "util/hex";
 import {range} from "util/array";
 import CSS from "csstype";
