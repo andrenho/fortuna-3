@@ -1,13 +1,6 @@
 import FlatData from "components/common/flat-data/FlatData";
+import { FFile } from "store/filesystem";
 import css from "./Filesystem.module.scss";
-
-export enum FileType { File, Directory };
-
-type FFile = {
-    filename: string,
-    fileType: FileType,
-    size?: number,
-}
 
 type FilesystemProps = {
     fileList: FFile[],

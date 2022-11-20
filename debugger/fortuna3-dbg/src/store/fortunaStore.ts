@@ -5,6 +5,7 @@ import DebuggingInfo, {initialDebuggingInfo, SourceProject} from "./types/debugg
 import {fetchBackendCompilation, fetchBackendCrc} from "service/backendService";
 import UartTerminal from "./types/uartTerminal";
 import { FinishReason } from "fortuna3-emu/dist/api";
+import Filesystem from "./filesystem";
 
 const terminalSize = {
     w: 60,
@@ -35,6 +36,8 @@ export default class FortunaStore {
         rtc: { year: 2000, month: 1, day: 1, hours: 0, minutes: 0, seconds: 0 },
         lastError: "",
     };
+
+    filesystem = new Filesystem();
 
     debuggingInfo: DebuggingInfo = initialDebuggingInfo();
 
