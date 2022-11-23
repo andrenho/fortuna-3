@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {observer} from "mobx-react-lite";
 import SDCard from "components/sdcard/SDCard";
 import useStore from 'hooks/useStore';
@@ -7,7 +7,7 @@ import Filesystem from 'components/sdcard/Filesystem';
 const SDCardPage : React.FC = observer(() => {
 
     const store = useStore();
-    const {filesystem} = store;
+    const filesystem = store.filesystem!;
 
     if (store.debuggingInfo === undefined)
         return <></>;

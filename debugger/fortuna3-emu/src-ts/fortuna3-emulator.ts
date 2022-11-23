@@ -56,6 +56,10 @@ export interface EmulatorState {
     lastError: string | undefined,
 }
 
+export default class FilesystemState {
+
+}
+
 export class Fortuna3Emulator {
 
     speedInMhz = 1;
@@ -212,6 +216,8 @@ export class Fortuna3Emulator {
     keypress(chr: number) : void {
         this.api.keypress(chr);
     }
+
+
 
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
         const script = document.createElement("script");

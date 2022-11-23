@@ -37,7 +37,7 @@ export default class FortunaStore {
         lastError: "",
     };
 
-    filesystem = new Filesystem();
+    filesystem? : Filesystem;
 
     debuggingInfo: DebuggingInfo = initialDebuggingInfo();
 
@@ -61,14 +61,13 @@ export default class FortunaStore {
         Fortuna3Emulator.initialize(`${process.env.PUBLIC_URL}/fortuna`).then((emulator : Fortuna3Emulator) => {
             runInAction(() => {
                 this.emulator = emulator;
+                this.filesystem = new Filesystem(emulator);
                 this.updateEmulatorState();
                 this.updateSelectedFile();
             });
         });
 
         setInterval(() => this.updateDebuggingInfoFromBackend(), 1000);
-
-        this.filesystem.updateFromEmulator(undefined, 0);
     }
 
     get currentProject() : SourceProject | undefined {
@@ -87,7 +86,7 @@ export default class FortunaStore {
         }
         this.updateState();
         this.uartTerminal.reset();
-        this.filesystem.updateFromEmulator(undefined, 0);
+        this.filesystem?.updateFromEmulator(undefined, 0);
     }
 
     step() : void {
