@@ -37,7 +37,7 @@ export default class Filesystem {
 
         if (selectedFile === undefined) {
             this.currentPath = "";
-            this.fileList = this.emulator.fsDir("");
+//            this.fileList = this.emulator.fsDir("");
             this.selectedFile = undefined;
             this.pageContents = undefined;
             this.selectedPage = 0;
@@ -48,15 +48,15 @@ export default class Filesystem {
             } else if (fileListRef!.fileType === FileType.File) {
                 this.selectedFile = fileListRef;
                 this.selectedPage = selectedPage;
-                this.pageContents = this.emulator.fsFilePage(this.currentPath, selectedFile, selectedPage);
+//                this.pageContents = this.emulator.fsFilePage(this.currentPath, selectedFile, selectedPage);
             } else if (selectedFile === "..") {
-                this.currentPath = this.emulator.fsChdirUp(this.currentPath);
-                this.fileList = this.emulator.fsDir(this.currentPath);
+//                this.currentPath = this.emulator.fsChdirUp(this.currentPath);
+//                this.fileList = this.emulator.fsDir(this.currentPath);
                 this.selectedFile = undefined;
                 this.pageContents = undefined;
                 this.selectedPage = 0;
             } else {
-                this.fileList = this.emulator.fsDir(this.currentPath + "/" + selectedFile);
+//                this.fileList = this.emulator.fsDir(this.currentPath + "/" + selectedFile);
                 this.currentPath += "/" + selectedFile;
                 this.selectedFile = undefined;
                 this.pageContents = undefined;
