@@ -31,6 +31,6 @@ rd /S /Q fortuna3-backend\src\main\resources\static
 mkdir fortuna3-backend\src\main\resources\static
 robocopy fortuna3-dbg\build /s /e
 cd fortuna3-backend
-start /w mvn -DskipTests clean install
+start /w mvn -DskipTests clean install ^&^& exit
 cd ..
 copy fortuna3-backend\target\*.jar .
