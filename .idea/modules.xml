@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/debugger/fortuna3-backend/fortuna-3.iml" filepath="$PROJECT_DIR$/debugger/fortuna3-backend/fortuna-3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/debugger/fortuna3-dbg/fortuna3-dbg.iml" filepath="$PROJECT_DIR$/debugger/fortuna3-dbg/fortuna3-dbg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/debugger/fortuna3-emu/fortuna3-emu.iml" filepath="$PROJECT_DIR$/debugger/fortuna3-emu/fortuna3-emu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/debugger/fortuna3-emu/src-wasm/src-wasm.iml" filepath="$PROJECT_DIR$/debugger/fortuna3-emu/src-wasm/src-wasm.iml" />
     </modules>
   </component>
 </project>
