@@ -7,6 +7,7 @@
 #include "fsfat/ff.h"
 #include "fsfat/diskio.h"
 
+#include "fs.h"
 #include "globals.h"
 
 size_t sdcard_sz = 0;
@@ -61,6 +62,8 @@ bool sdcard_init(size_t sz)
     };
     if (!check_for_errors("mkfs", f_mkfs("0:", &parm, buf, sizeof buf)))
         return false;
+
+    fs_init();
 
     return true;
 }
