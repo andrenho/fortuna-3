@@ -4,6 +4,6 @@ cd debugger\fortuna3-emu
 start /w npm install ^&^& exit
 start /w npm run build ^&^& exit
 
-cd ..\debugger\fortuna3-dbg
-start /w npm install-emulator-js ^&^& exit
+cd ..\fortuna3-dbg
+start /w npm run install-emulator-js ^&^& exit
 cd ..

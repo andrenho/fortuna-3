@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
+import { FileType } from "fortuna3-emu";
 import { useState } from "react";
-import { FileType } from "store/filesystem";
 import Filesystem from "./Filesystem";
 
 export default {

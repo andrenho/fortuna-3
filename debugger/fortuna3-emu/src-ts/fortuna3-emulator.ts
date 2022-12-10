@@ -56,9 +56,14 @@ export interface EmulatorState {
     lastError: string | undefined,
 }
 
-export default class FilesystemState {
+export enum FileType { File, Directory }
 
+export type FilesystemFile = {
+    filename: string,
+    fileType: FileType,
+    size?: number,
 }
+
 
 export class Fortuna3Emulator {
 
@@ -217,7 +222,77 @@ export class Fortuna3Emulator {
         this.api.keypress(chr);
     }
 
+    fsDir(dir: string) : FilesystemFile[] {
 
+        // record format:
+        //   0~A: filename
+        //   B~E: size
+        //   F: file type
+
+        const MAX_RECORDS = 512;
+        const RECORD_SZ = 0x10;
+        const buf = Module._malloc(MAX_RECORDS * RECORD_SZ);
+        const dirBuf = this.createBufferFromString(dir);
+
+        const numberOfRecords = this.api.fsDir(dirBuf, MAX_RECORDS, buf);
+        const state = new Uint8Array(Module.HEAP8.buffer, buf, numberOfRecords * RECORD_SZ);
+        const quad = (n: number) : number => state[n] + (state[n+1] << 8) + (state[n+2] << 16) + (state[n+3] << 24);
+
+        const transformFilename = (dosFormat: string) : string => {
+            const name = dosFormat.slice(0, 8).trim();
+            const extension = dosFormat.slice(8, 11).trim();
+            if (extension !== "")
+                return name + "." + extension;
+            return name;
+        };
+
+        const result : FilesystemFile[] = [];
+        for (let i = 0; i < numberOfRecords; ++i) {
+            const baseLine = i * RECORD_SZ;
+            result.push({
+                filename: transformFilename(new TextDecoder().decode(state.slice(baseLine, baseLine + 0xb))),
+                size: quad(baseLine + 0xb),
+                fileType: state[baseLine + 0xf],
+            });
+        }
+
+        Module._free(dirBuf);
+        Module._free(buf);
+
+        return result;
+    }
+
+    fsFilePage(dir: string, filename: string, page: number) : Uint8Array {
+
+        const buf = Module._malloc(256);
+        const dirBuf = this.createBufferFromString(dir);
+        const filenameBuf = this.createBufferFromString(filename);
+
+        const sz = this.api.fsFilePage(dirBuf, filenameBuf, page, buf);
+
+        const array = new Uint8Array(Module.HEAP8.buffer, buf, sz);
+
+        Module._free(filenameBuf);
+        Module._free(dirBuf);
+        Module._free(buf);
+
+        return array;
+    }
+
+    fsChdirUp(dir: string) : string {
+        const maxSize = 1024;
+
+        const buf = Module._malloc(maxSize);
+        const dirBuf = this.createBufferFromString(dir);
+
+        const sz = this.api.fsChdirUp(dirBuf, maxSize, buf);
+
+        const charArray = new Uint8Array(Module.HEAP8.buffer, buf, sz);
+        const newDir = String.fromCharCode(...charArray);
+        Module._free(dirBuf);
+        Module._free(buf);
+        return newDir;
+    }
 
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
         const script = document.createElement("script");
@@ -232,4 +307,13 @@ export class Fortuna3Emulator {
         await waitForModuleInitialization();
     }
 
+    private createBufferFromString(str: string) : number {
+
+        const bytes = new TextEncoder().encode(str);
+        const sz = bytes.byteLength;
+        const buf = Module._malloc(sz);
+        new Uint8Array(Module.HEAP8.buffer, buf, sz);
+        return buf;
+
+    }
 }

@@ -1,7 +1,12 @@
 import FlatData from "components/common/flat-data/FlatData";
 import { observer } from "mobx-react-lite";
-import { FFile } from "store/filesystem";
+import { FileType } from "fortuna3-emu";
 import css from "./Filesystem.module.scss";
+
+type FFile = {
+    filename: string,
+    fileType: FileType,
+}
 
 type FilesystemProps = {
     fileList: FFile[],

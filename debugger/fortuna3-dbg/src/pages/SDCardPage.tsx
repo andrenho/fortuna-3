@@ -12,8 +12,6 @@ const SDCardPage : React.FC = observer(() => {
     if (store.debuggingInfo === undefined)
         return <></>;
 
-    console.log(filesystem.selectedFile);
-
     return <SDCard
         currentPage={store.sdCardPage}
         sdCardSizeInMB={store.debuggingInfo.sdCardSizeInMB}

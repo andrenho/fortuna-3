@@ -1,13 +1,14 @@
 COMPUTE_UNIT_DIR=../../../compute-unit
 IO=${COMPUTE_UNIT_DIR}/io
-SRC=glue.c sdcard.c cpu.c terminal.c z80/Z80.c fsfat/ff.c fsfat/ffsystem.c miniz/miniz.c \
+SRC=glue.c sdcard.c cpu.c terminal.c fs.c \
+	z80/Z80.c fsfat/ff.c fsfat/ffsystem.c miniz/miniz.c \
 	${IO}/io.c ${IO}/ioregs.c ${IO}/iomemory.c ${IO}/serial.c ${IO}/iolcd.c ${IO}/iofs.c \
 	dev/ram.c dev/uart.c dev/lcd.c dev/rtc.c dev/eeprom.c dev/random.c
 
 all: fortuna.wasm
 
 fortuna.wasm: ${SRC}
-	emcc -Wall -Wextra -I. -o fortuna.js $^ --no-entry -O3 -DNDEBUG=1 -D EXECZ80=1 -DEMULATOR=1 -DINCLUDE_SDCARD=1 -I${COMPUTE_UNIT_DIR} \
+	emcc -std=c11 -Wall -Wextra -I. -o fortuna.js $^ --no-entry -O3 -DNDEBUG=1 -D EXECZ80=1 -DEMULATOR=1 -DINCLUDE_SDCARD=1 -I${COMPUTE_UNIT_DIR} \
 		-sLLD_REPORT_UNDEFINED \
 		-s WASM=1 \
 		-s INITIAL_MEMORY=1073741824 \
