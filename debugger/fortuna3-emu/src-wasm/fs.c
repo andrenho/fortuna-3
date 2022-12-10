@@ -17,10 +17,10 @@ EMSCRIPTEN_KEEPALIVE size_t fs_dir(const char* dir_name, size_t n_records, void*
     FFile* ffile = (FFile *) buf;
 
     strcpy(ffile[0].filename, "BOOT    BIN");
-    ffile[0].filesize = 1;
+    ffile[0].filesize = 512;
     ffile[0].filetype = FS_FILE;
 
-    return 256;
+    return 1;
 }
 
 EMSCRIPTEN_KEEPALIVE size_t fs_chdir_up(const char* dir_name, size_t sz, void* buf)
