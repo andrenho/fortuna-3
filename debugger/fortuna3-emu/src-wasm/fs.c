@@ -51,13 +51,18 @@ void fs_init()
     check_for_errors("f_mount", f_mount(&fs, "", 1));
 
     FIL fp;
-    check_for_errors("f_open", f_open(&fp, "HELLO.TXT", FA_CREATE_NEW | FA_WRITE));
-
     const char* hello = "Hello world!";
     UINT bw;
+    check_for_errors("f_open", f_open(&fp, "HELLO.TXT", FA_CREATE_NEW | FA_WRITE));
     check_for_errors("f_write", f_write(&fp, hello, strlen(hello), &bw));
-    // if (bw != strlen(hello)) abort();
+    check_for_errors("f_close", f_close(&fp));
 
+    check_for_errors("f_mkdir", f_mkdir("/mydir"));
+    check_for_errors("f_mkdir", f_mkdir("/mydir/secdir"));
+
+    const char* text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Eget magna fermentum iaculis eu non diam phasellus vestibulum. Tellus rutrum tellus pellentesque eu tincidunt tortor aliquam nulla. Pulvinar elementum integer enim neque volutpat ac tincidunt. Dignissim cras tincidunt lobortis feugiat vivamus at augue eget arcu. Neque ornare aenean euismod elementum nisi quis eleifend. Nec sagittis aliquam malesuada bibendum arcu vitae elementum curabitur. Vitae nunc sed velit dignissim sodales ut eu sem integer. Sagittis nisl rhoncus mattis rhoncus urna neque. At risus viverra adipiscing at in tellus integer feugiat. Egestas pretium aenean pharetra magna ac. Libero justo laoreet sit amet cursus sit. At volutpat diam ut venenatis tellus in metus. Orci phasellus egestas tellus rutrum.";
+    check_for_errors("f_open", f_open(&fp, "/MYDIR/SECDIR/LOREM", FA_CREATE_NEW | FA_WRITE));
+    check_for_errors("f_write", f_write(&fp, hello, strlen(text), &bw));
     check_for_errors("f_close", f_close(&fp));
 }
 
@@ -85,14 +90,24 @@ EMSCRIPTEN_KEEPALIVE ssize_t fs_dir(const char* dir_name, size_t n_records, void
     if (n_records == 0)
         return 0;
 
+    memset(buf, 0, n_records * 0x10);
+
     FFile* ffile = (FFile *) buf;
+    size_t i = 0;
+
+    // add ".."
+    if (dir_name[0] != '\0' && strcmp(dir_name, "/") != 0) {
+        strcpy(ffile[i].filename, "..");
+        ffile[i].filesize = 0;
+        ffile[i].filetype = FS_DIR;
+        ++i;
+    }
 
     DIR dp;
     FILINFO fno;
     FRESULT fr = f_findfirst(&dp, &fno, dir_name, "*");
     if (fr != FR_OK)
         return -fr;
-    long i = 0;
 
     while (fr == FR_OK && fno.fname[0] && i < n_records) {
         copy_filename(ffile[i].filename, fno.fname);
@@ -111,11 +126,6 @@ EMSCRIPTEN_KEEPALIVE ssize_t fs_dir(const char* dir_name, size_t n_records, void
     return i;
 }
 
-EMSCRIPTEN_KEEPALIVE ssize_t fs_chdir_up(const char* dir_name, size_t sz, void* buf)
-{
-    return 0;
-}
-
 EMSCRIPTEN_KEEPALIVE ssize_t fs_file_page(const char* dir_name, const char* filename, size_t page, void* buf)
 {
     ssize_t ret = 0;
@@ -123,8 +133,7 @@ EMSCRIPTEN_KEEPALIVE ssize_t fs_file_page(const char* dir_name, const char* file
     char path[strlen(dir_name) + strlen(filename) + 2];
     sprintf(path, "%s/%s", dir_name, filename);
 
-    printf(">> %s <<\n", filename);
-    printf(">> %s <<\n", path);
+    // printf("Read file page: >> %s <<\n", path);
 
     FIL fp;
     FRESULT fr = f_open(&fp, path, FA_READ);

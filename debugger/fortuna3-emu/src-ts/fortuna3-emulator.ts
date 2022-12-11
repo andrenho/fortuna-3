@@ -241,6 +241,8 @@ export class Fortuna3Emulator {
         const quad = (n: number) : number => state[n] + (state[n+1] << 8) + (state[n+2] << 16) + (state[n+3] << 24);
 
         const transformFilename = (dosFormat: string) : string => {
+            if (dosFormat.startsWith(".."))
+                return "..";
             const name = dosFormat.slice(0, 8).trim();
             const extension = dosFormat.slice(8, 11).trim();
             if (extension !== "")
@@ -279,18 +281,12 @@ export class Fortuna3Emulator {
     }
 
     fsChdirUp(dir: string) : string {
-        const maxSize = 1024;
+        if (dir === "" || dir === "/")
+            return "/";
 
-        const buf = Module._malloc(maxSize);
-
-        const sz = this.api.fsChdirUp(dir, maxSize, buf);
-        if (sz < 0)
-            throw new Error(`Error while reading directory: ${-sz}.`);
-
-        const charArray = new Uint8Array(Module.HEAP8.buffer, buf, sz);
-        const newDir = String.fromCharCode(...charArray);
-        Module._free(buf);
-        return newDir;
+        const newPath = dir.split("/").filter(v => v !== "");
+        newPath.pop();
+        return "/" + newPath.join("/");
     }
 
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {

@@ -20,8 +20,8 @@ export default class Filesystem {
     updateFromEmulator(selectedFile: string | undefined, selectedPage: number) {
 
         if (selectedFile === undefined) {
-            this.currentPath = "";
-            this.fileList = this.emulator.fsDir("");
+            this.currentPath = "/";
+            this.fileList = this.emulator.fsDir("/");
             this.selectedFile = undefined;
             this.pageContents = undefined;
             this.selectedPage = 0;
