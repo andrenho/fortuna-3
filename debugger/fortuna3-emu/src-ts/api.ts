@@ -19,9 +19,9 @@ export interface FortunaApi {
     unloadPrintedChars: (data: pointer, maxSize: number) => number;
     keypress: (chr: number) => void;
     maxPrintedChars: () => number;
-    fsDir: (dirBuf: number, numRecords: number, buf: number) => number;
-    fsChdirUp: (dirBuf: number, maxSize: number, buf: number) => number;
-    fsFilePage: (dirBuf: number, filenameBuf: number, page: number, buf: number) => number;
+    fsDir: (dir: string, numRecords: number, buf: number) => number;
+    fsChdirUp: (dir: string, maxSize: number, buf: number) => number;
+    fsFilePage: (dir: string, filename: string, page: number, buf: number) => number;
 }
 
 export function loadApiFunctions(module: FortunaModule) : FortunaApi {
@@ -37,8 +37,8 @@ export function loadApiFunctions(module: FortunaModule) : FortunaApi {
         unloadPrintedChars: module.cwrap("terminal_unload_printed_chars", "number", ["number", "number"]),
         keypress: module.cwrap("keypress", null, ["number"]),
         maxPrintedChars: module.cwrap("max_printed_chars", "number", []),
-        fsDir: module.cwrap("fs_dir", "number", ["number", "number", "number"]),
-        fsChdirUp: module.cwrap("fs_chdir_up", "number", ["number", "number", "number"]),
-        fsFilePage: module.cwrap("fs_file_page", "number", ["number", "number", "number", "number"]),
+        fsDir: module.cwrap("fs_dir", "number", ["string", "number", "number"]),
+        fsChdirUp: module.cwrap("fs_chdir_up", "number", ["string", "number", "number"]),
+        fsFilePage: module.cwrap("fs_file_page", "number", ["string", "string", "number", "number"]),
     };
 }

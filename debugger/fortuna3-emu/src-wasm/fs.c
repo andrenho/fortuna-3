@@ -123,7 +123,6 @@ EMSCRIPTEN_KEEPALIVE ssize_t fs_file_page(const char* dir_name, const char* file
     char path[strlen(dir_name) + strlen(filename) + 2];
     sprintf(path, "%s/%s", dir_name, filename);
 
-    puts("1");
     printf(">> %s <<\n", filename);
     printf(">> %s <<\n", path);
 
@@ -132,20 +131,14 @@ EMSCRIPTEN_KEEPALIVE ssize_t fs_file_page(const char* dir_name, const char* file
     if (fr != FR_OK)
         return -fr;
 
-    puts("2");
-
     if (page * PAGE_SIZE > f_size(&fp))  // return 0
         goto finish;
-
-    puts("3");
 
     fr = f_lseek(&fp, page * PAGE_SIZE);
     if (fr != FR_OK) {
         ret = -fr;
         goto finish;
     }
-
-    puts("4");
 
     UINT br;
     fr = f_read(&fp, buf, PAGE_SIZE, &br);
@@ -154,8 +147,6 @@ EMSCRIPTEN_KEEPALIVE ssize_t fs_file_page(const char* dir_name, const char* file
         goto finish;
     }
     ret = br;
-
-    puts("5");
 
 finish:
     f_close(&fp);

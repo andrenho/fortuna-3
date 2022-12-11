@@ -233,9 +233,8 @@ export class Fortuna3Emulator {
         const MAX_RECORDS = 512;
         const RECORD_SZ = 0x10;
         const buf = Module._malloc(MAX_RECORDS * RECORD_SZ);
-        const dirBuf = this.createBufferFromString(dir);
 
-        const numberOfRecords = this.api.fsDir(dirBuf, MAX_RECORDS, buf);
+        const numberOfRecords = this.api.fsDir(dir, MAX_RECORDS, buf);
         if (numberOfRecords < 0)
             throw new Error(`Error while reading directory: ${-numberOfRecords}.`);
         const state = new Uint8Array(Module.HEAP8.buffer, buf, numberOfRecords * RECORD_SZ);
@@ -259,7 +258,6 @@ export class Fortuna3Emulator {
             });
         }
 
-        Module._free(dirBuf);
         Module._free(buf);
 
         return result;
@@ -268,17 +266,13 @@ export class Fortuna3Emulator {
     fsFilePage(dir: string, filename: string, page: number) : Uint8Array {
 
         const buf = Module._malloc(256);
-        const dirBuf = this.createBufferFromString(dir);
-        const filenameBuf = this.createBufferFromString(filename);
 
-        const sz = this.api.fsFilePage(dirBuf, filenameBuf, page, buf);
+        const sz = this.api.fsFilePage(dir, filename, page, buf);
         if (sz < 0)
             throw new Error(`Error while reading file page: ${-sz}.`);
 
         const array = new Uint8Array(Module.HEAP8.buffer, buf, sz);
 
-        Module._free(filenameBuf);
-        Module._free(dirBuf);
         Module._free(buf);
 
         return array;
@@ -288,15 +282,13 @@ export class Fortuna3Emulator {
         const maxSize = 1024;
 
         const buf = Module._malloc(maxSize);
-        const dirBuf = this.createBufferFromString(dir);
 
-        const sz = this.api.fsChdirUp(dirBuf, maxSize, buf);
+        const sz = this.api.fsChdirUp(dir, maxSize, buf);
         if (sz < 0)
             throw new Error(`Error while reading directory: ${-sz}.`);
 
         const charArray = new Uint8Array(Module.HEAP8.buffer, buf, sz);
         const newDir = String.fromCharCode(...charArray);
-        Module._free(dirBuf);
         Module._free(buf);
         return newDir;
     }
@@ -314,16 +306,4 @@ export class Fortuna3Emulator {
         await waitForModuleInitialization();
     }
 
-    private createBufferFromString(str: string) : number {
-
-        const bytes = this.textEncoder.encode(str);
-        console.log(bytes);
-        const sz = bytes.byteLength;
-        console.log(sz);
-        const buf = Module._malloc(sz);
-        console.log(buf);
-        console.log(new Uint8Array(Module.HEAP8.buffer, buf, sz));
-        return buf;
-
-    }
 }
