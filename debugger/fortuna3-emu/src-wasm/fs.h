@@ -2,6 +2,7 @@
 #define FS_H_
 
 #include <stddef.h>
+#include <stdint.h>
 
 void   fs_init();
 size_t fs_dir(const char* dir_name, size_t n_records, void* buf);

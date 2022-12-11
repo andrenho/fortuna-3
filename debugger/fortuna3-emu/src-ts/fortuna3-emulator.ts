@@ -112,7 +112,7 @@ export class Fortuna3Emulator {
         this.api.getState(ramPage, sdCardPage, eepromPage, buf);
         const state = new Uint8Array(Module.HEAP8.buffer, buf, bufferSize);
 
-        let error : string | undefined = new TextDecoder().decode(state.slice(0x400, 0x600));
+        let error : string | undefined = this.textDecoder.decode(state.slice(0x400, 0x600));
         error = error.replace(/\0.*$/g, '');  // remove nulls
         if (error === "")
             error = undefined;
@@ -250,7 +250,7 @@ export class Fortuna3Emulator {
         for (let i = 0; i < numberOfRecords; ++i) {
             const baseLine = i * RECORD_SZ;
             result.push({
-                filename: transformFilename(new TextDecoder().decode(state.slice(baseLine, baseLine + 0xb))),
+                filename: transformFilename(this.textDecoder.decode(state.slice(baseLine, baseLine + 0xb))),
                 size: quad(baseLine + 0xb),
                 fileType: state[baseLine + 0xf],
             });

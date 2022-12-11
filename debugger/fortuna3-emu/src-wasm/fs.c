@@ -89,13 +89,13 @@ EMSCRIPTEN_KEEPALIVE size_t fs_dir(const char* dir_name, size_t n_records, void*
     FRESULT fr = f_findfirst(&dp, &fno, dir_name, "*");
     long i = 0;
 
-    while (fr == FR_OK && fno.fname[0] && (++i) < n_records) {
+    while (fr == FR_OK && fno.fname[0] && i < n_records) {
         copy_filename(ffile[i].filename, fno.fname);
-        printf(">> %s <<\n", ffile[i].filename);
         ffile[i].filesize = (uint32_t) fno.fsize;
         ffile[i].filetype = (fno.fattrib & AM_DIR) ? FS_DIR : FS_FILE;
 
         fr = f_findnext(&dp, &fno);
+        ++i;
     }
 
     f_closedir(&dp);
