@@ -71,6 +71,7 @@ export class Fortuna3Emulator {
 
     private api : FortunaApi;
     private textDecoder = new TextDecoder();
+    private textEncoder = new TextEncoder();
 
     private constructor(private sdCardImageSizeMB) {}
 
@@ -235,6 +236,8 @@ export class Fortuna3Emulator {
         const dirBuf = this.createBufferFromString(dir);
 
         const numberOfRecords = this.api.fsDir(dirBuf, MAX_RECORDS, buf);
+        if (numberOfRecords < 0)
+            throw new Error(`Error while reading directory: ${-numberOfRecords}.`);
         const state = new Uint8Array(Module.HEAP8.buffer, buf, numberOfRecords * RECORD_SZ);
         const quad = (n: number) : number => state[n] + (state[n+1] << 8) + (state[n+2] << 16) + (state[n+3] << 24);
 
@@ -269,6 +272,8 @@ export class Fortuna3Emulator {
         const filenameBuf = this.createBufferFromString(filename);
 
         const sz = this.api.fsFilePage(dirBuf, filenameBuf, page, buf);
+        if (sz < 0)
+            throw new Error(`Error while reading file page: ${-sz}.`);
 
         const array = new Uint8Array(Module.HEAP8.buffer, buf, sz);
 
@@ -286,6 +291,8 @@ export class Fortuna3Emulator {
         const dirBuf = this.createBufferFromString(dir);
 
         const sz = this.api.fsChdirUp(dirBuf, maxSize, buf);
+        if (sz < 0)
+            throw new Error(`Error while reading directory: ${-sz}.`);
 
         const charArray = new Uint8Array(Module.HEAP8.buffer, buf, sz);
         const newDir = String.fromCharCode(...charArray);
@@ -309,10 +316,13 @@ export class Fortuna3Emulator {
 
     private createBufferFromString(str: string) : number {
 
-        const bytes = new TextEncoder().encode(str);
+        const bytes = this.textEncoder.encode(str);
+        console.log(bytes);
         const sz = bytes.byteLength;
+        console.log(sz);
         const buf = Module._malloc(sz);
-        new Uint8Array(Module.HEAP8.buffer, buf, sz);
+        console.log(buf);
+        console.log(new Uint8Array(Module.HEAP8.buffer, buf, sz));
         return buf;
 
     }

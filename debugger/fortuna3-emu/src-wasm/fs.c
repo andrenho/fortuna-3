@@ -12,6 +12,8 @@
 
 typedef enum { FS_FILE = 0, FS_DIR = 1 } FileType;
 
+#define PAGE_SIZE 256
+
 typedef struct {
     char     filename[11];
     uint32_t filesize;
@@ -59,7 +61,8 @@ void fs_init()
     check_for_errors("f_close", f_close(&fp));
 }
 
-void copy_filename(char* dest, const char* src) {
+void copy_filename(char* dest, const char* src)
+ {
     memset(dest, ' ', 11);
 
     size_t max = strlen(src);
@@ -77,7 +80,7 @@ void copy_filename(char* dest, const char* src) {
     }
 }
 
-EMSCRIPTEN_KEEPALIVE size_t fs_dir(const char* dir_name, size_t n_records, void* buf)
+EMSCRIPTEN_KEEPALIVE ssize_t fs_dir(const char* dir_name, size_t n_records, void* buf)
 {
     if (n_records == 0)
         return 0;
@@ -87,6 +90,8 @@ EMSCRIPTEN_KEEPALIVE size_t fs_dir(const char* dir_name, size_t n_records, void*
     DIR dp;
     FILINFO fno;
     FRESULT fr = f_findfirst(&dp, &fno, dir_name, "*");
+    if (fr != FR_OK)
+        return -fr;
     long i = 0;
 
     while (fr == FR_OK && fno.fname[0] && i < n_records) {
@@ -98,19 +103,61 @@ EMSCRIPTEN_KEEPALIVE size_t fs_dir(const char* dir_name, size_t n_records, void*
         ++i;
     }
 
+    if (fr != FR_OK)
+        return -fr;
+
     f_closedir(&dp);
 
     return i;
 }
 
-EMSCRIPTEN_KEEPALIVE size_t fs_chdir_up(const char* dir_name, size_t sz, void* buf)
+EMSCRIPTEN_KEEPALIVE ssize_t fs_chdir_up(const char* dir_name, size_t sz, void* buf)
 {
     return 0;
 }
 
-EMSCRIPTEN_KEEPALIVE size_t fs_file_page(const char* dir_name, const char* filename, size_t page, void* buf)
+EMSCRIPTEN_KEEPALIVE ssize_t fs_file_page(const char* dir_name, const char* filename, size_t page, void* buf)
 {
-    for (size_t i = 0; i < 256; ++i)
-        ((uint8_t *) buf)[i] = i;
-    return 256;
+    ssize_t ret = 0;
+
+    char path[strlen(dir_name) + strlen(filename) + 2];
+    sprintf(path, "%s/%s", dir_name, filename);
+
+    puts("1");
+    printf(">> %s <<\n", filename);
+    printf(">> %s <<\n", path);
+
+    FIL fp;
+    FRESULT fr = f_open(&fp, path, FA_READ);
+    if (fr != FR_OK)
+        return -fr;
+
+    puts("2");
+
+    if (page * PAGE_SIZE > f_size(&fp))  // return 0
+        goto finish;
+
+    puts("3");
+
+    fr = f_lseek(&fp, page * PAGE_SIZE);
+    if (fr != FR_OK) {
+        ret = -fr;
+        goto finish;
+    }
+
+    puts("4");
+
+    UINT br;
+    fr = f_read(&fp, buf, PAGE_SIZE, &br);
+    if (fr != FR_OK) {
+        ret = -fr;
+        goto finish;
+    }
+    ret = br;
+
+    puts("5");
+
+finish:
+    f_close(&fp);
+    return ret;
 }
