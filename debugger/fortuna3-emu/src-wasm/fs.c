@@ -62,7 +62,7 @@ void fs_init()
 
     const char* text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Eget magna fermentum iaculis eu non diam phasellus vestibulum. Tellus rutrum tellus pellentesque eu tincidunt tortor aliquam nulla. Pulvinar elementum integer enim neque volutpat ac tincidunt. Dignissim cras tincidunt lobortis feugiat vivamus at augue eget arcu. Neque ornare aenean euismod elementum nisi quis eleifend. Nec sagittis aliquam malesuada bibendum arcu vitae elementum curabitur. Vitae nunc sed velit dignissim sodales ut eu sem integer. Sagittis nisl rhoncus mattis rhoncus urna neque. At risus viverra adipiscing at in tellus integer feugiat. Egestas pretium aenean pharetra magna ac. Libero justo laoreet sit amet cursus sit. At volutpat diam ut venenatis tellus in metus. Orci phasellus egestas tellus rutrum.";
     check_for_errors("f_open", f_open(&fp, "/MYDIR/SECDIR/LOREM", FA_CREATE_NEW | FA_WRITE));
-    check_for_errors("f_write", f_write(&fp, hello, strlen(text), &bw));
+    check_for_errors("f_write", f_write(&fp, text, strlen(text), &bw));
     check_for_errors("f_close", f_close(&fp));
 }
 
