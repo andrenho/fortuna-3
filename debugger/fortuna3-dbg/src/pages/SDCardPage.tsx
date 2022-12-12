@@ -20,6 +20,7 @@ const SDCardPage : React.FC = observer(() => {
         getCompressedImageBytes={() => store.downloadSdCardImage()}>
         
         <Filesystem
+            currentDirectory={filesystem.currentPath}
             fileList={filesystem.fileList}
             selectedFile={filesystem.selectedFile?.filename}
             selectedFileSize={filesystem.selectedFile?.size}

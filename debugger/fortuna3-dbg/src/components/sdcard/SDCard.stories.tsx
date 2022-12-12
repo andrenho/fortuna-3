@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
 import SDCard from "./SDCard";
 
 export default {
-    title: 'standalone/SDCard',
+    title: 'sdcard/SDCard',
     component: SDCard,
     argTypes: {
         currentPageBytes: { control: false },

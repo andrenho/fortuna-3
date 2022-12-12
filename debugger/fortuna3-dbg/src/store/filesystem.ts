@@ -42,6 +42,7 @@ export default class Filesystem {
             } else {
                 this.fileList = this.emulator.fsDir(this.currentPath + "/" + selectedFile);
                 this.currentPath += "/" + selectedFile;
+                this.currentPath = this.currentPath.replace("//", "/");
                 this.selectedFile = undefined;
                 this.pageContents = undefined;
                 this.selectedPage = 0;

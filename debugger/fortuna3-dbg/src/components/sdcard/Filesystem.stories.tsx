@@ -4,7 +4,7 @@ import { useState } from "react";
 import Filesystem from "./Filesystem";
 
 export default {
-    title: 'standalone/Filesystem',
+    title: 'sdcard/Filesystem',
     component: Filesystem,
     argTypes: {
         currentPageBytes: { control: false },
@@ -41,10 +41,12 @@ const Template: ComponentStory<typeof Filesystem> = (args) => {
 
 export const MyFilesystem = Template.bind({});
 MyFilesystem.args = {
+    currentDirectory: "/BOOT/BIN",
     fileList: [
         { filename: "..", fileType: FileType.Directory },
         { filename: "BOOT.BIN", fileType: FileType.File },
         { filename: "KERNEL", fileType: FileType.Directory },
+        { filename: "DIRECT", fileType: FileType.Directory },
     ],
 };
 MyFilesystem.storyName = 'Filesystem';
