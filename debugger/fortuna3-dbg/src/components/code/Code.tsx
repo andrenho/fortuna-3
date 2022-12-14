@@ -32,6 +32,8 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
 
     const parseCode = (line: string) : JSX.Element => {
         line = replaceTabs(line);
+        if (line === "")
+            return <span>&nbsp;</span>;
         let [code, comment] = line.split(";");
         if (comment)
             comment = `;${comment}`;

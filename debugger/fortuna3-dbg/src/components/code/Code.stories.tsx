@@ -14,9 +14,10 @@ export default {
 
 const sourceLines : SourceLine[] = [
     { line: '\t; Hello world' },
+    { line: '' },
     { line: 'start:' },
     { line: '\tnop\t; do nothing', address: 0, bytes:[0x0] },
-    { line: '\tjp start', address: 1, bytes:[0xc3, 0x0, 0x0] },
+    { line: '  \tjp start', address: 1, bytes:[0xc3, 0x0, 0x0] },
 ];
 
 const Template: ComponentStory<typeof Code> = (args) => {
