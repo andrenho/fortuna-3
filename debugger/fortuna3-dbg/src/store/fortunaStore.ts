@@ -43,8 +43,8 @@ export default class FortunaStore {
 
     uartTerminal = new UartTerminal(terminalSize.h, terminalSize.w);
 
-    selectedFile?: string | undefined;
-    selectedProject?: string | undefined;
+    selectedFile: string | undefined;
+    selectedProject: string | undefined;
 
     lastCompilationHash: number = 0;
 
@@ -192,6 +192,7 @@ export default class FortunaStore {
         const newState = this.emulator!.getState(this.ramPage, this.sdCardPage, this.eepromPage);
         this.state = newState;
         this.currentError = this.state.lastError;
+
         this.updateTerminal();
         console.debug("New state received from emulator:");
         console.debug(newState);

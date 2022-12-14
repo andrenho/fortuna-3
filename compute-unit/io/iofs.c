@@ -98,10 +98,11 @@ void io_fs_read(IO_Regs* r)
 {
     FIL* fil = &files[r->Pa0 % MAX_FP];
     uint8_t buff[512];
-    UINT n_bytes = min((uint16_t) 512, Pa(r));
+    UINT n_bytes = min((uint16_t) 512, Pb(r));
 	UINT bytes_read;
 
     r->Ra0 = fresult(f_read(fil, buff, n_bytes, &bytes_read));
+    printf("%d %d %d %d\n", fil, buff, n_bytes, bytes_read);
     set_Rb(r, bytes_read);
 
     uint8_t original_bank = ram_bank();
@@ -115,7 +116,7 @@ void io_fs_write(IO_Regs* r)
 {
     FIL* fil = &files[r->Pa0 % MAX_FP];
     uint8_t buff[512];
-    UINT n_bytes = min((uint16_t) 512, Pa(r));
+    UINT n_bytes = min((uint16_t) 512, Pb(r));
 	UINT bytes_read = 0;
 
     uint8_t original_bank = ram_bank();

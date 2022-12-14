@@ -111,7 +111,7 @@ export class Fortuna3Emulator {
 
         const buf = Module._malloc(bufferSize);
         this.api.getState(ramPage, sdCardPage, eepromPage, buf);
-        const state = new Uint8Array(Module.HEAP8.buffer, buf, bufferSize);
+        const state = new Uint8Array(Module.HEAP8.buffer, buf, bufferSize).slice();
 
         let error : string | undefined = this.textDecoder.decode(state.slice(0x400, 0x600));
         error = error.replace(/\0.*$/g, '');  // remove nulls
@@ -212,7 +212,7 @@ export class Fortuna3Emulator {
 
         const buf = Module._malloc(maxSize);
         const sz = this.api.unloadPrintedChars(buf, maxSize);
-        const charArray = new Uint8Array(Module.HEAP8.buffer, buf, sz);
+        const charArray = new Uint8Array(Module.HEAP8.buffer, buf, sz).slice();
 
         const r = String.fromCharCode(...charArray).split("");
         Module._free(buf);
@@ -237,7 +237,7 @@ export class Fortuna3Emulator {
         const numberOfRecords = this.api.fsDir(dir, MAX_RECORDS, buf);
         if (numberOfRecords < 0)
             throw new Error(`Error while reading directory: ${-numberOfRecords}.`);
-        const state = new Uint8Array(Module.HEAP8.buffer, buf, numberOfRecords * RECORD_SZ);
+        const state = new Uint8Array(Module.HEAP8.buffer, buf, numberOfRecords * RECORD_SZ).slice();
         const quad = (n: number) : number => state[n] + (state[n+1] << 8) + (state[n+2] << 16) + (state[n+3] << 24);
 
         const transformFilename = (dosFormat: string) : string => {
@@ -273,7 +273,7 @@ export class Fortuna3Emulator {
         if (sz < 0)
             throw new Error(`Error while reading file page: ${-sz}.`);
 
-        const array = new Uint8Array(Module.HEAP8.buffer, buf, sz);
+        const array = new Uint8Array(Module.HEAP8.buffer, buf, sz).slice();
 
         Module._free(buf);
 
