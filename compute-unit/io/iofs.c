@@ -89,6 +89,7 @@ void io_fs_open_a(IO_Regs* r)
 
 void io_fs_close(IO_Regs* r, uint8_t data)
 {
+    (void) r;
     fresult(f_close(&files[data]));
 }
 
@@ -97,7 +98,7 @@ void io_fs_read(IO_Regs* r)
 {
     FIL* fil = &files[r->Pa0 % MAX_FP];
     uint8_t buff[512];
-    UINT n_bytes = min((uint16_t) 512, Pa(r));
+    UINT n_bytes = min((uint16_t) 512, Pb(r));
 	UINT bytes_read;
 
     r->Ra0 = fresult(f_read(fil, buff, n_bytes, &bytes_read));
@@ -114,8 +115,8 @@ void io_fs_write(IO_Regs* r)
 {
     FIL* fil = &files[r->Pa0 % MAX_FP];
     uint8_t buff[512];
-    UINT n_bytes = min((uint16_t) 512, Pa(r));
-	UINT bytes_read;
+    UINT n_bytes = min((uint16_t) 512, Pb(r));
+	UINT bytes_read = 0;
 
     uint8_t original_bank = ram_bank();
     ram_set_bank(r->Qb0);
@@ -200,6 +201,7 @@ void io_fs_readdir(IO_Regs* r)
 
 void io_fs_closedir(IO_Regs* r, uint8_t data)
 {
+    (void) r;
     fresult(f_closedir(&dirs[data]));
 }
 

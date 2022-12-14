@@ -9,27 +9,44 @@
 #include "globals.h"
 
 #include "cpu.h"
-#include "ram.h"
+#include "dev/ram.h"
 #include "sdcard.h"
-#include "uart.h"
+#include "terminal.h"
 
 #include "z80/Z80.h"
 #include "miniz/miniz.h"
+#include "io/io.h"
+#include "dev/lcd.h"
+#include "dev/rtc.h"
+#include "dev/random.h"
 
 #define KB *1024
 #define MB KB*1024
 
+#define RAM_PAGE_SZ 0x100
+
 static Z80 z80 = { 0 };
 
 char last_error[0x200] = { 0 };
+
+extern volatile uint8_t uart_last_keypress;
+extern void eeprom_copy_page(uint8_t page, uint8_t* data);
+extern char lcd_text[32];
 
 typedef enum { NORMAL = 0, BREAKPOINT = 1 } FinishReason;
 
 EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
 {
     ResetZ80(&z80);
-    ram_init(512 KB);
+    ram_init();
     bkp_clear();
+
+    for (size_t i = 0; i <= 0xb; ++i)
+        io_write(i, 0);
+
+    random_init();
+    lcd_init();
+    rtc_init();
 
     bool r = sdcard_init(sdcard_sz_in_mb MB);
     puts("Emulator initialized.");
@@ -43,7 +60,15 @@ EMSCRIPTEN_KEEPALIVE void step()
 
 EMSCRIPTEN_KEEPALIVE FinishReason step_cycles(int cycles)
 {
-    ExecZ80(&z80, cycles);
+    if (bkp_has()) {
+        while (cycles > 0) {
+            cycles -= ExecZ80(&z80, 1);
+            if (bkp_is(z80.PC.W))
+                return BREAKPOINT;
+        }
+    } else {
+        ExecZ80(&z80, cycles);
+    }
     return NORMAL;
 }
 
@@ -52,13 +77,16 @@ EMSCRIPTEN_KEEPALIVE FinishReason step_cycles(int cycles)
  *  [0x000 - 0x018] : Z80
  *  [0x01a - 0x026] : Compute unit
  *  [0x080 - 0x0e3] : Breakpoints (16-bit)
- *  [0x0e4 - 0x0e7] : RAM banks
+ *  [0x0e4]         : RAM banks
  *  [0x0e8 - 0x0ff] : Stack
  *  [0x100 - 0x1ff] : RAM
  *  [0x200 - 0x3ff] : SDCard
- *  [0x400 - 0x600] : Last error
+ *  [0x400 - 0x5ff] : Last error
+ *  [0x600 - 0x6ff] : EEPROM
+ *  [0x700 - 0x71f] : LCD
+ *  [0x720 - 0x725] : RTC
  */
-EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* data)
+EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint16_t eeprom_page, uint8_t* data)
 {
     data[0x0] = z80.AF.B.l;
     data[0x1] = z80.AF.B.h;
@@ -87,9 +115,8 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     data[0x18] = z80.I;
 
     // Compute unit
-    *((uint32_t *) &data[0x1a]) = 0;  // TODO
-    *((uint32_t *) &data[0x1e]) = 0;  // TODO
-    *((uint32_t *) &data[0x22]) = 0;  // TODO
+    for (size_t i = 0; i < 12; ++i)
+        data[i + 0x1a] = io_read(i);
 
     // Breakpoints
     for (size_t i = 0; i < MAX_BKPS; ++i) {
@@ -98,20 +125,35 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint8_t* 
     }
 
     // RAM banks
-    ram_banks(&data[0xe4]);
+    data[0xe4] = ram_bank();
 
     // stack
     for (uint16_t addr = 0; addr < 24; ++addr)
-        data[addr + 0xe8] = ram_get(z80.SP.W + addr);
+        data[addr + 0xe8] = ram_get_byte(z80.SP.W + addr);
 
     // RAM
-    ram_get_page(ram_page, &data[0x100]);
+    ram_read_array(ram_page * RAM_PAGE_SZ, &data[0x100], RAM_PAGE_SZ);
 
     // SD Card
     sdcard_copy_page(sd_page, &data[0x200]);
 
     // last error
     memcpy(&data[0x400], last_error, sizeof last_error);
+
+    // eeprom
+    eeprom_copy_page(eeprom_page, &data[0x600]);
+
+    // lcd
+    memcpy(&data[0x700], lcd_text, 32);
+
+    // rtc
+    ClockDateTime clk = rtc_get();
+    data[0x720] = clk.yy;
+    data[0x721] = clk.mm;
+    data[0x722] = clk.dd;
+    data[0x723] = clk.hh;
+    data[0x724] = clk.nn;
+    data[0x725] = clk.ss;
 }
 
 EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
@@ -137,6 +179,11 @@ EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
     mz_zip_writer_end(&zip);
 
     return sz;
+}
+
+EMSCRIPTEN_KEEPALIVE void keypress(uint8_t chr)
+{
+    uart_last_keypress = chr;
 }
 
 EMSCRIPTEN_KEEPALIVE size_t max_printed_chars()

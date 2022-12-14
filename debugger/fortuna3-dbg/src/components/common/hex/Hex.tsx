@@ -1,5 +1,5 @@
 type HexProps = {
-    value: number,
+    value?: number,
     pad?: number,
     withPrefix?: boolean,
     prefix?: string,
@@ -10,12 +10,19 @@ type HexProps = {
 }
 
 const Hex : React.FC<HexProps> = ({value, pad=2, withPrefix=false, prefix="0x", postfix="", style={}, showTag=true, spaceAfter=false}) => {
-    const valueStr = (withPrefix ? prefix : "") + value.toString(16).padStart(pad, '0').toUpperCase() + postfix;
-    const title = "dec " + value + " | bin " + value.toString(2).padStart(pad * 4, '0');
+    let valueStr: string;
+    let title: string;
+    if (value !== undefined) {
+        valueStr = (withPrefix ? prefix : "") + value.toString(16).padStart(pad, '0').toUpperCase() + postfix;
+        title = "dec " + value + " | bin " + value.toString(2).padStart(pad * 4, '0');
+    } else {
+        valueStr = ".".repeat(pad);
+        showTag = false;
+    }
     const newStyle = {...style};
     if (spaceAfter)
         newStyle['marginRight'] = '6px';
-    return <span style={newStyle} title={showTag ? title : undefined}>{ valueStr }</span>;
+    return <span style={newStyle} title={showTag ? title! : undefined}>{ valueStr }</span>;
 };
 
 export default Hex;

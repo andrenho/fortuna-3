@@ -2,6 +2,7 @@ package com.fortuna3.fortuna3.output;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 @Builder
 public record SourceLineDTO(Integer address, String line, @JsonIgnore byte[] byteArray) {
 
+    @JsonProperty("bytes")
     public List<Integer> bytes() {
         if (byteArray == null)
             return null;

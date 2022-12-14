@@ -1,6 +1,5 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
-import useStore from "hooks/useStore";
 import css from "./ErrorMessage.module.scss";
 
 type ErrorMessageProps = {

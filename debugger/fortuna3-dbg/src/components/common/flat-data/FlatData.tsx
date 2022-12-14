@@ -1,5 +1,4 @@
 import React, {PropsWithChildren, useEffect, useState} from "react";
-import Box from "components/common/box/Box";
 import {hex} from "util/hex";
 import {range} from "util/array";
 import CSS from "csstype";
@@ -9,7 +8,6 @@ import Hex from "../hex/Hex";
 export type Highlights = {[key: number]: string};
 
 type FlatDataProps = {
-    title: string;
     currentPage: number;
     totalPages: number;
     rows: number;
@@ -19,12 +17,12 @@ type FlatDataProps = {
     topRightElement?: React.ReactNode;
 }
 
-const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ title, currentPage, totalPages, rows, bytes, onPageChange, highlightOffset, topRightElement, children }) => {
+const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ currentPage, totalPages, rows, bytes, onPageChange, highlightOffset, topRightElement, children }) => {
 
     const [pageText, setPageText] = useState("");
     useEffect(() => setPageText(hex(currentPage, 0, true)), [currentPage]);
 
-    const asciiChar = (datum: number) : string => (datum < 32 || datum >= 127) ? "." : String.fromCharCode(datum);
+    const asciiChar = (datum: number) : string => ((datum < 32 || datum >= 127) ? "." : String.fromCharCode(datum));
     const data = (row: number, col: number) : number => bytes[row * 16 + col];
 
     const updatePage = (newPage: number) => {
@@ -59,7 +57,7 @@ const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ title, currentP
             updatePage(newPage);
     };
 
-    return <Box title={title}>
+    return <div>
         <div className={css.titleRow}>
             <label htmlFor="page">Page:</label>
             <button title="Previous page" className={css.input} onClick={() => updatePage(currentPage - 1)}>&lt;&lt;</button>
@@ -90,7 +88,7 @@ const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ title, currentP
                             </td>
                         ))}
                         <td key={`ascii_${row}`} className={css.data}>
-                            { range(16).map(col => asciiChar(data(row, col))) }
+                            <pre className={css.predata}>{ range(16).map(col => asciiChar(data(row, col))) }</pre>
                         </td>
                     </tr>
                 ))
@@ -98,7 +96,7 @@ const FlatData : React.FC<PropsWithChildren<FlatDataProps>> = ({ title, currentP
             </tbody>
         </table>
         {children}
-    </Box>;
+    </div>;
 };
 
 export default FlatData;

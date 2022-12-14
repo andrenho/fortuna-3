@@ -1,0 +1,23 @@
+.debugger {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.projectSelector {
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.code {
+    display: flex;
+}
+
+.lastUpdated {
+    margin: 0;
+    font-size: 13px;
+    text-align: right;
+}

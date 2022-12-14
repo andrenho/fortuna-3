@@ -1,4 +1,16 @@
-.container {
+.mainContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.flatdataWithSeparator {
+  border-right: 1px solid black;
+  padding-right: 16px;
+}
+
+.linkContainer {
   padding-right: 8px;
   width: 100%;
   text-align: right;

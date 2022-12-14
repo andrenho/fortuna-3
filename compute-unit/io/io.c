@@ -7,13 +7,13 @@
 #include "dev/ram.h"
 #include "dev/rtc.h"
 #include "dev/uart.h"
-#include "io/eeprom.h"
+#include "dev/eeprom.h"
+#include "dev/random.h"
 #include "io/ops.h"
 #include "io/iofs.h"
 #include "io/iolcd.h"
 #include "io/iomemory.h"
 #include "io/ioregs.h"
-#include "io/random.h"
 #include "io/serial.h"
 
 static IO_Regs ioregs;
@@ -29,7 +29,7 @@ bool io_write(uint8_t addr, uint8_t data)
 
         // serial
 
-        case S_PUT:         putchar(data); break;
+        case S_PUT:         uart_printchar(data); break;
 
         // rtc
 
@@ -165,7 +165,7 @@ uint8_t io_read(uint8_t addr)
         // serial
 
         case S_GET:             return uart_getchar_nonblocking();
-        case S_GET_BLK:         return getchar();
+        case S_GET_BLK:         return uart_getchar_blocking();
 
         // RTC
 
@@ -178,7 +178,7 @@ uint8_t io_read(uint8_t addr)
 
         // random
 
-        case RANDOM:            return set_R(&ioregs, random()) & 0xff;
+        case RANDOM:            return set_R(&ioregs, random_value()) & 0xff;
 
         // memory
 
@@ -186,11 +186,11 @@ uint8_t io_read(uint8_t addr)
 
         // math
 
-        case SUM:               return P(&ioregs) + Q(&ioregs);
-        case SUBTRACT:          return P(&ioregs) - Q(&ioregs);
-        case MULTIPLY:          return P(&ioregs) * Q(&ioregs);
-        case DIVIDE:            return P(&ioregs) / Q(&ioregs);
-        case MODULO:            return P(&ioregs) % Q(&ioregs);
+        case SUM:               return set_R(&ioregs, P(&ioregs) + Q(&ioregs));
+        case SUBTRACT:          return set_R(&ioregs, P(&ioregs) - Q(&ioregs));
+        case MULTIPLY:          return set_R(&ioregs, P(&ioregs) * Q(&ioregs));
+        case DIVIDE:            return set_R(&ioregs, P(&ioregs) / Q(&ioregs));
+        case MODULO:            return set_R(&ioregs, P(&ioregs) % Q(&ioregs));
 
         // eeprom
 

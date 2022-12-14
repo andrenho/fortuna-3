@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 uint32_t random_init(void);
-uint32_t random(void);
+uint32_t random_value(void);
 
 #endif
 

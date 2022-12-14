@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Fortuna3Application" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="com.fortuna3.fortuna3.Fortuna3Application" />
+    <module name="fortuna-3" />
+    <option name="VM_PARAMETERS" value="-DprojectPath=&quot;debugger\sample-project\my-project.json&quot;" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.fortuna3.fortuna3.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+      <option name="credential" />
+      <option name="region" />
+      <option name="useCurrentConnection" value="false" />
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

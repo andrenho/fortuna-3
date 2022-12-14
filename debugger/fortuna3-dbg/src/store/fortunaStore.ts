@@ -4,6 +4,8 @@ import {makeAutoObservable, runInAction} from "mobx";
 import DebuggingInfo, {initialDebuggingInfo, SourceProject} from "./types/debuggingInfo";
 import {fetchBackendCompilation, fetchBackendCrc} from "service/backendService";
 import UartTerminal from "./types/uartTerminal";
+import { FinishReason } from "fortuna3-emu/dist/api";
+import Filesystem from "./filesystem";
 
 const terminalSize = {
     w: 60,
@@ -16,6 +18,7 @@ export default class FortunaStore {
 
     ramPage = 0;
     sdCardPage = 0;
+    eepromPage = 0;
 
     state : EmulatorState = {
         cpu: {
@@ -25,18 +28,23 @@ export default class FortunaStore {
         computeUnit: { p: 0, q: 0, r: 0 },
         breakpoints: [],
         ramPage: new Uint8Array(256),
+        eepromPage: new Uint8Array(256),
         stack: new Uint8Array(24),
-        ramBanks: [],
+        ramBank: 0,
         sdCardPage: new Uint8Array(512),
+        lcd: [" ".repeat(16), " ".repeat(16)],
+        rtc: { year: 2000, month: 1, day: 1, hours: 0, minutes: 0, seconds: 0 },
         lastError: "",
     };
+
+    filesystem? : Filesystem;
 
     debuggingInfo: DebuggingInfo = initialDebuggingInfo();
 
     uartTerminal = new UartTerminal(terminalSize.h, terminalSize.w);
 
-    selectedFile?: string | undefined;
-    selectedProject?: string | undefined;
+    selectedFile: string | undefined;
+    selectedProject: string | undefined;
 
     lastCompilationHash: number = 0;
 
@@ -45,12 +53,15 @@ export default class FortunaStore {
     lastUpdated = "never";
     loading = false;
 
+    running = false;
+
     constructor() {
         makeAutoObservable(this);
         // TODO - where are SDCard image size and type coming from?
         Fortuna3Emulator.initialize(`${process.env.PUBLIC_URL}/fortuna`).then((emulator : Fortuna3Emulator) => {
             runInAction(() => {
                 this.emulator = emulator;
+                this.filesystem = new Filesystem(emulator);
                 this.updateEmulatorState();
                 this.updateSelectedFile();
             });
@@ -65,7 +76,7 @@ export default class FortunaStore {
         return this.debuggingInfo.projects[this.selectedProject];
     }
 
-    reset() {
+    reset() : void {
         this.emulator!.reset(this.debuggingInfo.sdCardSizeInMB);
         if (this.selectedProject && this.selectedProject === "bios") {
             const bios = Uint8Array.from(window.atob(this.currentProject!.binary), c => c.charCodeAt(0));
@@ -75,22 +86,52 @@ export default class FortunaStore {
         }
         this.updateState();
         this.uartTerminal.reset();
+        this.filesystem?.updateFromEmulator(undefined, 0);
     }
 
-    step() {
+    step() : void {
         this.emulator!.step();
         this.updateState();
     }
 
-    stepOneScreenful() {
+    stepOneScreenful() : void {
         this.emulator!.stepOneScreenful();
         this.updateState();
     }
 
-    run() {
-        window.requestAnimationFrame(() => {
-            this.emulator!.stepOneScreenful()
-        });
+    run() : void {
+        if (this.running)
+            return;
+
+        console.log("Execution started.");
+        this.running = true;
+
+        const screenfulStep = (elapsed: DOMHighResTimeStamp) => {
+
+            const result = this.emulator!.stepTime(elapsed);
+            if (result === FinishReason.Breakpoint) {
+                console.log("Breakpoint hit.");
+                this.stopExecution();
+            } else {
+                this.updateTerminal();
+            }
+
+            if (this.running) {
+                window.requestAnimationFrame(screenfulStep);
+            }
+        };
+
+        window.requestAnimationFrame(screenfulStep);
+    }
+
+    stopExecution() : void {
+        if (!this.running)
+            return;
+
+        this.running = false;
+        this.updateEmulatorState();
+
+        console.log("Execution stopped.");
     }
 
     setRamPage(newPage: number) : void {
@@ -103,24 +144,29 @@ export default class FortunaStore {
         this.updateEmulatorState();
     }
 
+    setEepromPage(newPage: number) : void {
+        this.eepromPage = newPage;
+        this.updateEmulatorState();
+    }
+
     downloadSdCardImage() : Uint8Array {
         const bytes = this.emulator!.downloadSdCardImage();
         this.updateEmulatorState();  // update errors
         return bytes;
     }
 
-    setSelectedFile(file: string | undefined) {
+    setSelectedFile(file: string | undefined) : void {
         console.debug(`Selected file updated to "${file}"`);
         this.selectedFile = file;
     }
 
-    setSelectedProject(project: string) {
+    setSelectedProject(project: string) : void {
         console.debug(`Selected project updated to "${project}"`);
         this.selectedProject = project;
         this.setSelectedFile(this.debuggingInfo.projects[project].mainSourceFile);
     }
 
-    swapBreakpoint(addr: number) {
+    swapBreakpoint(addr: number) : void {
         if (this.state.breakpoints.includes(addr))
             this.emulator!.removeBreakpoint(addr);
         else
@@ -128,9 +174,13 @@ export default class FortunaStore {
         this.updateEmulatorState();
     }
 
-    updateTerminal() {
+    updateTerminal() : void {
         const printedChars = this.emulator!.getUartPrintedChars();
         this.uartTerminal.addChars(printedChars);
+    }
+
+    keypress(chr: number) : void {
+        this.emulator!.keypress(chr);
     }
 
     private updateState() : void {
@@ -139,9 +189,10 @@ export default class FortunaStore {
     }
 
     private updateEmulatorState() : void {
-        const newState = this.emulator!.getState(this.ramPage, this.sdCardPage);
+        const newState = this.emulator!.getState(this.ramPage, this.sdCardPage, this.eepromPage);
         this.state = newState;
         this.currentError = this.state.lastError;
+
         this.updateTerminal();
         console.debug("New state received from emulator:");
         console.debug(newState);

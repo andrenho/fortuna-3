@@ -23,15 +23,16 @@ public class CompilerMapper {
         sourceProject.setSuccess(rawCompilerOutput.status() == 0);
         sourceProject.setMainSourceFile(rawCompilerOutput.mainSourceFile());
         sourceProject.setAddress(address);
-        if (rawCompilerOutput.status() != 0)
+        if (rawCompilerOutput.status() == 0) {
+            sourceProject.setBinary(rawCompilerOutput.rom());
+            try {
+                mapListingFiletoSourceProject(rawCompilerOutput, sourceProject);
+            } catch (InvalidListingFormatException e) {
+                sourceProject.setSuccess(false);
+                sourceProject.setCompilerError(e.getMessage());
+            }
+        } else {
             sourceProject.setCompilerError(rawCompilerOutput.compilerError());
-        sourceProject.setBinary(rawCompilerOutput.rom());
-
-        try {
-            mapListingFiletoSourceProject(rawCompilerOutput, sourceProject);
-        } catch (InvalidListingFormatException e) {
-            sourceProject.setSuccess(false);
-            sourceProject.setCompilerError(e.getMessage());
         }
 
         return sourceProject;
@@ -86,7 +87,9 @@ public class CompilerMapper {
 
         var byteArray = new byte[0];
         try {
-            byteArray = HexFormat.of().parseHex(line.substring(8, 16).trim());
+            byteArray = HexFormat.of().parseHex(line.substring(8, 24).trim());
+        } catch (StringIndexOutOfBoundsException ignored) {
+            byteArray = HexFormat.of().parseHex(line.substring(8).trim());
         } catch (IllegalArgumentException ignored) {}
         if (byteArray.length == 0)
             byteArray = null;

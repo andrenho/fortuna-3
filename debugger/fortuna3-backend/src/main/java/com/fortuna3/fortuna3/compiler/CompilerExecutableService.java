@@ -1,5 +1,6 @@
 package com.fortuna3.fortuna3.compiler;
 
+import com.fortuna3.fortuna3.util.Resources;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +15,7 @@ public class CompilerExecutableService {
 
     private String tmpdir;
     private String compilerPath;
+    private String includeFile;
 
     @PostConstruct
     public void uncompressCompiler() throws IOException {
@@ -21,7 +23,7 @@ public class CompilerExecutableService {
         tmpdir = Files.createTempDirectory("fortuna").toFile().getAbsolutePath();
 
         String compilerName;
-        if (System.getProperty("os.name").indexOf("win") >= 0 || System.getProperty("os.name").indexOf("Win") >= 0)
+        if (System.getProperty("os.name").indexOf("Win") >= 0)
             compilerName = "/vasmz80_oldstyle-win32.exe";
         else if (System.getProperty("os.name").equals("Linux"))
             compilerName = "/vasmz80_oldstyle-linux";
@@ -30,27 +32,26 @@ public class CompilerExecutableService {
 
         compilerPath = tmpdir + compilerName;
 
-        System.out.println("Compiler extracted to " + compilerPath);
-        try (var is = Objects.requireNonNull(getClass().getResource("/compiler" + compilerName)).openStream();
-             var os = new FileOutputStream(compilerPath)) {
-            var b = new byte[2048];
-            int length;
-
-            while ((length = is.read(b)) != -1)
-                os.write(b, 0, length);
-        }
-
+        Resources.copyResourceFile("/compiler" + compilerName, compilerPath);
         new File(compilerPath).setExecutable(true);
+
+        includeFile = tmpdir + "/fortuna3.z80";
+        Resources.copyResourceFile("/fortuna3.z80", includeFile);
     }
 
     @PreDestroy
     public void deleteCompiler() {
 
         new File(compilerPath).delete();
+        new File(includeFile).delete();
         new File(tmpdir).delete();
     }
 
     public String getCompilerPath() {
         return compilerPath;
+    }
+
+    public String getIncludeFilePath() {
+        return tmpdir;
     }
 }

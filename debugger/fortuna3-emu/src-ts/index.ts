@@ -1,1 +1,1 @@
-export { Fortuna3Emulator, EmulatorState, Z80State } from "./fortuna3-emulator";
+export { Fortuna3Emulator, EmulatorState, Z80State, FilesystemFile, FileType } from "./fortuna3-emulator";

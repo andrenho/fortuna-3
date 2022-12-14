@@ -33,22 +33,46 @@ export interface ComputeUnit {
     r: number,
 }
 
+export interface RTCState {
+    year: number,
+    month: number,
+    day: number,
+    hours: number,
+    minutes: number,
+    seconds: number,
+}
+
 export interface EmulatorState {
     cpu: Z80State,
     breakpoints: number[],
-    ramBanks: number[],
+    ramBank: number,
     ramPage: Uint8Array,
     stack: Uint8Array,
     sdCardPage: Uint8Array,
+    eepromPage: Uint8Array,
     computeUnit: ComputeUnit,
+    lcd: string[],
+    rtc: RTCState,
     lastError: string | undefined,
 }
+
+export enum FileType { File, Directory }
+
+export type FilesystemFile = {
+    filename: string,
+    fileType: FileType,
+    size?: number,
+}
+
 
 export class Fortuna3Emulator {
 
     speedInMhz = 1;
 
     private api : FortunaApi;
+    private textDecoder = new TextDecoder();
+    private textEncoder = new TextEncoder();
+
     private constructor(private sdCardImageSizeMB) {}
 
     static async initialize(wasmFilePath: string) : Promise<Fortuna3Emulator> {
@@ -66,8 +90,12 @@ export class Fortuna3Emulator {
         this.api.step();
     }
 
-    stepOneScreenful() : FinishReason {
+    stepTime(time: DOMHighResTimeStamp) : FinishReason {
+        const cycles = Math.floor(this.speedInMhz * 1_000_000 * time);
+        return this.api.stepCycles(cycles);
+    }
 
+    stepOneScreenful() : FinishReason {
         const cycles = Math.floor(this.speedInMhz * 1_000_000 / 60);
         return this.api.stepCycles(cycles);
     }
@@ -77,15 +105,15 @@ export class Fortuna3Emulator {
         this.api.initialize(sdCardSizeInMB);
     }
 
-    getState(ramPage: number, sdCardPage: number) : EmulatorState {
+    getState(ramPage: number, sdCardPage: number, eepromPage: number) : EmulatorState {
 
-        const bufferSize = 0x600;
+        const bufferSize = 0x726;
 
         const buf = Module._malloc(bufferSize);
-        this.api.getState(ramPage, sdCardPage, buf);
-        const state = new Uint8Array(Module.HEAP8.buffer, buf, bufferSize);
+        this.api.getState(ramPage, sdCardPage, eepromPage, buf);
+        const state = new Uint8Array(Module.HEAP8.buffer, buf, bufferSize).slice();
 
-        let error : string | undefined = new TextDecoder().decode(state.slice(0x400, 0x600));
+        let error : string | undefined = this.textDecoder.decode(state.slice(0x400, 0x600));
         error = error.replace(/\0.*$/g, '');  // remove nulls
         if (error === "")
             error = undefined;
@@ -121,10 +149,23 @@ export class Fortuna3Emulator {
                 r: quad(0x22),
             },
             breakpoints: [],
-            ramBanks: Array.from(state.slice(0xe4, 0xe8)),
+            ramBank: state[0xe4],
             stack: state.slice(0xe8, 0x100),
             ramPage: state.slice(0x100, 0x200),
             sdCardPage: state.slice(0x200, 0x400),
+            eepromPage: state.slice(0x600, 0x700),
+            lcd: [
+                this.textDecoder.decode(state.slice(0x700, 0x710)),
+                this.textDecoder.decode(state.slice(0x710, 0x720)),
+            ],
+            rtc: {
+                year: state[0x720],
+                month: state[0x721],
+                day: state[0x722],
+                hours: state[0x723],
+                minutes: state[0x724],
+                seconds: state[0x725],
+            },
             lastError: error,
         };
 
@@ -171,11 +212,81 @@ export class Fortuna3Emulator {
 
         const buf = Module._malloc(maxSize);
         const sz = this.api.unloadPrintedChars(buf, maxSize);
-        const charArray = new Uint8Array(Module.HEAP8.buffer, buf, sz);
+        const charArray = new Uint8Array(Module.HEAP8.buffer, buf, sz).slice();
 
         const r = String.fromCharCode(...charArray).split("");
         Module._free(buf);
         return r;
+    }
+
+    keypress(chr: number) : void {
+        this.api.keypress(chr);
+    }
+
+    fsDir(dir: string) : FilesystemFile[] {
+
+        // record format:
+        //   0~A: filename
+        //   B~E: size
+        //   F: file type
+
+        const MAX_RECORDS = 512;
+        const RECORD_SZ = 0x10;
+        const buf = Module._malloc(MAX_RECORDS * RECORD_SZ);
+
+        const numberOfRecords = this.api.fsDir(dir, MAX_RECORDS, buf);
+        if (numberOfRecords < 0)
+            throw new Error(`Error while reading directory: ${-numberOfRecords}.`);
+        const state = new Uint8Array(Module.HEAP8.buffer, buf, numberOfRecords * RECORD_SZ).slice();
+        const quad = (n: number) : number => state[n] + (state[n+1] << 8) + (state[n+2] << 16) + (state[n+3] << 24);
+
+        const transformFilename = (dosFormat: string) : string => {
+            if (dosFormat.startsWith(".."))
+                return "..";
+            const name = dosFormat.slice(0, 8).trim();
+            const extension = dosFormat.slice(8, 11).trim();
+            if (extension !== "")
+                return name + "." + extension;
+            return name;
+        };
+
+        const result : FilesystemFile[] = [];
+        for (let i = 0; i < numberOfRecords; ++i) {
+            const baseLine = i * RECORD_SZ;
+            result.push({
+                filename: transformFilename(this.textDecoder.decode(state.slice(baseLine, baseLine + 0xb))),
+                size: quad(baseLine + 0xb),
+                fileType: state[baseLine + 0xf],
+            });
+        }
+
+        Module._free(buf);
+
+        return result;
+    }
+
+    fsFilePage(dir: string, filename: string, page: number) : Uint8Array {
+
+        const buf = Module._malloc(256);
+
+        const sz = this.api.fsFilePage(dir, filename, page, buf);
+        if (sz < 0)
+            throw new Error(`Error while reading file page: ${-sz}.`);
+
+        const array = new Uint8Array(Module.HEAP8.buffer, buf, sz).slice();
+
+        Module._free(buf);
+
+        return array;
+    }
+
+    fsChdirUp(dir: string) : string {
+        if (dir === "" || dir === "/")
+            return "/";
+
+        const newPath = dir.split("/").filter(v => v !== "");
+        newPath.pop();
+        return "/" + newPath.join("/");
     }
 
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
