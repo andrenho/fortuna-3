@@ -102,7 +102,6 @@ void io_fs_read(IO_Regs* r)
 	UINT bytes_read;
 
     r->Ra0 = fresult(f_read(fil, buff, n_bytes, &bytes_read));
-    printf("%d %d %d %d\n", fil, buff, n_bytes, bytes_read);
     set_Rb(r, bytes_read);
 
     uint8_t original_bank = ram_bank();
