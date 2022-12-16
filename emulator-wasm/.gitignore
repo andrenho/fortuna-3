@@ -2,3 +2,5 @@
 *.js
 *.wasm
 .*.swp
+io/
+obj/
