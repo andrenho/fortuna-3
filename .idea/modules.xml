@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/compute-unit/compute-unit.iml" filepath="$PROJECT_DIR$/compute-unit/compute-unit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/debugger-backend/debugger-backend.iml" filepath="$PROJECT_DIR$/debugger-backend/debugger-backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/emulator-wasm/emulator-wasm.iml" filepath="$PROJECT_DIR$/emulator-wasm/emulator-wasm.iml" />
     </modules>
   </component>
