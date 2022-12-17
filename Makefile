@@ -1,20 +1,21 @@
 # TODO - check binaries in PATH
 
-all:
 ifeq ($(OS),Windows_NT)
-	cmd /c "cd emulator-wasm & make"
-	cmd /c "cd debugger-backend & mvn install"
-else
-	make -f emulator-wasm
-	cd debugger-backend && mvn install && cd ..
+  $(error You're running on Windows, so use 'make -f Makefile.win32')
 endif
 
-.PHONY: clean
-clean:
-ifeq ($(OS),Windows_NT)
-	cmd /c "cd emulator-wasm & make clean"
-	cmd /c "cd debugger-backend & mvn clean"
-else
+all: build-backend
+
+build-emulator:
 	make -f emulator-wasm
+
+build-backend: build-emulator
+	cd debugger-backend && mvn install && cd ..
+
+clean-emulator:
+	make -f emulator-wasm clean
+
+clean-backend:
 	cd debugger-backend && mvn clean && cd ..
-endif
+
+clean: clean-emulator clean-backend

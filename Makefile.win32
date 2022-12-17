@@ -1,0 +1,19 @@
+# TODO - check binaries in PATH
+
+all: build-backend
+
+build-emulator:
+	cmd /c "cd emulator-wasm & make"
+
+build-backend: build-emulator
+	cmd /c "cd debugger-backend & mvn install"
+
+clean-emulator:
+	cmd /c "cd emulator-wasm & make clean"
+
+clean-backend:
+	cmd /c "cd debugger-backend & mvn clean"
+
+clean: clean-emulator clean-backend
+
+run-frontend:
