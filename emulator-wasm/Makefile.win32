@@ -1,0 +1,20 @@
+include config.mk
+
+all: fortuna.wasm
+
+io/%.c:
+	@if not exist io mkdir io 2>NUL
+	copy /Y $(subst /,\,${COMPUTE_UNIT_DIR}/$@ $@)
+
+obj/%.o: %.c
+	@if not exist $(subst /,\,$(dir $@)) mkdir $(subst /,\,$(dir $@)) 2>NUL
+	emcc ${CFLAGS} -c $< -o $@
+
+fortuna.wasm: ${OBJ}
+	emcc -o fortuna.js $^ ${LDFLAGS}
+
+.PHONY: clean
+clean:
+	del /Q /S fortuna.wasm fortuna.js obj\* io\* 2>NUL
+
+# vim: ts=8:sts=8:sw=8:expandtab

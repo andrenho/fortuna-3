@@ -1,12 +1,16 @@
 # TODO - check binaries in PATH
 
 all: build-backend
+	# TODO - describe commands
 
 build-emulator:
-	cmd /c "cd emulator-wasm & make"
+	cmd /c "cd emulator-wasm & make -f Makefile.win32"
 
 build-backend: build-emulator
 	cmd /c "cd debugger-backend & mvn install"
+
+run-frontend:
+	cmd /c "cd debugger-frontend & npm install & npm run start"
 
 clean-emulator:
 	cmd /c "cd emulator-wasm & make clean"
@@ -14,9 +18,7 @@ clean-emulator:
 clean-backend:
 	cmd /c "cd debugger-backend & mvn clean"
 
-run-frontend:
-	cmd /c "cd debugger-frontend & npm run start"
-
 clean: clean-emulator clean-backend
 
-run-frontend:
+purge:
+	git clean -fdx

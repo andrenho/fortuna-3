@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
-import { Z80State } from "fortuna3-emu";
 import Cpu from "./Cpu";
+import {Z80State} from "api/fortuna3-emulator";
 
 export default {
     title: 'standalone/Cpu',

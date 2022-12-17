@@ -1,5 +1,5 @@
-import { Fortuna3Emulator, FilesystemFile, FileType } from "fortuna3-emu";
 import { makeAutoObservable } from "mobx";
+import {FilesystemFile, FileType, Fortuna3Emulator} from "api/fortuna3-emulator";
 
 export default class Filesystem {
 

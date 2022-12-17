@@ -4,7 +4,7 @@ import Register from "components/common/register/Register";
 import Flag from "components/common/flag/Flag";
 import CSS from "csstype";
 import css from "./Cpu.module.scss";
-import {Z80State} from "fortuna3-emu";
+import {Z80State} from "api/fortuna3-emulator";
 
 type CpuProps = {
     cpu: Z80State,

@@ -1,7 +1,7 @@
 import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
-import { FileType } from "fortuna3-emu";
 import { useState } from "react";
 import Filesystem from "./Filesystem";
+import {FileType} from "api/fortuna3-emulator";
 
 export default {
     title: 'sdcard/Filesystem',
