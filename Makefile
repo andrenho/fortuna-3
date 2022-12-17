@@ -1,7 +1,7 @@
 # TODO - check binaries in PATH
 
 ifeq ($(OS),Windows_NT)
-  $(error You're running on Windows, so use 'make -f Makefile.win32')
+  $(error "You're running on Windows, so use 'make -f Makefile.win32'")
 endif
 
 all: build-backend
