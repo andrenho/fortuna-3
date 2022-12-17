@@ -9,6 +9,14 @@ build-emulator:
 build-backend: build-emulator
 	cmd /c "cd debugger-backend & mvn install"
 
+build-frontend: install-emulator
+	cmd /c "cd debugger-frontend & npm run build"
+
+build-jar: build-frontend
+	xcopy /E /Y /I debugger-frontend\build debugger-backend\src\main\resources\static
+	cmd /c "cd debugger-backend & mvn clean install"
+	copy debugger-backend\target\fortuna-3-*.jar .
+
 install-emulator: build-emulator
 	if not exist debugger-frontend\public\fortuna mkdir debugger-frontend\public\fortuna
 	copy /Y emulator-wasm\fortuna.js debugger-frontend\public\fortuna
@@ -27,9 +35,14 @@ clean-emulator:
 	cmd /c "cd emulator-wasm & make clean"
 
 clean-backend:
+	rd /S /Q debugger-backend\src\main\resources\static
 	cmd /c "cd debugger-backend & mvn clean"
 
-clean: clean-emulator clean-backend
+clean-frontend:
+	rd /S /Q debugger-frontend\build
+	rd /S /Q debugger-frontend\public\fortuna
+
+clean: clean-emulator clean-backend clean-frontend
 
 purge:
 	git clean -fdx

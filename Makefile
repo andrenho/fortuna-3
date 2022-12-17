@@ -13,6 +13,14 @@ build-emulator:
 build-backend: build-emulator
 	cd debugger-backend && mvn install && cd ..
 
+build-frontend:
+	cd debugger-frontend && npm run build && cd ..
+
+build-jar: build-frontend
+	cp -R debugger-frontend/build debugger-backend/src/main/resources/static
+	cd debugger-backend && mvn clean install && cd ..
+	cp debugger-backend/target/fortuna-3-*.jar .
+
 install-emulator: build-emulator
 	mkdir debugger-frontend/public/fortuna
 	cp emulator-wasm/fortuna.js emulator-wasm/fortuna.wasm debugger-frontend/public/fortuna
@@ -30,9 +38,14 @@ clean-emulator:
 	make -f emulator-wasm clean
 
 clean-backend:
+	rm -rf debugger-backend/src/main/resources/static
 	cd debugger-backend && mvn clean && cd ..
 
-clean: clean-emulator clean-backend
+clean-frontend:
+	rm -rf debugger-frontend/build
+	rm -rf debugger-frontend/public/fortuna
+
+clean: clean-emulator clean-backend clean-frontend
 
 purge:
 	git clean -fdx
