@@ -1,6 +1,0 @@
-#define CYN  ""
-#define MAG  ""
-#define RED  ""
-#define GRN  ""
-#define BOLD ""
-#define RST  ""
