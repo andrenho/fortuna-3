@@ -13,7 +13,7 @@ build-frontend: install-emulator
 	cmd /c "cd debugger-frontend & npm run build"
 
 build-jar: build-frontend
-	xcopy /E /Y /I debugger-frontend\build debugger-backend\src\main\resources\static
+	xcopy /E /Y /I "debugger-frontend\build\*" "debugger-backend\src\main\resources\static\*"
 	cmd /c "cd debugger-backend & mvn clean install"
 	copy debugger-backend\target\fortuna-3-*.jar .
 

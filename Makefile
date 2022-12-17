@@ -17,7 +17,7 @@ build-frontend:
 	cd debugger-frontend && npm run build && cd ..
 
 build-jar: build-frontend
-	cp -R debugger-frontend/build debugger-backend/src/main/resources/static
+	cp -R debugger-frontend/build/* debugger-backend/src/main/resources/static
 	cd debugger-backend && mvn clean install && cd ..
 	cp debugger-backend/target/fortuna-3-*.jar .
 
