@@ -13,8 +13,18 @@ build-emulator:
 build-backend: build-emulator
 	cd debugger-backend && mvn install && cd ..
 
-run-frontend:
+install-emulator: build-emulator
+	mkdir debugger-frontend/public/fortuna
+	cp emulator-wasm/fortuna.js emulator-wasm/fortuna.wasm debugger-frontend/public/fortuna
+
+run-frontend: install-emulator
 	cd debugger-frontend && npm install && npm run start && cd ..
+
+run-storybook:
+	cd debugger-frontend && npm install && npm run storybook && cd ..
+
+run-backend: build-backend
+	cd debugger-backend && java -DprojectPath="sample-project/my-project.json" -jar ./target/fortuna-3-0.0.1-SNAPSHOT.jar && cd ..
 
 clean-emulator:
 	make -f emulator-wasm clean

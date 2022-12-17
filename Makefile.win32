@@ -9,8 +9,19 @@ build-emulator:
 build-backend: build-emulator
 	cmd /c "cd debugger-backend & mvn install"
 
-run-frontend:
+install-emulator: build-emulator
+	if not exist debugger-frontend\public\fortuna mkdir debugger-frontend\public\fortuna
+	copy /Y emulator-wasm\fortuna.js debugger-frontend\public\fortuna
+	copy /Y emulator-wasm\fortuna.wasm debugger-frontend\public\fortuna
+
+run-frontend: install-emulator
 	cmd /c "cd debugger-frontend & npm install & npm run start"
+
+run-storybook:
+	cmd /c "cd debugger-frontend & npm install & npm run storybook"
+
+run-backend: build-backend
+	cd debugger-backend & java -DprojectPath="sample-project\my-project.json" -jar .\target\fortuna-3-0.0.1-SNAPSHOT.jar
 
 clean-emulator:
 	cmd /c "cd emulator-wasm & make clean"
