@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useState } from "react";
 import { SourceLine } from "store/types/debuggingInfo";
 import Code from "./Code";

@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import SDCard from "./SDCard";
 
 export default {

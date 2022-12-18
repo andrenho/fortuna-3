@@ -2,6 +2,7 @@ import FlatData from "components/common/flat-data/FlatData";
 import { observer } from "mobx-react-lite";
 import css from "./Filesystem.module.scss";
 import {FileType} from "api/fortuna3-emulator";
+import React from "react";
 
 type FFile = {
     filename: string,

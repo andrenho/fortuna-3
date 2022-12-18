@@ -1,6 +1,6 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import css from "./Toolbar.module.scss";
 
 type ToolbarToggleProps = {

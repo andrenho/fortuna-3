@@ -29,7 +29,7 @@ export default class Filesystem {
             const fileListRef = this.fileList.find(ff => ff.filename === selectedFile);
             if (fileListRef === undefined) {
                 throw new Error("File not found in file list.");
-            } else if (fileListRef!.fileType === FileType.File) {
+            } else if (fileListRef.fileType === FileType.File) {
                 this.selectedFile = fileListRef;
                 this.selectedPage = selectedPage;
                 this.pageContents = this.emulator.fsFilePage(this.currentPath, selectedFile, selectedPage);

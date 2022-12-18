@@ -1,7 +1,7 @@
 export interface SourceLine {
     line: string,
-    address?: number | undefined,
-    bytes?: number[] | undefined,
+    address?: number,
+    bytes?: number[],
 }
 
 export type Source = {[key: string]: SourceLine[]};

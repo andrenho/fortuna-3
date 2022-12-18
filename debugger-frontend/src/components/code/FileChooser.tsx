@@ -1,5 +1,6 @@
 import {observer} from "mobx-react-lite";
 import css from "./FileChooser.module.scss";
+import React from "react";
 
 type FileChooserProps = {
     selectedFile: string | undefined,

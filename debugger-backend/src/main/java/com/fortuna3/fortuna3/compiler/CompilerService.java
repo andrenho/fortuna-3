@@ -64,6 +64,9 @@ public class CompilerService {
 
     private RawCompilerOutputDTO runCompiler(String mainSourceFile) {
 
+        final String LISTING_FILENAME = "listing.txt";
+        final String ROM_FILENAME = "rom.bin";
+
         var commandLine =
                 compilerExecutableService.getCompilerPath() +
                 " -chklabels -L listing.txt -Llo -nosym -x -Fbin -o rom.bin -I" + compilerExecutableService.getIncludeFilePath() + " " +
@@ -74,15 +77,15 @@ public class CompilerService {
             int status = process.waitFor();
 
             String listing = null;
-            if (Files.exists(Path.of("listing.txt"))) {
-                listing = Files.readString(Path.of("listing.txt"));
-                new File("listing.txt").delete();
+            if (Files.exists(Path.of(LISTING_FILENAME))) {
+                listing = Files.readString(Path.of(LISTING_FILENAME));
+                new File(LISTING_FILENAME).delete();
             }
 
             byte[] rom = null;
-            if (Files.exists(Path.of("rom.bin"))) {
-                rom = Files.readAllBytes(Path.of("rom.bin"));
-                new File("rom.bin").delete();
+            if (Files.exists(Path.of(ROM_FILENAME))) {
+                rom = Files.readAllBytes(Path.of(ROM_FILENAME));
+                new File(ROM_FILENAME).delete();
             }
 
             if (status == 0) {

@@ -1,4 +1,5 @@
 import Box from "components/common/box/Box";
+import React from "react";
 
 type RtcProps = {
     year: number,

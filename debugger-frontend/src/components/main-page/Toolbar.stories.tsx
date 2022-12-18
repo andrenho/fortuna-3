@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import Toolbar, { ToolbarButton, ToolbarSeparator, ToolbarToggle } from "./Toolbar";
 import { faMicrochip, faMemory } from '@fortawesome/free-solid-svg-icons'
 import { useState } from "react";

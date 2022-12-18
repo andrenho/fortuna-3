@@ -2,7 +2,9 @@ package com.fortuna3.fortuna3.projectfile;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
@@ -13,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+@Log
 @Service
 @RequiredArgsConstructor
 public class ProjectFileService {
@@ -25,8 +28,9 @@ public class ProjectFileService {
     private ProjectFileDTO projectFile;
 
     private void readConfigFile() throws IOException {
-        var objectMapper = new ObjectMapper();
-        objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+        var objectMapper = JsonMapper.builder()
+                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
+                .build();
         try {
             projectFile = objectMapper.readValue(Paths.get(projectPath).toFile(), ProjectFileDTO.class);
         } catch (FileNotFoundException e) {
@@ -38,7 +42,7 @@ public class ProjectFileService {
         try {
             readConfigFile();
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            log.severe(e.getMessage());
         }
         return projectFile;
     }

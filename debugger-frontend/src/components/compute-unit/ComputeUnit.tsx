@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import { faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import css from "./ComputeUnit.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 
 type ComputeUnitProps = {
     p: number,

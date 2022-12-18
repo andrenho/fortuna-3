@@ -3,6 +3,7 @@ import FlatData from "components/common/flat-data/FlatData";
 import css from "./SDCard.module.scss";
 import FileSaver from "file-saver";
 import Box from "components/common/box/Box";
+import React from "react";
 
 type SDCardProps = {
     currentPage: number,
@@ -19,7 +20,7 @@ const SDCard : React.FC<SDCardProps> = observer(({ currentPage, sdCardSizeInMB, 
         const bytes = getCompressedImageBytes();
         if (bytes.length > 0) {
             const blob = new Blob([bytes], { type: "application/zip" });
-            FileSaver.saveAs(blob, "sdcard.zip");
+            FileSaver.saveAs(blob, "sdcard.zip", { autoBom: false });
         }
     };
 

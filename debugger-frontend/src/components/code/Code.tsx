@@ -18,14 +18,15 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
         let newText = "";
         let i = 0;
         for (let c of text) {
+            let chr = c;
             if (c === " ") {
-                c = "\u00A0";
+                chr = "\u00A0";
             } else if (c === "\t") {
                 const spacesToNextTab = 8 - (i % 8);
-                c = "\u00A0".repeat(spacesToNextTab);
+                chr = "\u00A0".repeat(spacesToNextTab);
             }
-            newText += c;
-            i += c.length;
+            newText += chr;
+            i += chr.length;
         }
         return newText;
     };

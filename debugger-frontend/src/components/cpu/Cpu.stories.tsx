@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import Cpu from "./Cpu";
 import {Z80State} from "api/fortuna3-emulator";
 

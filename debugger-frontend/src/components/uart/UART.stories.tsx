@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import UART from "./UART";
 
 export default {

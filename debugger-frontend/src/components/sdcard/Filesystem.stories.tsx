@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory, storiesOf } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useState } from "react";
 import Filesystem from "./Filesystem";
 import {FileType} from "api/fortuna3-emulator";

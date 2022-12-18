@@ -3,7 +3,7 @@ import {FinishReason, FortunaApi, loadApiFunctions} from "./api";
 export interface FortunaModule extends EmscriptenModule {
     cwrap: typeof cwrap;
 }
-declare var Module : FortunaModule;
+declare const Module : FortunaModule;
 
 export interface Z80State {
     af: number,
@@ -71,7 +71,6 @@ export class Fortuna3Emulator {
 
     private api? : FortunaApi;
     private textDecoder = new TextDecoder();
-    private textEncoder = new TextEncoder();
 
     private constructor(private sdCardImageSizeMB : number) {}
 

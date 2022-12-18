@@ -1,3 +1,5 @@
+import React from "react";
+
 type FlagProps = {
     name: string,
     value: boolean,
