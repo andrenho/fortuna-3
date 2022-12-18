@@ -4,7 +4,7 @@ all: fortuna.wasm
 
 .PHONY: check-for-emcc
 check-for-emcc:
-	where /Q emcc || ECHO Could not find emcc in path. && EXIT /B 1
+	@where /Q emcc || ECHO Could not find emcc in path. && EXIT /B 1
 
 io/%.c:
 	@if not exist io mkdir io 2>NUL

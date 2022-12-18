@@ -1,11 +1,11 @@
 include doc.mk
 
 check-for-java:
-	where /Q mvn || ECHO Could not find mvn in path. && EXIT /B 1
-	where /Q java || ECHO Could not find java in path. && EXIT /B 1
+	@where /Q mvn || ECHO Could not find mvn in path. && EXIT /B 1
+	@where /Q java || ECHO Could not find java in path. && EXIT /B 1
 
 check-for-npm:
-	where /Q npm || ECHO Could not find npm in path. && EXIT /B 1
+	@where /Q npm || ECHO Could not find npm in path. && EXIT /B 1
 
 build-emulator:
 	cmd /c "cd emulator-wasm & make -f Makefile.win32"

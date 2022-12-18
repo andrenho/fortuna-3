@@ -8,7 +8,7 @@ all: fortuna.wasm
 
 .PHONY: check-for-emcc
 check-for-emcc:
-	type -P emcc || { echo "Could not find emcc in path"; exit 1; }
+	@type -P emcc || { echo "Could not find emcc in path"; exit 1; }
 
 io/%.c:
 	@mkdir -p io
