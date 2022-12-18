@@ -24,6 +24,7 @@ build-jar: build-frontend
 	cp -R debugger-frontend/build/* debugger-backend/src/main/resources/static
 	cd debugger-backend && mvn clean install && cd ..
 	cp debugger-backend/target/fortuna-3-*.jar .
+	@echo The debugger can now be run with 'java -DprojectPath=PATH_TO_PROJECT_FILE -jar fortuna-3-*.jar' and can be accessed at 'http://localhost:8025'.
 
 install-emulator: build-emulator
 	mkdir debugger-frontend/public/fortuna
