@@ -36,7 +36,7 @@ run-backend: build-backend
 	cd debugger-backend & java -DprojectPath="sample-project\my-project.json" -jar .\target\fortuna-3-0.0.1-SNAPSHOT.jar
 
 clean-emulator:
-	cmd /c "cd emulator-wasm & make clean"
+	cmd /c "cd emulator-wasm & make -f Makefile.win32 clean"
 
 clean-backend:
 	rd /S /Q debugger-backend\src\main\resources\static
