@@ -1,7 +1,4 @@
-# TODO - check binaries in PATH
-
-all: build-backend
-	# TODO - describe commands
+include doc.mk
 
 build-emulator:
 	cmd /c "cd emulator-wasm & make -f Makefile.win32"
