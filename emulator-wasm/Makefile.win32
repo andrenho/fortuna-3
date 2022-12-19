@@ -10,7 +10,7 @@ io/%.c:
 	@if not exist io mkdir io 2>NUL
 	copy /Y $(subst /,\,${COMPUTE_UNIT_DIR}/$@ $@)
 
-obj/%.o: %.c check-for-emcc
+obj/%.o: %.c #check-for-emcc
 	@if not exist $(subst /,\,$(dir $@)) mkdir $(subst /,\,$(dir $@)) 2>NUL
 	emcc ${CFLAGS} -c $< -o $@
 

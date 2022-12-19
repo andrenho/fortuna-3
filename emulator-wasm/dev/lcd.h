@@ -15,8 +15,10 @@ void lcd_print_char(uint8_t c);
 void lcd_command(uint8_t data);
 void lcd_print_line(uint8_t line, const char* str);
 
+char* lcd_text();
+
 #ifndef EMULATOR
-  void lcd_print_line_P(uint8_t line, PGM_P p);
+    void lcd_print_line_P(uint8_t line, PGM_P p);
 #endif
 
 #endif

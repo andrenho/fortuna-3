@@ -1,76 +1,20 @@
 #include <emscripten/emscripten.h>
 
-#include <stdio.h>
-#include <stdint.h>
+#include "state.h"
+
 #include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
 
-#include "globals.h"
-
-#include "cpu.h"
+#include "dev/lcd.h"
+#include "dev/eeprom.h"
 #include "dev/ram.h"
-#include "sdcard.h"
+#include "dev/rtc.h"
+#include "emulation/cpu.h"
+#include "emulation/sdcard.h"
+#include "io/io.h"
+#include "globals.h"
 #include "terminal.h"
 
-#include "z80/Z80.h"
-#include "miniz/miniz.h"
-#include "io/io.h"
-#include "dev/lcd.h"
-#include "dev/rtc.h"
-#include "dev/random.h"
-
-#define KB *1024
-#define MB KB*1024
-
-#define RAM_PAGE_SZ 0x100
-
-static Z80 z80 = { 0 };
-
 char last_error[0x200] = { 0 };
-
-extern volatile uint8_t uart_last_keypress;
-extern void eeprom_copy_page(uint8_t page, uint8_t* data);
-extern char lcd_text[32];
-
-typedef enum { NORMAL = 0, BREAKPOINT = 1 } FinishReason;
-
-EMSCRIPTEN_KEEPALIVE bool initialize(size_t sdcard_sz_in_mb)
-{
-    ResetZ80(&z80);
-    ram_init();
-    bkp_clear();
-
-    for (size_t i = 0; i <= 0xb; ++i)
-        io_write(i, 0);
-
-    random_init();
-    lcd_init();
-    rtc_init();
-
-    bool r = sdcard_init(sdcard_sz_in_mb MB);
-    puts("Emulator initialized.");
-    return r;
-}
-
-EMSCRIPTEN_KEEPALIVE void step()
-{
-    ExecZ80(&z80, 1);
-}
-
-EMSCRIPTEN_KEEPALIVE FinishReason step_cycles(int cycles)
-{
-    if (bkp_has()) {
-        while (cycles > 0) {
-            cycles -= ExecZ80(&z80, 1);
-            if (bkp_is(z80.PC.W))
-                return BREAKPOINT;
-        }
-    } else {
-        ExecZ80(&z80, cycles);
-    }
-    return NORMAL;
-}
 
 /* State format:
  *
@@ -144,7 +88,7 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint16_t 
     eeprom_copy_page(eeprom_page, &data[0x600]);
 
     // lcd
-    memcpy(&data[0x700], lcd_text, 32);
+    memcpy(&data[0x700], lcd_text(), 32);
 
     // rtc
     ClockDateTime clk = rtc_get();
@@ -156,41 +100,8 @@ EMSCRIPTEN_KEEPALIVE void get_state(uint16_t ram_page, size_t sd_page, uint16_t 
     data[0x725] = clk.ss;
 }
 
-EMSCRIPTEN_KEEPALIVE long compress_sdcard(uint8_t* data, unsigned long data_len)
-{
-    mz_zip_archive zip;
-    mz_zip_zero_struct(&zip);
-
-    if (mz_zip_writer_init_heap(&zip, 0, 128 * 1024) == false)
-        ERROR("Error initializing zipper.");
-    if (mz_zip_writer_add_mem(&zip, "image.img", sd_data, sdcard_sz, MZ_BEST_COMPRESSION) == false)
-        ERROR("Error adding file to archive.");
-
-    void *buf;
-    size_t sz;
-    if (mz_zip_writer_finalize_heap_archive(&zip, &buf, &sz) == false)
-        ERROR("Error adding file to archive.");
-
-    if (sz > data_len)
-        ERROR("Not enough space in memory to create zip.");
-
-    memcpy(data, buf, sz);
-
-    mz_zip_writer_end(&zip);
-
-    return sz;
-}
-
-EMSCRIPTEN_KEEPALIVE void keypress(uint8_t chr)
-{
-    uart_last_keypress = chr;
-}
-
 EMSCRIPTEN_KEEPALIVE size_t max_printed_chars()
 {
     return MAX_PRINTED_CHARS;
 }
 
-void emscripten_notify_memory_growth(size_t i) { (void) i; }
-
-// vim: ts=4:sts=4:sw=4:expandtab

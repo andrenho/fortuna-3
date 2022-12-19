@@ -26,16 +26,16 @@ export interface FortunaApi {
 
 export function loadApiFunctions(module: FortunaModule) : FortunaApi {
     return {
-        initialize: module.cwrap("initialize", "boolean", ["number"]),
+        initialize: module.cwrap("emulator_initialize", "boolean", ["number"]),
         getState: module.cwrap("get_state", null, ["number", "number", "number", "number"]),
         compressSDCard: module.cwrap("compress_sdcard", "number", ["number", "number"]),
-        step: module.cwrap("step", null, []),
-        stepCycles: module.cwrap("step_cycles", "number", ["number"]),
+        step: module.cwrap("emulator_step", null, []),
+        stepCycles: module.cwrap("emulator_step_cycles", "number", ["number"]),
         addBreakpoint: module.cwrap("bkp_add", null, ["number"]),
         removeBreakpoint: module.cwrap("bkp_del", null, ["number"]),
         setRam: module.cwrap("ram_set_byte", null, ["number", "number"]),
         unloadPrintedChars: module.cwrap("terminal_unload_printed_chars", "number", ["number", "number"]),
-        keypress: module.cwrap("keypress", null, ["number"]),
+        keypress: module.cwrap("emulator_keypress", null, ["number"]),
         maxPrintedChars: module.cwrap("max_printed_chars", "number", []),
         fsDir: module.cwrap("fs_dir", "number", ["string", "number", "number"]),
         fsChdirUp: module.cwrap("fs_chdir_up", "number", ["string", "number", "number"]),

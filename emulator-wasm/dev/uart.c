@@ -1,8 +1,7 @@
 #include "uart.h"
 
-#include "terminal.h"
-
-volatile uint8_t uart_last_keypress = 0;
+#include "globals.h"
+#include "emulation/terminal.h"
 
 void uart_init(void)
 {
