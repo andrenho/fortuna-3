@@ -1,0 +1,19 @@
+.lcd {
+    display: flex;
+    flex-direction: column;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+}
+
+.char {
+    font-family: "LCD", monospace;
+    font-size: 24px;
+    background-color: #d8f4c8;
+    margin: 1px;
+    padding: 2px;
+    font-smooth: never;
+    -webkit-font-smoothing : none;
+}
