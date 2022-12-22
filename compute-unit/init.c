@@ -51,7 +51,7 @@ static void post_ok(void)
 
 static void post_error(PGM_P line1, PGM_P line2)
 {
-    printf_P(PSTR(RED "FAIL: "));
+    printf_P(PSTR(RED "[FAIL]: "));
     printf_P(line1);
     putchar(' ');
     printf_P(line2);
@@ -70,10 +70,19 @@ static void test_rtc(void)
 {
     post_checking(PSTR("RTC"));
     ClockDateTime dt = rtc_get();
-    if (dt.dd == 0)
-        post_error(PSTR("RTC unset or"), PSTR("unavailable"));
-    else
-        post_ok();
+    if (dt.dd == 0) {
+        printf_P(PSTR(RED "RTC unset, setting... " RST));
+
+        dt = (ClockDateTime) { .dd = 1, .mm = 1, .yy = 23, .hh = 0, .nn = 0, .ss = 0 };
+        rtc_set(dt);
+
+        ClockDateTime dt2 = rtc_get();
+        if (dt2.dd == 0) {
+            post_error(PSTR("RTC"), PSTR("unavailable"));
+            return;
+        }
+    }
+    post_ok();
 }
 
 static void test_ram(void)
@@ -89,6 +98,7 @@ static void test_ram(void)
     for (size_t i = 0; i < 256; ++i) {
         if (block1[i] != block2[i]) {
             post_error(PSTR("RAM ckeck"), PSTR("failed"));
+            printf_P(PSTR("%x %x %x\n"), i, block1[i], block2[i]);
             return;
         }
     }

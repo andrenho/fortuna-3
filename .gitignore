@@ -2,3 +2,4 @@
 .idea/sonarlint/
 libraries\
 sonarlint\
+.*.swp
