@@ -1,4 +1,4 @@
-package com.fortuna3.fortuna3.config;
+package com.fortuna3.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;

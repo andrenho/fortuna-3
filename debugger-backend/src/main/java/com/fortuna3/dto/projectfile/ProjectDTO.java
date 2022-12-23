@@ -1,3 +1,3 @@
-package com.fortuna3.fortuna3.projectfile;
+package com.fortuna3.dto.projectfile;
 
 public record ProjectDTO(String source, Integer address) {}

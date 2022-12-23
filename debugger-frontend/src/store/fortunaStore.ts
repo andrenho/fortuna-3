@@ -6,6 +6,7 @@ import UartTerminal from "./types/uartTerminal";
 import Filesystem from "./filesystem";
 import {EmulatorState, Fortuna3Emulator} from "api/fortuna3-emulator";
 import {FinishReason} from "api/api";
+import RemoteStore from "store/remoteStore";
 
 const terminalSize = {
     w: 60,
@@ -38,6 +39,7 @@ export default class FortunaStore {
     };
 
     filesystem? : Filesystem;
+    remote = new RemoteStore();
 
     debuggingInfo: DebuggingInfo = initialDebuggingInfo();
 

@@ -2,7 +2,7 @@
   <configuration default="false" name="debugger-backend" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" />
     <module name="debugger-backend" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="com.fortuna3.fortuna3.Fortuna3Application" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.fortuna3.Fortuna3Application" />
     <option name="VM_PARAMETERS" value="-DprojectPath=&quot;debugger-backend/sample-project/my-project.json&quot;" />
     <method v="2">
       <option name="Make" enabled="true" />

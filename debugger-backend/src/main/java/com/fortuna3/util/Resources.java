@@ -1,4 +1,4 @@
-package com.fortuna3.fortuna3.util;
+package com.fortuna3.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;

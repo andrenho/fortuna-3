@@ -1,5 +1,6 @@
 import {ComponentMeta, ComponentStory} from "@storybook/react";
-import Remote, {RemoteResult} from "./Remote";
+import Remote from "./Remote";
+import {RemoteResult} from "store/remoteStore";
 
 export default {
     title: 'standalone/Remote',
