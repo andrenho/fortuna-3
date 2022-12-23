@@ -1,11 +1,11 @@
 import React from 'react';
-import css from "./Documentation.module.scss";
+import css from "pages/DocumentationPage.module.scss";
 
 const TD : React.FC<React.PropsWithChildren> = ({ children }) => (
     <td style={{ paddingRight: "16px" }}>{ children }</td>
 );
 
-const Documentation : React.FC = () => {
+const DocumentationPage : React.FC = () => {
     return (<>
         <h2>Fortuna-3</h2>
         <ul>
@@ -54,4 +54,4 @@ const Documentation : React.FC = () => {
     </>);
 };
 
-export default Documentation;
+export default DocumentationPage;
