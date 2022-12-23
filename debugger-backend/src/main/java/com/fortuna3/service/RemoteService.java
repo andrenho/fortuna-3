@@ -5,20 +5,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class RemoteService {
 
-    public String reset() {
+    public String reset(String remoteIp) {
         return "Request successful";
     }
 
 
-    public String uploadBios() {
+    public String uploadBios(String remoteIp) {
+        return "";
     }
 
-    public String uploadFirmware() {
+    public String uploadFirmware(String remoteIp) {
+        return "";
     }
 
-    public String uploadAllProjects() {
+    public String uploadAllProjects(String remoteIp) {
+        return "";
     }
 
-    public String uploadProject(String projectName) {
+    public String uploadProject(String remoteIp, String projectName) {
+        return "";
     }
 }

@@ -11,12 +11,15 @@ type RemoteProps = {
     result: RemoteResult,
     projectList: string[],
     output?: string,
-    onAction: (action: RemoteAction, arg?: string) => Promise<void>,
+    onAction: (remoteIp: string, action: RemoteAction, arg?: string) => Promise<void>,
 }
+
+const REMOTE_IP_KEY = "remote-ip";
 
 const Remote : React.FC<RemoteProps> = observer(({ result = RemoteResult.NotStarted, projectList, output, onAction }) => {
 
     const [selectedProject, setSelectedProject] = useState<string>();
+    const [remoteIp, setRemoteIp] = useState(window.localStorage.getItem(REMOTE_IP_KEY) || "");
 
     const preClass = () : string => {
         switch (result) {
@@ -27,20 +30,34 @@ const Remote : React.FC<RemoteProps> = observer(({ result = RemoteResult.NotStar
         }
     };
 
+    const onButton = async (action: RemoteAction) => {
+        await onAction(remoteIp, action, action === RemoteAction.UploadSingleProject ? selectedProject : undefined);
+    };
+
+    const changeRemoteIp = (newIp: string) => {
+        window.localStorage.setItem(REMOTE_IP_KEY, newIp);
+        setRemoteIp(newIp);
+    };
+
     return <div className={css.buttonColumn + ' ' + (result === RemoteResult.Executing ? css.executing : '')}>
 
         <div className={css.buttonRow}>
-            <button disabled={result === RemoteResult.Executing} onClick={() => onAction(RemoteAction.Reset)}>Reset computer</button>
-            <button disabled={result === RemoteResult.Executing} onClick={() => onAction(RemoteAction.UploadBIOS)}>Upload BIOS</button>
-            <button disabled={result === RemoteResult.Executing} onClick={() => onAction(RemoteAction.UploadFullProject)}>Upload whole project to SDCard</button>
-            <button disabled={result === RemoteResult.Executing} onClick={() => onAction(RemoteAction.UploadFirmware)}>Upload firmware from current branch</button>
+            <label htmlFor="ip">Remote IP</label>
+            <input type="text" id="ip" value={remoteIp} onChange={e => changeRemoteIp(e.target.value)} />
+        </div>
+
+        <div className={css.buttonRow}>
+            <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.Reset)}>Reset computer</button>
+            <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.UploadBIOS)}>Upload BIOS</button>
+            <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.UploadFullProject)}>Upload whole project to SDCard</button>
+            <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.UploadFirmware)}>Upload firmware from current branch</button>
         </div>
 
         <div className={css.buttonRow}>
             <select value={selectedProject} onChange={e => setSelectedProject(e.target.value)}>
                 { projectList.map(f => <option key={f} value={f}>{ f }</option>) }
             </select>
-            <button disabled={result === RemoteResult.Executing} onClick={() => onAction(RemoteAction.UploadSingleProject)}>Upload project to SDCard</button>
+            <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.UploadSingleProject)}>Upload project to SDCard</button>
         </div>
 
         <div>

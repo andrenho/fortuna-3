@@ -12,28 +12,28 @@ public class RemoteRestController {
 
     private final RemoteService remoteService;
 
-    @PostMapping(value = "/remote/reset", produces = "text/plain")
-    public String reset() {
-        return remoteService.reset();
+    @PostMapping(value = "/remote/{remoteIp}/reset", produces = "text/plain")
+    public String reset(@PathVariable String remoteIp) {
+        return remoteService.reset(remoteIp);
     }
 
-    @PostMapping(value = "/remote/upload-bios", produces = "text/plain")
-    public String uploadBios() {
-        return remoteService.uploadBios();
+    @PostMapping(value = "/remote/{remoteIp}/upload-bios", produces = "text/plain")
+    public String uploadBios(@PathVariable String remoteIp) {
+        return remoteService.uploadBios(remoteIp);
     }
 
-    @PostMapping(value = "/remote/upload-firmware", produces = "text/plain")
-    public String uploadFirmware() {
-        return remoteService.uploadFirmware();
+    @PostMapping(value = "/remote/{remoteIp}/upload-firmware", produces = "text/plain")
+    public String uploadFirmware(@PathVariable String remoteIp) {
+        return remoteService.uploadFirmware(remoteIp);
     }
 
-    @PostMapping(value = "/remote/upload-projects", produces = "text/plain")
-    public String uploadAllProjects() {
-        return remoteService.uploadAllProjects();
+    @PostMapping(value = "/remote/{remoteIp}/upload-projects", produces = "text/plain")
+    public String uploadAllProjects(@PathVariable String remoteIp) {
+        return remoteService.uploadAllProjects(remoteIp);
     }
 
-    @PostMapping(value = "/remote/upload-project/{projectName}", produces = "text/plain")
-    public String uploadProject(@PathVariable String projectName) {
-        return remoteService.uploadProject(projectName);
+    @PostMapping(value = "/remote/{remoteIp}/upload-project/{projectName}", produces = "text/plain")
+    public String uploadProject(@PathVariable String remoteIp, @PathVariable String projectName) {
+        return remoteService.uploadProject(remoteIp, projectName);
     }
 }

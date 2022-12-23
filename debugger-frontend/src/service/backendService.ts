@@ -18,8 +18,8 @@ export async function fetchBackendCompilation() : Promise<DebuggingInfo> {
     return await result.json();
 }
 
-export async function fetchBackendRemote(action: string, arg?: string | undefined) : Promise<string> {
-    let url = `${backendHostname()}/remote/${action}`;
+export async function fetchBackendRemote(remoteIp: string, action: string, arg?: string | undefined) : Promise<string> {
+    let url = `${backendHostname()}/remote/${remoteIp}/${action}`;
     if (arg)
         url += `/${arg}`;
     const result = await fetch(url, { method: 'POST' });
