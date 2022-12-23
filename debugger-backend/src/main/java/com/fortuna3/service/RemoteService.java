@@ -6,19 +6,19 @@ import org.springframework.stereotype.Service;
 public class RemoteService {
 
     public String reset() {
-        throw new RuntimeException("Reset failure");
+        return "Request successful";
     }
 
-    public void uploadBios(byte[] data) {
+
+    public String uploadBios() {
     }
 
-    public void uploadFirmware() {
+    public String uploadFirmware() {
     }
 
-    public void formatSdCard() {
+    public String uploadAllProjects() {
     }
 
-    public void uploadFile(String filename, byte[] data) {
+    public String uploadProject(String projectName) {
     }
-
 }

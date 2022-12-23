@@ -12,10 +12,10 @@ export default class RemoteStore {
         makeAutoObservable(this);
     }
 
-    async reset() {
+    private async sendBackendRequest(request: string) : Promise<void> {
         runInAction(() => this.lastResult = RemoteResult.Executing);
         try {
-            const output = await fetchBackendRemote("reset");
+            const output = await fetchBackendRemote(request);
             runInAction(() => {
                 this.output = output;
                 this.lastResult = RemoteResult.Success;
@@ -28,19 +28,23 @@ export default class RemoteStore {
         }
     }
 
-    async uploadBIOS() {
-
+    async reset() : Promise<void> {
+        return this.sendBackendRequest("reset");
     }
 
-    async uploadFirmware() {
-
+    async uploadBIOS() : Promise<void> {
+        return this.sendBackendRequest("upload-bios");
     }
 
-    async uploadFullProject() {
-
+    async uploadFirmware() : Promise<void> {
+        return this.sendBackendRequest("upload-firmware");
     }
 
-    async uploadSingleProject(projectName: string) {
+    async uploadFullProject() : Promise<void> {
+        return this.sendBackendRequest("upload-projects");
+    }
 
+    async uploadSingleProject(projectName: string) : Promise<void> {
+        return this.sendBackendRequest(`upload-project/${projectName}`);
     }
 }

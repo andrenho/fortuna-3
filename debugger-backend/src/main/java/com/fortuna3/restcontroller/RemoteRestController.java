@@ -2,6 +2,7 @@ package com.fortuna3.restcontroller;
 
 import com.fortuna3.service.RemoteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,29 +17,23 @@ public class RemoteRestController {
         return remoteService.reset();
     }
 
-    /*
-    @PostMapping(value = "/remote/upload-bios", consumes = "application/octet-stream")
-    public void uploadBios(InputStream dataStream) throws IOException {
-        byte[] data = new byte[dataStream.available()];
-        dataStream.read(data);
-        remoteService.uploadBios(data);
+    @PostMapping(value = "/remote/upload-bios", produces = "text/plain")
+    public String uploadBios() {
+        return remoteService.uploadBios();
     }
 
-    @PostMapping("/remote/upload-firmware")
-    public void uploadFirmware() {
-        remoteService.uploadFirmware();
+    @PostMapping(value = "/remote/upload-firmware", produces = "text/plain")
+    public String uploadFirmware() {
+        return remoteService.uploadFirmware();
     }
 
-    @PostMapping("/remote/format-sdcard")
-    public void formatSdCard() {
-        remoteService.formatSdCard();
+    @PostMapping(value = "/remote/upload-projects", produces = "text/plain")
+    public String uploadAllProjects() {
+        return remoteService.uploadAllProjects();
     }
 
-    @PostMapping(value = "/remote/upload-file/{filename}", consumes = "application/octet-stream")
-    public void uploadFile(@PathVariable String filename, InputStream dataStream) throws IOException {
-        byte[] data = new byte[dataStream.available()];
-        dataStream.read(data);
-        remoteService.uploadFile(filename, data);
+    @PostMapping(value = "/remote/upload-project/{projectName}", produces = "text/plain")
+    public String uploadProject(@PathVariable String projectName) {
+        return remoteService.uploadProject(projectName);
     }
-     */
 }
