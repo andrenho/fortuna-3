@@ -2,11 +2,12 @@
 
 import logging
 import socket
+import sys
+import traceback
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 
 import serial
-import sys
 
 PORT = 8026
 serial_port = ''
@@ -81,7 +82,7 @@ class RemoteServer(BaseHTTPRequestHandler):
         except Exception as e:
             self.send_response(500, 'Error processing request')
             self.end_headers()
-            self.wfile.write(bytes(str(e), 'utf-8'))
+            self.wfile.write(bytes(str(e) + "\n" + traceback.format_exc(), 'utf-8'))
             return
 
         self.send_response(200)
