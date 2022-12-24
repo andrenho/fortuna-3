@@ -12,6 +12,8 @@ public class RemoteService {
 
     private final CompilerService compilerService;
 
+    private static final String PORT = "8026";
+
     public String reset(String remoteIp) {
         return remoteRequest(remoteIp, "reset");
     }
@@ -41,14 +43,15 @@ public class RemoteService {
     }
 
     private String remoteRequest(String remoteIp, String action, byte[] payload) {
-        final String uri = "http://" + remoteIp + "/" + action;
+        final String uri = "http://" + remoteIp + ":" + PORT + "/" + action;
 
         var restTemplate = new RestTemplate();
         if (payload != null) {
             var requestEntity = RequestEntity.post(uri)
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(payload);
-            return restTemplate.exchange(requestEntity, String.class).getBody();
+            var response = restTemplate.exchange(requestEntity, String.class);
+            return response.getBody();
         } else {
             return restTemplate.postForObject(uri, null, String.class);
         }

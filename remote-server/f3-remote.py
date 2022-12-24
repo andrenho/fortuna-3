@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
-import serial
 import sys
+
+import serial
+
 
 def print_usage(exit_code):
     print(f"Usage: {sys.argv[0]} SERIAL_PORT COMMANDS")
