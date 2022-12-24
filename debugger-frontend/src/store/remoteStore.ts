@@ -17,12 +17,12 @@ export default class RemoteStore {
         try {
             const output = await fetchBackendRemote(remoteIp, request);
             runInAction(() => {
-                this.output = output;
+                this.output = output.replaceAll("<EOL>", "\n");
                 this.lastResult = RemoteResult.Success;
             });
         } catch (e) {
             runInAction(() => {
-                this.output = (e as Error).message;
+                this.output = (e as Error).message.replaceAll("<EOL>", "\n");
                 this.lastResult = RemoteResult.Failure;
             });
         }
