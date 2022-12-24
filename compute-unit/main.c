@@ -7,6 +7,7 @@
 
 #include "config.h"
 #include "init.h"
+#include "dev/lcd.h"
 #include "dev/ram.h"
 #include "dev/uart.h"
 #include "dev/z80.h"
@@ -43,7 +44,9 @@ static void load_bios(void)
 int main(void)
 {
     initialize();
+    cli();
     setup_interrupts();
+    sei();
 
     puts_P(PSTR("\nWelcome to Fortuna-3!\n"));
 
@@ -81,6 +84,12 @@ int main(void)
         }
 
         if (events.remote) {
+
+            // TODO - remove this block
+            lcd_clear();
+            lcd_print_line_P(0, PSTR("Remote"));
+            for(;;);
+
             cli();
             remote();
             z80_reset();
