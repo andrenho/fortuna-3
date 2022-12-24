@@ -17,21 +17,33 @@ class FortunaSerial:
 
     @staticmethod
     def connect():
-        return serial.Serial(serial_port, baudrate = 1000000, timeout = 0.5)
+        logging.info('Connecting to serial port.')
+        return serial.Serial(serial_port, baudrate = 1000000, timeout = 2)
 
     @staticmethod
     def disconnect(ser):
+        logging.info('Disconnecting from serial port.')
         ser.close()
 
     @staticmethod
     def check_response(ser):
         c = ser.read(1)
-        if (c[0] != 0):
-            raise Exception("Error communicating with Fortuna-3")
+        logging.info('Response received: ' + str(int(c[0])))
+        if (c[0] == 1):
+            raise Exception("Generic error while communicating");
+        elif (c[0] == 2):
+            raise Exception("Error: file too large")
+        elif (c[0] == 3):
+            raise Exception("Error: SDCard access error")
+        elif (c[0] == 4):
+            raise Exception("Error: invalid command")
+        elif (c[0] > 0):
+            raise Exception("Unknown error")
 
     def reset(self):
         ser = self.connect()
         try:
+            logging.info('Sending reset...')
             ser.write(b"\xfe\xf0\xff")
             self.check_response(ser)
         finally:
@@ -82,7 +94,7 @@ class RemoteServer(BaseHTTPRequestHandler):
         except Exception as e:
             self.send_response(500, 'Error processing request')
             self.end_headers()
-            self.wfile.write(bytes(str(e) + "\n" + traceback.format_exc(), 'utf-8'))
+            self.wfile.write(bytes(str(e) + "\n\n" + traceback.format_exc(), 'utf-8'))
             return
 
         self.send_response(200)
