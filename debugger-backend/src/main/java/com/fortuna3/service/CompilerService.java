@@ -13,6 +13,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -127,5 +128,17 @@ public class CompilerService {
             return currentDebuggingInfo.hash();
         else
             return 0;
+    }
+
+    public List<String> getProjectNames() {
+        return new ArrayList<>(currentDebuggingInfo.projects().keySet());
+    }
+
+    public byte[] getBiosBinary() {
+        return getProjectBinary("bios");
+    }
+
+    public byte[] getProjectBinary(String projectName) {
+        return currentDebuggingInfo.projects().get(projectName).getBinary();
     }
 }
