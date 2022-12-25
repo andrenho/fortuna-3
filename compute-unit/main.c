@@ -82,12 +82,6 @@ int main(void)
         }
 
         if (uart_entered_remote()) {
-
-            // TODO - remove this block
-            lcd_clear();
-            lcd_print_line_P(0, PSTR("Remote"));
-            for(;;);
-
             cli();
             remote();
             z80_reset();

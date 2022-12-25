@@ -17,7 +17,7 @@ class FortunaSerial:
 
     @staticmethod
     def connect():
-        logging.info('Connecting to serial port.')
+        logging.info('Connecting to serial port: ' + serial_port)
         return serial.Serial(serial_port, baudrate = 1000000, timeout = 2)
 
     @staticmethod
@@ -28,6 +28,8 @@ class FortunaSerial:
     @staticmethod
     def check_response(ser):
         c = ser.read(1)
+        if len(c) < 1:
+            raise Exception("No response received")
         logging.info('Response received: ' + str(int(c[0])))
         if (c[0] == 1):
             raise Exception("Generic error while communicating");
@@ -44,8 +46,10 @@ class FortunaSerial:
         ser = self.connect()
         try:
             logging.info('Sending reset...')
-            ser.write(b"\xfe\xf0\xff")
-            self.check_response(ser)
+            ser.write(b"\xfe")
+            ser.write(b"\xf0")
+            ser.write(b"\xff")
+            # self.check_response(ser)
         finally:
             self.disconnect(ser)
 

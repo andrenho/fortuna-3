@@ -46,6 +46,10 @@ void remote(void)
     z80_shutdown();
     _delay_ms(1);
 
+    lcd_clear();
+    lcd_print_line_P(0, PSTR("Remote mode"));
+    lcd_print_line_P(1, PSTR(""));
+
     while (true) {
         uint8_t c = getchar();
         switch (c) {
