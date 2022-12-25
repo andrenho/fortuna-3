@@ -2,8 +2,8 @@
 
 #include <stdio.h>
 
-#include <avr/interrupt.h>
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <util/setbaud.h>
@@ -61,8 +61,6 @@ uint8_t uart_getchar_nonblocking(void)
 
 void uart_init(void)
 {
-    cli();
-
     // set speed
     UBRR0H = UBRRH_VALUE;
     UBRR0L = UBRRL_VALUE;
@@ -76,8 +74,6 @@ void uart_init(void)
 #else
     UCSR0A &= ~(1 << U2X0);
 #endif
-
-    sei();
 
     static FILE uart = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
     stdin = stdout = &uart;
