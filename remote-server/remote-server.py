@@ -109,6 +109,7 @@ if __name__ == '__main__':
     serial_port = sys.argv[1]
 
     logging.basicConfig(level=logging.INFO)
+    '''
     httpd = HTTPServer(('', PORT), RemoteServer)
     hostname = socket.gethostname()
     logging.info('Starting server. IP is ' + socket.gethostbyname(hostname) + '...')
@@ -117,3 +118,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         pass
     httpd.server_close()
+    '''
+    f = FortunaSerial()
+    f.reset()
