@@ -36,10 +36,6 @@ export default class RemoteStore {
         return this.sendBackendRequest(remoteIp, "upload-bios");
     }
 
-    async uploadFirmware(remoteIp: string) : Promise<void> {
-        return this.sendBackendRequest(remoteIp, "upload-firmware");
-    }
-
     async uploadFullProject(remoteIp: string) : Promise<void> {
         return this.sendBackendRequest(remoteIp, "upload-projects");
     }
@@ -47,4 +43,13 @@ export default class RemoteStore {
     async uploadSingleProject(remoteIp: string, projectName: string) : Promise<void> {
         return this.sendBackendRequest(remoteIp, `upload-project/${projectName}`);
     }
+
+    async cleanLatestBuild(remoteIp: string) : Promise<void> {
+        return this.sendBackendRequest(remoteIp, "clean-build");
+    }
+
+    async uploadFirmware(remoteIp: string) : Promise<void> {
+        return this.sendBackendRequest(remoteIp, "upload-firmware");
+    }
+
 }

@@ -22,11 +22,6 @@ public class RemoteRestController {
         return remoteService.uploadBios(remoteIp);
     }
 
-    @PostMapping(value = "/remote/{remoteIp}/upload-firmware", produces = "text/plain")
-    public String uploadFirmware(@PathVariable String remoteIp) {
-        return remoteService.uploadFirmware(remoteIp);
-    }
-
     @PostMapping(value = "/remote/{remoteIp}/upload-projects", produces = "text/plain")
     public String uploadAllProjects(@PathVariable String remoteIp) {
         return remoteService.uploadAllProjects(remoteIp);
@@ -36,4 +31,15 @@ public class RemoteRestController {
     public String uploadProject(@PathVariable String remoteIp, @PathVariable String projectName) {
         return remoteService.uploadProject(remoteIp, projectName);
     }
+
+    @PostMapping(value = "/remote/{remoteIp}/clean-build", produces = "text/plain")
+    public String cleanBuild(@PathVariable String remoteIp) {
+        return remoteService.cleanBuild(remoteIp);
+    }
+
+    @PostMapping(value = "/remote/{remoteIp}/upload-firmware", produces = "text/plain")
+    public String uploadFirmware(@PathVariable String remoteIp) {
+        return remoteService.uploadFirmware(remoteIp);
+    }
+
 }

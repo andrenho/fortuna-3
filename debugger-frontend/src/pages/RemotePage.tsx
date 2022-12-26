@@ -17,15 +17,18 @@ const RemotePage: React.FC = observer(() => {
             case RemoteAction.UploadBIOS:
                 await remote.uploadBIOS(remoteIp);
                 break;
-            case RemoteAction.UploadFirmware:
-                if (window.confirm('Are you sure you want to upload the firmware?'))
-                    await remote.uploadFirmware(remoteIp);
-                break;
             case RemoteAction.UploadFullProject:
                 await remote.uploadFullProject(remoteIp);
                 break;
             case RemoteAction.UploadSingleProject:
                 await remote.uploadSingleProject(remoteIp, arg!);
+                break;
+            case RemoteAction.CleanBuild:
+                await remote.cleanLatestBuild(remoteIp);
+                break;
+            case RemoteAction.UploadFirmware:
+                if (window.confirm('Are you sure you want to upload the firmware?'))
+                    await remote.uploadFirmware(remoteIp);
                 break;
         }
     }

@@ -22,10 +22,6 @@ public class RemoteService {
         return remoteRequest(remoteIp, "upload-bios", compilerService.getBiosBinary());
     }
 
-    public String uploadFirmware(String remoteIp) {
-        return remoteRequest(remoteIp, "upload-firmware");
-    }
-
     public String uploadAllProjects(String remoteIp) {
         var sb = new StringBuilder();
         sb.append(remoteRequest(remoteIp, "format-sdcard"));
@@ -36,6 +32,13 @@ public class RemoteService {
 
     public String uploadProject(String remoteIp, String projectName) {
         return remoteRequest(remoteIp, "create-file/" + projectName, compilerService.getProjectBinary(projectName));
+    }
+
+    public String cleanBuild(String remoteIp) {
+        return remoteRequest(remoteIp, "clean-build");
+    }
+    public String uploadFirmware(String remoteIp) {
+        return remoteRequest(remoteIp, "upload-firmware");
     }
 
     private String remoteRequest(String remoteIp, String action) {

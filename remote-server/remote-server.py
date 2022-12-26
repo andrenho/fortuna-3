@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 
 import logging
-import serial
 import socket
+import subprocess
 import sys
-import traceback
 import time
-import RPi.GPIO as GPIO
+import traceback
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 
+import RPi.GPIO as GPIO
+import serial
 
 PORT = 8026
 RESET_GPIO = 8
 serial_port = ''
 
 
-class FortunaSerial:
+class FortunaManager:
 
     @staticmethod
     def connect():
@@ -45,38 +46,34 @@ class FortunaSerial:
         elif (c[0] > 0):
             raise Exception("Unknown error")
 
+    @staticmethod
+    def execute(args):
+        result = subprocess.run(args, capture_output=True)
+        if result.returncode == 0:
+            return result.stdout
+        else:
+            return result.stderr
+
     def reset(self):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(RESET_GPIO, GPIO.OUT)
-
         GPIO.output(RESET_GPIO, GPIO.LOW)
         time.sleep(0.1)
         GPIO.output(RESET_GPIO, GPIO.HIGH)
         time.sleep(0.1)
         logging.info("Fortuna-3 is reset.")
-
         GPIO.cleanup()
+
+    def clean_build(self):
+        return self.execute(['make', '-f', '../compute-unit', 'clean'])
+
+    def upload_firmware(self):
+        return self.execute(['make', '-f', '../compute-unit', 'upload'])
 
 
 class RemoteServer(BaseHTTPRequestHandler):
 
-    fserial = FortunaSerial()
-
-    def reset(self):
-        self.fserial.reset()
-        return b'Fortuna-3 is reset.'
-
-    def upload_bios(self, data):
-        raise Exception('Not implemented yet.')
-
-    def upload_firmware(self):
-        raise Exception('Not implemented yet.')
-
-    def format_sdcard(self):
-        raise Exception('Not implemented yet.')
-
-    def upload_file(self, filename, data):
-        raise Exception('Not implemented yet.')
+    fortuna3 = FortunaManager()
 
     def get_request_data(self):
         content_length = int(self.headers['Content-Length'])
@@ -86,15 +83,20 @@ class RemoteServer(BaseHTTPRequestHandler):
         url = urlparse(self.path)
         try:
             if url.path == '/reset':
-                response = self.reset()
+                self.fortuna3.reset()
+                response  = b'Fortuna-3 is reset.'
             elif url.path == '/upload-bios':
-                response = self.upload_bios(self.get_request_data())
-            elif url.path == '/upload-firmware':
-                response = self.upload_firmware()
+                # response = self.upload_bios(self.get_request_data())
+                raise Exception('Not implemented yet.')
             elif url.path == '/format-sdcard':
-                response = self.format_sdcard()
+                raise Exception('Not implemented yet.')
             elif url.path.startswith('/create-file'):
-                response = self.upload_file(url.path.split('/')[2], self.get_request_data())
+                # response = self.upload_file(url.path.split('/')[2], self.get_request_data())
+                raise Exception('Not implemented yet.')
+            elif url.path == '/clean-build':
+                response = self.fortuna3.clean_build()
+            elif url.path == '/upload-firmware':
+                response = self.fortuna3.upload_firmware()
             else:
                 self.send_response(404, 'Invalid path')
                 self.end_headers()
