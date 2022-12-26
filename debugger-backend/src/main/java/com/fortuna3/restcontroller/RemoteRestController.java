@@ -22,6 +22,11 @@ public class RemoteRestController {
         return remoteService.uploadBios(remoteIp);
     }
 
+    @PostMapping(value = "/remote/{remoteIp}/format-sdcard", produces = "text/plain")
+    public String formatSDCard(@PathVariable String remoteIp) {
+        return remoteService.formatSDCard(remoteIp);
+    }
+
     @PostMapping(value = "/remote/{remoteIp}/upload-projects", produces = "text/plain")
     public String uploadAllProjects(@PathVariable String remoteIp) {
         return remoteService.uploadAllProjects(remoteIp);

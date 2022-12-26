@@ -1,19 +1,19 @@
 	include fortuna3.z80
 
 start:
-    out     (FS_MOUNT), a
+    ; out     (FS_MOUNT), a
 
-    ld      a, 0                ; file number
-    out     (Pa0), a
-    ld      a, hello            ; file name
-    out     (Qa0), a
-    out     (FS_OPEN_R), a      ; open file
+    ; ld      a, 0                ; file number
+    ; out     (Pa0), a
+    ; ld      a, hello            ; file name
+    ; out     (Qa0), a
+    ; out     (FS_OPEN_R), a      ; open file
 
-    ld      a, 10               ; read 10 chars
-    out     (Pb0), a
-    ld      a, 0x30             ; to RAM 0x20
-    out     (Qa0), a
-    out     (FS_READ), a
+    ; ld      a, 10               ; read 10 chars
+    ; out     (Pb0), a
+    ; ld      a, 0x30             ; to RAM 0x20
+    ; out     (Qa0), a
+    ; out     (FS_READ), a
 
 loop:
 	jp		start

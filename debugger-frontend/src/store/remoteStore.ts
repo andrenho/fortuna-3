@@ -36,6 +36,10 @@ export default class RemoteStore {
         return this.sendBackendRequest(remoteIp, "upload-bios");
     }
 
+    async formatSDCard(remoteIp: string) {
+        return this.sendBackendRequest(remoteIp, "format-sdcard");
+    }
+
     async uploadFullProject(remoteIp: string) : Promise<void> {
         return this.sendBackendRequest(remoteIp, "upload-projects");
     }
@@ -51,5 +55,4 @@ export default class RemoteStore {
     async uploadFirmware(remoteIp: string) : Promise<void> {
         return this.sendBackendRequest(remoteIp, "upload-firmware");
     }
-
 }

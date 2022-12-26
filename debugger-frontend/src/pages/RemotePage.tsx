@@ -15,7 +15,12 @@ const RemotePage: React.FC = observer(() => {
                 await remote.reset(remoteIp);
                 break;
             case RemoteAction.UploadBIOS:
-                await remote.uploadBIOS(remoteIp);
+                if (window.confirm('This will reupload the firmware, are you sure you want to continue?'))
+                    await remote.uploadBIOS(remoteIp);
+                break;
+            case RemoteAction.FormatSDCard:
+                if (window.confirm('Are you sure you want to format the SDCard?'))
+                    await remote.formatSDCard(remoteIp);
                 break;
             case RemoteAction.UploadFullProject:
                 await remote.uploadFullProject(remoteIp);

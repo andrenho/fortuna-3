@@ -22,6 +22,9 @@ public class RemoteService {
         return remoteRequest(remoteIp, "upload-bios", compilerService.getBiosBinary());
     }
 
+    public String formatSDCard(String remoteIp) {
+        return remoteRequest(remoteIp, "format-sdcard");
+    }
     public String uploadAllProjects(String remoteIp) {
         var sb = new StringBuilder();
         sb.append(remoteRequest(remoteIp, "format-sdcard"));
