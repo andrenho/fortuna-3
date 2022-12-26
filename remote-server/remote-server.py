@@ -19,12 +19,14 @@ serial_port = ''
 
 class FortunaSerialConnection:
 
-    def __init__(self, port):
+    def __init__(self, port, timeout=2):
         self.port = port
+        self.timeout = timeout
 
     def __enter__(self):
         logging.info('Connecting to serial port: ' + self.port)
-        self.ser = serial.Serial(self.port, baudrate = 1000000, timeout = 2)
+        self.ser = serial.Serial(self.port, baudrate = 1000000, timeout = self.timeout)
+        return self
 
     def __exit__(self, *args):
         logging.info('Disconnecting from serial port.')
@@ -44,15 +46,18 @@ class FortunaSerialConnection:
         elif (c[0] == 4):
             raise Exception("Error: invalid command")
         elif (c[0] > 0):
-            raise Exception("Unknown error")
+            raise Exception("Unknown error: " + str(int(c[0])))
 
     def activate_remote(self):
-        self.ser.write(0xfe)
-        self.ser.write(0xf0)
+        self.ser.write(b'\xfe')
+        time.sleep(0.001)
+        self.ser.write(b'\xf0')
+        time.sleep(0.001)
 
     def send_command(self, *args):
         for arg in args:
             self.ser.write(arg)
+            time.sleep(0.001)
         self.check_response()
 
 class FortunaManager:
@@ -95,9 +100,9 @@ class FortunaManager:
         return self.execute(['make', '-C', '../compute-unit', 'upload'])
 
     def format_sdcard(self):
-        with FortunaSerialConnection(serial_port) as conn:
+        with FortunaSerialConnection(serial_port, timeout=120) as conn:
             conn.activate_remote()
-            conn.send_command(0x2, timeout=60)
+            conn.send_command(b'\x02')
         return b'SDCard formatted successfully.'
 
 

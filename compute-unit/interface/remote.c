@@ -8,6 +8,7 @@
 #include "dev/lcd.h"
 #include "dev/ram.h"
 #include "dev/z80.h"
+#include "io/iofs.h"
 
 #define CMD_UPLOAD_RAM  0x1
 #define CMD_FORMAT_SD   0x2
@@ -46,17 +47,22 @@ void remote(void)
     z80_shutdown();
     _delay_ms(1);
 
-    lcd_clear();
-    lcd_print_line_P(0, PSTR("Remote mode"));
-    lcd_print_line_P(1, PSTR(""));
-    for (;;);
-
     while (true) {
         uint8_t c = getchar();
         switch (c) {
             case CMD_FORMAT_SD:
-                // TODO
-                putchar(OK);
+                {
+                    lcd_clear();
+                    lcd_print_line_P(0, PSTR("Formatting"));
+                    lcd_print_line_P(1, PSTR("SDCard..."));
+
+                    IO_Regs r = {0};
+                    io_fs_format(&r);
+                    if (r.Ra0 == 0)
+                        putchar(OK);
+                    else
+                        putchar(r.Ra0);
+                }
                 break;
             default:
                 putchar(ERR_INVALID_CMD);

@@ -8,15 +8,15 @@
 #include <util/delay.h>
 #include <util/setbaud.h>
 
-#define SPECIAL_CHR 0xfe
-#define RESET_CHR   0xf0
+#define SPECIAL_1ST_CHR  0xfe
+#define SPECIAL_2ND_CHR  0xf0
 
 static uint8_t latest_char = 0;
 static bool remote = false;
 
 static void char_sent(unsigned char c)
 {
-    if (latest_char == SPECIAL_CHR && c == RESET_CHR) {
+    if (latest_char == SPECIAL_1ST_CHR && c == SPECIAL_2ND_CHR) {
         remote = true;
     }
     latest_char = c;
@@ -26,7 +26,7 @@ static int uart_putchar(char c, FILE* f)
 {
     (void) f;
     
-    if (c == (char) SPECIAL_CHR)
+    if (c == (char) SPECIAL_1ST_CHR)
         return 0;
 
     if (c == '\n')
