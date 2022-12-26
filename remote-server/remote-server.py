@@ -47,12 +47,20 @@ class FortunaManager:
             raise Exception("Unknown error")
 
     @staticmethod
-    def execute(args):
-        result = subprocess.run(args, capture_output=True)
-        if result.returncode == 0:
-            return result.stdout
-        else:
-            return result.stderr
+    def execute(*args):
+        output = b''
+        for arg in args:
+            result = subprocess.run(arg, capture_output=True)
+            logging.info(result.stdout)
+            if result.stderr != b'':
+                logging.warning(result.stderr)
+            if result.returncode == 0:
+                output += result.stdout + b"\n\n---\n\n"
+            elif result.stderr == b'':
+                raise Exception(result.stdout.decode('utf-8'))
+            else:
+                raise Exception(result.stderr.decode('utf-8'))
+        return output
 
     def reset(self):
         GPIO.setmode(GPIO.BCM)
@@ -65,10 +73,10 @@ class FortunaManager:
         GPIO.cleanup()
 
     def clean_build(self):
-        return self.execute(['make', '-f', '../compute-unit', 'clean'])
+        return self.execute(['make', '-C', '../compute-unit', 'clean'])
 
     def upload_firmware(self):
-        return self.execute(['make', '-f', '../compute-unit', 'upload'])
+        return self.execute(['git', '-C', '../compute-unit', 'pull'], ['make', '-C', '../compute-unit', 'upload'])
 
 
 class RemoteServer(BaseHTTPRequestHandler):
