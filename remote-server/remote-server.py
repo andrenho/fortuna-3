@@ -83,6 +83,9 @@ class FortunaManager:
             f.write(data)
         return self.execute(['make', '-C', '../compute-unit', 'upload'])
 
+    def format_sdcard(self):
+        raise Exception('Not implemented yet.')
+
 
 class RemoteServer(BaseHTTPRequestHandler):
 
@@ -100,6 +103,8 @@ class RemoteServer(BaseHTTPRequestHandler):
                 response  = b'Fortuna-3 is reset.'
             elif url.path == '/upload-bios':
                 response = self.fortuna3.upload_bios(self.get_request_data())
+            elif url.path == '/format-sdcard':
+                response = self.fortuna3.format_sdcard()
             elif url.path == '/format-sdcard':
                 raise Exception('Not implemented yet.')
             elif url.path.startswith('/create-file'):
