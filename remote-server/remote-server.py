@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
 import logging
+import serial
 import socket
 import sys
 import traceback
+import time
+import RPi.GPIO as GPIO
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 
-import serial
 
 PORT = 8026
+RESET_GPIO = 8
 serial_port = ''
 
 
@@ -43,15 +46,16 @@ class FortunaSerial:
             raise Exception("Unknown error")
 
     def reset(self):
-        ser = self.connect()
-        try:
-            logging.info('Sending reset...')
-            ser.write(b"\xfe")
-            ser.write(b"\xf0")
-            ser.write(b"\xff")
-            # self.check_response(ser)
-        finally:
-            self.disconnect(ser)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(RESET_GPIO, GPIO.OUT)
+
+        GPIO.output(RESET_GPIO, GPIO.LOW)
+        time.sleep(0.1)
+        GPIO.output(RESET_GPIO, GPIO.HIGH)
+        time.sleep(0.1)
+        logging.info("Fortuna-3 is reset.")
+
+        GPIO.cleanup()
 
 
 class RemoteServer(BaseHTTPRequestHandler):
@@ -60,7 +64,7 @@ class RemoteServer(BaseHTTPRequestHandler):
 
     def reset(self):
         self.fserial.reset()
-        return b'Reset successful.'
+        return b'Fortuna-3 is reset.'
 
     def upload_bios(self, data):
         raise Exception('Not implemented yet.')
@@ -106,6 +110,14 @@ class RemoteServer(BaseHTTPRequestHandler):
         self.wfile.write(response)
 
 
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip = s.getsockname()[0]
+    s.close()
+    return ip
+
+
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print('Usage: ' + sys.argv[0] + ' SERIAL_PORT', file=sys.stderr)
@@ -113,15 +125,10 @@ if __name__ == '__main__':
     serial_port = sys.argv[1]
 
     logging.basicConfig(level=logging.INFO)
-    '''
     httpd = HTTPServer(('', PORT), RemoteServer)
-    hostname = socket.gethostname()
-    logging.info('Starting server. IP is ' + socket.gethostbyname(hostname) + '...')
+    logging.info('Starting server. IP is ' + get_ip() + '...')
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     httpd.server_close()
-    '''
-    f = FortunaSerial()
-    f.reset()
