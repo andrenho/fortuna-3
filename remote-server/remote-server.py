@@ -78,7 +78,7 @@ class FortunaManager:
     def upload_firmware(self):
         return self.execute(['git', '-C', '../compute-unit', 'pull'], ['make', '-C', '../compute-unit', 'upload'])
 
-    def upload_bios(self.data):
+    def upload_bios(self, data):
         with open("../compute-unit/bios.bin", "wb") as f:
             f.write(data)
         return self.execute(['make', '-C', '../compute-unit', 'upload'])
@@ -99,7 +99,7 @@ class RemoteServer(BaseHTTPRequestHandler):
                 self.fortuna3.reset()
                 response  = b'Fortuna-3 is reset.'
             elif url.path == '/upload-bios':
-                response = fortuna3.upload_bios(self.get_request_data())
+                response = self.fortuna3.upload_bios(self.get_request_data())
             elif url.path == '/format-sdcard':
                 raise Exception('Not implemented yet.')
             elif url.path.startswith('/create-file'):
