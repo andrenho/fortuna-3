@@ -49,20 +49,15 @@ void remote(void)
     lcd_clear();
     lcd_print_line_P(0, PSTR("Remote mode"));
     lcd_print_line_P(1, PSTR(""));
+    for (;;);
 
     while (true) {
         uint8_t c = getchar();
         switch (c) {
-            case CMD_UPLOAD_RAM:
-                upload_to_ram();
+            case CMD_FORMAT_SD:
+                // TODO
+                putchar(OK);
                 break;
-            case CMD_EXIT:
-                lcd_clear();
-                lcd_print_line_P(0, PSTR("Remote complete"));
-                lcd_print_line_P(1, PSTR("Press USR"));
-                loop_until_bit_is_clear(PIND, PIND3);
-                lcd_clear();
-                return;
             default:
                 putchar(ERR_INVALID_CMD);
         }
