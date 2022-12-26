@@ -30,8 +30,8 @@ class FortunaSerialConnection:
         logging.info('Disconnecting from serial port.')
         self.ser.close()
 
-    def check_response(ser):
-        c = ser.read(1)
+    def check_response(self):
+        c = self.ser.read(1)
         if len(c) < 1:
             raise Exception("No response received")
         logging.info('Response received: ' + str(int(c[0])))
@@ -45,6 +45,15 @@ class FortunaSerialConnection:
             raise Exception("Error: invalid command")
         elif (c[0] > 0):
             raise Exception("Unknown error")
+
+    def activate_remote(self):
+        self.ser.write(0xfe)
+        self.ser.write(0xf0)
+
+    def send_command(self, *args):
+        for arg in args:
+            self.ser.write(arg)
+        self.check_response()
 
 class FortunaManager:
 
@@ -86,7 +95,10 @@ class FortunaManager:
         return self.execute(['make', '-C', '../compute-unit', 'upload'])
 
     def format_sdcard(self):
-        raise Exception('Not implemented yet.')
+        with FortunaSerialConnection(serial_port) as conn:
+            conn.activate_remote()
+            conn.send_command(0x2, timeout=60)
+        return b'SDCard formatted successfully.'
 
 
 class RemoteServer(BaseHTTPRequestHandler):
