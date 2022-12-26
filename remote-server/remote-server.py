@@ -17,19 +17,19 @@ RESET_GPIO = 8
 serial_port = ''
 
 
-class FortunaManager:
+class FortunaSerialConnection:
 
-    @staticmethod
-    def connect():
-        logging.info('Connecting to serial port: ' + serial_port)
-        return serial.Serial(serial_port, baudrate = 1000000, timeout = 2)
+    def __init__(self, port):
+        self.port = port
 
-    @staticmethod
-    def disconnect(ser):
+    def __enter__(self):
+        logging.info('Connecting to serial port: ' + self.port)
+        self.ser = serial.Serial(self.port, baudrate = 1000000, timeout = 2)
+
+    def __exit__(self, *args):
         logging.info('Disconnecting from serial port.')
-        ser.close()
+        self.ser.close()
 
-    @staticmethod
     def check_response(ser):
         c = ser.read(1)
         if len(c) < 1:
@@ -45,6 +45,8 @@ class FortunaManager:
             raise Exception("Error: invalid command")
         elif (c[0] > 0):
             raise Exception("Unknown error")
+
+class FortunaManager:
 
     @staticmethod
     def execute(*args):
