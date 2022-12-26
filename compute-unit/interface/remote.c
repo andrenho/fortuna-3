@@ -58,10 +58,14 @@ void remote(void)
 
                     IO_Regs r = {0};
                     io_fs_format(&r);
-                    if (r.Ra0 == 0)
+                    if (r.Ra0 == 0) {
+                        lcd_print_line_P(1, PSTR("complete."));
                         putchar(OK);
-                    else
+                    }
+                    else {
+                        lcd_print_line_P(1, PSTR("error!"));
                         putchar(r.Ra0);
+                    }
                 }
                 break;
             default:
