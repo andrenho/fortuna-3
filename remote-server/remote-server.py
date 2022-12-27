@@ -124,8 +124,6 @@ class RemoteServer(BaseHTTPRequestHandler):
                 response = self.fortuna3.upload_bios(self.get_request_data())
             elif url.path == '/format-sdcard':
                 response = self.fortuna3.format_sdcard()
-            elif url.path == '/format-sdcard':
-                raise Exception('Not implemented yet.')
             elif url.path.startswith('/create-file'):
                 # response = self.upload_file(url.path.split('/')[2], self.get_request_data())
                 raise Exception('Not implemented yet.')
