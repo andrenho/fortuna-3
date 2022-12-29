@@ -14,6 +14,7 @@ import serial
 
 PORT = 8026
 RESET_GPIO = 8
+COMPUTE_UNIT_DIR = '../compute-unit'
 serial_port = ''
 
 
@@ -54,11 +55,9 @@ class FortunaSerialConnection:
         self.ser.write(b'\xf0')
         time.sleep(0.001)
 
-    def send_command(self, *args):
-        for arg in args:
-            self.ser.write(arg)
-            time.sleep(0.001)
-        self.check_response()
+    def send_bytes(self, bytes):
+        for byte in bytes:
+            self.ser.write(byte)
 
 class FortunaManager:
 
@@ -89,21 +88,33 @@ class FortunaManager:
         GPIO.cleanup()
 
     def clean_build(self):
-        return self.execute(['make', '-C', '../compute-unit', 'clean'])
+        return self.execute(['make', '-C', COMPUTE_UNIT_DIR, 'clean'])
 
     def upload_firmware(self):
-        return self.execute(['git', '-C', '../compute-unit', 'pull'], ['make', '-C', '../compute-unit', 'upload'])
+        return self.execute(['git', '-C', COMPUTE_UNIT_DIR, 'pull'], ['make', '-C', COMPUTE_UNIT_DIR, 'upload'])
 
     def upload_bios(self, data):
-        with open("../compute-unit/bios.bin", "wb") as f:
+        with open(COMPUTE_UNIT_DIR + "/bios.bin", "wb") as f:
             f.write(data)
-        return self.execute(['make', '-C', '../compute-unit', 'upload'])
+        return self.execute(['make', '-C', COMPUTE_UNIT_DIR, 'upload'])
 
     def format_sdcard(self):
         with FortunaSerialConnection(serial_port, timeout=120) as conn:
             conn.activate_remote()
-            conn.send_command(b'\x02')
+            conn.send_bytes(b'\x02')
+            conn.check_response()
         return b'SDCard formatted successfully.'
+
+    def create_file(self, filename, data):
+        with FortunaSerialConnection(serial_port, timeout=10) as conn:
+            conn.activate_remote()
+            conn.send_bytes(b'\x03')
+            conn.send_bytes(len(filename).to_bytes(1, 'little'))
+            conn.send_bytes(len(data).to_bytes(4, 'little'))
+            conn.send_bytes(bytes(filename, 'utf-8'))
+            conn.send_bytes(data)
+            conn.check_response()
+        return b'File ' + bytes(filename, 'utf-8') + b'created successfully.'
 
 
 class RemoteServer(BaseHTTPRequestHandler):
@@ -125,8 +136,7 @@ class RemoteServer(BaseHTTPRequestHandler):
             elif url.path == '/format-sdcard':
                 response = self.fortuna3.format_sdcard()
             elif url.path.startswith('/create-file'):
-                # response = self.upload_file(url.path.split('/')[2], self.get_request_data())
-                raise Exception('Not implemented yet.')
+                response = self.fortuna3.create_file(url.path.split('/')[2], self.get_request_data())
             elif url.path == '/clean-build':
                 response = self.fortuna3.clean_build()
             elif url.path == '/upload-firmware':
