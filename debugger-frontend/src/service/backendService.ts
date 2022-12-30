@@ -17,3 +17,13 @@ export async function fetchBackendCompilation() : Promise<DebuggingInfo> {
         throw new Error("Error loading CRC form the backend");
     return await result.json();
 }
+
+export async function fetchBackendRemote(remoteIp: string, action: string, arg?: string | undefined) : Promise<string> {
+    let url = `${backendHostname()}/remote/${remoteIp}/${action}`;
+    if (arg)
+        url += `/${arg}`;
+    const result = await fetch(url, { method: 'POST' });
+    if (!result.ok)
+        throw new Error((await result.json()).message);
+    return await result.text();
+}

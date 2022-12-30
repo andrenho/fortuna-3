@@ -6,6 +6,7 @@ import UartTerminal from "./types/uartTerminal";
 import Filesystem from "./filesystem";
 import {EmulatorState, Fortuna3Emulator} from "api/fortuna3-emulator";
 import {FinishReason} from "api/api";
+import RemoteStore from "store/remoteStore";
 
 const terminalSize = {
     w: 60,
@@ -38,6 +39,7 @@ export default class FortunaStore {
     };
 
     filesystem? : Filesystem;
+    remote = new RemoteStore();
 
     debuggingInfo: DebuggingInfo = initialDebuggingInfo();
 
@@ -78,9 +80,9 @@ export default class FortunaStore {
 
     reset() : void {
         this.emulator!.reset(this.debuggingInfo.sdCardSizeInMB);
-        if (this.selectedProject && this.selectedProject === "bios") {
+        if (this.selectedProject && this.selectedProject === "BIOS") {
             const bios = Uint8Array.from(window.atob(this.currentProject!.binary), c => c.charCodeAt(0));
-            this.emulator!.setRam(0, bios);
+            this.emulator!.setRam(0xf800, bios);
         } else {
             this.currentError = "A BIOS is not included in the project.";
         }
@@ -231,7 +233,7 @@ export default class FortunaStore {
                     if (debuggingInfo.success) {
                         this.currentError = undefined;
                         this.debuggingInfo = debuggingInfo;
-                        this.setSelectedProject("bios");
+                        this.setSelectedProject("BIOS");
                         this.reset();
                     } else {
                         this.currentError = debuggingInfo.errorMessage;

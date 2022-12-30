@@ -1,0 +1,31 @@
+button {
+  font-size: 15px;
+}
+
+.executing {
+  cursor: wait !important;
+}
+
+.buttonColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 8px;
+}
+
+.preInvisible {
+  display: none;
+}
+
+.preFailure {
+  color: red;
+}
+
+.spin {
+  display: inline-block;
+  padding: 8px;
+}
