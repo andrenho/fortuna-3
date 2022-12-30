@@ -34,7 +34,11 @@ static void setup_interrupts(void)
 
 static void load_bios(void)
 {
-    uint16_t i = 0;
+    ram_set_byte(0x0, 0xc3);  // jp 0xf800
+    ram_set_byte(0x1, 0x00);
+    ram_set_byte(0x2, 0xf8);
+
+    uint16_t i = 0xF800;
     for (uint8_t* p = _binary_bios_bin_start; p != _binary_bios_bin_end; ++p)
         ram_set_byte(i++, *p);
 }

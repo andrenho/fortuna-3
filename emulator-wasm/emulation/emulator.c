@@ -29,6 +29,12 @@ EMSCRIPTEN_KEEPALIVE bool emulator_initialize(size_t sdcard_sz_in_mb)
     rtc_init();
 
     bool r = sdcard_init(sdcard_sz_in_mb MB);
+
+    ram_set_byte(0x0, 0xc3);  // jp 0xf800
+    ram_set_byte(0x1, 0x00);
+    ram_set_byte(0x2, 0xf8);
+    emulator_step();
+
     puts("Emulator initialized.");
     return r;
 }
