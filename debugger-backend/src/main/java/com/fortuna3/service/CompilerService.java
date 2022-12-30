@@ -42,6 +42,8 @@ public class CompilerService {
         record SourceProjectIndex(String name, SourceProjectDTO sourceProject) {}
 
         var futures = new ArrayList<CompletableFuture<SourceProjectIndex>>();
+        futures.add(CompletableFuture.supplyAsync(() -> new SourceProjectIndex("BIOS", compile(path + "/" + projectFile.biosSource(), 0))));
+
         for (var project: projectFile.projects().entrySet()) {
             futures.add(CompletableFuture.supplyAsync(() -> new SourceProjectIndex(
                     project.getKey(),
@@ -135,7 +137,7 @@ public class CompilerService {
     }
 
     public byte[] getBiosBinary() {
-        return getProjectBinary("bios");
+        return getProjectBinary("BIOS");
     }
 
     public byte[] getProjectBinary(String projectName) {
