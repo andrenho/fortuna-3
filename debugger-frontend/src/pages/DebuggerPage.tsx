@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import RAM from "components/memory/Ram";
 import CPU from "components/cpu/Cpu";
 import Debugger from "components/debugger/Debugger";
 import UART from "components/uart/UART";
 import useStore from "hooks/useStore";
-import Toolbar, { ToolbarToggle, ToolbarButton, ToolbarSeparator } from "components/main-page/Toolbar";
-import { faPowerOff, faForwardStep, faSquareCaretRight, faForward, faPause } from '@fortawesome/free-solid-svg-icons'
+import Toolbar, {ToolbarButton, ToolbarSeparator, ToolbarToggle} from "components/main-page/Toolbar";
+import {faForward, faForwardStep, faPause, faPowerOff, faSquareCaretRight} from '@fortawesome/free-solid-svg-icons'
 import ComputeUnit from "components/compute-unit/ComputeUnit";
 import css from './DebuggerPage.module.scss';
 import FlatData from "components/common/flat-data/FlatData";
@@ -26,16 +26,30 @@ const Components : React.FC = observer(() => {
     const [showLcd, setShowLcd] = useState(false);
     const [showRtc, setShowRtc] = useState(false);
 
+    const onKeyDown = (e : KeyboardEvent) => {
+        switch (e.key) {
+            case "F8": store.step(); break;
+        }
+        const c = e.key.charCodeAt(0);
+        if (c >= 32 && c <= 127)
+            store.keypress(c);
+    }
+
     const onReset = () => {
         if (window.confirm("Are you sure you want to reset the emulation?"))
             store.reset();
     }
 
+    useEffect(() => {
+        document.addEventListener("keydown", onKeyDown);
+        return () => document.removeEventListener("keydown", onKeyDown);
+    }, []);
+
     return <>
         <div className={css.toolbar}>
             <Toolbar>
                 <ToolbarToggle text="CPU" value={showCpu} onToggle={() => setShowCpu(!showCpu)} />
-                <ToolbarToggle text="Comp" value={showCompute} onToggle={() => setShowCompute(!showCompute)} />
+                <ToolbarToggle text="Comp" title="Compute unit" value={showCompute} onToggle={() => setShowCompute(!showCompute)} />
                 <ToolbarToggle text="UART" value={showUart} onToggle={() => setShowUart(!showUart)} />
                 <ToolbarToggle text="RAM" value={showRam} onToggle={() => setShowRam(!showRam)} />
                 <ToolbarToggle text="LCD" value={showLcd} onToggle={() => setShowLcd(!showLcd)} />
@@ -44,7 +58,7 @@ const Components : React.FC = observer(() => {
                 <ToolbarSeparator />
                 <ToolbarButton icon={faPowerOff} title="Reset emulator" onClick={onReset} />
                 <ToolbarSeparator />
-                <ToolbarButton icon={faForwardStep} title="Step one instruction" onClick={() => store.step()} />
+                <ToolbarButton icon={faForwardStep} title="Step one instruction (F8)" onClick={() => store.step()} />
                 <ToolbarButton icon={faSquareCaretRight} title="Step one screenful" onClick={() => store.stepOneScreenful()} />
                 { store.running
                     ? <ToolbarButton icon={faPause} title="Stop execution" onClick={() => store.stopExecution()} />

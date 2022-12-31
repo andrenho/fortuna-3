@@ -1,6 +1,6 @@
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { PropsWithChildren, useState } from "react";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import React, {PropsWithChildren, useState} from "react";
 import css from "./Toolbar.module.scss";
 
 type ToolbarToggleProps = {
@@ -12,9 +12,9 @@ type ToolbarToggleProps = {
     onToggle?: () => void;
 }
 
-export const ToolbarToggle : React.FC<ToolbarToggleProps> = ({value, icon, text, color="black", onToggle=()=>{}}, title) => {
+export const ToolbarToggle : React.FC<ToolbarToggleProps> = ({value, icon, text, title, color="black", onToggle=()=>{}}) => {
 
-    return <div 
+    return <div
         title={title}
         onClick={onToggle}
         className={`${css.button} ${value ? css.active : ''}`}
