@@ -8,11 +8,11 @@
 #include <util/delay.h>
 #include <util/setbaud.h>
 
-#define SPECIAL_1ST_CHR  0xfe
-#define SPECIAL_2ND_CHR  0xf0
+#define SPECIAL_1ST_CHR 0xfeU
+#define SPECIAL_2ND_CHR 0xf0U
 
-static uint8_t latest_char = 0;
-static bool remote = false;
+static volatile uint8_t latest_char = 0;
+static volatile bool remote = false;
 
 static void char_sent(unsigned char c)
 {
@@ -25,8 +25,8 @@ static void char_sent(unsigned char c)
 static int uart_putchar(char c, FILE* f)
 {
     (void) f;
-    
-    if (c == (char) SPECIAL_1ST_CHR)
+
+    if ((uint8_t) c == SPECIAL_1ST_CHR)
         return 0;
 
     if (c == '\n')
@@ -58,9 +58,8 @@ uint8_t uart_getchar_blocking(void)
 
 uint8_t uart_getchar_nonblocking(void)
 {
-    unsigned char c = UDR0;
-    if (c != 0)
-        char_sent(c);
+    unsigned char c = latest_char;
+    latest_char = 0;
     return c;
 }
 
