@@ -67,8 +67,6 @@ export type FilesystemFile = {
 
 export class Fortuna3Emulator {
 
-    speedInMhz = 1;
-
     private api? : FortunaApi;
     private textDecoder = new TextDecoder();
 
@@ -90,13 +88,11 @@ export class Fortuna3Emulator {
     }
 
     stepTime(time: DOMHighResTimeStamp) : FinishReason {
-        const cycles = Math.floor(this.speedInMhz * 1_000_000 * time);
-        return this.api!.stepCycles(cycles);
+        return this.api!.stepCycles(time);
     }
 
     stepOneScreenful() : FinishReason {
-        const cycles = Math.floor(this.speedInMhz * 1_000_000 / 60);
-        return this.api!.stepCycles(cycles);
+        return this.api!.stepCycles(16);
     }
 
     reset(sdCardSizeInMB: number) : void {

@@ -12,7 +12,7 @@ export interface FortunaApi {
     getState: (ramPage: number, sdPage: number, eepromPage: number, data: pointer) => void;
     compressSDCard: (data: pointer, maxSize: number) => number;
     step : () => void;
-    stepCycles: (numberOfCycles: number) => FinishReason;
+    stepCycles: (milliseconds: number) => FinishReason;
     addBreakpoint: (addr: number) => void;
     removeBreakpoint: (addr: number) => void;
     setRam: (addr: number, data: number) => void;

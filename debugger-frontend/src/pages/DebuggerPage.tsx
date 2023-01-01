@@ -28,11 +28,26 @@ const Components : React.FC = observer(() => {
 
     const onKeyDown = (e : KeyboardEvent) => {
         switch (e.key) {
-            case "F8": store.step(); break;
+            case "F8":
+                store.step();
+                return;
+            case "F5":
+                if (!store.running)
+                    store.run();
+                return;
+            case "c":
+                if (e.ctrlKey && store.running) {
+                    store.stopExecution();
+                    return;
+                }
+                break;
         }
-        const c = e.key.charCodeAt(0);
-        if (c >= 32 && c <= 127)
-            store.keypress(c);
+
+        if (e.key.length === 1) {
+            const c = e.key.charCodeAt(0);
+            if (c >= 32 && c <= 127)
+                store.keypress(c);
+        }
     }
 
     const onReset = () => {
@@ -62,7 +77,7 @@ const Components : React.FC = observer(() => {
                 <ToolbarButton icon={faSquareCaretRight} title="Step one screenful" onClick={() => store.stepOneScreenful()} />
                 { store.running
                     ? <ToolbarButton icon={faPause} title="Stop execution" onClick={() => store.stopExecution()} />
-                    : <ToolbarButton icon={faForward} title="Run" onClick={() => store.run()} />
+                    : <ToolbarButton icon={faForward} title="Run (F5)" onClick={() => store.run()} />
                 }
             </Toolbar>
         </div>
@@ -81,7 +96,8 @@ const Components : React.FC = observer(() => {
                     cursorX={store.uartTerminal.cursorX}
                     cursorY={store.uartTerminal.cursorY}
                     lines={store.uartTerminal.lines}
-                    onKeyPress={chr => store.keypress(chr)}
+                    lastKeyPressed={store.lastKeyPressed}
+                    onCancelLastKeypress={() => store.keypress(0)}
                 /> }
 
                 { showRam && <RAM

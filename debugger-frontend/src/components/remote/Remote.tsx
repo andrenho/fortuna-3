@@ -42,17 +42,19 @@ const Remote : React.FC<RemoteProps> = observer(({ result = RemoteResult.NotStar
     return <div className={css.buttonColumn + ' ' + (result === RemoteResult.Executing ? css.executing : '')}>
 
         <div className={css.buttonRow}>
-            <label htmlFor="ip">Remote IP</label>
+            <label htmlFor="ip">Remote IP:</label>
             <input type="text" id="ip" value={remoteIp} onChange={e => changeRemoteIp(e.target.value)} />
         </div>
 
         <div className={css.buttonRow}>
+            Computer:
             <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.Reset)}>Reset computer</button>
             <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.UploadBIOS)}>Install BIOS</button>
             <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.FormatSDCard)}>Format SDCard</button>
         </div>
 
         <div className={css.buttonRow}>
+            SDCard:
             <select value={selectedProject} onChange={e => setSelectedProject(e.target.value)}>
                 { projectList.map(f => <option key={f} value={f}>{ f }</option>) }
             </select>
@@ -61,8 +63,9 @@ const Remote : React.FC<RemoteProps> = observer(({ result = RemoteResult.NotStar
         </div>
 
         <div className={css.buttonRow}>
+            Build:
             <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.CleanBuild)}>Clean latest build</button>
-            <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.UploadFirmware)}>Upload firmware from current branch</button>
+            <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.UploadFirmware)}>Make & upload firmware from current branch</button>
         </div>
 
         <div style={{minHeight: "300px"}}>
