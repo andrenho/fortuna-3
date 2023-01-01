@@ -21,7 +21,7 @@
 #define ERR_SD_ERROR       0x3
 #define ERR_INVALID_CMD    0x4
 
-#define BUF_SZ 512
+#define BUF_SZ 512U
 
 #define min(a,b)             \
 ({                           \
@@ -79,7 +79,7 @@ void create_file(void)
     file_sz |= ((uint32_t) getchar()) << 24;
 
     // get filename
-    char filename[filename_sz + 1] = { 0 };
+    char filename[15] = { 0 };
     for (size_t i = 0; i < filename_sz; ++i)
         filename[i] = getchar();
 
@@ -91,7 +91,7 @@ void create_file(void)
     // receive file and write to SD
     FIL fp;
     uint8_t buf[BUF_SZ];
-#define FR(cmd) { FRESULT _r; if ((r = (cmd)) != FR_OK) { putchar(r); return; } }
+#define FR(cmd) { FRESULT __r; if ((__r = (cmd)) != FR_OK) { putchar(__r); return; } }
     FR(f_mount(NULL, "0:", 0))
     FR(f_open(&fp, filename, FA_CREATE_ALWAYS | FA_WRITE))
     while (file_sz > 0) {

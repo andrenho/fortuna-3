@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import RAM from "components/memory/Ram";
 import CPU from "components/cpu/Cpu";
 import Debugger from "components/debugger/Debugger";
 import UART from "components/uart/UART";
 import useStore from "hooks/useStore";
-import Toolbar, { ToolbarToggle, ToolbarButton, ToolbarSeparator } from "components/main-page/Toolbar";
-import { faPowerOff, faForwardStep, faSquareCaretRight, faForward, faPause } from '@fortawesome/free-solid-svg-icons'
+import Toolbar, {ToolbarButton, ToolbarSeparator, ToolbarToggle} from "components/main-page/Toolbar";
+import {faForward, faForwardStep, faPause, faPowerOff, faSquareCaretRight} from '@fortawesome/free-solid-svg-icons'
 import ComputeUnit from "components/compute-unit/ComputeUnit";
 import css from './DebuggerPage.module.scss';
 import FlatData from "components/common/flat-data/FlatData";
 import Lcd from "components/lcd/Lcd";
 import Rtc from "components/rtc/Rtc";
 import Box from "components/common/box/Box";
+import translateKey from "util/translateKey";
 
 const Components : React.FC = observer(() => {
 
@@ -26,16 +27,43 @@ const Components : React.FC = observer(() => {
     const [showLcd, setShowLcd] = useState(false);
     const [showRtc, setShowRtc] = useState(false);
 
+    const onKeyDown = (e : KeyboardEvent) => {
+        switch (e.key) {
+            case "F8":
+                store.step();
+                return;
+            case "F5":
+                if (!store.running)
+                    store.run();
+                return;
+            case "c":
+                if (e.ctrlKey && store.running) {
+                    store.stopExecution();
+                    return;
+                }
+                break;
+        }
+
+        const keyCode = translateKey(e.key, e.shiftKey);
+        if (keyCode)
+            store.keypress(keyCode);
+    }
+
     const onReset = () => {
         if (window.confirm("Are you sure you want to reset the emulation?"))
             store.reset();
     }
 
+    useEffect(() => {
+        document.addEventListener("keydown", onKeyDown);
+        return () => document.removeEventListener("keydown", onKeyDown);
+    }, []);
+
     return <>
         <div className={css.toolbar}>
             <Toolbar>
                 <ToolbarToggle text="CPU" value={showCpu} onToggle={() => setShowCpu(!showCpu)} />
-                <ToolbarToggle text="Comp" value={showCompute} onToggle={() => setShowCompute(!showCompute)} />
+                <ToolbarToggle text="Comp" title="Compute unit" value={showCompute} onToggle={() => setShowCompute(!showCompute)} />
                 <ToolbarToggle text="UART" value={showUart} onToggle={() => setShowUart(!showUart)} />
                 <ToolbarToggle text="RAM" value={showRam} onToggle={() => setShowRam(!showRam)} />
                 <ToolbarToggle text="LCD" value={showLcd} onToggle={() => setShowLcd(!showLcd)} />
@@ -44,11 +72,11 @@ const Components : React.FC = observer(() => {
                 <ToolbarSeparator />
                 <ToolbarButton icon={faPowerOff} title="Reset emulator" onClick={onReset} />
                 <ToolbarSeparator />
-                <ToolbarButton icon={faForwardStep} title="Step one instruction" onClick={() => store.step()} />
+                <ToolbarButton icon={faForwardStep} title="Step one instruction (F8)" onClick={() => store.step()} />
                 <ToolbarButton icon={faSquareCaretRight} title="Step one screenful" onClick={() => store.stepOneScreenful()} />
                 { store.running
                     ? <ToolbarButton icon={faPause} title="Stop execution" onClick={() => store.stopExecution()} />
-                    : <ToolbarButton icon={faForward} title="Run" onClick={() => store.run()} />
+                    : <ToolbarButton icon={faForward} title="Run (F5)" onClick={() => store.run()} />
                 }
             </Toolbar>
         </div>
@@ -57,9 +85,13 @@ const Components : React.FC = observer(() => {
             <Debugger />
             <div className={css.rightSide}>
 
-                { showCpu && <CPU cpu={store.state.cpu} /> }
+                { showCpu && <CPU cpu={store.state.cpu} running={store.running} /> }
 
-                { showCompute && <ComputeUnit p={store.state.computeUnit.p} q={store.state.computeUnit.q} r={store.state.computeUnit.r} /> }
+                { showCompute && <ComputeUnit
+                    p={store.state.computeUnit.p}
+                    q={store.state.computeUnit.q}
+                    r={store.state.computeUnit.r}
+                    running={store.running} /> }
 
                 { showUart && <UART 
                     rows={store.uartTerminal.terminalRows}
@@ -67,7 +99,8 @@ const Components : React.FC = observer(() => {
                     cursorX={store.uartTerminal.cursorX}
                     cursorY={store.uartTerminal.cursorY}
                     lines={store.uartTerminal.lines}
-                    onKeyPress={chr => store.keypress(chr)}
+                    lastKeyPressed={store.lastKeyPressed}
+                    onCancelLastKeypress={() => store.keypress(0)}
                 /> }
 
                 { showRam && <RAM
@@ -77,6 +110,7 @@ const Components : React.FC = observer(() => {
                     stack={store.state.stack}
                     bytes={store.state.ramPage}
                     onPageChange={n => store.setRamPage(n)}
+                    running={store.running}
                 /> }
 
                 { showLcd && <Lcd line1={store.state.lcd[0]} line2={store.state.lcd[1]} /> }
@@ -88,9 +122,10 @@ const Components : React.FC = observer(() => {
                     hours={store.state.rtc.hours}
                     minutes={store.state.rtc.minutes}
                     seconds={store.state.rtc.seconds}
+                    running={store.running}
                 /> }
 
-                { showEeprom && <Box title="EEPROM">
+                { showEeprom && <Box title="EEPROM" running={store.running}>
                     <FlatData
                         bytes={store.state.eepromPage}
                         currentPage={store.eepromPage}

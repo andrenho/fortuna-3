@@ -1,5 +1,5 @@
 import Box from "components/common/box/Box";
-import React, { useState } from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
 import {range} from "util/array";
 import css from "./UART.module.scss";
@@ -19,30 +19,11 @@ type UARTProps = {
     lines: string[][],
     cursorX: number,
     cursorY: number,
-    onKeyPress?: (key: number) => void,
+    lastKeyPressed: string | undefined,
+    onCancelLastKeypress: () => void,
 }
 
-const UART : React.FC<UARTProps> = observer(({ columns, rows, lines, cursorX, cursorY, onKeyPress }) => {
-
-    const [waitingForKeypress, setWaitingForKeypress] = useState(false);
-    const [lastKeyPressed, setLastKeyPressed] = useState<string | undefined>(undefined);
-
-    const onKeydownEvent = (key: KeyboardEvent) : void => {
-        onKeyPress && onKeyPress(key.keyCode);
-        setLastKeyPressed(key.key);
-        key.preventDefault();
-        cancelWaitForKeypress();
-    };
-
-    const waitForKeypress = () => {
-        setWaitingForKeypress(true);
-        window.addEventListener("keydown", onKeydownEvent);
-    };
-
-    const cancelWaitForKeypress = () => {
-        setWaitingForKeypress(false);
-        window.removeEventListener("keydown", onKeydownEvent);
-    };
+const UART : React.FC<UARTProps> = observer(({ columns, rows, lines, cursorX, cursorY, lastKeyPressed, onCancelLastKeypress }) => {
 
     const character = (row: number, column: number) : JSX.Element => {
         let c;
@@ -65,14 +46,8 @@ const UART : React.FC<UARTProps> = observer(({ columns, rows, lines, cursorX, cu
                 </tbody>
             </table>
             <div className={css.inputButton}>
-                { !waitingForKeypress && <>
-                    { lastKeyPressed && <span>(last: { lastKeyPressed })</span> }
-                    <button onClick={waitForKeypress}>Keyboard input</button>
-                </>}
-                { waitingForKeypress && <>
-                    <span className={css.waiting}>Waiting for keypress...</span>
-                    <button onClick={cancelWaitForKeypress}>Cancel</button>
-                </>}
+                { lastKeyPressed !== undefined ? <span>(last: { lastKeyPressed })</span> : <span>(no key pressed)</span> }
+                { lastKeyPressed !== undefined && <button onClick={onCancelLastKeypress}>Cancel</button> }
             </div>
         </Box>
     );

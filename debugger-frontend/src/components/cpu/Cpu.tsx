@@ -9,6 +9,7 @@ import React from "react";
 
 type CpuProps = {
     cpu: Z80State,
+    running?: boolean,
 }
 
 const columns = 7;
@@ -20,9 +21,9 @@ const gridStyle : CSS.Properties = {
     gridTemplateAreas: (`"${". ".repeat(columns)}" `).repeat(rows) + `"${"flags ".repeat(columns)}"`,
 }
 
-const CPU : React.FC<CpuProps> = observer(({ cpu }) => {
+const CPU : React.FC<CpuProps> = observer(({ cpu, running = false }) => {
 
-    return <Box title="Z80">
+    return <Box title="Z80" running={running}>
         <div style={gridStyle} className={css.registers}>
             <Register name="AF" value={cpu.af} size={4} />
             <Register name="BC" value={cpu.bc} size={4} />

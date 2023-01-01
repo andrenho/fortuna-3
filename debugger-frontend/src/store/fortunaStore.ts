@@ -51,6 +51,7 @@ export default class FortunaStore {
     lastCompilationHash: number = 0;
 
     currentError: string | undefined;
+    lastKeyPressed: string | undefined;
 
     lastUpdated = "never";
     loading = false;
@@ -88,6 +89,7 @@ export default class FortunaStore {
         }
         this.updateState();
         this.uartTerminal.reset();
+        this.lastKeyPressed = undefined;
         this.filesystem?.updateFromEmulator(undefined, 0);
     }
 
@@ -110,7 +112,8 @@ export default class FortunaStore {
 
         const screenfulStep = (elapsed: DOMHighResTimeStamp) => {
 
-            const result = this.emulator!.stepTime(elapsed);
+            const result = this.emulator!.stepTime(16.6);
+
             if (result === FinishReason.Breakpoint) {
                 console.log("Breakpoint hit.");
                 this.stopExecution();
@@ -121,6 +124,7 @@ export default class FortunaStore {
             if (this.running) {
                 window.requestAnimationFrame(screenfulStep);
             }
+
         };
 
         window.requestAnimationFrame(screenfulStep);
@@ -131,7 +135,7 @@ export default class FortunaStore {
             return;
 
         this.running = false;
-        this.updateEmulatorState();
+        this.updateState();
 
         console.log("Execution stopped.");
     }
@@ -182,6 +186,10 @@ export default class FortunaStore {
     }
 
     keypress(chr: number) : void {
+        if (chr === 0)
+            this.lastKeyPressed = undefined;
+        else
+            this.lastKeyPressed = String.fromCharCode(chr);
         this.emulator!.keypress(chr);
     }
 

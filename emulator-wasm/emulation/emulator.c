@@ -3,6 +3,7 @@
 #include "emulator.h"
 
 #include <stdio.h>
+#include <sys/time.h>
 
 #include "dev/ram.h"
 #include "dev/lcd.h"
@@ -44,18 +45,22 @@ EMSCRIPTEN_KEEPALIVE void emulator_step()
     ExecZ80(&z80, 1);
 }
 
-EMSCRIPTEN_KEEPALIVE FinishReason emulator_step_cycles(int cycles)
+EMSCRIPTEN_KEEPALIVE FinishReason emulator_step_cycles(int ms)
 {
-    if (bkp_has()) {
-        while (cycles > 0) {
-            cycles -= ExecZ80(&z80, 1);
-            if (bkp_is(z80.PC.W))
-                return BREAKPOINT;
-        }
-    } else {
-        ExecZ80(&z80, cycles);
+    struct timeval t1, t2;
+    gettimeofday(&t1, NULL);
+
+    for(;;) {
+        ExecZ80(&z80, 1);
+        if (bkp_is(z80.PC.W))
+            return BREAKPOINT;
+
+        gettimeofday(&t2, NULL);
+
+        double elapsed = ((t2.tv_sec - t1.tv_sec) * 1000.0) + (t2.tv_usec - t1.tv_usec) / 1000.0;
+        if (elapsed >= ms)
+            return NORMAL;
     }
-    return NORMAL;
 }
 
 EMSCRIPTEN_KEEPALIVE void emulator_keypress(uint8_t chr)

@@ -41,7 +41,7 @@ const RemotePage: React.FC = observer(() => {
     return <Remote
         result={remote.lastResult}
         output={remote.output}
-        projectList={Object.keys(store.debuggingInfo.projects)}
+        projectList={Object.keys(store.debuggingInfo.projects).filter(projectName => projectName !== "BIOS")}
         onAction={onAction}
     />;
 
