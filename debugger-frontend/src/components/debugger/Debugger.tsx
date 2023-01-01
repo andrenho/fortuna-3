@@ -4,14 +4,18 @@ import useStore from "hooks/useStore";
 import {observer} from "mobx-react-lite";
 import React from "react";
 import ProjectSelector from "../code/ProjectSelector";
-import { faSync } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faSync} from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import css from './Debugger.module.scss';
 
 const Debugger : React.FC = observer(() => {
 
     const store = useStore();
     const hasProjectSelected = store.selectedProject;
+
+    let sourceLines = hasProjectSelected ? store.currentProject!.source[store.selectedFile!] : undefined;
+    if (store.running)
+        sourceLines = [{ line: "Running..." }];
 
     return <div className={css.debugger}>
 
@@ -33,7 +37,7 @@ const Debugger : React.FC = observer(() => {
                 pc={store.state.cpu.pc}
                 breakpoints={store.state.breakpoints}
                 swapBreakpoint={n => store.swapBreakpoint(n)}
-                sourceLines={hasProjectSelected ? store.currentProject!.source[store.selectedFile!] : undefined}
+                sourceLines={sourceLines}
             />
         </div>
 

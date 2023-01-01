@@ -33,7 +33,7 @@
 
 .line {
   @include td;
-  min-width: 380px;
+  min-width: 500px;
   max-width: 500px;
   overflow-x: hidden;
   white-space: nowrap;
@@ -42,6 +42,7 @@
 .bytes {
   @include td;
   border-left: 1px black solid;
+  min-width: 120px;
   max-width: 120px;
 }
 
