@@ -3,9 +3,10 @@ import css from "./Box.module.scss"
 
 type BoxProps = {
     title: string,
+    running?: boolean,
 }
 
-const Box : React.FC<PropsWithChildren<BoxProps>> = ({ title, children }) => {
+const Box : React.FC<PropsWithChildren<BoxProps>> = ({ title, running = false, children }) => {
 
     const [open, setOpen] = useState(true);
 
@@ -19,6 +20,7 @@ const Box : React.FC<PropsWithChildren<BoxProps>> = ({ title, children }) => {
             <span className={css.titleText}>{ title }</span>
         </div>
         {open && children}
+        { running && <span className={css.running}>Running...</span> }
     </div>;
 }
 

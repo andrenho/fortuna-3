@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import {ComponentMeta, ComponentStory} from "@storybook/react";
 import Box from "./Box";
 
 export default {
@@ -10,6 +10,7 @@ const Template: ComponentStory<typeof Box> = (args) => <Box {...args}><p>My cont
 
 export const MyBox = Template.bind({});
 MyBox.args = {
-    title: 'My title'
+    title: 'My title',
+    running: false,
 };
 MyBox.storyName = 'Box';
