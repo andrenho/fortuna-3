@@ -135,7 +135,7 @@ export default class FortunaStore {
             return;
 
         this.running = false;
-        this.updateEmulatorState();
+        this.updateState();
 
         console.log("Execution stopped.");
     }
