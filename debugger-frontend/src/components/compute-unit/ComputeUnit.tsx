@@ -1,19 +1,20 @@
 import Box from "components/common/box/Box";
 import Register from "components/common/register/Register";
-import { observer } from "mobx-react-lite";
-import { faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import {observer} from "mobx-react-lite";
+import {faUpRightFromSquare} from '@fortawesome/free-solid-svg-icons'
 import css from "./ComputeUnit.module.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import React from "react";
 
 type ComputeUnitProps = {
     p: number,
     q: number,
     r: number,
+    running?: boolean,
 }
 
-const ComputeUnit : React.FC<ComputeUnitProps> = observer(({ p, q, r }) => {
-    return <Box title="Compute Unit">
+const ComputeUnit : React.FC<ComputeUnitProps> = observer(({ p, q, r, running = false }) => {
+    return <Box title="Compute Unit" running={running}>
         <div className={css.container}>
             <div className={css.row}>
                 <Register name="P" value={p} size={8} className={css.register} />

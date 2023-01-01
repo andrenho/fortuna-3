@@ -12,16 +12,17 @@ type RAMProps = {
     stack: Uint8Array;
     ramBank: number;
     onPageChange: (n: number) => void;
+    running?: boolean;
 }
 
-const RAM : React.FC<RAMProps> = observer(({pc, ramPage, bytes, stack, ramBank, onPageChange}) => {
+const RAM : React.FC<RAMProps> = observer(({pc, ramPage, bytes, stack, ramBank, onPageChange, running = false}) => {
 
     const highlights : Highlights = {};
 
     if (pc >= (ramPage * 256) && pc < ((ramPage + 1) * 256))
         highlights[pc - (ramPage * 256)] = "lightblue";
 
-    return <Box title="RAM">
+    return <Box title="RAM" running={running}>
             <FlatData
                 currentPage={ramPage}
                 totalPages={256}

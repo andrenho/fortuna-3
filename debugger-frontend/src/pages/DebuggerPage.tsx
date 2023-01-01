@@ -85,9 +85,13 @@ const Components : React.FC = observer(() => {
             <Debugger />
             <div className={css.rightSide}>
 
-                { showCpu && <CPU cpu={store.state.cpu} /> }
+                { showCpu && <CPU cpu={store.state.cpu} running={store.running} /> }
 
-                { showCompute && <ComputeUnit p={store.state.computeUnit.p} q={store.state.computeUnit.q} r={store.state.computeUnit.r} /> }
+                { showCompute && <ComputeUnit
+                    p={store.state.computeUnit.p}
+                    q={store.state.computeUnit.q}
+                    r={store.state.computeUnit.r}
+                    running={store.running} /> }
 
                 { showUart && <UART 
                     rows={store.uartTerminal.terminalRows}
@@ -106,6 +110,7 @@ const Components : React.FC = observer(() => {
                     stack={store.state.stack}
                     bytes={store.state.ramPage}
                     onPageChange={n => store.setRamPage(n)}
+                    running={store.running}
                 /> }
 
                 { showLcd && <Lcd line1={store.state.lcd[0]} line2={store.state.lcd[1]} /> }
@@ -117,9 +122,10 @@ const Components : React.FC = observer(() => {
                     hours={store.state.rtc.hours}
                     minutes={store.state.rtc.minutes}
                     seconds={store.state.rtc.seconds}
+                    running={store.running}
                 /> }
 
-                { showEeprom && <Box title="EEPROM">
+                { showEeprom && <Box title="EEPROM" running={store.running}>
                     <FlatData
                         bytes={store.state.eepromPage}
                         currentPage={store.eepromPage}
