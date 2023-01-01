@@ -13,6 +13,7 @@ import FlatData from "components/common/flat-data/FlatData";
 import Lcd from "components/lcd/Lcd";
 import Rtc from "components/rtc/Rtc";
 import Box from "components/common/box/Box";
+import translateKey from "util/translateKey";
 
 const Components : React.FC = observer(() => {
 
@@ -43,11 +44,9 @@ const Components : React.FC = observer(() => {
                 break;
         }
 
-        if (e.key.length === 1) {
-            const c = e.key.charCodeAt(0);
-            if (c >= 32 && c <= 127)
-                store.keypress(c);
-        }
+        const keyCode = translateKey(e.key, e.shiftKey);
+        if (keyCode)
+            store.keypress(keyCode);
     }
 
     const onReset = () => {
