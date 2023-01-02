@@ -2999,6 +2999,9 @@
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/2b2b112c-487a-4aa6-a694-ff8b433b5077"
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
     )
+    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/3128d757-a583-43a9-9f08-db6ca62ff1d5"
+      (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
+    )
     (path "/316d7e67-b310-426f-ba32-eee496dde2e3"
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
     )
@@ -3270,6 +3273,9 @@
       (reference "R?") (unit 1) (value "10k") (footprint "")
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/b831c719-85bd-467c-94ad-650c66352839"
+      (reference "R?") (unit 1) (value "10k") (footprint "")
+    )
+    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/bae8c549-ead7-4c2c-a499-61bf5fb4733e"
       (reference "R?") (unit 1) (value "10k") (footprint "")
     )
     (path "/cf974693-3418-4d66-8617-9764589016d2"
