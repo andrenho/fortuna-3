@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-void remote_init();
+void remote_init(void);
 
 bool remote_active(void);
 void remote_execute(void);

@@ -39,13 +39,13 @@ class FortunaSerialConnection:
         if len(c) < 1:
             raise Exception("No response received")
         logging.info('Response received: ' + str(int(c[0])))
-        if (c[0] == 1):
+        if (c[0] == b'g'):
             raise Exception("Generic error while communicating");
-        elif (c[0] == 2):
+        elif (c[0] == b'l'):
             raise Exception("Error: file too large")
-        elif (c[0] == 3):
+        elif (c[0] == b's'):
             raise Exception("Error: SDCard access error")
-        elif (c[0] == 4):
+        elif (c[0] == b'i'):
             raise Exception("Error: invalid command")
         elif (c[0] > 0):
             raise Exception("Unknown error: " + str(int(c[0])))
@@ -58,7 +58,6 @@ class FortunaSerialConnection:
 
     def deactivate_remote(self):
         GPIO.setmode(GPIO.BCM)
-        GPIO.output(REMOTE_GPIO, GPIO.HIGH)
         GPIO.setup(REMOTE_GPIO, GPIO.IN)
         GPIO.cleanup()
 
@@ -108,7 +107,7 @@ class FortunaManager:
     def format_sdcard(self):
         with FortunaSerialConnection(serial_port, timeout=120) as conn:
             conn.activate_remote()
-            conn.send_bytes(b'\x02')
+            conn.send_bytes(b'F')
             conn.check_response()
             conn.deactivate_remote()
         return b'SDCard formatted successfully.'
@@ -116,7 +115,7 @@ class FortunaManager:
     def create_file(self, filename, data):
         with FortunaSerialConnection(serial_port, timeout=10) as conn:
             conn.activate_remote()
-            conn.send_bytes(b'\x03')
+            conn.send_bytes(b'C')
             conn.send_bytes(len(filename).to_bytes(1, 'little'))
             conn.send_bytes(len(data).to_bytes(4, 'little'))
             conn.send_bytes(bytes(filename, 'utf-8'))
@@ -178,6 +177,11 @@ if __name__ == '__main__':
         print('Usage: ' + sys.argv[0] + ' SERIAL_PORT', file=sys.stderr)
         sys.exit(1)
     serial_port = sys.argv[1]
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(REMOTE_GPIO, GPIO.IN)
+    GPIO.setup(RESET_GPIO, GPIO.IN)
+    GPIO.cleanup()
 
     logging.basicConfig(level=logging.INFO)
     httpd = HTTPServer(('', PORT), RemoteServer)

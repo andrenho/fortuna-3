@@ -165,7 +165,7 @@ uint8_t io_read(uint8_t addr)
         // serial
 
         case S_GET:             return uart_getchar_nonblocking();
-        case S_GET_BLK:         return uart_getchar_blocking();
+        // case S_GET_BLK:         return uart_getchar_blocking();  // TODO
 
         // RTC
 

@@ -11,15 +11,15 @@
 #include "dev/z80.h"
 #include "io/iofs.h"
 
-#define CMD_FORMAT_SD   0x2
-#define CMD_CREATE_FILE 0x3
-#define CMD_EXIT        0xff
+#define CMD_FORMAT_SD   'F'
+#define CMD_CREATE_FILE 'C'
+#define CMD_EXIT        'X'
 
 #define OK                 0x0
-#define ERR_GENERIC        0x1
-#define ERR_FILE_TOO_LARGE 0x2
-#define ERR_SD_ERROR       0x3
-#define ERR_INVALID_CMD    0x4
+#define ERR_GENERIC        'g'
+#define ERR_FILE_TOO_LARGE 'l'
+#define ERR_SD_ERROR       's'
+#define ERR_INVALID_CMD    'i'
 
 #define BUF_SZ 512U
 
@@ -30,7 +30,7 @@
     _a < _b ? _a : _b;       \
 })
 
-void remote_init()
+void remote_init(void)
 {
     DDRH &= ~(1 << PINH5);
 }
@@ -107,11 +107,11 @@ void remote_execute(void)
     lcd_print_line_P(0, PSTR("Waiting"));
     lcd_print_line_P(1, PSTR("remote..."));
 
-    for (;;);
-
     while (true) {
         uint8_t c = getchar();
         switch (c) {
+            case 0:
+                break;
             case CMD_FORMAT_SD:
                 format_sdcard();
                 break;
