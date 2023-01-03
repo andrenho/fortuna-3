@@ -1,6 +1,11 @@
 #ifndef REMOTE_H_
 #define REMOTE_H_
 
-void remote(void);
+#include <stdbool.h>
+
+void remote_init();
+
+bool remote_active(void);
+void remote_execute(void);
 
 #endif

@@ -14,6 +14,7 @@ import serial
 
 PORT = 8026
 RESET_GPIO = 8
+REMOTE_GPIO = 3
 COMPUTE_UNIT_DIR = '../compute-unit'
 serial_port = ''
 
@@ -50,10 +51,16 @@ class FortunaSerialConnection:
             raise Exception("Unknown error: " + str(int(c[0])))
 
     def activate_remote(self):
-        self.ser.write(b'\xfe')
-        time.sleep(0.001)
-        self.ser.write(b'\xf0')
-        time.sleep(0.001)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(REMOTE_GPIO, GPIO.OUT)
+        GPIO.output(REMOTE_GPIO, GPIO.LOW)
+        time.sleep(0.5)
+
+    def deactivate_remote(self):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.output(REMOTE_GPIO, GPIO.HIGH)
+        GPIO.setup(REMOTE_GPIO, GPIO.IN)
+        GPIO.cleanup()
 
     def send_bytes(self, bytes):
         for byte in bytes:
@@ -103,6 +110,7 @@ class FortunaManager:
             conn.activate_remote()
             conn.send_bytes(b'\x02')
             conn.check_response()
+            conn.deactivate_remote()
         return b'SDCard formatted successfully.'
 
     def create_file(self, filename, data):
@@ -114,6 +122,7 @@ class FortunaManager:
             conn.send_bytes(bytes(filename, 'utf-8'))
             conn.send_bytes(data)
             conn.check_response()
+            conn.deactivate_remote()
         return b'File ' + bytes(filename, 'utf-8') + b'created successfully.'
 
 
