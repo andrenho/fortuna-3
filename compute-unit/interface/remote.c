@@ -8,6 +8,7 @@
 
 #include "dev/lcd.h"
 #include "dev/ram.h"
+#include "dev/uart.h"
 #include "dev/z80.h"
 #include "io/iofs.h"
 
@@ -29,6 +30,12 @@
     __typeof__ (b) _b = (b); \
     _a < _b ? _a : _b;       \
 })
+
+static uint8_t getch(void)
+{
+    loop_until_bit_is_set(UCSR0A, RXC0);
+    return UDR0;
+}
 
 void remote_init(void)
 {
@@ -61,16 +68,17 @@ static void format_sdcard(void)
 void create_file(void)
 {
     // get filename size, and file size
-    uint8_t filename_sz = getchar();
-    uint32_t file_sz = getchar();
-    file_sz |= ((uint32_t) getchar()) << 8;
-    file_sz |= ((uint32_t) getchar()) << 16;
-    file_sz |= ((uint32_t) getchar()) << 24;
+    uint8_t filename_sz = getch();
+
+    uint32_t file_sz = getch();
+    file_sz |= ((uint32_t) getch()) << 8;
+    file_sz |= ((uint32_t) getch()) << 16;
+    file_sz |= ((uint32_t) getch()) << 24;
 
     // get filename
     char filename[15] = { 0 };
     for (size_t i = 0; i < filename_sz; ++i)
-        filename[i] = getchar();
+        filename[i] = getch();
 
     // show info on LCD
     lcd_clear();
@@ -85,7 +93,7 @@ void create_file(void)
     FR(f_open(&fp, filename, FA_CREATE_ALWAYS | FA_WRITE))
     while (file_sz > 0) {
         for (size_t i = 0; i < min(BUF_SZ, file_sz); ++i)
-            buf[i] = getchar();
+            buf[i] = getch();
 
         UINT bytes_written;
         FR(f_write(&fp, buf, min(BUF_SZ, file_sz), &bytes_written))
@@ -94,12 +102,13 @@ void create_file(void)
     FR(f_close(&fp))
 #undef FR
 
-    lcd_print_line_P(1, PSTR("complete."));
+    lcd_print_line_P(0, PSTR("Created file"));
     putchar(OK);
 }
 
 void remote_execute(void)
 {
+    UCSR0B &= ~(1<<RXCIE0);   // disable UART0 interrupt
     z80_shutdown();
     _delay_ms(1);
 
@@ -108,10 +117,8 @@ void remote_execute(void)
     lcd_print_line_P(1, PSTR("remote..."));
 
     while (true) {
-        uint8_t c = getchar();
+        uint8_t c = getch();
         switch (c) {
-            case 0:
-                break;
             case CMD_FORMAT_SD:
                 format_sdcard();
                 break;

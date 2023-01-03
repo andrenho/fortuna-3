@@ -38,7 +38,8 @@ void uart_printchar(uint8_t c)
 
 uint8_t uart_getchar_blocking(void)
 {
-    for (;;);  // TODO
+    for (;;); // TODO
+    return 0;
 }
 
 uint8_t uart_getchar_nonblocking(void)

@@ -62,7 +62,9 @@ class FortunaSerialConnection:
         GPIO.cleanup()
 
     def send_bytes(self, bts):
-        self.ser.write(bts)
+        for b in bts:
+            self.ser.write(b.to_bytes(1, 'big'))
+            time.sleep(0.01)
 
 class FortunaManager:
 
