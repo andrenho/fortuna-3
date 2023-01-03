@@ -18,7 +18,7 @@ const REMOTE_IP_KEY = "remote-ip";
 
 const Remote : React.FC<RemoteProps> = observer(({ result = RemoteResult.NotStarted, projectList, output, onAction }) => {
 
-    const [selectedProject, setSelectedProject] = useState<string>();
+    const [selectedProject, setSelectedProject] = useState<string>(projectList[0]);
     const [remoteIp, setRemoteIp] = useState(window.localStorage.getItem(REMOTE_IP_KEY) || "");
 
     const preClass = () : string => {
@@ -55,7 +55,7 @@ const Remote : React.FC<RemoteProps> = observer(({ result = RemoteResult.NotStar
 
         <div className={css.buttonRow}>
             SDCard:
-            <select value={selectedProject} onChange={e => setSelectedProject(e.target.value)}>
+            <select value={selectedProject} onChange={e => { setSelectedProject(e.target.value) }}>
                 { projectList.map(f => <option key={f} value={f}>{ f }</option>) }
             </select>
             <button disabled={result === RemoteResult.Executing} onClick={() => onButton(RemoteAction.UploadSingleProject)}>Write selected project to SDCard</button>
