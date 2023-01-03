@@ -54,16 +54,15 @@ class FortunaSerialConnection:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(REMOTE_GPIO, GPIO.OUT)
         GPIO.output(REMOTE_GPIO, GPIO.LOW)
-        time.sleep(0.5)
+        time.sleep(0.2)
 
     def deactivate_remote(self):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(REMOTE_GPIO, GPIO.IN)
         GPIO.cleanup()
 
-    def send_bytes(self, bytes):
-        for byte in bytes:
-            self.ser.write(byte)
+    def send_bytes(self, bts):
+        self.ser.write(bts)
 
 class FortunaManager:
 
