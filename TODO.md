@@ -1,0 +1,25 @@
+- Emulator infra
+  - [ ] Github actions for building jar
+- Computer
+  - Box
+    - [ ] Buy stuff
+    - [ ] Build it
+- Fortuna3 software
+  - [ ] Write BIOS
+  - [ ] Write shell
+  - [ ] Write OS
+  - [ ] Write utilities
+- Compute unit
+  - [ ] SDCard raw interface (?)
+  - [ ] Serial input (blocking) + interrupt
+  - [ ] Timers + interrupt
+  - [ ] "Hard" I/O (strsub, `compare_16`, `compare_32`)
+- [ ] Raspberry Pi
+  - [ ] Install OS
+  - [ ] Fast OS boot
+  - [ ] Graphical interface (serial)
+  - Second serial
+    - [ ] Solder new wires
+    - [ ] Create protocol
+  - [ ] Graphics
+  - [ ] Audio
