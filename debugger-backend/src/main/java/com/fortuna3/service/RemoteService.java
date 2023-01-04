@@ -27,8 +27,7 @@ public class RemoteService {
     }
     public String uploadAllProjects(String remoteIp) {
         var sb = new StringBuilder();
-        sb.append(remoteRequest(remoteIp, "format-sdcard"));
-        for (var projectName: compilerService.getProjectNames())
+        for (var projectName: compilerService.getProjectNames().stream().filter(name -> !name.equals("BIOS")).toList())
             sb.append(remoteRequest(remoteIp, "create-file/" + projectName, compilerService.getProjectBinary(projectName)));
         return sb.toString();
     }
