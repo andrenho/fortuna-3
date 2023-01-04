@@ -16,6 +16,7 @@
 #include "dev/uart.h"
 #include "dev/z80.h"
 #include "dev/random.h"
+#include "interface/remote.h"
 
 #if DEBUG_RESET_REASON
 static void debug_reset_reason(void)
@@ -200,6 +201,7 @@ void initialize(void)
     ram_init();
     z80_init();
     lcd_init();
+    remote_init();
 
 #if INCLUDE_SDCARD
     sdcard_init();

@@ -23,7 +23,7 @@ typedef struct {
     bool iorq    : 1;
 } Events;
 
-volatile Events events = { false, false, false, false };
+volatile Events events = { false, false, false };
 
 static void setup_interrupts(void)
 {
@@ -85,11 +85,9 @@ int main(void)
             sei();
         }
 
-        if (uart_entered_remote()) {
-            cli();
-            remote();
-            z80_reset();
-            sei();
+        if (remote_active()) {
+            remote_execute();
+            for (;;) {}
         }
     }
 

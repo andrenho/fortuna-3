@@ -8,18 +8,19 @@
 
 #include "dev/lcd.h"
 #include "dev/ram.h"
+#include "dev/uart.h"
 #include "dev/z80.h"
 #include "io/iofs.h"
 
-#define CMD_FORMAT_SD   0x2
-#define CMD_CREATE_FILE 0x3
-#define CMD_EXIT        0xff
+#define CMD_FORMAT_SD   'F'
+#define CMD_CREATE_FILE 'C'
+#define CMD_EXIT        'X'
 
 #define OK                 0x0
-#define ERR_GENERIC        0x1
-#define ERR_FILE_TOO_LARGE 0x2
-#define ERR_SD_ERROR       0x3
-#define ERR_INVALID_CMD    0x4
+#define ERR_GENERIC        'g'
+#define ERR_FILE_TOO_LARGE 'l'
+#define ERR_SD_ERROR       's'
+#define ERR_INVALID_CMD    'i'
 
 #define BUF_SZ 512U
 
@@ -30,25 +31,20 @@
     _a < _b ? _a : _b;       \
 })
 
-static void upload_to_ram(void)
+static uint8_t getch(void)
 {
-    uint8_t bank = getchar();
+    loop_until_bit_is_set(UCSR0A, RXC0);
+    return UDR0;
+}
 
-    uint16_t location = getchar();
-    location |= ((uint16_t) getchar()) << 8;
-    uint16_t sz = getchar();
-    sz |= ((uint16_t) getchar()) << 8;
+void remote_init(void)
+{
+    DDRH &= ~(1 << PINH5);
+}
 
-    if (((uint32_t) sz + location) > ((uint32_t) 64 * 1024)) {
-        putchar(ERR_FILE_TOO_LARGE);
-        return;
-    }
-
-    ram_set_bank(bank);
-    for (size_t i = 0; i < sz; ++i)
-        ram_set_byte(i + location, getchar());
-
-    putchar(OK);
+bool remote_active(void)
+{
+    return !(PINH & (1 << PINH5));
 }
 
 static void format_sdcard(void)
@@ -72,16 +68,17 @@ static void format_sdcard(void)
 void create_file(void)
 {
     // get filename size, and file size
-    uint8_t filename_sz = getchar();
-    uint32_t file_sz = getchar();
-    file_sz |= ((uint32_t) getchar()) << 8;
-    file_sz |= ((uint32_t) getchar()) << 16;
-    file_sz |= ((uint32_t) getchar()) << 24;
+    uint8_t filename_sz = getch();
+
+    uint32_t file_sz = getch();
+    file_sz |= ((uint32_t) getch()) << 8;
+    file_sz |= ((uint32_t) getch()) << 16;
+    file_sz |= ((uint32_t) getch()) << 24;
 
     // get filename
     char filename[15] = { 0 };
     for (size_t i = 0; i < filename_sz; ++i)
-        filename[i] = getchar();
+        filename[i] = getch();
 
     // show info on LCD
     lcd_clear();
@@ -89,14 +86,17 @@ void create_file(void)
     lcd_print_line(1, filename);
 
     // receive file and write to SD
+    FATFS fs;
     FIL fp;
     uint8_t buf[BUF_SZ];
 #define FR(cmd) { FRESULT __r; if ((__r = (cmd)) != FR_OK) { putchar(__r); return; } }
     FR(f_mount(NULL, "0:", 0))
+    FR(f_mount(&fs, "0:", 0))
     FR(f_open(&fp, filename, FA_CREATE_ALWAYS | FA_WRITE))
     while (file_sz > 0) {
-        for (size_t i = 0; i < min(BUF_SZ, file_sz); ++i)
-            buf[i] = getchar();
+        for (size_t i = 0; i < min(BUF_SZ, file_sz); ++i) {
+            buf[i] = getch();
+        }
 
         UINT bytes_written;
         FR(f_write(&fp, buf, min(BUF_SZ, file_sz), &bytes_written))
@@ -105,17 +105,22 @@ void create_file(void)
     FR(f_close(&fp))
 #undef FR
 
-    lcd_print_line_P(1, PSTR("complete."));
+    lcd_print_line_P(0, PSTR("Created file"));
     putchar(OK);
 }
 
-void remote(void)
+void remote_execute(void)
 {
+    UCSR0B &= ~(1<<RXCIE0);   // disable UART0 interrupt
     z80_shutdown();
     _delay_ms(1);
 
+    lcd_clear();
+    lcd_print_line_P(0, PSTR("Waiting"));
+    lcd_print_line_P(1, PSTR("remote..."));
+
     while (true) {
-        uint8_t c = getchar();
+        uint8_t c = getch();
         switch (c) {
             case CMD_FORMAT_SD:
                 format_sdcard();

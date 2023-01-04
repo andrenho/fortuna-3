@@ -14,6 +14,7 @@ import serial
 
 PORT = 8026
 RESET_GPIO = 8
+REMOTE_GPIO = 3
 COMPUTE_UNIT_DIR = '../compute-unit'
 serial_port = ''
 
@@ -38,26 +39,32 @@ class FortunaSerialConnection:
         if len(c) < 1:
             raise Exception("No response received")
         logging.info('Response received: ' + str(int(c[0])))
-        if (c[0] == 1):
+        if (c[0] == b'g'):
             raise Exception("Generic error while communicating");
-        elif (c[0] == 2):
+        elif (c[0] == b'l'):
             raise Exception("Error: file too large")
-        elif (c[0] == 3):
+        elif (c[0] == b's'):
             raise Exception("Error: SDCard access error")
-        elif (c[0] == 4):
+        elif (c[0] == b'i'):
             raise Exception("Error: invalid command")
         elif (c[0] > 0):
             raise Exception("Unknown error: " + str(int(c[0])))
 
     def activate_remote(self):
-        self.ser.write(b'\xfe')
-        time.sleep(0.001)
-        self.ser.write(b'\xf0')
-        time.sleep(0.001)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(REMOTE_GPIO, GPIO.OUT)
+        GPIO.output(REMOTE_GPIO, GPIO.LOW)
+        time.sleep(0.2)
 
-    def send_bytes(self, bytes):
-        for byte in bytes:
-            self.ser.write(byte)
+    def deactivate_remote(self):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(REMOTE_GPIO, GPIO.IN)
+        GPIO.cleanup()
+
+    def send_bytes(self, bts):
+        for b in bts:
+            self.ser.write(b.to_bytes(1, 'big'))
+            time.sleep(0.01)
 
 class FortunaManager:
 
@@ -101,20 +108,22 @@ class FortunaManager:
     def format_sdcard(self):
         with FortunaSerialConnection(serial_port, timeout=120) as conn:
             conn.activate_remote()
-            conn.send_bytes(b'\x02')
+            conn.send_bytes(b'F')
             conn.check_response()
+            conn.deactivate_remote()
         return b'SDCard formatted successfully.'
 
     def create_file(self, filename, data):
         with FortunaSerialConnection(serial_port, timeout=10) as conn:
             conn.activate_remote()
-            conn.send_bytes(b'\x03')
+            conn.send_bytes(b'C')
             conn.send_bytes(len(filename).to_bytes(1, 'little'))
             conn.send_bytes(len(data).to_bytes(4, 'little'))
             conn.send_bytes(bytes(filename, 'utf-8'))
             conn.send_bytes(data)
             conn.check_response()
-        return b'File ' + bytes(filename, 'utf-8') + b'created successfully.'
+            conn.deactivate_remote()
+        return b'File ' + bytes(filename, 'utf-8') + b' created successfully.'
 
 
 class RemoteServer(BaseHTTPRequestHandler):
@@ -169,6 +178,11 @@ if __name__ == '__main__':
         print('Usage: ' + sys.argv[0] + ' SERIAL_PORT', file=sys.stderr)
         sys.exit(1)
     serial_port = sys.argv[1]
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(REMOTE_GPIO, GPIO.IN)
+    GPIO.setup(RESET_GPIO, GPIO.IN)
+    GPIO.cleanup()
 
     logging.basicConfig(level=logging.INFO)
     httpd = HTTPServer(('', PORT), RemoteServer)
