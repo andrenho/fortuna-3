@@ -86,14 +86,17 @@ void create_file(void)
     lcd_print_line(1, filename);
 
     // receive file and write to SD
+    FATFS fs;
     FIL fp;
     uint8_t buf[BUF_SZ];
 #define FR(cmd) { FRESULT __r; if ((__r = (cmd)) != FR_OK) { putchar(__r); return; } }
     FR(f_mount(NULL, "0:", 0))
+    FR(f_mount(&fs, "0:", 0))
     FR(f_open(&fp, filename, FA_CREATE_ALWAYS | FA_WRITE))
     while (file_sz > 0) {
-        for (size_t i = 0; i < min(BUF_SZ, file_sz); ++i)
+        for (size_t i = 0; i < min(BUF_SZ, file_sz); ++i) {
             buf[i] = getch();
+        }
 
         UINT bytes_written;
         FR(f_write(&fp, buf, min(BUF_SZ, file_sz), &bytes_written))

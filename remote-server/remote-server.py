@@ -123,7 +123,7 @@ class FortunaManager:
             conn.send_bytes(data)
             conn.check_response()
             conn.deactivate_remote()
-        return b'File ' + bytes(filename, 'utf-8') + b'created successfully.'
+        return b'File ' + bytes(filename, 'utf-8') + b' created successfully.'
 
 
 class RemoteServer(BaseHTTPRequestHandler):
