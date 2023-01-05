@@ -4,6 +4,8 @@
   - Box
     - [x] Buy stuff
     - [ ] Build it
+- Bugs:
+  - [ ] Check z80 project files subdirectory when running from jar
 - Fortuna3 software
   - [ ] Write BIOS
   - [ ] Write shell

@@ -48,6 +48,9 @@ public class ProjectFileService {
     }
 
     public String getProjectFilePath() {
-        return new File(projectPath).getParent();
+        String parent = new File(projectPath).getParent();
+        if (parent == null)
+            parent = ".";
+        return parent;
     }
 }
