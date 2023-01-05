@@ -5,11 +5,11 @@ endif
 include doc.mk
 
 check-for-java:
-	@type -P mvn || { echo "Could not find mvn in path"; exit 1; }
-	@type -P java || { echo "Could not find java in path"; exit 1; }
+	@type mvn || { echo "Could not find mvn in path"; exit 1; }
+	@type java || { echo "Could not find java in path"; exit 1; }
 
 check-for-npm:
-	@type -P npm || { echo "Could not find npm in path"; exit 1; }
+	@type npm || { echo "Could not find npm in path"; exit 1; }
 
 build-emulator:
 	make -f emulator-wasm
