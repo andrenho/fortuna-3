@@ -1,8 +1,8 @@
 - Emulator infra
-  - [ ] Github actions for building jar
+  - [x] Github actions for building jar
 - Computer
   - Box
-    - [ ] Buy stuff
+    - [x] Buy stuff
     - [ ] Build it
 - Fortuna3 software
   - [ ] Write BIOS
