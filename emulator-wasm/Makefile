@@ -15,7 +15,7 @@ io/%.c:
 	cp ${COMPUTE_UNIT_DIR}/$@ $@
 
 obj/%.o: %.c check-for-emcc
-	@mkdir -p $@
+	@mkdir -p `dirname $@`
 	emcc ${CFLAGS} -c $< -o $@
 
 fortuna.wasm: ${OBJ}

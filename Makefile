@@ -18,16 +18,17 @@ build-backend: check-for-java build-emulator
 	cd debugger-backend && mvn install && cd ..
 
 build-frontend: check-for-npm install-emulator
-	cd debugger-frontend && npm run build && cd ..
+	cd debugger-frontend && npm install && npm run build && cd ..
 
 build-jar: build-frontend
+	mkdir -p debugger-backend/src/main/resources/static
 	cp -R debugger-frontend/build/* debugger-backend/src/main/resources/static
 	cd debugger-backend && mvn clean install && cd ..
 	cp debugger-backend/target/fortuna-3-*.jar .
 	@echo The debugger can now be run with 'java -DprojectPath=PATH_TO_PROJECT_FILE -jar fortuna-3-*.jar' and can be accessed at 'http://localhost:8025'.
 
 install-emulator: build-emulator
-	mkdir debugger-frontend/public/fortuna
+	mkdir -p debugger-frontend/public/fortuna
 	cp emulator-wasm/fortuna.js emulator-wasm/fortuna.wasm debugger-frontend/public/fortuna
 
 run-frontend: install-emulator
@@ -40,7 +41,7 @@ run-backend: build-backend
 	cd debugger-backend && java -DprojectPath="sample-project/my-project.json" -jar ./target/fortuna-3-0.0.1-SNAPSHOT.jar && cd ..
 
 clean-emulator:
-	make -f emulator-wasm clean
+	make -C emulator-wasm clean
 
 clean-backend:
 	rm -rf debugger-backend/src/main/resources/static

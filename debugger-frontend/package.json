@@ -12,7 +12,11 @@
     "mobx-react-lite": "^3.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tsconfig-paths-webpack-plugin": "^4.0.0"
+    "tsconfig-paths-webpack-plugin": "^4.0.0",
+    "autoprefixer": "^9.8.6",
+    "postcss": "^8.0.0",
+    "postcss-cli": "^8.1.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^6.5.12",
