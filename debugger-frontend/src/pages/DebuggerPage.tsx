@@ -57,7 +57,7 @@ const Components : React.FC = observer(() => {
     useEffect(() => {
         document.addEventListener("keydown", onKeyDown);
         return () => document.removeEventListener("keydown", onKeyDown);
-    }, []);
+    }, []);   // eslint-disable-line react-hooks/exhaustive-deps
 
     return <>
         <div className={css.toolbar}>
