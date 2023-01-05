@@ -1,7 +1,8 @@
 name: Build
 on: 
   push:
-    branches: [master]
+    tags:
+      - 'v*'
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -21,4 +22,5 @@ jobs:
           make build-jar
       - uses: ncipollo/release-action@v1
         with:
+          allowUpdates: true
           artifacts: "debugger-backend/target/fortuna-3-*.jar"
