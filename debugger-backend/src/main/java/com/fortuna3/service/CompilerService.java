@@ -6,6 +6,7 @@ import com.fortuna3.dto.output.SourceProjectDTO;
 import com.fortuna3.mapper.CompilerMapper;
 import com.fortuna3.mapper.OutputMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@Log
 @Service
 @RequiredArgsConstructor
 public class CompilerService {
@@ -71,6 +73,7 @@ public class CompilerService {
                 compilerExecutableService.getCompilerPath() +
                 " -chklabels -L listing.txt -Llo -nosym -x -Fbin -o rom.bin -I" + compilerExecutableService.getIncludeFilePath() + " " +
                 mainSourceFile;
+        // log.info("Compiling with the following command line: " + commandLine);
 
         try {
             Process process = Runtime.getRuntime().exec(commandLine);
@@ -97,9 +100,11 @@ public class CompilerService {
                         .rom(rom)
                         .build();
             } else {
+                var output = getOutput(process.getErrorStream());
+                // log.warning("Compilation failed: " + output);
                 return RawCompilerOutputDTO.builder()
                         .mainSourceFile(Path.of(mainSourceFile).getFileName().toString())
-                        .compilerError(getOutput(process.getErrorStream()))
+                        .compilerError(output)
                         .status(status)
                         .build();
             }

@@ -1,0 +1,12 @@
+{
+  "sdcard": {
+    "sizeInMB": 16
+  },
+  "biosSource": "bios/bios.z80",
+  "projects": {
+    "kernel": {
+      "source": "kernel/shell.z80",
+      "address": 0
+    }
+  }
+}
