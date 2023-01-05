@@ -1,8 +1,7 @@
 name: Build
 on: 
   push:
-    tags:
-      - 'v*'
+    branches: [master]
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -23,4 +22,5 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "debugger-backend/target/fortuna-3-*.jar"
+          artifacts: "LICENSE,debugger-backend/target/fortuna-3-*.jar"
+          tag: latest
