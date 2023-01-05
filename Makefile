@@ -12,7 +12,7 @@ check-for-npm:
 	@type npm || { echo "Could not find npm in path"; exit 1; }
 
 build-emulator:
-	make -f emulator-wasm
+	make -C emulator-wasm
 
 build-backend: check-for-java build-emulator
 	cd debugger-backend && mvn install && cd ..
