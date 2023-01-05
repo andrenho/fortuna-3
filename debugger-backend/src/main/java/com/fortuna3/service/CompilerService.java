@@ -73,7 +73,7 @@ public class CompilerService {
                 compilerExecutableService.getCompilerPath() +
                 " -chklabels -L listing.txt -Llo -nosym -x -Fbin -o rom.bin -I" + compilerExecutableService.getIncludeFilePath() + " " +
                 mainSourceFile;
-        log.info("Compiling with the following command line: " + commandLine);
+        // log.info("Compiling with the following command line: " + commandLine);
 
         try {
             Process process = Runtime.getRuntime().exec(commandLine);
@@ -101,7 +101,7 @@ public class CompilerService {
                         .build();
             } else {
                 var output = getOutput(process.getErrorStream());
-                log.warning("Compilation failed: " + output);
+                // log.warning("Compilation failed: " + output);
                 return RawCompilerOutputDTO.builder()
                         .mainSourceFile(Path.of(mainSourceFile).getFileName().toString())
                         .compilerError(output)
