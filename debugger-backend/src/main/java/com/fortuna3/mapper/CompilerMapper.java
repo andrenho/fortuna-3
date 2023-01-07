@@ -96,10 +96,15 @@ public class CompilerMapper {
         if (byteArray.length == 0)
             byteArray = null;
 
+        Boolean macro = null;
+        if (line.length() > 31 && line.charAt(31) == 'M')
+            macro = true;
+
         return SourceLineDTO.builder()
                 .address(address)
                 .line(newLine)
                 .byteArray(byteArray)
+                .macro(macro)
                 .build();
     }
 

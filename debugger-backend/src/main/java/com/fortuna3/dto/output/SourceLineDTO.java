@@ -10,7 +10,7 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-public record SourceLineDTO(Integer address, String line, @JsonIgnore byte[] byteArray) {
+public record SourceLineDTO(Integer address, String line, @JsonIgnore byte[] byteArray, Boolean macro) {
 
     @JsonProperty("bytes")
     public List<Integer> bytes() {

@@ -1,6 +1,6 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { useState } from "react";
-import { SourceLine } from "store/types/debuggingInfo";
+import {ComponentMeta, ComponentStory} from "@storybook/react";
+import {useState} from "react";
+import {SourceLine} from "store/types/debuggingInfo";
 import Code from "./Code";
 
 export default {
@@ -18,6 +18,8 @@ const sourceLines : SourceLine[] = [
     { line: 'start:' },
     { line: '\tnop\t; do nothing', address: 0, bytes:[0x0] },
     { line: '  \tjp start', address: 1, bytes:[0xc3, 0x0, 0x0] },
+    { line: ';' },
+    { line: '  my_macro', address: 3, macro: true },
 ];
 
 const Template: ComponentStory<typeof Code> = (args) => {

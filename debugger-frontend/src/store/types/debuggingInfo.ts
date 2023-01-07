@@ -2,6 +2,7 @@ export interface SourceLine {
     line: string,
     address?: number,
     bytes?: number[],
+    macro?: boolean,
 }
 
 export type Source = {[key: string]: SourceLine[]};
