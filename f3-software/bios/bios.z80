@@ -2,31 +2,6 @@
 
 	org 0xf800
 	
-	; check if KERNEL exists
-
-	set_Pa	kernel_filename
-	out	(FS_STAT), a
-	in	a, (Ra0)
-	jp	z, load_kernel
-
-	set_Pa	kernel_not_found
-	out	(S_PRINT_Z), a
-	jp	stop
-
-	; load KERNEL into memory
-load_kernel:
-	set_Pa0	0
-	set_Qa	kernel_filename
-	out	(FS_OPEN_R), a
-
-stop:	jp	stop
-
-kernel_filename:
-	asciiz	"KERNEL"
-
-kernel_not_found:
-	asciiz	"KERNEL not found!"
-
 ; 
 ; LOAD KERNEL
 ; 
@@ -48,6 +23,14 @@ load_kernel:
 	set_Pa0	0
 	set_Qa	kernel_filename
 	out	(FS_OPEN_R), a
+
+	set_Pb  0x800
+	set_Qa  0        ; initial memory address
+	set_Qb0 0
+	out	(FS_READ), a
+
+	out	(FS_CLOSEDIR), a
+	jp	0
 
 stop:	jp	stop
 
