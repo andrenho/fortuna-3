@@ -20,8 +20,8 @@ export interface FortunaApi {
     keypress: (chr: number) => void;
     maxPrintedChars: () => number;
     fsDir: (dir: string, numRecords: number, buf: number) => number;
-    fsChdirUp: (dir: string, maxSize: number, buf: number) => number;
     fsFilePage: (dir: string, filename: string, page: number, buf: number) => number;
+    fsCreateFile: (filename: string, buf: Uint8Array, sz: number) => number;
 }
 
 export function loadApiFunctions(module: FortunaModule) : FortunaApi {
@@ -38,7 +38,7 @@ export function loadApiFunctions(module: FortunaModule) : FortunaApi {
         keypress: module.cwrap("emulator_keypress", null, ["number"]),
         maxPrintedChars: module.cwrap("max_printed_chars", "number", []),
         fsDir: module.cwrap("fs_dir", "number", ["string", "number", "number"]),
-        fsChdirUp: module.cwrap("fs_chdir_up", "number", ["string", "number", "number"]),
         fsFilePage: module.cwrap("fs_file_page", "number", ["string", "string", "number", "number"]),
+        fsCreateFile: module.cwrap("fs_create_file", "number", ["string", "array", "number"]),
     };
 }

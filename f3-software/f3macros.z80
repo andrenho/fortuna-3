@@ -1,9 +1,71 @@
-	macro PRINT_Z, str
-		ld	a, \str & 0xff
+	include fortuna3.z80
+
+	macro set_Pa0, value
+		ld	a, \value
 		out	(Pa0), a
-		ld	a, \str / 0x100
+	endmacro
+
+	macro set_Pa1, value
+		ld	a, \value
 		out	(Pa1), a
-		out	(S_PRINT_Z), a
+	endmacro
+
+	macro set_Pb0, value
+		ld	a, \value
+		out	(Pb0), a
+	endmacro
+
+	macro set_Pb1, value
+		ld	a, \value
+		out	(Pb1), a
+	endmacro
+
+	macro set_Qa0, value
+		ld	a, \value
+		out	(Qa0), a
+	endmacro
+
+	macro set_Qa1, value
+		ld	a, \value
+		out	(Qa1), a
+	endmacro
+
+	macro set_Qb0, value
+		ld	a, \value
+		out	(Qb0), a
+	endmacro
+
+	macro set_Qb1, value
+		ld	a, \value
+		out	(Qb1), a
+	endmacro
+
+	macro set_Pa, value
+		ld	a, \value & 0xff
+		out	(Pa0), a
+		ld	a, \value / 0x100
+		out	(Pa1), a
+	endmacro
+
+	macro set_Pb, value
+		ld	a, \value & 0xff
+		out	(Pb0), a
+		ld	a, \value / 0x100
+		out	(Pb1), a
+	endmacro
+
+	macro set_Qa, value
+		ld	a, \value & 0xff
+		out	(Qa0), a
+		ld	a, \value / 0x100
+		out	(Qa1), a
+	endmacro
+
+	macro set_Qb, value
+		ld	a, \value & 0xff
+		out	(Qb0), a
+		ld	a, \value / 0x100
+		out	(Qb1), a
 	endmacro
 
 ; vim:ts=8:sts=8:sw=8:noexpandtab
