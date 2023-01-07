@@ -31,14 +31,18 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
         return newText;
     };
 
-    const parseCode = (line: string) : JSX.Element => {
+    const parseCode = (line: string, macro: boolean) : JSX.Element => {
         line = replaceTabs(line);
         if (line === "")
             return <span>&nbsp;</span>;
         let [code, comment] = line.split(";");
-        if (comment)
+        if (line.includes(";"))
             comment = `;${comment}`;
-        return <><span>{ code }</span><span style={{color:"forestgreen"}}>{ comment }</span></>;
+        return <>
+            { !macro && <span>{ code }</span> }
+            { macro && <span className={css.macro}>{ code }</span> }
+            { comment && <span className={css.comment}>{ comment }</span> }
+        </>;
     };
 
     return <table className={css.code}>
@@ -53,7 +57,7 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
                         { line.address != null ? <Hex key={`addr_${line.address}`} value={line.address} pad={4} /> : undefined }
                     </td>
                     <td className={css.line}>
-                        { parseCode(line.line) }
+                        { parseCode(line.line, line.macro || false) }
                     </td>
                     <td className={css.bytes}>
                         { line.bytes != null ? line.bytes.map((v, j) => <Hex key={`b_${i}_${j}`} value={v} spaceAfter />) : undefined }

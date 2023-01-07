@@ -1,20 +1,25 @@
 	include ../f3macros.z80
 
 	org 0xf800
+
+; 
+; LOAD KERNEL
+; 
 	
-	; check if KERNEL exists
+check_if_kernel_exists:
 
 	set_Pa	kernel_filename
 	out	(FS_STAT), a
 	in	a, (Ra0)
+	or	a
 	jp	z, load_kernel
 
 	set_Pa	kernel_not_found
 	out	(S_PRINT_Z), a
 	jp	stop
 
-	; load KERNEL into memory
 load_kernel:
+
 	set_Pa0	0
 	set_Qa	kernel_filename
 	out	(FS_OPEN_R), a
