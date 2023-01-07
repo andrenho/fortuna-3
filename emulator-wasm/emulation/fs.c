@@ -50,6 +50,7 @@ void fs_init()
 {
     check_for_errors("f_mount", f_mount(&fs, "", 1));
 
+    /*
     FIL fp;
     const char* hello = "Hello world!";
     UINT bw;
@@ -64,6 +65,7 @@ void fs_init()
     check_for_errors("f_open", f_open(&fp, "/MYDIR/SECDIR/LOREM", FA_CREATE_NEW | FA_WRITE));
     check_for_errors("f_write", f_write(&fp, text, strlen(text), &bw));
     check_for_errors("f_close", f_close(&fp));
+    */
 }
 
 void copy_filename(char* dest, const char* src)
@@ -156,6 +158,32 @@ EMSCRIPTEN_KEEPALIVE ssize_t fs_file_page(const char* dir_name, const char* file
         goto finish;
     }
     ret = br;
+
+finish:
+    f_close(&fp);
+    return ret;
+}
+
+EMSCRIPTEN_KEEPALIVE ssize_t fs_create_file(const char* filename, uint8_t* contents, size_t sz)
+{
+    printf("%s\n", filename);
+    ssize_t ret = 0;
+
+    FIL fp;
+    FRESULT fr = f_open(&fp, filename, FA_CREATE_ALWAYS | FA_WRITE);
+    if (fr != FR_OK)
+        return -fr;
+
+    uint8_t i = 0;
+    UINT bw;
+    while (i < sz) {
+        fr = f_write(&fp, &contents[i], sz - i, &bw);
+        if (fr != FR_OK) {
+            ret = -fr;
+            goto finish;
+        }
+        i += bw;
+    }
 
 finish:
     f_close(&fp);

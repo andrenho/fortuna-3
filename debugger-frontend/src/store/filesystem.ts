@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import {makeAutoObservable} from "mobx";
 import {FilesystemFile, FileType, Fortuna3Emulator} from "api/fortuna3-emulator";
 
 export default class Filesystem {
@@ -51,4 +51,7 @@ export default class Filesystem {
         
     }
 
+    createFile(filename: string, contents: Buffer) {
+        this.emulator.createFileOnSdCard(filename, contents);
+    }
 }

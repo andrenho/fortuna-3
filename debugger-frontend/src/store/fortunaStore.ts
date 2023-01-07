@@ -1,5 +1,6 @@
 import {createContext} from "react";
 import {makeAutoObservable, runInAction} from "mobx";
+import {Buffer} from "buffer";
 import DebuggingInfo, {initialDebuggingInfo, SourceProject} from "./types/debuggingInfo";
 import {fetchBackendCompilation, fetchBackendCrc} from "service/backendService";
 import UartTerminal from "./types/uartTerminal";
@@ -84,6 +85,7 @@ export default class FortunaStore {
         if (this.selectedProject && this.selectedProject === "BIOS") {
             const bios = Uint8Array.from(window.atob(this.currentProject!.binary), c => c.charCodeAt(0));
             this.emulator!.setRam(0xf800, bios);
+            this.writeProjectsToSdCard(this.debuggingInfo.projects);
         } else {
             this.currentError = "A BIOS is not included in the project.";
         }
@@ -239,10 +241,7 @@ export default class FortunaStore {
                     this.lastCompilationHash = newHash;
                     this.lastUpdated = new Date().toLocaleTimeString();
                     if (debuggingInfo.success) {
-                        this.currentError = undefined;
-                        this.debuggingInfo = debuggingInfo;
-                        this.setSelectedProject("BIOS");
-                        this.reset();
+                        this.initializeEmulator(debuggingInfo);
                     } else {
                         this.currentError = debuggingInfo.errorMessage;
                     }
@@ -254,6 +253,19 @@ export default class FortunaStore {
                 this.currentError = (e as Error).message;
             });
         }
+    }
+
+    private async initializeEmulator(debuggingInfo: DebuggingInfo) : Promise<void> {
+        this.currentError = undefined;
+        this.debuggingInfo = debuggingInfo;
+        this.setSelectedProject("BIOS");
+        this.writeProjectsToSdCard(debuggingInfo.projects);
+        this.reset();
+    }
+
+    private writeProjectsToSdCard(projects: { [p: string]: SourceProject }) {
+        for (const filename of Object.keys(projects).filter(f => f !== "BIOS"))
+            this.filesystem!.createFile(`/${filename}`, Buffer.from(projects[filename].binary, 'base64'));
     }
 }
 

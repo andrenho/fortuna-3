@@ -284,6 +284,12 @@ export class Fortuna3Emulator {
         return "/" + newPath.join("/");
     }
 
+    createFileOnSdCard(filename: string, contents: Buffer) {
+        const r = this.api!.fsCreateFile(filename, contents, contents.length);
+        if (r < 0)
+            throw new Error(`Error while formatting file ${filename}: ${r}`);
+    }
+
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
         const script = document.createElement("script");
         script.src = `${wasmFilePath}/fortuna.js`;
