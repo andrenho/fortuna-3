@@ -1,17 +1,20 @@
-- Emulator infra
-  - [x] Github actions for building jar
-- Computer
-  - Box
-    - [x] Buy stuff
-    - [ ] Build it
-- Emulator:
-  - [x] Add files to SDCard for emulation
-- Bugs:
-  - [x] Check z80 project files subdirectory when running from jar
+- Box
+  - [ ] Add new serial wires to RPI
+  - [ ] Build box
 - Fortuna3 software
   - [x] Write BIOS
-  - [ ] Write shell
-  - [ ] Write OS
+  - [ ] Write OS & shell
+    - [ ] Move BIOS back to 0x0
+    - [ ] ComputeUnit: add call for error messages
+    - [ ] OS: initialization code (setup interrupt table (IM 2 mode), stack, etc)
+    - [ ] OS: load and launch SHELL
+    - [ ] SHELL: basic REPL
+    - [ ] SHELL: REPL parse
+    - [ ] SHELL: ls
+    - [ ] SHELL: cd
+    - [ ] SHELL: launch applications
+    - [ ] OS: finalize applications and reload SHELL
+  - [ ] Write hello world program
   - [ ] Write utilities
 - Compute unit
   - [ ] SDCard raw interface (?)
@@ -22,8 +25,20 @@
   - [ ] Install OS
   - [ ] Fast OS boot
   - [ ] Graphical interface (serial)
-  - Second serial
-    - [ ] Solder new wires
-    - [ ] Create protocol
+  - [ ] Create protocol
   - [ ] Graphics
   - [ ] Audio
+
+---
+
+Done:
+
+- Emulator infra
+  - [x] Github actions for building jar
+- Computer
+  - Box
+    - [x] Buy stuff
+- Emulator:
+  - [x] Add files to SDCard for emulation
+- Bugs:
+  - [x] Check z80 project files subdirectory when running from jar
