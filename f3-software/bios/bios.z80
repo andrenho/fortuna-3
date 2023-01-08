@@ -2,37 +2,67 @@
 
 	org 0xf800
 	
+	set_Pa	loading_kernel
+	out	(S_PRINT_Z), a
+
 ; 
 ; LOAD KERNEL
 ; 
+
+mount_sdcard:
+
+	out	(FS_MOUNT), a
 	
 check_if_kernel_exists:
 
-	set_Pa	kernel_filename
-	out	(FS_STAT), a
-	in	a, (Ra0)
+	set_Pa	kernel_filename		; - filename
+	out	(FS_STAT), a		; stat file
+
+	in	a, (Ra0)		; if not found...
 	or	a
 	jp	z, load_kernel
 
-	set_Pa	kernel_not_found
+	set_Pa	kernel_not_found	; ...show error
 	out	(S_PRINT_Z), a
-	jp	stop
+	jp	stp
 
 load_kernel:
 
-	set_Pa0	0
-	set_Qa	kernel_filename
-	out	(FS_OPEN_R), a
+	set_Pa0	0			; - file #
+	set_Qa	kernel_filename		; - filename
+	out	(FS_OPEN_R), a		; open file
 
-	set_Pb  0x800
-	set_Qa  0        ; initial memory address
-	set_Qb0 0
-	out	(FS_READ), a
+	in	a, (Ra0)		; if error...
+	or	a
+	jp	z, .read_kernel
 
-	out	(FS_CLOSEDIR), a
+	set_Pa	kernel_error		; ...show error
+	out	(S_PRINT_Z), a
+	jp	stp
+
+.read_kernel:
+
+	set_Pb  0x800			; - file size (max)
+	set_Qa  0			; - dest mem address
+	set_Qb0 0			; - RAM page (0)
+	out	(FS_READ), a		; read file
+
+	in	a, (Ra0)		; if error...
+	or	a
+	jp	z, .jump_to_os
+
+	set_Pa	kernel_error		; ...show error
+	out	(S_PRINT_Z), a
+	jp	stp
+
+.jump_to_os:
+	out	(FS_CLOSE), a		; close file
 	jp	0
 
-stop:	jp	stop
+stp:	jp	stp
+
+loading_kernel:
+	asciiz	"Loading KERNEL...", 10
 
 kernel_filename:
 	asciiz	"KERNEL"
@@ -41,6 +71,6 @@ kernel_not_found:
 	asciiz	"KERNEL not found!"
 
 kernel_error:
-	asciiz	"Error loading KERNEL"
+	asciiz	"Error loading KERNEL!"
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab
