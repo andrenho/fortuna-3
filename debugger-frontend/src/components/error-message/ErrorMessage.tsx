@@ -9,7 +9,7 @@ type ErrorMessageProps = {
 const ErrorMessage : React.FC<ErrorMessageProps> = observer(({ currentError }) => {
 
     if (currentError != null)
-        return <div className={css.error}>{ currentError }</div>;
+        return <pre className={css.error}>{ currentError.trim() }</pre>;
     else
         return <></>;
 });
