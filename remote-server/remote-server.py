@@ -64,7 +64,10 @@ class FortunaSerialConnection:
     def send_bytes(self, bts):
         for b in bts:
             self.ser.write(b.to_bytes(1, 'big'))
-            time.sleep(0.01)
+            expected = (b + 1) & 0xff
+            c = self.ser.read(1)
+            if c[0] != expected:
+                raise Exception("Invalid response, expected " + str(expected) + ", received " + str(c[0]))
 
 class FortunaManager:
 

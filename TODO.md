@@ -5,11 +5,11 @@
     - [x] Buy stuff
     - [ ] Build it
 - Emulator:
-  - [ ] Add files to SDCard for emulation
+  - [x] Add files to SDCard for emulation
 - Bugs:
-  - [ ] Check z80 project files subdirectory when running from jar
+  - [x] Check z80 project files subdirectory when running from jar
 - Fortuna3 software
-  - [ ] Write BIOS
+  - [x] Write BIOS
   - [ ] Write shell
   - [ ] Write OS
   - [ ] Write utilities

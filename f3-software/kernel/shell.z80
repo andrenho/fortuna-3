@@ -1,4 +1,14 @@
-	ld  a, 13
-	nop
+	include ../f3macros.z80
+
+	org	0x0
+
+hello_world:
+
+	set_Pa	hello_str
+	out	(S_PRINT_Z), a
+stp:	jp	stp
+
+hello_str:
+	asciiz	"Hello world!", 10
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab
