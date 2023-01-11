@@ -84,7 +84,7 @@ export default class FortunaStore {
         this.emulator!.reset(this.debuggingInfo.sdCardSizeInMB);
         if (this.selectedProject && this.selectedProject === "BIOS") {
             const bios = Uint8Array.from(window.atob(this.currentProject!.binary), c => c.charCodeAt(0));
-            this.emulator!.setRam(0xf800, bios);
+            this.emulator!.setRam(0x0, bios);
             this.writeProjectsToSdCard(this.debuggingInfo.projects);
         } else {
             this.currentError = "A BIOS is not included in the project.";
