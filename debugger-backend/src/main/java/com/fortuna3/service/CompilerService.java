@@ -7,6 +7,7 @@ import com.fortuna3.mapper.CompilerMapper;
 import com.fortuna3.mapper.OutputMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,9 @@ public class CompilerService {
     private final OutputMapper outputMapper;
     private final CompilerMapper compilerMapper;
     private final CompilerExecutableService compilerExecutableService;
+
+    @Value("${keepListingTxt}")
+    private Boolean keepListingTxt;
 
     private DebuggingInfoDTO currentDebuggingInfo;
 
@@ -82,7 +86,8 @@ public class CompilerService {
             String listing = null;
             if (Files.exists(Path.of(LISTING_FILENAME))) {
                 listing = Files.readString(Path.of(LISTING_FILENAME));
-                new File(LISTING_FILENAME).delete();
+                if (!keepListingTxt)
+                    new File(LISTING_FILENAME).delete();
             }
 
             byte[] rom = null;
