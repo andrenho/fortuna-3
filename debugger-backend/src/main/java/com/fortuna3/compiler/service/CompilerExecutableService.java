@@ -1,6 +1,6 @@
-package com.fortuna3.service;
+package com.fortuna3.compiler.service;
 
-import com.fortuna3.util.Resources;
+import com.fortuna3.compiler.util.Resources;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;

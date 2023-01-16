@@ -1,4 +1,4 @@
-package com.fortuna3.dto.output;
+package com.fortuna3.output.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-public record SourceLineDTO(Integer address, String line, @JsonIgnore byte[] byteArray, Boolean macro) {
+public record SourceLine(Integer address, String line, @JsonIgnore byte[] byteArray, Boolean isMacro, String macroContext) {
 
     @JsonProperty("bytes")
     public List<Integer> bytes() {

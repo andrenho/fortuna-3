@@ -1,5 +1,6 @@
-package com.fortuna3.service;
+package com.fortuna3.remote.service;
 
+import com.fortuna3.compiler.service.CompilerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;

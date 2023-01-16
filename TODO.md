@@ -3,10 +3,10 @@
   - [ ] Build box
 - Emulator
   - Backend
-    - [ ] Identify macro parent on backend
+    - [x] Identify macro parent on backend
   - Frontend / WASM emulator
     - [ ] Create "NEXT"
-    - [ ] Option to collapse macros
+    - [ ] Option to collapse macros (Code component)
     - When collapsed:
       - [ ] don't show macros
       - [ ] highlight the macro on step

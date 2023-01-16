@@ -19,7 +19,7 @@ const sourceLines : SourceLine[] = [
     { line: '\tnop\t; do nothing', address: 0, bytes:[0x0] },
     { line: '  \tjp start', address: 1, bytes:[0xc3, 0x0, 0x0] },
     { line: ';' },
-    { line: '  my_macro', address: 3, macro: true },
+    { line: '  my_macro', address: 3, isMacro: true },
 ];
 
 const Template: ComponentStory<typeof Code> = (args) => {

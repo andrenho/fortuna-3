@@ -1,9 +1,9 @@
-package com.fortuna3.dto.compiler;
+package com.fortuna3.compiler.dto;
 
 import lombok.Builder;
 
 @Builder
-public record RawCompilerOutputDTO(
+public record RawCompilerOutput(
     int status,
     String compilerOutput,
     String compilerError,

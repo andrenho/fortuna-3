@@ -1,4 +1,4 @@
-package com.fortuna3.exception;
+package com.fortuna3.compiler.exception;
 
 public class InvalidListingFormatException extends Exception {
 

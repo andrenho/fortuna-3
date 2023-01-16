@@ -1,9 +1,10 @@
-package com.fortuna3.mapper;
+package com.fortuna3.compiler.mapper;
 
-import com.fortuna3.dto.compiler.RawCompilerOutputDTO;
-import com.fortuna3.dto.output.SourceLineDTO;
-import com.fortuna3.dto.output.SourceProjectDTO;
-import com.fortuna3.exception.InvalidListingFormatException;
+import com.fortuna3.compiler.dto.CompilationContext;
+import com.fortuna3.compiler.dto.RawCompilerOutput;
+import com.fortuna3.compiler.exception.InvalidListingFormatException;
+import com.fortuna3.output.dto.SourceLine;
+import com.fortuna3.output.dto.SourceProject;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,9 +20,9 @@ public class CompilerMapper {
 
     private final Pattern filenamePattern = Pattern.compile("\\\"(.*?)\\\"");
 
-    public SourceProjectDTO mapRawToSourceProject(RawCompilerOutputDTO rawCompilerOutput, Integer address) {
+    public SourceProject mapRawToSourceProject(RawCompilerOutput rawCompilerOutput, Integer address) {
 
-        var sourceProject = new SourceProjectDTO();
+        var sourceProject = new SourceProject();
         sourceProject.setSuccess(rawCompilerOutput.status() == 0);
         sourceProject.setMainSourceFile(rawCompilerOutput.mainSourceFile());
         sourceProject.setAddress(address);
@@ -40,11 +41,12 @@ public class CompilerMapper {
         return sourceProject;
     }
 
-    private void mapListingFiletoSourceProject(RawCompilerOutputDTO rawCompilerOutput, SourceProjectDTO sourceProject) throws InvalidListingFormatException {
+    private void mapListingFiletoSourceProject(RawCompilerOutput rawCompilerOutput, SourceProject sourceProject) throws InvalidListingFormatException {
 
         var currentSection = Section.NONE;
         String currentFile = null;
         int nline = 1;
+        CompilationContext context = CompilationContext.builder().build();
 
         for (var line: rawCompilerOutput.listing().split("\n")) {
 
@@ -65,7 +67,10 @@ public class CompilerMapper {
                 currentSection = Section.LABELS;
             } else if (!line.isBlank()) {
                 switch (currentSection) {
-                    case SOURCE -> sourceProject.getSource().get(currentFile).add(parseLine(line));
+                    case SOURCE -> {
+                        var source = sourceProject.getSource().get(currentFile);
+                        source.add(parseLine(line, currentFile, source.size(), context));
+                    }
                     case LABELS -> addLabel(line, sourceProject.getLabels());
                     case SYMBOLS -> addSymbol(line, sourceProject.getSymbols());
                 }
@@ -75,7 +80,7 @@ public class CompilerMapper {
         }
     }
 
-    private SourceLineDTO parseLine(String line) {
+    private SourceLine parseLine(String line, String currentFile, int lineNumber, CompilationContext context) {
 
         Integer address = null;
         try {
@@ -96,16 +101,26 @@ public class CompilerMapper {
         if (byteArray.length == 0)
             byteArray = null;
 
-        Boolean macro = null;
-        if (line.length() > 31 && line.charAt(31) == 'M')
-            macro = true;
+        Boolean isMacro = null;
+        String macroContext = null;
+        if (line.length() > 31 && line.charAt(31) == 'M') {
+            isMacro = true;
+            macroContext = context.getLastLineNotInMacro();
+        }
 
-        return SourceLineDTO.builder()
+        var sourceLine = SourceLine.builder()
                 .address(address)
                 .line(newLine)
                 .byteArray(byteArray)
-                .macro(macro)
+                .isMacro(isMacro)
+                .macroContext(macroContext)
                 .build();
+
+        if (isMacro == null || isMacro == Boolean.FALSE) {
+            context.setLastLineNotInMacro(currentFile + ":" + lineNumber);
+        }
+
+        return sourceLine;
     }
 
     private void addLabel(String line, Map<String, Integer> labels) {

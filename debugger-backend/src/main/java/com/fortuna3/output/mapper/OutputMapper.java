@@ -1,8 +1,8 @@
-package com.fortuna3.mapper;
+package com.fortuna3.output.mapper;
 
-import com.fortuna3.dto.output.DebuggingInfoDTO;
-import com.fortuna3.dto.output.SourceProjectDTO;
-import com.fortuna3.dto.projectfile.ProjectFileDTO;
+import com.fortuna3.output.dto.DebuggingInfo;
+import com.fortuna3.output.dto.SourceProject;
+import com.fortuna3.projectfile.dto.ProjectFile;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 @Component
 public class OutputMapper {
 
-    public DebuggingInfoDTO mapSourceProjectsToDebuggingInfo(Map<String, SourceProjectDTO> projects, ProjectFileDTO.SDCardDTO sdcard) {
+    public DebuggingInfo mapSourceProjectsToDebuggingInfo(Map<String, SourceProject> projects, ProjectFile.SDCardDTO sdcard) {
 
-        var isSuccess = projects.values().stream().allMatch(SourceProjectDTO::isSuccess);
+        var isSuccess = projects.values().stream().allMatch(SourceProject::isSuccess);
         if (isSuccess) {
 
-            return DebuggingInfoDTO.builder()
+            return DebuggingInfo.builder()
                             .success(isSuccess)
                             .projects(projects)
                             .sdCardSizeInMB(sdcard.sizeInMB())
@@ -25,9 +25,9 @@ public class OutputMapper {
 
             var errorMessage = projects.values()
                     .stream().filter(p -> !p.isSuccess())
-                    .map(SourceProjectDTO::getCompilerError)
+                    .map(SourceProject::getCompilerError)
                     .collect(Collectors.joining("\n"));
-            return DebuggingInfoDTO.builder()
+            return DebuggingInfo.builder()
                             .success(isSuccess)
                             .errorMessage(errorMessage)
                             .build();

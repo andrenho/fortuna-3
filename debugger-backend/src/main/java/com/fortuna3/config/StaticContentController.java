@@ -1,4 +1,4 @@
-package com.fortuna3.restcontroller;
+package com.fortuna3.config;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

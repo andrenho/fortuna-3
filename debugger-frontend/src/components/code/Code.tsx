@@ -57,7 +57,7 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
                         { line.address != null ? <Hex key={`addr_${line.address}`} value={line.address} pad={4} /> : undefined }
                     </td>
                     <td className={css.line}>
-                        { parseCode(line.line, line.macro || false) }
+                        { parseCode(line.line, line.isMacro || false) }
                     </td>
                     <td className={css.bytes}>
                         { line.bytes != null ? line.bytes.map((v, j) => <Hex key={`b_${i}_${j}`} value={v} spaceAfter />) : undefined }
