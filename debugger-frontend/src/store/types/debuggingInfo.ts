@@ -1,6 +1,6 @@
 export interface SourceLine {
     line: string,
-    address?: number,
+    addresses?: number[],
     bytes?: number[],
     isMacro?: boolean,
 }
