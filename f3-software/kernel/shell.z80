@@ -1,6 +1,6 @@
 	include ../f3macros.z80
 
-	org	0x0
+	org	0xfd00
 
 hello_world:
 

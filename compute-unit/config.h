@@ -2,7 +2,7 @@
 // features included
 //
 
-#define INCLUDE_MONITOR 1
+#define INCLUDE_MONITOR 0
 #define INCLUDE_SDCARD  1
 
 //

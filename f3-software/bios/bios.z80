@@ -1,6 +1,8 @@
 	include ../f3macros.z80
 
-	org 0xf800
+OS_LOCATION = 0xfd00
+
+	org	0x0
 	
 	set_Pa	loading_kernel
 	out	(S_PRINT_Z), a
@@ -43,7 +45,7 @@ load_kernel:
 .read_kernel:
 
 	set_Pb  0x800			; - file size (max)
-	set_Qa  0			; - dest mem address
+	set_Qa  OS_LOCATION		; - dest mem address
 	set_Qb0 0			; - RAM page (0)
 	out	(FS_READ), a		; read file
 
@@ -57,7 +59,7 @@ load_kernel:
 
 .jump_to_os:
 	out	(FS_CLOSE), a		; close file
-	jp	0
+	jp	OS_LOCATION
 
 stp:	jp	stp
 
