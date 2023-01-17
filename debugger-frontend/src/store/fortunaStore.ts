@@ -216,7 +216,7 @@ export default class FortunaStore {
         for (const file of Object.keys(this.currentProject.source)) {
             const source = this.currentProject.source[file];
             for (const line of source) {
-                if (line.address === this.state.cpu.pc) {
+                if (line.addresses && line.addresses.includes(this.state.cpu.pc)) {
                     this.setSelectedFile(file);
                     return;
                 }

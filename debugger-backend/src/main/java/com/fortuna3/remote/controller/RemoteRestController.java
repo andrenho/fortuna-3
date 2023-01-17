@@ -1,6 +1,6 @@
-package com.fortuna3.restcontroller;
+package com.fortuna3.remote.controller;
 
-import com.fortuna3.service.RemoteService;
+import com.fortuna3.remote.service.RemoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

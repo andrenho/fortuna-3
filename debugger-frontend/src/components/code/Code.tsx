@@ -47,23 +47,24 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
 
     return <table className={css.code}>
         <tbody>
-            { (source || sourceFileNotFound).map((line, i) => (
-                <tr key={`sl_${i}`} style={{ backgroundColor: (pc === line.address) ? "yellow" : "white" }}>
-                    <td className={css.breakpoint} 
-                        style={{background: (breakpoints.includes(line.address!)) ? "red" : undefined}}
-                        onClick={() => line.address !== undefined && swapBreakpoint(line.address)}>
+            { (source || sourceFileNotFound).map((line, i) => {
+                const firstAddress = line.addresses ? line.addresses[0] : -1;
+                return <tr key={`sl_${i}`} style={{ backgroundColor: (line.addresses?.includes(pc)) ? "yellow" : "white" }}>
+                    <td className={css.breakpoint}
+                        style={{background: (breakpoints.includes(firstAddress) ? "red" : undefined)}}
+                        onClick={() => line.addresses !== undefined && swapBreakpoint(line.addresses[0])}>
                     </td>
                     <td className={css.address}>
-                        { line.address != null ? <Hex key={`addr_${line.address}`} value={line.address} pad={4} /> : undefined }
+                        { line.addresses != null ? <Hex key={`addr_${line.addresses}`} value={firstAddress} pad={4} /> : undefined }
                     </td>
                     <td className={css.line}>
-                        { parseCode(line.line, line.macro || false) }
+                        { parseCode(line.line, line.isMacro || false) }
                     </td>
                     <td className={css.bytes}>
                         { line.bytes != null ? line.bytes.map((v, j) => <Hex key={`b_${i}_${j}`} value={v} spaceAfter />) : undefined }
                     </td>
-                </tr>
-            ))}
+                </tr>;
+            }) }
             <tr style={{backgroundColor: "white"}}>
                 <td className={`${css.breakpoint} ${css.lastLine}`}></td>
                 <td className={`${css.address} ${css.lastLine}`}></td>

@@ -1,8 +1,8 @@
-package com.fortuna3.service;
+package com.fortuna3.projectfile.service;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fortuna3.dto.projectfile.ProjectFileDTO;
+import com.fortuna3.projectfile.dto.ProjectFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,20 +25,20 @@ public class ProjectFileService {
 
     private final ApplicationContext appContext;
 
-    private ProjectFileDTO projectFile;
+    private ProjectFile projectFile;
 
     private void readConfigFile() throws IOException {
         var objectMapper = JsonMapper.builder()
                 .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
                 .build();
         try {
-            projectFile = objectMapper.readValue(Paths.get(projectPath).toFile(), ProjectFileDTO.class);
+            projectFile = objectMapper.readValue(Paths.get(projectPath).toFile(), ProjectFile.class);
         } catch (FileNotFoundException e) {
             SpringApplication.exit(appContext, () -> 1);
         }
     }
 
-    public ProjectFileDTO getProjectFile() {
+    public ProjectFile getProjectFile() {
         try {
             readConfigFile();
         } catch (IOException e) {
