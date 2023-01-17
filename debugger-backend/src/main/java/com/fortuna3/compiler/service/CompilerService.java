@@ -29,6 +29,8 @@ public class CompilerService {
     private final CompilerMapper compilerMapper;
     private final CompilerExecutableService compilerExecutableService;
 
+    private boolean collapseMacros = false;
+
     @Value("${keepListingTxt}")
     private Boolean keepListingTxt;
 
@@ -60,7 +62,7 @@ public class CompilerService {
     private SourceProject compile(String biosSource, Integer address) {
 
         var rawCompilerOutputDTO = runCompiler(biosSource);
-        return compilerMapper.mapRawToSourceProject(rawCompilerOutputDTO, address);
+        return compilerMapper.mapRawToSourceProject(rawCompilerOutputDTO, address, collapseMacros);
     }
 
     private RawCompilerOutput runCompiler(String mainSourceFile) {
@@ -112,6 +114,11 @@ public class CompilerService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setCollapseMacros(boolean collapseMacros) {
+        this.collapseMacros = collapseMacros;
+        recompileAllFiles();
     }
 
     private String getOutput(InputStream inputStream) throws IOException {

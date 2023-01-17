@@ -1,26 +1,28 @@
 package com.fortuna3.compiler.mapper;
 
-import com.fortuna3.compiler.dto.CompilationContext;
 import com.fortuna3.compiler.dto.RawCompilerOutput;
 import com.fortuna3.compiler.exception.InvalidListingFormatException;
 import com.fortuna3.output.dto.SourceLine;
 import com.fortuna3.output.dto.SourceProject;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HexFormat;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
 public class CompilerMapper {
 
+    private static class CompilationContext {
+        public Map<Integer, List<Integer>> macroAddresses = new HashMap<>();
+        public Integer lastCommandIndex = null;
+    }
+
     private enum Section { NONE, SOURCE, SYMBOLS, LABELS }
 
     private final Pattern filenamePattern = Pattern.compile("\\\"(.*?)\\\"");
 
-    public SourceProject mapRawToSourceProject(RawCompilerOutput rawCompilerOutput, Integer address) {
+    public SourceProject mapRawToSourceProject(RawCompilerOutput rawCompilerOutput, Integer address, boolean collapseMacrosParameter) {
 
         var sourceProject = new SourceProject();
         sourceProject.setSuccess(rawCompilerOutput.status() == 0);
@@ -29,7 +31,7 @@ public class CompilerMapper {
         if (rawCompilerOutput.status() == 0) {
             sourceProject.setBinary(rawCompilerOutput.rom());
             try {
-                mapListingFiletoSourceProject(rawCompilerOutput, sourceProject);
+                mapListingFiletoSourceProject(rawCompilerOutput, sourceProject, collapseMacrosParameter);
             } catch (InvalidListingFormatException e) {
                 sourceProject.setSuccess(false);
                 sourceProject.setCompilerError(e.getMessage());
@@ -41,14 +43,15 @@ public class CompilerMapper {
         return sourceProject;
     }
 
-    private void mapListingFiletoSourceProject(RawCompilerOutput rawCompilerOutput, SourceProject sourceProject) throws InvalidListingFormatException {
+    private void mapListingFiletoSourceProject(RawCompilerOutput rawCompilerOutput, SourceProject sourceProject, boolean collapseMacrosParameter) throws InvalidListingFormatException {
 
         var currentSection = Section.NONE;
         String currentFile = null;
         int nline = 1;
-        CompilationContext context = CompilationContext.builder().build();
 
         for (var line: rawCompilerOutput.listing().split("\n")) {
+
+            CompilationContext context = new CompilationContext();
 
             line = line.replace("\r", "");
 
@@ -69,7 +72,7 @@ public class CompilerMapper {
                 switch (currentSection) {
                     case SOURCE -> {
                         var source = sourceProject.getSource().get(currentFile);
-                        source.add(parseLine(line, currentFile, source.size(), context));
+                        source.add(parseLine(line, source.size(), context));
                     }
                     case LABELS -> addLabel(line, sourceProject.getLabels());
                     case SYMBOLS -> addSymbol(line, sourceProject.getSymbols());
@@ -78,9 +81,12 @@ public class CompilerMapper {
 
             ++nline;
         }
+
+        if (collapseMacrosParameter)
+            collapseMacros(sourceProject.getSource());
     }
 
-    private SourceLine parseLine(String line, String currentFile, int lineNumber, CompilationContext context) {
+    private SourceLine parseLine(String line, int index, CompilationContext context) {
 
         Integer address = null;
         try {
@@ -102,25 +108,23 @@ public class CompilerMapper {
             byteArray = null;
 
         Boolean isMacro = null;
-        String macroContext = null;
         if (line.length() > 31 && line.charAt(31) == 'M') {
             isMacro = true;
-            macroContext = context.getLastLineNotInMacro();
+            if (context.lastCommandIndex != null && address != null) {
+                context.macroAddresses.putIfAbsent(context.lastCommandIndex, new ArrayList<>());
+                context.macroAddresses.get(context.lastCommandIndex).add(address);
+            }
+        } else {
+            if (address != null)
+                context.lastCommandIndex = index;
         }
 
-        var sourceLine = SourceLine.builder()
-                .address(address)
+        return SourceLine.builder()
+                .addresses(address == null ? null : Collections.singletonList(address))
                 .line(newLine)
                 .byteArray(byteArray)
                 .isMacro(isMacro)
-                .macroContext(macroContext)
                 .build();
-
-        if (isMacro == null || isMacro == Boolean.FALSE) {
-            context.setLastLineNotInMacro(currentFile + ":" + lineNumber);
-        }
-
-        return sourceLine;
     }
 
     private void addLabel(String line, Map<String, Integer> labels) {
@@ -130,5 +134,10 @@ public class CompilerMapper {
     private void addSymbol(String line, Map<String, Integer> symbols) {
         symbols.put(line.substring(0, 32).trim(), HexFormat.fromHexDigits(line.substring(35, 39).trim()));
     }
+
+    private void collapseMacros(Map<String, List<SourceLine>> source) {
+
+    }
+
 }
 

@@ -4,13 +4,11 @@
 - Emulator
   - Backend
     - [x] Identify macro parent on backend
+    - [ ] On query parameter "collapse_macros", collapse macros and keep all addresses
   - Frontend / WASM emulator
-    - [ ] Create "NEXT"
     - [ ] Option to collapse macros (Code component)
-    - When collapsed:
-      - [ ] don't show macros
-      - [ ] highlight the macro on step
-      - [ ] step whole macro
+    - [ ] On address list, step to next
+    - [ ] Create "NEXT"
 - Fortuna3 software
   - [x] Write BIOS
   - [ ] Write OS & shell
