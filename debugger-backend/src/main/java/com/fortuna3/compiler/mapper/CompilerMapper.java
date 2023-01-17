@@ -3,10 +3,14 @@ package com.fortuna3.compiler.mapper;
 import com.fortuna3.compiler.dto.RawCompilerOutput;
 import com.fortuna3.compiler.exception.InvalidListingFormatException;
 import com.fortuna3.output.dto.SourceLine;
+import com.fortuna3.output.dto.SourceLineAdditionalContext;
 import com.fortuna3.output.dto.SourceProject;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HexFormat;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,8 +18,7 @@ import java.util.regex.Pattern;
 public class CompilerMapper {
 
     private static class CompilationContext {
-        public Map<Integer, List<Integer>> macroAddresses = new HashMap<>();
-        public Integer lastCommandIndex = null;
+        private Integer lastCommandIndex = null;
     }
 
     private enum Section { NONE, SOURCE, SYMBOLS, LABELS }
@@ -48,10 +51,9 @@ public class CompilerMapper {
         var currentSection = Section.NONE;
         String currentFile = null;
         int nline = 1;
+        var context = new CompilationContext();
 
         for (var line: rawCompilerOutput.listing().split("\n")) {
-
-            CompilationContext context = new CompilationContext();
 
             line = line.replace("\r", "");
 
@@ -82,15 +84,17 @@ public class CompilerMapper {
             ++nline;
         }
 
-        if (collapseMacrosParameter)
-            collapseMacros(sourceProject.getSource());
+        if (collapseMacrosParameter) {
+            for (var source : sourceProject.getSource().values())
+                collapseMacros(source);
+        }
     }
 
     private SourceLine parseLine(String line, int index, CompilationContext context) {
 
-        Integer address = null;
+        List<Integer> addresses = new ArrayList<>();
         try {
-            address = HexFormat.fromHexDigits(line.substring(3, 7));
+            addresses.add(HexFormat.fromHexDigits(line.substring(3, 7)));
         } catch (IllegalArgumentException ignored) {}
 
         String newLine = "";
@@ -107,23 +111,19 @@ public class CompilerMapper {
         if (byteArray.length == 0)
             byteArray = null;
 
-        Boolean isMacro = null;
+        boolean isMacro = false;
         if (line.length() > 31 && line.charAt(31) == 'M') {
             isMacro = true;
-            if (context.lastCommandIndex != null && address != null) {
-                context.macroAddresses.putIfAbsent(context.lastCommandIndex, new ArrayList<>());
-                context.macroAddresses.get(context.lastCommandIndex).add(address);
-            }
         } else {
-            if (address != null)
-                context.lastCommandIndex = index;
+            context.lastCommandIndex = index;
         }
 
         return SourceLine.builder()
-                .addresses(address == null ? null : Collections.singletonList(address))
+                .addresses(addresses)
                 .line(newLine)
                 .byteArray(byteArray)
                 .isMacro(isMacro)
+                .additionalContext(Boolean.TRUE.equals(isMacro) ? SourceLineAdditionalContext.fromMacroParentIndex(context.lastCommandIndex) : null)
                 .build();
     }
 
@@ -135,8 +135,14 @@ public class CompilerMapper {
         symbols.put(line.substring(0, 32).trim(), HexFormat.fromHexDigits(line.substring(35, 39).trim()));
     }
 
-    private void collapseMacros(Map<String, List<SourceLine>> source) {
-
+    private void collapseMacros(List<SourceLine> source) {
+        for (var line : source) {
+            if (line.isMacro()) {
+                var parentMacroLine = source.get(line.additionalContext().macroParentIndex());
+                parentMacroLine.addresses().add(line.addresses().get(0));
+            }
+        }
+        source.removeIf(SourceLine::isMacro);
     }
 
 }

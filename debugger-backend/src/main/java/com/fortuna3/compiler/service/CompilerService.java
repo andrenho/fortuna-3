@@ -117,8 +117,10 @@ public class CompilerService {
     }
 
     public void setCollapseMacros(boolean collapseMacros) {
-        this.collapseMacros = collapseMacros;
-        recompileAllFiles();
+        if (collapseMacros != this.collapseMacros) {
+            this.collapseMacros = collapseMacros;
+            recompileAllFiles();
+        }
     }
 
     private String getOutput(InputStream inputStream) throws IOException {

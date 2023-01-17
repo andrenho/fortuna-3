@@ -10,7 +10,12 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-public record SourceLine(List<Integer> addresses, String line, @JsonIgnore byte[] byteArray, Boolean isMacro) {
+public record SourceLine(
+        @JsonInclude(JsonInclude.Include.NON_EMPTY) List<Integer> addresses,
+        String line,
+        @JsonInclude(JsonInclude.Include.NON_DEFAULT) boolean isMacro,
+        @JsonIgnore byte[] byteArray,
+        @JsonIgnore SourceLineAdditionalContext additionalContext) {
 
     @JsonProperty("bytes")
     public List<Integer> bytes() {
