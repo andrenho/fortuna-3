@@ -97,7 +97,6 @@ void create_file(void)
     FR(f_mount(NULL, "0:", 0))
     FR(f_mount(&fs, "0:", 0))
     FR(f_open(&fp, filename, FA_CREATE_ALWAYS | FA_WRITE))
-    uint8_t j = 0;
     while (file_sz > 0) {
         for (size_t i = 0; i < min(BUF_SZ, file_sz); ++i) {
             buf[i] = getch();
