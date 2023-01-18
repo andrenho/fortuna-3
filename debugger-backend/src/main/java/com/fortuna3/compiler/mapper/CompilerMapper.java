@@ -2,9 +2,11 @@ package com.fortuna3.compiler.mapper;
 
 import com.fortuna3.compiler.dto.RawCompilerOutput;
 import com.fortuna3.compiler.exception.InvalidListingFormatException;
+import com.fortuna3.options.service.OptionsService;
 import com.fortuna3.output.dto.SourceLine;
 import com.fortuna3.output.dto.SourceLineAdditionalContext;
 import com.fortuna3.output.dto.SourceProject;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,7 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
+@RequiredArgsConstructor
 public class CompilerMapper {
+
+    private final OptionsService optionsService;
 
     private static class CompilationContext {
         private Integer lastCommandIndex = null;
@@ -25,7 +30,7 @@ public class CompilerMapper {
 
     private final Pattern filenamePattern = Pattern.compile("\\\"(.*?)\\\"");
 
-    public SourceProject mapRawToSourceProject(RawCompilerOutput rawCompilerOutput, Integer address, boolean collapseMacrosParameter) {
+    public SourceProject mapRawToSourceProject(RawCompilerOutput rawCompilerOutput, Integer address) {
 
         var sourceProject = new SourceProject();
         sourceProject.setSuccess(rawCompilerOutput.status() == 0);
@@ -34,7 +39,7 @@ public class CompilerMapper {
         if (rawCompilerOutput.status() == 0) {
             sourceProject.setBinary(rawCompilerOutput.rom());
             try {
-                mapListingFiletoSourceProject(rawCompilerOutput, sourceProject, collapseMacrosParameter);
+                mapListingFiletoSourceProject(rawCompilerOutput, sourceProject);
             } catch (InvalidListingFormatException e) {
                 sourceProject.setSuccess(false);
                 sourceProject.setCompilerError(e.getMessage());
@@ -46,7 +51,7 @@ public class CompilerMapper {
         return sourceProject;
     }
 
-    private void mapListingFiletoSourceProject(RawCompilerOutput rawCompilerOutput, SourceProject sourceProject, boolean collapseMacrosParameter) throws InvalidListingFormatException {
+    private void mapListingFiletoSourceProject(RawCompilerOutput rawCompilerOutput, SourceProject sourceProject) throws InvalidListingFormatException {
 
         var currentSection = Section.NONE;
         String currentFile = null;
@@ -84,7 +89,7 @@ public class CompilerMapper {
             ++nline;
         }
 
-        if (collapseMacrosParameter) {
+        if (Boolean.TRUE.equals(optionsService.getOptions().getCollapseMacros())) {
             for (var source : sourceProject.getSource().values())
                 collapseMacros(source);
         }

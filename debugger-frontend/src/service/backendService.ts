@@ -1,4 +1,5 @@
 import DebuggingInfo from "store/types/debuggingInfo";
+import Options from "store/types/options";
 
 function backendHostname() {
     return window.location.href.replace("8024", "8025");
@@ -26,4 +27,18 @@ export async function fetchBackendRemote(remoteIp: string, action: string, arg?:
     if (!result.ok)
         throw new Error((await result.json()).message);
     return await result.text();
+}
+
+export async function fetchPutOptions(options: Options) : Promise<Options> {
+    let url = `${backendHostname()}/options`;
+    const result = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(options)
+    });
+    if (!result.ok)
+        throw new Error((await result.json()).message);
+    return await result.json();
 }

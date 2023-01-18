@@ -1,13 +1,14 @@
 import {createContext} from "react";
 import {makeAutoObservable, runInAction} from "mobx";
 import {Buffer} from "buffer";
-import DebuggingInfo, {initialDebuggingInfo, SourceProject} from "./types/debuggingInfo";
-import {fetchBackendCompilation, fetchBackendCrc} from "service/backendService";
+import DebuggingInfo, {initialDebuggingInfo, SourceLine, SourceProject} from "./types/debuggingInfo";
+import {fetchBackendCompilation, fetchBackendCrc, fetchPutOptions} from "service/backendService";
 import UartTerminal from "./types/uartTerminal";
 import Filesystem from "./filesystem";
 import {EmulatorState, Fortuna3Emulator} from "api/fortuna3-emulator";
 import {FinishReason} from "api/api";
 import RemoteStore from "store/remoteStore";
+import Options, {optionsLoadFromLocal, optionsSaveToLocal} from "store/types/options";
 
 const terminalSize = {
     w: 60,
@@ -59,6 +60,8 @@ export default class FortunaStore {
 
     running = false;
 
+    options : Options = optionsLoadFromLocal();
+
     constructor() {
         makeAutoObservable(this);
         // TODO - where are SDCard image size and type coming from?
@@ -70,7 +73,7 @@ export default class FortunaStore {
                 this.updateSelectedFile();
             });
         });
-
+        this.updateOptions(this.options).then();  // set initial options
         setInterval(() => this.updateDebuggingInfoFromBackend(), 1000);
     }
 
@@ -96,7 +99,18 @@ export default class FortunaStore {
     }
 
     step() : void {
-        this.emulator!.step();
+        const currentLine = this.currentLine();
+        if (currentLine === undefined) {
+            this.emulator!.step();
+        } else {
+            const origPC = this.state.cpu.pc;
+            let pc = origPC;
+            while (currentLine.addresses?.includes(pc)) {
+                pc = this.emulator!.step();
+                if (pc === origPC)   // avoid loops
+                    break;
+            }
+        }
         this.updateState();
     }
 
@@ -195,6 +209,11 @@ export default class FortunaStore {
         this.emulator!.keypress(chr);
     }
 
+    async updateOptions(newOptions: Options) : Promise<void> {
+        this.options = await fetchPutOptions(newOptions);
+        optionsSaveToLocal(this.options);
+    }
+
     private updateState() : void {
         this.updateEmulatorState();
         this.updateSelectedFile();
@@ -267,6 +286,17 @@ export default class FortunaStore {
         for (const filename of Object.keys(projects).filter(f => f !== "BIOS"))
             this.filesystem!.createFile(`/${filename}`, Buffer.from(projects[filename].binary, 'base64'));
     }
+
+    private currentLine() : SourceLine | undefined {
+        if (this.currentProject && this.selectedFile) {
+            const lines = this.currentProject.source[this.selectedFile]
+                .filter(sl => sl.addresses && sl.addresses.includes(this.state.cpu.pc));
+            if (lines.length > 0)
+                return lines[0];
+        }
+        return undefined;
+    }
+
 }
 
 // @ts-ignore

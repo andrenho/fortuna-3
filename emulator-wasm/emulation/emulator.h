@@ -8,7 +8,7 @@
 typedef enum { NORMAL = 0, BREAKPOINT = 1 } FinishReason;
 
 bool         emulator_initialize(size_t sdcard_sz_in_mb);
-void         emulator_step();
+uint16_t     emulator_step();
 FinishReason emulator_step_cycles(int cycles);
 void         emulator_keypress(uint8_t chr);
 
