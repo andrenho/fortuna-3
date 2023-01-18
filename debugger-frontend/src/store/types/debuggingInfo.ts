@@ -1,8 +1,8 @@
 export interface SourceLine {
     line: string,
-    address?: number,
+    addresses?: number[],
     bytes?: number[],
-    macro?: boolean,
+    isMacro?: boolean,
 }
 
 export type Source = {[key: string]: SourceLine[]};

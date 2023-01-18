@@ -35,9 +35,10 @@ EMSCRIPTEN_KEEPALIVE bool emulator_initialize(size_t sdcard_sz_in_mb)
     return r;
 }
 
-EMSCRIPTEN_KEEPALIVE void emulator_step()
+EMSCRIPTEN_KEEPALIVE uint16_t emulator_step()
 {
     ExecZ80(&z80, 1);
+    return z80.PC.W;
 }
 
 EMSCRIPTEN_KEEPALIVE FinishReason emulator_step_cycles(int ms)

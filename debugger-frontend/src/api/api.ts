@@ -11,7 +11,7 @@ export interface FortunaApi {
     initialize: (sdCardSizeInMB: number) => boolean,
     getState: (ramPage: number, sdPage: number, eepromPage: number, data: pointer) => void;
     compressSDCard: (data: pointer, maxSize: number) => number;
-    step : () => void;
+    step : () => number;
     stepCycles: (milliseconds: number) => FinishReason;
     addBreakpoint: (addr: number) => void;
     removeBreakpoint: (addr: number) => void;
@@ -29,7 +29,7 @@ export function loadApiFunctions(module: FortunaModule) : FortunaApi {
         initialize: module.cwrap("emulator_initialize", "boolean", ["number"]),
         getState: module.cwrap("get_state", null, ["number", "number", "number", "number"]),
         compressSDCard: module.cwrap("compress_sdcard", "number", ["number", "number"]),
-        step: module.cwrap("emulator_step", null, []),
+        step: module.cwrap("emulator_step", "number", []),
         stepCycles: module.cwrap("emulator_step_cycles", "number", ["number"]),
         addBreakpoint: module.cwrap("bkp_add", null, ["number"]),
         removeBreakpoint: module.cwrap("bkp_del", null, ["number"]),
