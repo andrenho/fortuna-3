@@ -2,13 +2,7 @@
   - [ ] Add new serial wires to RPI
   - [ ] Build box
 - Emulator
-  - Backend
-    - [x] Identify macro parent on backend
-    - [ ] On query parameter "collapse_macros", collapse macros and keep all addresses
-  - Frontend / WASM emulator
-    - [ ] Option to collapse macros (Code component)
-    - [ ] On address list, step to next
-    - [ ] Create "NEXT"
+  - [ ] Create "NEXT"
 - Fortuna3 software
   - [x] Write BIOS
   - [ ] Write OS & shell
@@ -44,6 +38,12 @@ Done:
 
 - Emulator infra
   - [x] Github actions for building jar
+  - Backend
+    - [x] Identify macro parent on backend
+    - [x] On query parameter "collapse_macros", collapse macros and keep all addresses
+  - Frontend / WASM emulator
+    - [x] Option to collapse macros (Code component)
+    - [x] On address list, step to next
 - Computer
   - Box
     - [x] Buy stuff
