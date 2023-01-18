@@ -8,6 +8,7 @@ import Filesystem from "./filesystem";
 import {EmulatorState, Fortuna3Emulator} from "api/fortuna3-emulator";
 import {FinishReason} from "api/api";
 import RemoteStore from "store/remoteStore";
+import Options, {optionsLoadFromLocal} from "store/types/options";
 
 const terminalSize = {
     w: 60,
@@ -58,6 +59,8 @@ export default class FortunaStore {
     loading = false;
 
     running = false;
+
+    options : Options = optionsLoadFromLocal();
 
     constructor() {
         makeAutoObservable(this);
@@ -193,6 +196,20 @@ export default class FortunaStore {
         else
             this.lastKeyPressed = String.fromCharCode(chr);
         this.emulator!.keypress(chr);
+    }
+
+    updateOptions(newOptions: Options) {
+        // TODO - call API
+
+        // update only assigned fields
+        Object.keys(this.options).forEach(k => {
+            const key = k as keyof Options;
+            if (newOptions[key] !== undefined)
+                this.options[key] = newOptions[key];
+        });
+
+        // TODO - update local options
+        // TODO - save options
     }
 
     private updateState() : void {
