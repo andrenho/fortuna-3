@@ -2,13 +2,13 @@ import {createContext} from "react";
 import {makeAutoObservable, runInAction} from "mobx";
 import {Buffer} from "buffer";
 import DebuggingInfo, {initialDebuggingInfo, SourceProject} from "./types/debuggingInfo";
-import {fetchBackendCompilation, fetchBackendCrc} from "service/backendService";
+import {fetchBackendCompilation, fetchBackendCrc, fetchPutOptions} from "service/backendService";
 import UartTerminal from "./types/uartTerminal";
 import Filesystem from "./filesystem";
 import {EmulatorState, Fortuna3Emulator} from "api/fortuna3-emulator";
 import {FinishReason} from "api/api";
 import RemoteStore from "store/remoteStore";
-import Options, {optionsLoadFromLocal} from "store/types/options";
+import Options, {optionsLoadFromLocal, optionsSaveToLocal} from "store/types/options";
 
 const terminalSize = {
     w: 60,
@@ -73,7 +73,7 @@ export default class FortunaStore {
                 this.updateSelectedFile();
             });
         });
-
+        this.updateOptions(this.options).then();  // set initial options
         setInterval(() => this.updateDebuggingInfoFromBackend(), 1000);
     }
 
@@ -198,18 +198,9 @@ export default class FortunaStore {
         this.emulator!.keypress(chr);
     }
 
-    updateOptions(newOptions: Options) {
-        // TODO - call API
-
-        // update only assigned fields
-        Object.keys(this.options).forEach(k => {
-            const key = k as keyof Options;
-            if (newOptions[key] !== undefined)
-                this.options[key] = newOptions[key];
-        });
-
-        // TODO - update local options
-        // TODO - save options
+    async updateOptions(newOptions: Options) : Promise<void> {
+        this.options = await fetchPutOptions(newOptions);
+        optionsSaveToLocal(this.options);
     }
 
     private updateState() : void {

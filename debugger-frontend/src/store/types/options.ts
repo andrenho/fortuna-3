@@ -5,7 +5,7 @@ export default interface Options {
 export function optionsLoadFromLocal() : Options {
     const optionsJson = window.localStorage.getItem("options");
     if (optionsJson === null) {
-        return <Options> {
+        return {
             collapseMacros: false,
         };
     } else {

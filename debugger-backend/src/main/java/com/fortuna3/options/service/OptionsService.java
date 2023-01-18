@@ -15,7 +15,7 @@ public class OptionsService {
 
     private final OptionsMapper optionsMapper;
 
-    public void updateOptions(Options options) {
-        optionsMapper.overrideOptionFields(this.options, options);
+    public Options updateOptions(Options options) {
+        return optionsMapper.overrideOptionFields(this.options, options);
     }
 }

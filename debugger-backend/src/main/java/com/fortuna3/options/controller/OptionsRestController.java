@@ -21,8 +21,7 @@ public class OptionsRestController {
     }
 
     @PutMapping("/options")
-    public ResponseEntity<Void> putOptions(@RequestBody Options options) {
-        optionsService.updateOptions(options);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Options> putOptions(@RequestBody Options options) {
+        return ResponseEntity.ok(optionsService.updateOptions(options));
     }
 }
