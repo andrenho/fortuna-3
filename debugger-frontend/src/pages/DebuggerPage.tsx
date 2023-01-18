@@ -14,6 +14,7 @@ import Lcd from "components/lcd/Lcd";
 import Rtc from "components/rtc/Rtc";
 import Box from "components/common/box/Box";
 import translateKey from "util/translateKey";
+import CompilerOptions from "components/compiler-options/CompilerOptions";
 
 const Components : React.FC = observer(() => {
 
@@ -26,6 +27,7 @@ const Components : React.FC = observer(() => {
     const [showEeprom, setShowEeprom] = useState(false);
     const [showLcd, setShowLcd] = useState(false);
     const [showRtc, setShowRtc] = useState(false);
+    const [showOptions, setShowOptions] = useState(false);
 
     const onKeyDown = (e : KeyboardEvent) => {
         switch (e.key) {
@@ -69,6 +71,7 @@ const Components : React.FC = observer(() => {
                 <ToolbarToggle text="LCD" value={showLcd} onToggle={() => setShowLcd(!showLcd)} />
                 <ToolbarToggle text="RTC" value={showRtc} onToggle={() => setShowRtc(!showRtc)} />
                 <ToolbarToggle text="PROM" value={showEeprom} onToggle={() => setShowEeprom(!showEeprom)} />
+                <ToolbarToggle text="OPT" value={showOptions} onToggle={() => setShowOptions(!showOptions)} />
                 <ToolbarSeparator />
                 <ToolbarButton icon={faPowerOff} title="Reset emulator" onClick={onReset} />
                 <ToolbarSeparator />
@@ -134,6 +137,13 @@ const Components : React.FC = observer(() => {
                         totalPages={16}
                     />
                 </Box> }
+
+                { showOptions &&
+                    <CompilerOptions
+                        options={store.options}
+                        onUpdate={(opt) => store.updateOptions(opt)}
+                    />
+                }
 
             </div>
         </div>

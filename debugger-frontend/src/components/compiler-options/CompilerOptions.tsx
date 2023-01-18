@@ -14,7 +14,7 @@ const CompilerOptions : React.FC<CompilerOptionsProps> = ({ options, onUpdate })
             value="Collapse macros"
             name="collapseMacros"
             checked={options.collapseMacros}
-            onClick={() => onUpdate({ collapseMacros: !options.collapseMacros }) }
+            onChange={() => onUpdate({ collapseMacros: !options.collapseMacros }) }
         />
         <label htmlFor="collapseMacros">Collapse macros</label>
     </Box>;

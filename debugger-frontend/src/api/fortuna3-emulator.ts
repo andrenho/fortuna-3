@@ -83,8 +83,8 @@ export class Fortuna3Emulator {
         return emulator;
     }
 
-    step() : void {
-        this.api!.step();
+    step() : number {
+        return this.api!.step();
     }
 
     stepTime(time: DOMHighResTimeStamp) : FinishReason {
