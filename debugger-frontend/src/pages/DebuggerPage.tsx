@@ -6,7 +6,7 @@ import Debugger from "components/debugger/Debugger";
 import UART from "components/uart/UART";
 import useStore from "hooks/useStore";
 import Toolbar, {ToolbarButton, ToolbarSeparator, ToolbarToggle} from "components/main-page/Toolbar";
-import {faForward, faForwardStep, faPause, faPowerOff, faSquareCaretRight} from '@fortawesome/free-solid-svg-icons'
+import {faAngleRight, faArrowsTurnRight, faPause, faPlay, faPowerOff, faWrench} from '@fortawesome/free-solid-svg-icons'
 import ComputeUnit from "components/compute-unit/ComputeUnit";
 import css from './DebuggerPage.module.scss';
 import FlatData from "components/common/flat-data/FlatData";
@@ -33,6 +33,9 @@ const Components : React.FC = observer(() => {
         switch (e.key) {
             case "F8":
                 store.step();
+                return;
+            case "F9":
+                store.next();
                 return;
             case "F5":
                 if (!store.running)
@@ -71,15 +74,15 @@ const Components : React.FC = observer(() => {
                 <ToolbarToggle text="LCD" value={showLcd} onToggle={() => setShowLcd(!showLcd)} />
                 <ToolbarToggle text="RTC" value={showRtc} onToggle={() => setShowRtc(!showRtc)} />
                 <ToolbarToggle text="PROM" value={showEeprom} onToggle={() => setShowEeprom(!showEeprom)} />
-                <ToolbarToggle text="OPT" value={showOptions} onToggle={() => setShowOptions(!showOptions)} />
                 <ToolbarSeparator />
                 <ToolbarButton icon={faPowerOff} title="Reset emulator" onClick={onReset} />
+                <ToolbarToggle icon={faWrench} value={showOptions} onToggle={() => setShowOptions(!showOptions)} />
                 <ToolbarSeparator />
-                <ToolbarButton icon={faForwardStep} title="Step one instruction (F8)" onClick={() => store.step()} />
-                <ToolbarButton icon={faSquareCaretRight} title="Step one screenful" onClick={() => store.stepOneScreenful()} />
+                <ToolbarButton icon={faAngleRight} title="Step one instruction (F8)" onClick={() => store.step()} />
+                <ToolbarButton icon={faArrowsTurnRight} title="Jump to next instruction (F9)" onClick={() => store.next()} />
                 { store.running
-                    ? <ToolbarButton icon={faPause} title="Stop execution" onClick={() => store.stopExecution()} />
-                    : <ToolbarButton icon={faForward} title="Run (F5)" onClick={() => store.run()} />
+                    ? <ToolbarButton icon={faPause} color="red" title="Stop execution" onClick={() => store.stopExecution()} />
+                    : <ToolbarButton icon={faPlay} color="green" title="Run (F5)" onClick={() => store.run()} />
                 }
             </Toolbar>
         </div>

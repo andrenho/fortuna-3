@@ -17,11 +17,17 @@ export interface SourceProject {
     compilerError?: string,
 }
 
+export interface DebuggerSetup {
+    sdCardSizeInMB: number,
+    breakpoints?: number[],
+    runOnLoad?: boolean,
+}
+
 export default interface DebuggingInfo {
     success: boolean,
     projects: {[key: string]: SourceProject},
+    debuggerSetup: DebuggerSetup,
     errorMessage?: string,
-    sdCardSizeInMB: number,
     hash: number,
 }
 
@@ -31,6 +37,10 @@ export function initialDebuggingInfo() : DebuggingInfo {
         errorMessage: "No project loaded",
         projects: {},
         hash: 0,
-        sdCardSizeInMB: 0,
+        debuggerSetup: {
+            sdCardSizeInMB: 0,
+            breakpoints: [],
+            runOnLoad: false,
+        }
     }
 }

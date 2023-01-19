@@ -1,12 +1,12 @@
 {
-  "sdcard": {
-    "sizeInMB": 16
-  },
   "biosSource": "bios.z80",
   "projects": {
     "hello": {
       "source": "hello.z80",
       "address": 256
     }
+  },
+  "debuggerSetup": {
+    "sdCardSizeInMB": 16
   }
 }

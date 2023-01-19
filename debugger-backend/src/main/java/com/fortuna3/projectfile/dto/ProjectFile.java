@@ -3,14 +3,11 @@ package com.fortuna3.projectfile.dto;
 import java.util.Map;
 
 public record ProjectFile(
-        SDCardDTO sdcard,
         String biosSource,
-        Map<String, ProjectDTO> projects
+        Map<String, Project> projects,
+        DebuggerSetup debuggerSetup
 ) {
-    public record SDCardDTO(
-            int sizeInMB
-    ) {}
-    public record ProjectDTO(
+    public record Project(
             String source,
             Integer address
     ) {}

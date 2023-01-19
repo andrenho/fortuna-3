@@ -84,7 +84,7 @@ export default class FortunaStore {
     }
 
     reset() : void {
-        this.emulator!.reset(this.debuggingInfo.sdCardSizeInMB);
+        this.emulator!.reset(this.debuggingInfo.debuggerSetup.sdCardSizeInMB);
         if (this.selectedProject && this.selectedProject === "BIOS") {
             const bios = Uint8Array.from(window.atob(this.currentProject!.binary), c => c.charCodeAt(0));
             this.emulator!.setRam(0x0, bios);
@@ -115,12 +115,20 @@ export default class FortunaStore {
         this.updateState();
     }
 
-    stepOneScreenful() : void {
-        this.emulator!.stepOneScreenful();
-        this.updateState();
+    next() : void {
+        const op = this.emulator!.getRamByte(this.state.cpu.pc);
+        if ([0xc4, 0xd4, 0xe4, 0xf4, 0xcc, 0xdc, 0xec, 0xfc, 0xcd].includes(op)) {  // call
+            this.emulator!.addBreakpoint(this.state.cpu.pc + 3);
+            this.run(true);
+        } else if ([0xc7, 0xd7, 0xe7, 0xf7, 0xcf, 0xdf, 0xef, 0xff].includes(op)) {  // rst
+            this.emulator!.addBreakpoint(this.state.cpu.pc + 1);
+            this.run(true);
+        } else {
+            this.step();
+        }
     }
 
-    run() : void {
+    run(removeBreakpointOnBreak = false) : void {
         if (this.running)
             return;
 
@@ -134,6 +142,9 @@ export default class FortunaStore {
             if (result === FinishReason.Breakpoint) {
                 console.log("Breakpoint hit.");
                 this.stopExecution();
+                if (removeBreakpointOnBreak) {
+                    this.swapBreakpoint(3);
+                }
             } else {
                 this.updateTerminal();
             }
@@ -231,17 +242,22 @@ export default class FortunaStore {
     }
 
     private updateSelectedFile() : void {
-        if (this.currentProject === undefined)
-            return;
-        for (const file of Object.keys(this.currentProject.source)) {
-            const source = this.currentProject.source[file];
-            for (const line of source) {
-                if (line.addresses && line.addresses.includes(this.state.cpu.pc)) {
-                    this.setSelectedFile(file);
-                    return;
+        for (const [projectName, project] of Object.entries(this.debuggingInfo.projects)) {
+            for (const file of Object.keys(project.source)) {
+                const source = project.source[file];
+                for (const line of source) {
+                    if (line.addresses && line.addresses.includes(this.state.cpu.pc)) {
+                        this.setSelectedProject(projectName);
+                        this.setSelectedFile(file);
+                        return;
+                    }
                 }
             }
+
         }
+
+        if (this.currentProject === undefined)
+            return;
     }
 
     private async updateDebuggingInfoFromBackend() : Promise<void> {
@@ -262,6 +278,11 @@ export default class FortunaStore {
                     this.lastUpdated = new Date().toLocaleTimeString();
                     if (debuggingInfo.success) {
                         this.initializeEmulator(debuggingInfo);
+                        if (debuggingInfo.debuggerSetup.breakpoints && debuggingInfo.debuggerSetup.breakpoints.length > 0) {
+                            debuggingInfo.debuggerSetup.breakpoints.forEach(b => this.swapBreakpoint(b));
+                            if (debuggingInfo.debuggerSetup.runOnLoad)
+                                this.run();
+                        }
                     } else {
                         this.currentError = debuggingInfo.errorMessage;
                     }
