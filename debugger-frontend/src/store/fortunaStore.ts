@@ -267,6 +267,11 @@ export default class FortunaStore {
                     this.lastUpdated = new Date().toLocaleTimeString();
                     if (debuggingInfo.success) {
                         this.initializeEmulator(debuggingInfo);
+                        if (debuggingInfo.debuggerSetup.breakpoints && debuggingInfo.debuggerSetup.breakpoints.length > 0) {
+                            debuggingInfo.debuggerSetup.breakpoints.forEach(b => this.swapBreakpoint(b));
+                            if (debuggingInfo.debuggerSetup.runOnLoad)
+                                this.run();
+                        }
                     } else {
                         this.currentError = debuggingInfo.errorMessage;
                     }

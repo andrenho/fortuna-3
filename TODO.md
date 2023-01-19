@@ -3,7 +3,7 @@
   - [ ] Build box
 - Emulator
   - [x] Go to project when step lands in another project
-  - [ ] Run to breakpoint in project file
+  - [x] Run to breakpoint in project file
   - [ ] Scroll to current PC
   - [ ] Create "NEXT"
   - [ ] Improved config button

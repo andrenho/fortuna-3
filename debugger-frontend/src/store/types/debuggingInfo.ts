@@ -19,8 +19,8 @@ export interface SourceProject {
 
 export interface DebuggerSetup {
     sdCardSizeInMB: number,
-    breakpoints: number[],
-    runOnLoad: boolean,
+    breakpoints?: number[],
+    runOnLoad?: boolean,
 }
 
 export default interface DebuggingInfo {
