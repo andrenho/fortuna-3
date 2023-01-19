@@ -54,7 +54,7 @@ public class CompilerService {
                 .stream().map(CompletableFuture::join).toList()
                 .stream().collect(Collectors.toMap(SourceProjectIndex::name, SourceProjectIndex::sourceProject));
 
-        currentDebuggingInfo = outputMapper.mapSourceProjectsToDebuggingInfo(projects, projectFile.sdcard());
+        currentDebuggingInfo = outputMapper.mapSourceProjectsToDebuggingInfo(projects, projectFile.debuggerSetup());
     }
 
     private SourceProject compile(String biosSource, Integer address) {

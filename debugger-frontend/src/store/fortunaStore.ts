@@ -84,7 +84,7 @@ export default class FortunaStore {
     }
 
     reset() : void {
-        this.emulator!.reset(this.debuggingInfo.sdCardSizeInMB);
+        this.emulator!.reset(this.debuggingInfo.debuggerSetup.sdCardSizeInMB);
         if (this.selectedProject && this.selectedProject === "BIOS") {
             const bios = Uint8Array.from(window.atob(this.currentProject!.binary), c => c.charCodeAt(0));
             this.emulator!.setRam(0x0, bios);
