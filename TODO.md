@@ -2,9 +2,11 @@
   - [ ] Add new serial wires to RPI
   - [ ] Build box
 - Emulator
-  - [ ] Create "NEXT"
-  - [ ] Go to project when step lands in another project
+  - [x] Go to project when step lands in another project
   - [ ] Run to breakpoint in project file
+  - [ ] Scroll to current PC
+  - [ ] Create "NEXT"
+  - [ ] Improved config button
 - Fortuna3 software
   - [x] Write BIOS
   - [ ] Write OS & shell

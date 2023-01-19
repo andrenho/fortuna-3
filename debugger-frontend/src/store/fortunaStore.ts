@@ -231,17 +231,22 @@ export default class FortunaStore {
     }
 
     private updateSelectedFile() : void {
-        if (this.currentProject === undefined)
-            return;
-        for (const file of Object.keys(this.currentProject.source)) {
-            const source = this.currentProject.source[file];
-            for (const line of source) {
-                if (line.addresses && line.addresses.includes(this.state.cpu.pc)) {
-                    this.setSelectedFile(file);
-                    return;
+        for (const [projectName, project] of Object.entries(this.debuggingInfo.projects)) {
+            for (const file of Object.keys(project.source)) {
+                const source = project.source[file];
+                for (const line of source) {
+                    if (line.addresses && line.addresses.includes(this.state.cpu.pc)) {
+                        this.setSelectedProject(projectName);
+                        this.setSelectedFile(file);
+                        return;
+                    }
                 }
             }
+
         }
+
+        if (this.currentProject === undefined)
+            return;
     }
 
     private async updateDebuggingInfoFromBackend() : Promise<void> {
