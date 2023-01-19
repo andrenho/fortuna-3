@@ -8,7 +8,6 @@
   },
   "debuggerSetup": {
     "sdCardSizeInMB": 16,
-    "breakpoints": [ 64768 ],
-    "runOnLoad": true
+    "breakpoints": [ 64768 ]
   }
 }
