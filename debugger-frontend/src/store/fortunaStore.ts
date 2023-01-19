@@ -103,6 +103,7 @@ export default class FortunaStore {
         if (currentLine === undefined) {
             this.emulator!.step();
         } else {
+            // keep stepping until out of instruction (for macros)
             const origPC = this.state.cpu.pc;
             let pc = origPC;
             while (currentLine.addresses?.includes(pc)) {
