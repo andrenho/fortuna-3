@@ -3,6 +3,8 @@
   - [ ] Build box
 - Emulator
   - [ ] Create "NEXT"
+  - [ ] Go to project when step lands in another project
+  - [ ] Run to breakpoint in project file
 - Fortuna3 software
   - [x] Write BIOS
   - [ ] Write OS & shell
