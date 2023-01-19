@@ -115,12 +115,20 @@ export default class FortunaStore {
         this.updateState();
     }
 
-    stepOneScreenful() : void {
-        this.emulator!.stepOneScreenful();
-        this.updateState();
+    next() : void {
+        const op = this.emulator!.getRamByte(this.state.cpu.pc);
+        if ([0xc4, 0xd4, 0xe4, 0xf4, 0xcc, 0xdc, 0xec, 0xfc, 0xcd].includes(op)) {  // call
+            this.emulator!.addBreakpoint(this.state.cpu.pc + 3);
+            this.run(true);
+        } else if ([0xc7, 0xd7, 0xe7, 0xf7, 0xcf, 0xdf, 0xef, 0xff].includes(op)) {  // rst
+            this.emulator!.addBreakpoint(this.state.cpu.pc + 1);
+            this.run(true);
+        } else {
+            this.step();
+        }
     }
 
-    run() : void {
+    run(removeBreakpointOnBreak = false) : void {
         if (this.running)
             return;
 
@@ -134,6 +142,9 @@ export default class FortunaStore {
             if (result === FinishReason.Breakpoint) {
                 console.log("Breakpoint hit.");
                 this.stopExecution();
+                if (removeBreakpointOnBreak) {
+                    this.swapBreakpoint(3);
+                }
             } else {
                 this.updateTerminal();
             }

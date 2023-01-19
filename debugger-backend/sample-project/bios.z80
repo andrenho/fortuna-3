@@ -1,7 +1,11 @@
 	include fortuna3.z80
 
-    jp      test
+    call    test
+    nop
 
-    include test.z80
+test:
+    nop
+    ret
+
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab

@@ -91,10 +91,6 @@ export class Fortuna3Emulator {
         return this.api!.stepCycles(time);
     }
 
-    stepOneScreenful() : FinishReason {
-        return this.api!.stepCycles(16);
-    }
-
     reset(sdCardSizeInMB: number) : void {
         this.sdCardImageSizeMB = sdCardSizeInMB;
         this.api!.initialize(sdCardSizeInMB);
@@ -194,6 +190,10 @@ export class Fortuna3Emulator {
 
     removeBreakpoint(addr: number) : void {
         this.api!.removeBreakpoint(addr);
+    }
+
+    getRamByte(addr: number) : number {
+        return this.api!.getRam(addr);
     }
 
     setRam(addr: number, data: Uint8Array) : void {
