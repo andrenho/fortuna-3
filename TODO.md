@@ -5,8 +5,8 @@
   - [x] Go to project when step lands in another project
   - [x] Run to breakpoint in project file
   - [x] Scroll to current PC
-  - [ ] Create "NEXT"
-  - [ ] Improved config button
+  - [x] Create "NEXT"
+  - [x] Improved config button
 - Fortuna3 software
   - [x] Write BIOS
   - [ ] Write OS & shell
