@@ -2,7 +2,7 @@ import Hex from "components/common/Hex/Hex";
 import {observer} from "mobx-react-lite";
 import {SourceLine} from "store/types/debuggingInfo";
 import css from "components/code/Code/Code.module.scss";
-import React, {useEffect} from "react";
+import React, {useEffect, useMemo} from "react";
 
 const sourceFileNotFound : SourceLine[] = [ { line: "Source file not found in debugging info." } ];
 
@@ -15,7 +15,7 @@ type CodeProps = {
 
 const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: source, swapBreakpoint}) => {
 
-    const lineRef : {[key: number]: HTMLTableRowElement} = {};
+    const lineRef = useMemo<{[key: number]: HTMLTableRowElement}>(() => ({}), []);
 
     const replaceTabs = (text: string) : string => {
         let newText = "";
@@ -55,7 +55,7 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
                 line.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
             }
         }
-    }, [pc]);
+    }, [pc, lineRef]);
 
     return <table className={css.code}>
         <tbody>
