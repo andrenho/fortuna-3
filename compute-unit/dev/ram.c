@@ -133,4 +133,28 @@ void ram_write_array(uint16_t initial_addr, uint8_t* bytes, uint16_t sz)
     release_bus();
 }
 
+uint16_t ram_write_pstr(uint16_t initial_addr, PGM_P str)
+{
+    size_t len = strlen_P(str);
+
+    take_bus();
+    DDRL = 0xff;   // data bus: write
+    clear_CE();
+    for (size_t i = 0; i < len; ++i) {
+        uint16_t addr = initial_addr + i;
+        PORTA = (addr & 0xff);
+        PORTC = (addr >> 8);
+        PORTL = pgm_read_byte(str + i);
+        clear_WE();
+        _NOP();
+        set_WE();
+    }
+    set_CE();
+    release_bus();
+
+    ram_set_byte(initial_addr + len, 0);  // string terminator
+
+    return len;
+}
+
 // vim:ts=4:sts=4:sw=4:expandtab

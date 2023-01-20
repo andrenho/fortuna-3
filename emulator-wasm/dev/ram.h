@@ -1,6 +1,7 @@
 #ifndef RAM_H_
 #define RAM_H_
 
+#include <avr/pgmspace.h>
 #include <stdint.h>
 
 void    ram_init(void);
@@ -15,5 +16,7 @@ uint16_t ram_get_string(uint16_t addr, uint8_t* buf, uint16_t max_sz);
 
 void    ram_read_array(uint16_t initial_addr, uint8_t* bytes, uint16_t sz);
 void    ram_write_array(uint16_t initial_addr, uint8_t* bytes, uint16_t sz);
+
+uint16_t ram_write_pstr(uint16_t initial_addr, PGM_P str);
 
 #endif

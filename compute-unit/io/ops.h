@@ -40,6 +40,7 @@
 #define FS_CLOSEDIR 0x31
 #define FS_FREE 0x32
 #define FS_FORMAT 0x33
+#define FS_ERROR 0x34
 #define MM_BANK_SET 0x40
 #define MM_BANK_GET 0x40
 #define MM_CPY 0x41

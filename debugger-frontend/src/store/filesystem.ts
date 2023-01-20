@@ -8,12 +8,18 @@ export default class Filesystem {
     selectedPage = 0;
     pageContents?: Uint8Array;
     currentPath = "";
+    ejected = false;
 
     private emulator : Fortuna3Emulator;
 
     constructor(emulator: Fortuna3Emulator) {
         makeAutoObservable(this);
         this.emulator = emulator;
+        this.updateFromEmulator(undefined, 0);
+    }
+
+    reset() {
+        this.ejected = false;
         this.updateFromEmulator(undefined, 0);
     }
 
@@ -53,5 +59,10 @@ export default class Filesystem {
 
     createFile(filename: string, contents: Buffer) {
         this.emulator.createFileOnSdCard(filename, contents);
+    }
+
+    setEjected(ejected: boolean) : void {
+        this.ejected = ejected;
+        this.emulator.sdCardSetEjected(ejected);
     }
 }

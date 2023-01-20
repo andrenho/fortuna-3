@@ -1,4 +1,4 @@
-import Box from "components/common/box/Box";
+import Box from "components/common/Box/Box";
 import React from "react";
 
 type RtcProps = {

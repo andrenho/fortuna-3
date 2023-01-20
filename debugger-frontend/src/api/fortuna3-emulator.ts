@@ -290,6 +290,10 @@ export class Fortuna3Emulator {
             throw new Error(`Error while formatting file ${filename}: ${r}`);
     }
 
+    sdCardSetEjected(ejected: boolean) {
+        this.api!.sdCardSetEjected(ejected);
+    }
+
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
         const script = document.createElement("script");
         script.src = `${wasmFilePath}/fortuna.js`;
