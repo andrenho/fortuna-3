@@ -1,0 +1,26 @@
+.mainContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.flatdataWithSeparator {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid black;
+  padding-right: 16px;
+  gap: 24px;
+}
+
+.linkContainer {
+  padding-right: 8px;
+  width: 100%;
+  text-align: right;
+}
+
+.link {
+  color: blue;
+  text-decoration: none;
+  cursor: pointer;
+}

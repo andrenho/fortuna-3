@@ -1,6 +1,6 @@
 import React from "react";
 import Options from "store/types/options";
-import Box from "components/common/box/Box";
+import Box from "components/common/Box/Box";
 
 type CompilerOptionsProps = {
     options: Options,

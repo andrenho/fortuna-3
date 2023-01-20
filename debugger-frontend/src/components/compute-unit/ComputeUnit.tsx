@@ -1,5 +1,5 @@
-import Box from "components/common/box/Box";
-import Register from "components/common/register/Register";
+import Box from "components/common/Box/Box";
+import Register from "components/common/Register/Register";
 import {observer} from "mobx-react-lite";
 import {faUpRightFromSquare} from '@fortawesome/free-solid-svg-icons'
 import css from "./ComputeUnit.module.scss";

@@ -11,6 +11,7 @@
   - [x] Write BIOS
   - [ ] Write OS & shell
     - [x] Move BIOS back to 0x0
+    - [ ] SDCard component: simulate card removal
     - [ ] ComputeUnit: add call for error messages
     - [ ] Rename KERNEL to KERNEL.SYS
     - [ ] OS: initialization code (setup interrupt table (IM 2 mode), stack, etc)

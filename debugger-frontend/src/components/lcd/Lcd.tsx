@@ -1,6 +1,6 @@
 import React from "react";
 import css from "./Lcd.module.scss";
-import Box from "components/common/box/Box";
+import Box from "components/common/Box/Box";
 
 type LcdProps = {
     line1: string,
