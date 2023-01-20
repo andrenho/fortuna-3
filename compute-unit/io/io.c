@@ -150,6 +150,7 @@ void io_write_bus(uint8_t addr, uint8_t data)
         case FS_MKDIR:      io_fs_mkdir(&ioregs); break;
         case FS_OPENDIR:    io_fs_opendir(&ioregs); break;
         case FS_READDIR:    io_fs_readdir(&ioregs); break;
+        case FS_ERROR:      io_fs_error(&ioregs); break;
 #endif
 
     }

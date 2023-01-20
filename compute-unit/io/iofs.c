@@ -228,5 +228,34 @@ void io_fs_format(IO_Regs* r)
     r->Ra0 = fresult(f_mkfs("0:", 0, buffer, sizeof buffer));
 }
 
+void io_fs_error(IO_Regs* r)
+{
+    PGM_P pstr;
+    switch (r->Ra0) {
+        case FR_OK:                  pstr = PSTR("Operation successful"); break;
+        case FR_DISK_ERR:            pstr = PSTR("Unrecoverable hard error"); break;
+        case FR_INT_ERR:             pstr = PSTR("Insanity error"); break;
+        case FR_NOT_READY:           pstr = PSTR("Device not ready"); break;
+        case FR_NO_FILE:             pstr = PSTR("File not found"); break;
+        case FR_NO_PATH:             pstr = PSTR("Path not found"); break;
+        case FR_INVALID_NAME:        pstr = PSTR("Invalid name"); break;
+        case FR_DENIED:              pstr = PSTR("Access denied"); break;
+        case FR_EXIST:               pstr = PSTR("Object already exists"); break;
+        case FR_WRITE_PROTECTED:     pstr = PSTR("Write protected"); break;
+        case FR_INVALID_DRIVE:       pstr = PSTR("Invalid drive"); break;
+        case FR_NOT_ENABLED:         pstr = PSTR("Drive not mounted"); break;
+        case FR_NO_FILESYSTEM:       pstr = PSTR("No filesystem"); break;
+        case FR_MKFS_ABORTED:        pstr = PSTR("MKFS error"); break;
+        case FR_TIMEOUT:             pstr = PSTR("Timeout"); break;
+        case FR_LOCKED:              pstr = PSTR("Locked"); break;
+        case FR_NOT_ENOUGH_CORE:     pstr = PSTR("Not enough memory"); break;
+        case FR_TOO_MANY_OPEN_FILES: pstr = PSTR("Too many open files"); break;
+        case FR_INVALID_PARAMETER:   pstr = PSTR("Invalid parameter"); break;
+        default:                     pstr = PSTR("Unexpected error"); break;
+    }
+    
+    ram_write_pstr(Pa(r), pstr);
+}
+
 
 // vim:ts=4:sts=4:sw=4:expandtab
