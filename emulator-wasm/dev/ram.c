@@ -63,3 +63,10 @@ void ram_write_array(uint16_t initial_addr, uint8_t* bytes, uint16_t sz)
 {
     memcpy(&ram_[(bank_ * BANK_SZ) + initial_addr], (const void *) bytes, sz);
 }
+
+uint16_t ram_write_pstr(uint16_t initial_addr, PGM_P str)
+{
+    size_t len = strlen(str);
+    ram_write_array(initial_addr, (void *) str, len + 1);
+    return len;
+}
