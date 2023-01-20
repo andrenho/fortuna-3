@@ -14,7 +14,7 @@ const SDCardPage : React.FC = observer(() => {
 
     return <SDCard
         currentPage={store.sdCardPage}
-        sdCardSizeInMB={store.debuggingInfo.sdCardSizeInMB}
+        sdCardSizeInMB={store.debuggingInfo.debuggerSetup.sdCardSizeInMB}
         currentPageBytes={store.state.sdCardPage}
         onPageChange={n => store.setSdCardPage(n)}
         getCompressedImageBytes={() => store.downloadSdCardImage()}>

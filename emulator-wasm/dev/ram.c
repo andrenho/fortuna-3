@@ -32,7 +32,7 @@ void ram_set_bank(uint8_t bank)
     printf("Bank is now %d\n", bank_);
 }
 
-uint8_t ram_get_byte(uint16_t addr)
+EMSCRIPTEN_KEEPALIVE uint8_t ram_get_byte(uint16_t addr)
 {
     return ram_[(bank_ * BANK_SZ) + addr];
 }

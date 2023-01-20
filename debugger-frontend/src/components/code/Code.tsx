@@ -2,6 +2,7 @@ import Hex from "components/common/hex/Hex";
 import {observer} from "mobx-react-lite";
 import {SourceLine} from "store/types/debuggingInfo";
 import css from "./Code.module.scss";
+import React, {useEffect} from "react";
 
 const sourceFileNotFound : SourceLine[] = [ { line: "Source file not found in debugging info." } ];
 
@@ -13,6 +14,8 @@ type CodeProps = {
 };
 
 const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: source, swapBreakpoint}) => {
+
+    const lineRef : {[key: number]: HTMLTableRowElement} = {};
 
     const replaceTabs = (text: string) : string => {
         let newText = "";
@@ -45,11 +48,24 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
         </>;
     };
 
+    useEffect(() => {
+        const line = lineRef[pc];
+        if (line) {
+            if (line.getBoundingClientRect().bottom > window.innerHeight || line.getBoundingClientRect().top < 0) {
+                line.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            }
+        }
+    }, [pc]);
+
     return <table className={css.code}>
         <tbody>
             { (source || sourceFileNotFound).map((line, i) => {
                 const firstAddress = line.addresses ? line.addresses[0] : -1;
-                return <tr key={`sl_${i}`} style={{ backgroundColor: (line.addresses?.includes(pc)) ? "yellow" : "white" }}>
+                return <tr
+                    key={`sl_${i}`}
+                    style={{ backgroundColor: (line.addresses?.includes(pc)) ? "yellow" : "white" }}
+                    ref={node => node && (firstAddress !== -1) && (lineRef[firstAddress] = node)}
+                >
                     <td className={css.breakpoint}
                         style={{background: (breakpoints.includes(firstAddress) ? "red" : undefined)}}
                         onClick={() => line.addresses !== undefined && swapBreakpoint(line.addresses[0])}>

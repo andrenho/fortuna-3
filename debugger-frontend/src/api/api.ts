@@ -15,6 +15,7 @@ export interface FortunaApi {
     stepCycles: (milliseconds: number) => FinishReason;
     addBreakpoint: (addr: number) => void;
     removeBreakpoint: (addr: number) => void;
+    getRam: (addr: number) => number;
     setRam: (addr: number, data: number) => void;
     unloadPrintedChars: (data: pointer, maxSize: number) => number;
     keypress: (chr: number) => void;
@@ -33,6 +34,7 @@ export function loadApiFunctions(module: FortunaModule) : FortunaApi {
         stepCycles: module.cwrap("emulator_step_cycles", "number", ["number"]),
         addBreakpoint: module.cwrap("bkp_add", null, ["number"]),
         removeBreakpoint: module.cwrap("bkp_del", null, ["number"]),
+        getRam: module.cwrap("ram_get_byte", "number", ["number"]),
         setRam: module.cwrap("ram_set_byte", null, ["number", "number"]),
         unloadPrintedChars: module.cwrap("terminal_unload_printed_chars", "number", ["number", "number"]),
         keypress: module.cwrap("emulator_keypress", null, ["number"]),
