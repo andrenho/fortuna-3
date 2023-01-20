@@ -30,12 +30,18 @@
   - [ ] Timers + interrupt
   - [ ] "Hard" I/O (strsub, `compare_16`, `compare_32`)
 - [ ] Raspberry Pi
-  - [ ] Install OS
-  - [ ] Fast OS boot
+  - [x] Install OS
+  - [ ] Basic SDL window
+    - [ ] Run on framebuffer (https://stackoverflow.com/questions/57672568/sdl2-on-raspberry-pi-without-x)
+    - [ ] Run on EMScripten
+  - [ ] Create script to copy the image
+    - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
   - [ ] Graphical interface (serial)
   - [ ] Create protocol
   - [ ] Graphics
   - [ ] Audio
+  - [ ] Fast OS boot
+    - https://medium.com/@awarlt12207/how-fast-can-a-raspberry-pi-zero-2w-boot-8614de1cbd64
 
 ---
 
