@@ -1,3 +1,5 @@
+#include <emscripten/emscripten.h>
+
 #include "sdcard.h"
 
 #include <stdio.h>
@@ -12,6 +14,8 @@
 
 size_t sdcard_sz = 0;
 uint8_t* sd_data = NULL;
+
+static bool ejected = false;
 
 PARTITION VolToPart[FF_VOLUMES] = {
         {0, 1},    /* "0:" ==> 1st partition in PD#0 */
@@ -44,6 +48,7 @@ static bool check_for_errors(const char* call, FRESULT result)
 bool sdcard_init(size_t sz)
 {
 	free(sd_data);
+	sdcard_set_ejected(false);
 
     sdcard_sz = sz;
     sd_data = malloc(sz);
@@ -76,13 +81,13 @@ void sdcard_copy_page(size_t page, uint8_t* data)
 DSTATUS disk_status(BYTE pdrv)
 {
     (void) pdrv;
-    return 0;
+    return ejected ? STA_NOINIT : 0;
 }
 
 DSTATUS disk_initialize(BYTE pdrv)
 {
     (void) pdrv;
-    return 0;
+    return ejected ? STA_NOINIT : 0;
 }
 
 DRESULT disk_read (
@@ -94,7 +99,7 @@ DRESULT disk_read (
 {
     (void) pdrv;
     memcpy(buff, &sd_data[sector * 512], count * 512);
-    return RES_OK;
+    return ejected ? RES_NOTRDY : RES_OK;
 }
 
 DRESULT disk_write (
@@ -106,7 +111,7 @@ DRESULT disk_write (
 {
     (void) pdrv;
     memcpy(&sd_data[sector * 512], buff, count * 512);
-    return RES_OK;
+    return ejected ? RES_NOTRDY : RES_OK;
 }
 
 DRESULT disk_ioctl (
@@ -126,12 +131,17 @@ DRESULT disk_ioctl (
             ((DWORD*) buff)[0] = 1;
             break;
     }
-    return RES_OK;
+    return ejected ? RES_NOTRDY : RES_OK;
 }
 
 DWORD get_fattime (void)
 {
     return 0;
+}
+
+EMSCRIPTEN_KEEPALIVE void sdcard_set_ejected(bool ejected_)
+{
+    ejected = ejected_;
 }
 
 // vim: ts=4:sts=4:sw=4:noexpandtab

@@ -95,7 +95,7 @@ export default class FortunaStore {
         this.updateState();
         this.uartTerminal.reset();
         this.lastKeyPressed = undefined;
-        this.filesystem?.updateFromEmulator(undefined, 0);
+        this.filesystem?.reset();
     }
 
     step() : void {

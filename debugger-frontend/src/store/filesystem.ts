@@ -18,6 +18,11 @@ export default class Filesystem {
         this.updateFromEmulator(undefined, 0);
     }
 
+    reset() {
+        this.ejected = false;
+        this.updateFromEmulator(undefined, 0);
+    }
+
     updateFromEmulator(selectedFile: string | undefined, selectedPage: number) {
 
         if (selectedFile === undefined) {
@@ -58,6 +63,6 @@ export default class Filesystem {
 
     setEjected(ejected: boolean) : void {
         this.ejected = ejected;
-        // TODO - call API
+        this.emulator.sdCardSetEjected(ejected);
     }
 }
