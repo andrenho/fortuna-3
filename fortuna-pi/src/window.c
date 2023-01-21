@@ -70,10 +70,11 @@ void window_init()
 
 }
 
-unsigned int i;
+unsigned int i = 0;
 
-EMSCRIPTEN_KEEPALIVE bool window_loop_step()
+EMSCRIPTEN_KEEPALIVE bool window_single_loop()
 {
+    printf("loop\n");
     SDL_Event ev;
     while (SDL_PollEvent(&ev))
         if ((ev.type == SDL_QUIT) || (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE))
@@ -87,6 +88,19 @@ EMSCRIPTEN_KEEPALIVE bool window_loop_step()
 
     return true;
 }
+
+void window_main_loop()
+{
+    while (window_single_loop());
+}
+
+#ifdef EMULATOR
+EMSCRIPTEN_KEEPALIVE void window_main_loop_emscripten()
+{
+
+    emscripten_set_main_loop(window_main_loop, 0, 0);
+}
+#endif
 
 void window_destroy()
 {

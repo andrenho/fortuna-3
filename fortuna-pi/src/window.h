@@ -5,7 +5,9 @@
 #include "global.h"
 
 void window_init();
-bool window_loop_step();
+void window_main_loop();
+void window_main_loop_emscripten();
+bool window_single_loop();
 void window_destroy();
 
 #endif
