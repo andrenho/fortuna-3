@@ -1,4 +1,4 @@
-OBJ=src/main.o src/window.o
+OBJ=src/main.o src/window.o src/text.o
 EXE=fortuna-pi
 
 CFLAGS=-Wall -Wextra -std=c11
