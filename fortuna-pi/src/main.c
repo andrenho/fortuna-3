@@ -3,10 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(int argc, char* argv[])
-{
-    (void) argc; (void) argv;
+static SDL_Window* window;
+static SDL_Renderer* renderer;
+static unsigned char i = 0;
 
+static void init_sdl()
+{
     SDL_Init(0);
 
     printf("Testing video drivers...\n");
@@ -34,19 +36,19 @@ int main(int argc, char* argv[])
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
         fprintf(stderr, "SDL_Init(): %s\n", SDL_GetError());
-        return EXIT_FAILURE;
+        exit(EXIT_FAILURE);
     }
     printf("SDL_VIDEODRIVER selected: %s\n", SDL_GetCurrentVideoDriver());
 
-    SDL_Window* window = SDL_CreateWindow(
-        "SDL2",
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        640, 480,
-        SDL_WINDOW_SHOWN
+    window = SDL_CreateWindow(
+            "SDL2",
+            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+            640, 480,
+            SDL_WINDOW_SHOWN
     );
     if (!window) {
         fprintf(stderr, "SDL_CreateWindow(): %s\n", SDL_GetError());
-        return EXIT_FAILURE;
+        exit(EXIT_FAILURE);
     }
 
     printf("SDL_RENDER_DRIVER available: ");
@@ -57,40 +59,53 @@ int main(int argc, char* argv[])
     }
     puts("");
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
         fprintf(stderr, "SDL_CreateRenderer(): %s\n", SDL_GetError());
-        return EXIT_FAILURE;
+        exit(EXIT_FAILURE);
     }
 
     SDL_RendererInfo info;
     SDL_GetRendererInfo( renderer, &info );
     printf("SDL_RENDER_DRIVER selected: %s\n", info.name);
 
-    bool running = true;
-    unsigned char i = 0;
-    while( running )
-    {
-        SDL_Event ev;
-        while( SDL_PollEvent( &ev ) )
-        {
-            if( ( ev.type == SDL_QUIT ) ||
-                ( ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE ) )
-            {
-                running = false;
-            }
-        }
+}
 
-        SDL_SetRenderDrawColor( renderer, i % 255, ((i + 64) * 2) % 255, ((i + 128) / 2) % 255, SDL_ALPHA_OPAQUE );
-        SDL_RenderClear( renderer );
-        SDL_RenderPresent( renderer );
-        SDL_Delay(16);
-        i++;
-    }
-
+void stop_sdl()
+{
     SDL_DestroyRenderer( renderer );
     SDL_DestroyWindow( window );
     SDL_Quit();
+}
+
+bool sdl_frame()
+{
+    SDL_Event ev;
+    while( SDL_PollEvent( &ev ) )
+    {
+        if( ( ev.type == SDL_QUIT ) ||
+            ( ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE ) )
+        {
+            return false;
+        }
+    }
+
+    SDL_SetRenderDrawColor( renderer, i % 255, ((i + 64) * 2) % 255, ((i + 128) / 2) % 255, SDL_ALPHA_OPAQUE );
+    SDL_RenderClear( renderer );
+    SDL_RenderPresent( renderer );
+    SDL_Delay(16);
+    i++;
+
+    return true;
+}
+
+int main(int argc, char* argv[])
+{
+    (void) argc; (void) argv;
+
+    init_sdl();
+    while(sdl_frame());
+    stop_sdl();
 
     return 0;
 }
