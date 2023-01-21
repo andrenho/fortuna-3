@@ -40,5 +40,5 @@ void text_draw()
 
 void text_destroy()
 {
-    SDL_DestroyTexture(font);
+    // SDL_DestroyTexture(font);
 }
