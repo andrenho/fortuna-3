@@ -1,12 +1,12 @@
 OBJ=src/main.o
 EXE=fortuna-pi
 
-CFLAGS=-Wall -Wextra
+CFLAGS=-Wall -Wextra -std=c11
 
 ifeq ($(OS),Windows_NT)
 	EXE := ${EXE}.exe
-	CFLAGS := ${CFLAGS} -ISDL2-windows\include\SDL2
-	LDFLAGS = -LSDL2-windows\lib -lmingw32 -lSDL2main -lSDL2
+	CFLAGS := ${CFLAGS} -ISDL2-windows/include/SDL2
+	LDFLAGS = -LSDL2-windows/lib -lmingw32 -lSDL2main -lSDL2
 else
 endif
 
