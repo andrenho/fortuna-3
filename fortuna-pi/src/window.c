@@ -3,8 +3,25 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "font.h"
+
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
+
+static SDL_Texture*  font = NULL;
+
+static void window_load_font()  // TODO - move to terminal
+{
+    SDL_RWops* io = SDL_RWFromConstMem(font_bmp, (int) font_bmp_len);
+    SDL_Surface* sf = SDL_LoadBMP_RW(io, 1);
+    if (!sf) {
+        fprintf(stderr, "SDL_LoadBMP_RW: %s\n", SDL_GetError());
+    }
+    SDL_SetColorKey(sf, SDL_RLEACCEL, 0);
+    font = SDL_CreateTextureFromSurface(renderer, sf);
+    // SDL_SetTextureBlendMode(font, SDL_BLENDMODE_MOD);
+    SDL_FreeSurface(sf);
+}
 
 void window_init()
 {
@@ -43,7 +60,7 @@ void window_init()
             "Fortuna-3 emulator",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             640, 400,
-            0
+            SDL_WINDOW_OPENGL
     );
     if (!window) {
         fprintf(stderr, "SDL_CreateWindow(): %s\n", SDL_GetError());
@@ -58,7 +75,7 @@ void window_init()
     }
     puts("");
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) {
         fprintf(stderr, "SDL_CreateRenderer(): %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
@@ -68,6 +85,7 @@ void window_init()
     SDL_GetRendererInfo( renderer, &info );
     printf("SDL_RENDER_DRIVER selected: %s\n", info.name);
 
+    window_load_font();
 }
 
 unsigned int i = 0;
