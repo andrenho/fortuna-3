@@ -112,6 +112,7 @@ export default class FortunaStore {
                     break;
             }
         }
+        this.emulator!.windowSingleLoop();
         this.updateState();
     }
 
@@ -138,6 +139,8 @@ export default class FortunaStore {
         const screenfulStep = (elapsed: DOMHighResTimeStamp) => {
 
             const result = this.emulator!.stepTime(16.6);
+
+            this.emulator!.windowSingleLoop();
 
             if (result === FinishReason.Breakpoint) {
                 console.log("Breakpoint hit.");

@@ -296,6 +296,10 @@ export class Fortuna3Emulator {
         this.api!.sdCardSetEjected(ejected);
     }
 
+    windowSingleLoop() {
+        this.api!.windowSingleLoop();
+    }
+
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {
         const script = document.createElement("script");
         script.src = `${wasmFilePath}/fortuna.js`;
