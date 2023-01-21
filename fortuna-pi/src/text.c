@@ -16,7 +16,6 @@ static void text_load_font()
     if (!sf) {
         fprintf(stderr, "SDL_LoadBMP_RW: %s\n", SDL_GetError());
     }
-    SDL_RWclose(io);
 
     SDL_SetColorKey(sf, SDL_RLEACCEL, 0);
     font = SDL_CreateTextureFromSurface(renderer, sf);
@@ -40,5 +39,5 @@ void text_draw()
 
 void text_destroy()
 {
-    // SDL_DestroyTexture(font);
+    SDL_DestroyTexture(font);
 }

@@ -107,7 +107,7 @@ void window_main_loop()
 
 void window_destroy()
 {
-    SDL_DestroyRenderer( renderer );
-    SDL_DestroyWindow( window );
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     SDL_Quit();
 }
