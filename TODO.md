@@ -30,15 +30,15 @@
   - [ ] "Hard" I/O (strsub, `compare_16`, `compare_32`)
 - [ ] Raspberry Pi
   - [x] Install OS
-    - [ ] Document installation process
+    - [x] Document installation process
   - [x] Basic SDL window
     - [x] Run on framebuffer (https://stackoverflow.com/questions/57672568/sdl2-on-raspberry-pi-without-x)
   - [x] Fix short
-  - [ ] Build initial setup
+  - [x] Build initial setup
+    - [x] Run on EMScripten
     - [ ] Makefile, directories
     - [ ] Interface, commandline
     - [ ] Find appropriate window size
-    - [ ] Run on EMScripten
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
   - [ ] Graphical interface (serial)
