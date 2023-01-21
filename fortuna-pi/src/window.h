@@ -1,10 +1,11 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include <stdbool.h>
 #include "global.h"
 
-void sdl_init();
 void window_init();
-void sdl_destroy();
+bool window_loop_step();
+void window_destroy();
 
 #endif

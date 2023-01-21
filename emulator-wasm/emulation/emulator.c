@@ -37,7 +37,6 @@ EMSCRIPTEN_KEEPALIVE bool emulator_initialize(size_t sdcard_sz_in_mb)
     puts("Emulator initialized.");
 
     if (!sdl_initialized) {
-        sdl_init();
         window_init();
         sdl_initialized = true;
     }

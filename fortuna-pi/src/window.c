@@ -6,7 +6,7 @@
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
-void sdl_init()
+void window_init()
 {
     SDL_Init(0);
 
@@ -38,12 +38,9 @@ void sdl_init()
         exit(EXIT_FAILURE);
     }
     printf("SDL_VIDEODRIVER selected: %s\n", SDL_GetCurrentVideoDriver());
-}
 
-EMSCRIPTEN_KEEPALIVE void window_init()
-{
     window = SDL_CreateWindow(
-            "SDL2",
+            "Fortuna-3 emulator",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             640, 400,
             0
@@ -73,7 +70,25 @@ EMSCRIPTEN_KEEPALIVE void window_init()
 
 }
 
-EMSCRIPTEN_KEEPALIVE void sdl_destroy()
+unsigned int i;
+
+EMSCRIPTEN_KEEPALIVE bool window_loop_step()
+{
+    SDL_Event ev;
+    while (SDL_PollEvent(&ev))
+        if ((ev.type == SDL_QUIT) || (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE))
+            return false;
+
+    SDL_SetRenderDrawColor( renderer, i % 255, ((i + 64) * 2) % 255, ((i + 128) / 2) % 255, SDL_ALPHA_OPAQUE );
+    SDL_RenderClear( renderer );
+    SDL_RenderPresent( renderer );
+    SDL_Delay(16);
+    i++;
+
+    return true;
+}
+
+void window_destroy()
 {
     SDL_DestroyRenderer( renderer );
     SDL_DestroyWindow( window );
