@@ -96,7 +96,7 @@ const Components : React.FC = observer(() => {
             <Debugger />
             <div className={css.rightSide}>
 
-                { showFortunaPi && <FortunaPi /> }
+                <div style={{ display: showFortunaPi ? "block" : "none" }}><FortunaPi /></div>
 
                 { showCpu && <CPU cpu={store.state.cpu} running={store.running} /> }
 

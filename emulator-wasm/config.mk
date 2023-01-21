@@ -1,5 +1,5 @@
 COMPUTE_UNIT_DIR=../compute-unit
-PI_DIR=../fortuna-pi/src
+PI_DIR=../fortuna-pi
 
 #
 # Compiler configuration
@@ -14,13 +14,15 @@ LDFLAGS=-std=c11 -Wall -Wextra --no-entry -O3 \
 		-s ABORTING_MALLOC=0 \
 		-s ASSERTIONS=1 \
 		-s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']" \
-		-s "EXPORTED_FUNCTIONS=['_malloc', '_free']"
+		-s "EXPORTED_FUNCTIONS=['_malloc', '_free']" \
+		--use-preload-plugins
+#		--preload-file resource
 
 #
 # Objects to compile
 #
 SRC_IO=io/io.c io/ioregs.c io/iomemory.c io/serial.c io/iolcd.c io/iofs.c
-SRC_PI=${PI_DIR}/main.c
+SRC_PI=${PI_DIR}/src/window.c
 SRC=globals.c \
  	util/compress.c \
 	emulation/emulator.c emulation/cpu.c emulation/state.c emulation/sdcard.c emulation/terminal.c emulation/fs.c \

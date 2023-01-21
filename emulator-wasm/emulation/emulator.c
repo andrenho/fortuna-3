@@ -15,6 +15,9 @@
 #include "sdcard.h"
 #include "terminal.h"
 #include "z80/Z80.h"
+#include "src/window.h"
+
+static bool sdl_initialized = false;
 
 EMSCRIPTEN_KEEPALIVE bool emulator_initialize(size_t sdcard_sz_in_mb)
 {
@@ -32,6 +35,12 @@ EMSCRIPTEN_KEEPALIVE bool emulator_initialize(size_t sdcard_sz_in_mb)
     bool r = sdcard_init(sdcard_sz_in_mb MB);
 
     puts("Emulator initialized.");
+
+    if (!sdl_initialized) {
+        sdl_init();
+        window_init();
+        sdl_initialized = true;
+    }
 
     return r;
 }

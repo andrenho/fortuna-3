@@ -6,7 +6,7 @@
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
-EMSCRIPTEN_KEEPALIVE void sdl_init()
+void sdl_init()
 {
     SDL_Init(0);
 
@@ -32,7 +32,7 @@ EMSCRIPTEN_KEEPALIVE void sdl_init()
     }
     puts("");
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         fprintf(stderr, "SDL_Init(): %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
@@ -40,12 +40,13 @@ EMSCRIPTEN_KEEPALIVE void sdl_init()
     printf("SDL_VIDEODRIVER selected: %s\n", SDL_GetCurrentVideoDriver());
 }
 
-EMSCRIPTEN_KEEPALIVE void window_init() {
+EMSCRIPTEN_KEEPALIVE void window_init()
+{
     window = SDL_CreateWindow(
             "SDL2",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            640, 480,
-            SDL_WINDOW_SHOWN
+            640, 400,
+            0
     );
     if (!window) {
         fprintf(stderr, "SDL_CreateWindow(): %s\n", SDL_GetError());
@@ -60,7 +61,7 @@ EMSCRIPTEN_KEEPALIVE void window_init() {
     }
     puts("");
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) {
         fprintf(stderr, "SDL_CreateRenderer(): %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
