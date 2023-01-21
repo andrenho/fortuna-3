@@ -1,6 +1,5 @@
 - Box
-  - [ ] Add new serial wires to RPI
-  - [ ] Build box
+  - [x] Build box
 - Emulator
   - [x] Go to project when step lands in another project
   - [x] Run to breakpoint in project file
@@ -31,8 +30,14 @@
   - [ ] "Hard" I/O (strsub, `compare_16`, `compare_32`)
 - [ ] Raspberry Pi
   - [x] Install OS
-  - [ ] Basic SDL window
-    - [ ] Run on framebuffer (https://stackoverflow.com/questions/57672568/sdl2-on-raspberry-pi-without-x)
+    - [ ] Document installation process
+  - [x] Basic SDL window
+    - [x] Run on framebuffer (https://stackoverflow.com/questions/57672568/sdl2-on-raspberry-pi-without-x)
+  - [x] Fix short
+  - [ ] Build initial setup
+    - [ ] Makefile, directories
+    - [ ] Interface, commandline
+    - [ ] Find appropriate window size
     - [ ] Run on EMScripten
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
