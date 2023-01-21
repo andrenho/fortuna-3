@@ -5,10 +5,10 @@ CFLAGS=-Wall -Wextra -std=c11
 
 ifeq ($(OS),Windows_NT)
 	EXE := ${EXE}.exe
-	CFLAGS := ${CFLAGS} -ISDL2-windows/include/SDL2
+	CFLAGS := ${CFLAGS} -ISDL2-windows/include/SDL2 -O0 -ggdb
 	LDFLAGS = -LSDL2-windows/lib -lmingw32 -lSDL2main -lSDL2
 else
-	CFLAGS := ${CFLAGS} `sdl2-config --cflags`
+	CFLAGS := ${CFLAGS} `sdl2-config --cflags` -O3
 	LDFLAGS := ${CFLAGS} `sdl2-config --libs`
 endif
 
