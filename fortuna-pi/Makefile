@@ -8,6 +8,8 @@ ifeq ($(OS),Windows_NT)
 	CFLAGS := ${CFLAGS} -ISDL2-windows/include/SDL2
 	LDFLAGS = -LSDL2-windows/lib -lmingw32 -lSDL2main -lSDL2
 else
+	CFLAGS := ${CFLAGS} `sdl2-config --cflags`
+	LDFLAGS := ${CFLAGS} `sdl2-config --libs`
 endif
 
 all: ${EXE}
