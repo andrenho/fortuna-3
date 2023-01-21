@@ -74,7 +74,6 @@ unsigned int i = 0;
 
 EMSCRIPTEN_KEEPALIVE bool window_single_loop()
 {
-    printf("loop\n");
     SDL_Event ev;
     while (SDL_PollEvent(&ev))
         if ((ev.type == SDL_QUIT) || (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE))
@@ -83,7 +82,7 @@ EMSCRIPTEN_KEEPALIVE bool window_single_loop()
     SDL_SetRenderDrawColor( renderer, i % 255, ((i + 64) * 2) % 255, ((i + 128) / 2) % 255, SDL_ALPHA_OPAQUE );
     SDL_RenderClear( renderer );
     SDL_RenderPresent( renderer );
-    SDL_Delay(16);
+    // SDL_Delay(16);
     i++;
 
     return true;
