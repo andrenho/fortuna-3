@@ -17,7 +17,7 @@ static SDL_Window* window;
 
 SDL_Renderer* renderer = NULL;
 
-void window_init()
+static void sdl_init()
 {
     SDL_Init(0);
 
@@ -49,6 +49,19 @@ void window_init()
         exit(EXIT_FAILURE);
     }
     printf("SDL_VIDEODRIVER selected: %s\n", SDL_GetCurrentVideoDriver());
+}
+
+static void find_ideal_window_size(int* h, int* w, int* zoom)
+{
+    SDL_DisplayMode mode;
+    SDL_GetDesktopDisplayMode(0, &mode);
+    printf("Desktop size is %dx%d.\n", mode.w, mode.h);
+}
+
+static void window_and_renderer_init()
+{
+    int h, w, zoom;
+    find_ideal_window_size(&h, &w, &zoom);
 
     window = SDL_CreateWindow(
             "Fortuna-3 emulator",
@@ -78,6 +91,12 @@ void window_init()
     SDL_RendererInfo info;
     SDL_GetRendererInfo( renderer, &info );
     printf("SDL_RENDER_DRIVER selected: %s\n", info.name);
+}
+
+void window_init()
+{
+    sdl_init();
+    window_and_renderer_init();
 }
 
 EMSCRIPTEN_KEEPALIVE bool window_single_loop()
