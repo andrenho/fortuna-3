@@ -4,7 +4,7 @@ EXE=fortuna-pi
 all: ${EXE}
 
 ${EXE}: ${OBJ}
-	${CXX} -o ${EXE} ${OBJ} ${LDFLAGS}
+	${CC} -o ${EXE} ${OBJ} ${LDFLAGS}
 
 .PHONY: clean
 clean:
