@@ -15,14 +15,16 @@ import Rtc from "components/rtc/Rtc";
 import Box from "components/common/Box/Box";
 import translateKey from "util/translateKey";
 import CompilerOptions from "components/compiler-options/CompilerOptions";
+import FortunaPi from "components/fortuna-pi/FortunaPi";
 
 const Components : React.FC = observer(() => {
 
     const store = useStore();
 
+    const [showFortunaPi, setShowFortunaPi] = useState(true);
     const [showCpu, setShowCpu] = useState(true);
     const [showCompute, setShowCompute] = useState(true);
-    const [showUart, setShowUart] = useState(true);
+    const [showUart, setShowUart] = useState(false);
     const [showRam, setShowRam] = useState(false);
     const [showEeprom, setShowEeprom] = useState(false);
     const [showLcd, setShowLcd] = useState(false);
@@ -68,10 +70,12 @@ const Components : React.FC = observer(() => {
     return <>
         <div className={css.toolbar}>
             <Toolbar>
+                <ToolbarToggle text="PI" title="Fortuna-Pi (video / audio / keyboard)" value={showFortunaPi} onToggle={() => setShowFortunaPi(!showFortunaPi)} />
+                <ToolbarSeparator />
                 <ToolbarToggle text="CPU" value={showCpu} onToggle={() => setShowCpu(!showCpu)} />
                 <ToolbarToggle text="Comp" title="Compute unit" value={showCompute} onToggle={() => setShowCompute(!showCompute)} />
-                <ToolbarToggle text="UART" value={showUart} onToggle={() => setShowUart(!showUart)} />
                 <ToolbarToggle text="RAM" value={showRam} onToggle={() => setShowRam(!showRam)} />
+                <ToolbarToggle text="UART" value={showUart} onToggle={() => setShowUart(!showUart)} />
                 <ToolbarToggle text="LCD" value={showLcd} onToggle={() => setShowLcd(!showLcd)} />
                 <ToolbarToggle text="RTC" value={showRtc} onToggle={() => setShowRtc(!showRtc)} />
                 <ToolbarToggle text="PROM" value={showEeprom} onToggle={() => setShowEeprom(!showEeprom)} />
@@ -91,6 +95,8 @@ const Components : React.FC = observer(() => {
         <div className={css.page}>
             <Debugger />
             <div className={css.rightSide}>
+
+                { showFortunaPi && <FortunaPi /> }
 
                 { showCpu && <CPU cpu={store.state.cpu} running={store.running} /> }
 

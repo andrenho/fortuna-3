@@ -33,9 +33,6 @@ EMSCRIPTEN_KEEPALIVE bool emulator_initialize(size_t sdcard_sz_in_mb)
 
     puts("Emulator initialized.");
 
-    extern void init_sdl();
-    init_sdl();
-
     return r;
 }
 
