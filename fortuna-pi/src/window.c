@@ -127,7 +127,7 @@ static void window_adjust_size(int resolution)
     extern int SDL_RenderSetScale(SDL_Renderer*, float, float);
     SDL_RenderSetScale(renderer, zres, zres);
 
-    SDL_Rect r = { rel_x / zres, rel_y / zres, SCR_W, SCR_H };
+    SDL_Rect r = { (float) rel_x / (float) zres, (float) rel_y / (float) zres, SCR_W, SCR_H };
     SDL_RenderSetViewport(renderer, &r);
 }
 
