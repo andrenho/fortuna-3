@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <SDL.h>
 
-#include "text.h"
-#include "window.h"
-#include "palette.h"
+#include "video/text.h"
+#include "video/window.h"
+#include "video/palette.h"
 
 #ifdef EMULATOR
 #include <emscripten/emscripten.h>
@@ -53,9 +53,14 @@ static void loop_adjust_viewport(int resolution)
     int zres = zoom * resolution;
 
     extern int SDL_RenderSetScale(SDL_Renderer*, float, float);
-    SDL_RenderSetScale(renderer, zres, zres);
+    SDL_RenderSetScale(renderer, (float) zres, (float) zres);
 
-    SDL_Rect r = {(float) relative_x / (float) zres, (float) relative_y / (float) zres, SCREEN_W * 2, SCREEN_H * 2 };
+    SDL_Rect r = {
+        (int) ((float) relative_x / (float) zres),
+        (int) ((float) relative_y / (float) zres),
+        SCREEN_W * 2,
+        SCREEN_H * 2
+    };
     SDL_RenderSetViewport(renderer, &r);
 }
 

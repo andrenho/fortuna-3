@@ -1,25 +1,31 @@
-#include "window.h"
+#include "video/window.h"
 #include "loop.h"
-#include "text.h"
-#include "palette.h"
+#include "video/text.h"
+#include "video/palette.h"
 
-#include <stdbool.h>
+void fortunapi_init()
+{
+    window_init();
+    palette_init();
+    loop_init();
+    text_init();
+}
+
+void fortunapi_destroy()
+{
+    text_destroy();
+    loop_destroy();
+    palette_destroy();
+    window_destroy();
+}
 
 int main(int argc, char* argv[])
 {
     (void) argc; (void) argv;
 
-    window_init();
-    palette_init();
-    loop_init();
-    text_init();
-
+    fortunapi_init();
     loop();
-
-    text_destroy();
-    loop_destroy();
-    palette_destroy();
-    window_destroy();
+    fortunapi_destroy();
 
     return 0;
 }

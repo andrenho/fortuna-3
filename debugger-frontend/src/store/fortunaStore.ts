@@ -112,7 +112,7 @@ export default class FortunaStore {
                     break;
             }
         }
-        this.emulator!.windowSingleLoop();
+        this.emulator!.loopSingle();
         this.updateState();
     }
 
@@ -140,7 +140,7 @@ export default class FortunaStore {
 
             const result = this.emulator!.stepTime(16.6);
 
-            this.emulator!.windowSingleLoop();
+            this.emulator!.loopSingle();
 
             if (result === FinishReason.Breakpoint) {
                 console.log("Breakpoint hit.");

@@ -2,7 +2,7 @@
 #define PALETTE_H_
 
 #include <stdint.h>
-#include <SDL.h>
+#include "SDL.h"
 
 #define PALETTE_N_COLORS 16
 
