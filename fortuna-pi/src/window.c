@@ -14,7 +14,8 @@
 #include "text.h"
 
 static SDL_Window* window = NULL;
-static float zoom = 1.0;
+static float zoom = 1.f;
+static int rel_x, rel_y;  // video output position relative to topleft border of monitor
 
 SDL_Renderer* renderer = NULL;
 
@@ -73,8 +74,8 @@ static void window_and_renderer_init()
     printf("Desktop size is %dx%d.\n", mode.w, mode.h);
 
 #ifdef EMULATOR
-    int win_w = SCR_W;
-    int win_h = SCR_H;
+    int win_w = SCR_W * 2;
+    int win_h = SCR_H * 2;
 #else
     int win_w = mode.w;
     int win_h = mode.h;
@@ -109,14 +110,8 @@ static void window_and_renderer_init()
     SDL_GetRendererInfo( renderer, &info );
     printf("SDL_RENDER_DRIVER selected: %s\n", info.name);
 
-    int rel_x, rel_y;
-#ifdef EMULATOR
-    rel_x = rel_y = 0;
-    zoom = 1;
-#else
-    find_zoom_and_rel(mode.w, mode.h, &rel_x, &rel_y, &zoom);
-    printf("Zoom: %d, rel_x: %d, rel_y: %d\n", zoom, rel_x, rel_y);
-#endif
+    find_zoom_and_rel(win_w, win_h, &rel_x, &rel_y, &zoom);
+    printf("Zoom: %f, rel_x: %d, rel_y: %d\n", zoom, rel_x, rel_y);
 }
 
 void window_init()
@@ -125,24 +120,46 @@ void window_init()
     window_and_renderer_init();
 }
 
+static void window_adjust_size(float resolution)
+{
+    float zres = zoom * resolution;
+
+    extern int SDL_RenderSetScale(SDL_Renderer*, float, float);
+    SDL_RenderSetScale(renderer, zres, zres);
+
+    SDL_Rect r = { rel_x / zres, rel_y / zres, SCR_W, SCR_H };
+    SDL_RenderSetViewport(renderer, &r);
+}
+
 EMSCRIPTEN_KEEPALIVE bool window_single_loop()
 {
+    // events
     SDL_Event ev;
     while (SDL_PollEvent(&ev))
         if ((ev.type == SDL_QUIT) || (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE))
             return false;
 
+    // updates
     text_update();
 
-    SDL_RenderSetLogicalSize(renderer, SCR_W, SCR_H);
+    // redraws
+    SDL_Rect rect = { 1, 1, 3, 3 };
+
+    window_adjust_size(1);
     SDL_SetRenderDrawColor(renderer, 26, 28, 44, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 
-    SDL_Rect rect = { 1, 1, 3, 3 };
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderDrawRect(renderer, &rect);
 
-    SDL_RenderSetLogicalSize(renderer, SCR_W * 2, SCR_H * 2);
+    SDL_Rect r2 = { 319, 199, 1, 1 };
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRect(renderer, &r2);
+
+    window_adjust_size(0.5f);
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRect(renderer, &rect);
+
     text_draw();
 
     SDL_RenderPresent(renderer);
