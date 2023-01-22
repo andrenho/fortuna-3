@@ -68,10 +68,6 @@ static void loop_redraw()
     SDL_SetRenderDrawColor(renderer, bg.r, bg.g, bg.b, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &(SDL_Rect) {0, 0, SCREEN_W, SCREEN_H });
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRect(renderer, &(SDL_Rect) {0, 0, 3, 3 });
-    SDL_RenderDrawRect(renderer, &(SDL_Rect) {SCREEN_W - 3, SCREEN_H - 3, 3, 3 });
-
     // layers
     loop_adjust_viewport(1);
     text_draw();

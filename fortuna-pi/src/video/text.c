@@ -22,7 +22,7 @@ typedef struct {
     bool visible;
     bool blink_state;
 } Cursor;
-static Cursor cursor = { .x = 1, .y = 0, .color = COLOR_ORANGE, .visible = true, .blink_state = true };
+static Cursor cursor = { .x = 0, .y = 0, .color = COLOR_ORANGE, .visible = true, .blink_state = true };
 
 static void text_load_font()
 {
@@ -42,14 +42,9 @@ static void text_load_font()
 void text_init()
 {
     text_load_font();
-    uint8_t i = 32;
-    for (size_t line = 0; line < TEXT_LINES; ++line) {
-        for (size_t column = 0; column < TEXT_COLUMNS; ++column) {
-            matrix[line][column] = i++;
-            if (i > 127)
-                i = 32;
-        }
-    }
+    for (size_t line = 0; line < TEXT_LINES; ++line)
+        for (size_t column = 0; column < TEXT_COLUMNS; ++column)
+            matrix[line][column] = ' ';
 }
 
 void text_output(uint8_t c)
@@ -78,14 +73,16 @@ static void text_draw_cell(size_t line, size_t column)
         SDL_SetTextureColorMod(font, fg.r, fg.g, fg.b);
     }
 
-    SDL_RenderCopy(renderer, font,
-                   &(SDL_Rect) { orig_x, orig_y, TEXT_CHAR_W, TEXT_CHAR_H },
-                   &(SDL_Rect) { dest_x, dest_y, TEXT_CHAR_W, TEXT_CHAR_H });
+    if (c != 0 && c != 32) {
+        SDL_RenderCopy(renderer, font,
+                       &(SDL_Rect) { orig_x, orig_y, TEXT_CHAR_W, TEXT_CHAR_H },
+                       &(SDL_Rect) { dest_x, dest_y, TEXT_CHAR_W, TEXT_CHAR_H });
+    }
 }
 
 void text_update()
 {
-    cursor.blink_state = (SDL_GetTicks64() / TEXT_BLINK_DELAY) & 1;
+    cursor.blink_state = (SDL_GetTicks() / TEXT_BLINK_DELAY) & 1;
 }
 
 void text_draw()
