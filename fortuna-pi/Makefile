@@ -1,4 +1,4 @@
-OBJ=src/main.o src/loop.o src/video/window.o src/video/text.o src/video/palette.o
+OBJ=src/main.o src/loop.o src/events.o src/video/window.o src/video/text.o src/video/palette.o
 EXE=fortuna-pi
 
 CFLAGS=-Wall -Wextra -std=c11
