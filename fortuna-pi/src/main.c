@@ -11,6 +11,8 @@ void fortunapi_init()
     palette_init();
     loop_init();
     text_init();
+
+    events_push(E_CHANGE_BACKGROUND, (void*) COLOR_DARK_BLUE);
 }
 
 void fortunapi_destroy()

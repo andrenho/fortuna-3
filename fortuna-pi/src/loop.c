@@ -7,6 +7,7 @@
 #include "video/text.h"
 #include "video/window.h"
 #include "video/palette.h"
+#include "events.h"
 
 #ifdef EMULATOR
 #include <emscripten/emscripten.h>
@@ -32,20 +33,6 @@ void loop_init()
     relative_y = (win_h / 2) - (h / 2);
 
     printf("Zoom: %d, relative_x: %d, relative_y: %d\n", zoom, relative_x, relative_y);
-}
-
-static bool loop_update()
-{
-    // events (TODO - move this somewhere else)
-    SDL_Event ev;
-    while (SDL_PollEvent(&ev))
-        if ((ev.type == SDL_QUIT) || (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE))
-            return false;
-
-    // updates
-    text_update();
-
-    return true;
 }
 
 static void loop_adjust_viewport(int resolution)
@@ -94,12 +81,12 @@ static void loop_redraw()
 
 EMSCRIPTEN_KEEPALIVE bool loop_single()
 {
-    if (!loop_update())
-        return false;
+    bool quit = false;
+    events_do(&quit);
 
     loop_redraw();
 
-    return true;
+    return !quit;
 }
 
 void loop()

@@ -1,6 +1,7 @@
 #include "window.h"
 
 #include "SDL.h"
+#include "palette.h"
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -103,6 +104,10 @@ void window_size(int* w, int* h)
 {
     *w = win_w;
     *h = win_h;
+}
+
+void window_set_background(uint8_t bg)
+{
 }
 
 void window_destroy()
