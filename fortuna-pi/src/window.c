@@ -17,6 +17,9 @@ static SDL_Window* window;
 
 SDL_Renderer* renderer = NULL;
 
+#define SCR_W 320
+#define SCR_H 200
+
 static void sdl_init()
 {
     SDL_Init(0);
@@ -51,22 +54,35 @@ static void sdl_init()
     printf("SDL_VIDEODRIVER selected: %s\n", SDL_GetCurrentVideoDriver());
 }
 
-static void find_ideal_window_size(int* h, int* w, int* zoom)
+static void find_zoom_and_rel(int desktop_w, int desktop_h, int* rel_x, int* rel_y, int* zoom)
 {
-    SDL_DisplayMode mode;
-    SDL_GetDesktopDisplayMode(0, &mode);
-    printf("Desktop size is %dx%d.\n", mode.w, mode.h);
+    int zoom_w = desktop_w / SCR_W;
+    int zoom_h = desktop_h / SCR_H;
+    *zoom = zoom_w < zoom_h ? zoom_w : zoom_h;
+    int w = SCR_W * (*zoom);
+    int h = SCR_H * (*zoom);
+    *rel_x = (desktop_w / 2) - (w / 2);
+    *rel_y = (desktop_h / 2) - (h / 2);
 }
 
 static void window_and_renderer_init()
 {
-    int h, w, zoom;
-    find_ideal_window_size(&h, &w, &zoom);
+    SDL_DisplayMode mode;
+    SDL_GetDesktopDisplayMode(0, &mode);
+    printf("Desktop size is %dx%d.\n", mode.w, mode.h);
+
+#ifdef EMULATOR
+    int win_w = SCR_W;
+    int win_h = SCR_H;
+#else
+    int win_w = mode.w;
+    int win_h = mode.h;
+#endif
 
     window = SDL_CreateWindow(
             "Fortuna-3 emulator",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            640, 400,
+            mode.w, mode.h,
             SDL_WINDOW_OPENGL
     );
     if (!window) {
@@ -91,6 +107,15 @@ static void window_and_renderer_init()
     SDL_RendererInfo info;
     SDL_GetRendererInfo( renderer, &info );
     printf("SDL_RENDER_DRIVER selected: %s\n", info.name);
+
+    int rel_x, rel_y, zoom;
+#ifdef EMULATOR
+    rel_x = rel_y = 0;
+    zoom = 1;
+#else
+    find_zoom_and_rel(mode.w, mode.h, &rel_x, &rel_y, &zoom);
+    printf("Zoom: %d, rel_x: %d, rel_y: %d\n", zoom, rel_x, rel_y);
+#endif
 }
 
 void window_init()
