@@ -160,6 +160,9 @@ EMSCRIPTEN_KEEPALIVE bool window_single_loop()
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderDrawRect(renderer, &rect);
 
+    SDL_SetRenderDrawColor(renderer, 128, 128, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawLine(renderer, 4, 4, 140, 140);
+
     text_draw();
 
     SDL_RenderPresent(renderer);
