@@ -13,7 +13,8 @@
 
 #include "text.h"
 
-static SDL_Window* window;
+static SDL_Window* window = NULL;
+static float zoom = 1.0;
 
 SDL_Renderer* renderer = NULL;
 
@@ -54,11 +55,11 @@ static void sdl_init()
     printf("SDL_VIDEODRIVER selected: %s\n", SDL_GetCurrentVideoDriver());
 }
 
-static void find_zoom_and_rel(int desktop_w, int desktop_h, int* rel_x, int* rel_y, int* zoom)
+static void find_zoom_and_rel(int desktop_w, int desktop_h, int* rel_x, int* rel_y, float* zoom)
 {
     int zoom_w = desktop_w / SCR_W;
     int zoom_h = desktop_h / SCR_H;
-    *zoom = zoom_w < zoom_h ? zoom_w : zoom_h;
+    *zoom = (float) (zoom_w < zoom_h ? zoom_w : zoom_h);
     int w = SCR_W * (*zoom);
     int h = SCR_H * (*zoom);
     *rel_x = (desktop_w / 2) - (w / 2);
@@ -82,7 +83,7 @@ static void window_and_renderer_init()
     window = SDL_CreateWindow(
             "Fortuna-3 emulator",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            mode.w, mode.h,
+            win_w, win_h,
             SDL_WINDOW_OPENGL
     );
     if (!window) {
@@ -108,7 +109,7 @@ static void window_and_renderer_init()
     SDL_GetRendererInfo( renderer, &info );
     printf("SDL_RENDER_DRIVER selected: %s\n", info.name);
 
-    int rel_x, rel_y, zoom;
+    int rel_x, rel_y;
 #ifdef EMULATOR
     rel_x = rel_y = 0;
     zoom = 1;
@@ -133,9 +134,15 @@ EMSCRIPTEN_KEEPALIVE bool window_single_loop()
 
     text_update();
 
+    SDL_RenderSetLogicalSize(renderer, SCR_W, SCR_H);
     SDL_SetRenderDrawColor(renderer, 26, 28, 44, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 
+    SDL_Rect rect = { 1, 1, 3, 3 };
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRect(renderer, &rect);
+
+    SDL_RenderSetLogicalSize(renderer, SCR_W * 2, SCR_H * 2);
     text_draw();
 
     SDL_RenderPresent(renderer);
