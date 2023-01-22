@@ -35,6 +35,10 @@ void events_do(bool* quit)
         } else if (ev.type == E_CHANGE_BACKGROUND + start_event) {
             loop_set_background((intptr_t) ev.user.data1);
         }
+
+        if (ev.type >= start_event && need_to_be_freed[ev.type]) {
+            free(ev.user.data1);
+        }
     }
 }
 
