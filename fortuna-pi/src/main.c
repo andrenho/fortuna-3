@@ -11,8 +11,6 @@ void fortunapi_init()
     palette_init();
     loop_init();
     text_init();
-
-    events_push(E_TEXT_OUTPUT, (void *) 'H');
 }
 
 void fortunapi_destroy()

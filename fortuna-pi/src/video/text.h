@@ -7,7 +7,7 @@
 #define TEXT_CHAR_H 9
 #define TEXT_BORDER_X 5
 #define TEXT_BORDER_Y 6
-#define TEXT_BLINK_DELAY 500
+#define TEXT_BLINK_DELAY 600
 
 void text_init();
 void text_output(uint8_t c);

@@ -34,7 +34,6 @@ static void text_load_font()
 
     SDL_SetColorKey(sf, SDL_RLEACCEL, 0);
     font = SDL_CreateTextureFromSurface(renderer, sf);
-    // SDL_SetTextureBlendMode(font, SDL_BLENDMODE_MOD);
 
     SDL_FreeSurface(sf);
 }
@@ -47,8 +46,36 @@ void text_init()
             matrix[line][column] = ' ';
 }
 
+static void text_advance_line()
+{
+    cursor.x = 0;
+    ++cursor.y;
+    if (cursor.y >= TEXT_LINES) {
+        for (size_t y = 0; y < (TEXT_LINES - 1); ++y)
+            memcpy(matrix[y], matrix[y+1], TEXT_COLUMNS);
+        --cursor.y;
+        memset(matrix[cursor.y], ' ', TEXT_COLUMNS);
+    }
+}
+
+static void text_advance_cursor()
+{
+    ++cursor.x;
+    if (cursor.x >= TEXT_COLUMNS)
+        text_advance_line();
+}
+
 void text_output(uint8_t c)
 {
+    switch (c) {
+        case '\n':
+            text_advance_line();
+            break;
+        default:
+            matrix[cursor.y][cursor.x] = c;
+            text_advance_cursor();
+            break;
+    }
 }
 
 static void text_draw_cell(size_t line, size_t column)
