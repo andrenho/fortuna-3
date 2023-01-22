@@ -36,9 +36,13 @@
   - [x] Fix short
   - [x] Build initial setup
     - [x] Run on EMScripten
-    - [ ] Makefile, directories
+    - [x] Makefile, directories
     - [ ] Interface, commandline
-    - [ ] Find appropriate window size
+    - [x] Find appropriate window size
+  - [ ] Text
+    - [ ] Write text on the screen
+    - [ ] Cursor
+    - [ ] Keyboard
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
   - [ ] Graphical interface (serial)
