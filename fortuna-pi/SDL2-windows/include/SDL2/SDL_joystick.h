@@ -1011,7 +1011,7 @@ extern DECLSPEC SDL_bool SDLCALL SDL_JoystickHasRumbleTriggers(SDL_Joystick *joy
  * An example of a joystick LED is the light on the back of a PlayStation 4's
  * DualShock 4 controller.
  *
- * \param joystick The joystick to update
+ * \param joystick The joystick to loop_update
  * \param red The intensity of the red LED
  * \param green The intensity of the green LED
  * \param blue The intensity of the blue LED

@@ -158,7 +158,7 @@ typedef struct SDL_RWops
  *   empty file.
  * - "a": Append to a file. Writing operations append data at the end of the
  *   file. The file is created if it does not exist.
- * - "r+": Open a file for update both reading and writing. The file must
+ * - "r+": Open a file for loop_update both reading and writing. The file must
  *   exist.
  * - "w+": Create an empty file for both reading and writing. If a file with
  *   the same name already exists its content is erased and the file is

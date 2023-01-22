@@ -74,7 +74,7 @@ extern DECLSPEC SDL_Window * SDLCALL SDL_GetKeyboardFocus(void);
  * of 0 means that it is not. Indexes into this array are obtained by using
  * SDL_Scancode values.
  *
- * Use SDL_PumpEvents() to update the state array.
+ * Use SDL_PumpEvents() to loop_update the state array.
  *
  * This function gives you the current state after all events have been
  * processed, so if a key or button has been pressed and released before you

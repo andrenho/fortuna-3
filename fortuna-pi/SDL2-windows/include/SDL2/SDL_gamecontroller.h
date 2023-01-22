@@ -847,7 +847,7 @@ extern DECLSPEC SDL_bool SDLCALL SDL_GameControllerHasSensor(SDL_GameController 
 /**
  * Set whether data reporting for a game controller sensor is enabled.
  *
- * \param gamecontroller The controller to update
+ * \param gamecontroller The controller to loop_update
  * \param type The type of sensor to enable/disable
  * \param enabled Whether data reporting should be enabled
  * \returns 0 or -1 if an error occurred.
@@ -897,7 +897,7 @@ extern DECLSPEC int SDLCALL SDL_GameControllerGetSensorData(SDL_GameController *
 
 /**
  * Get the current state of a game controller sensor with the timestamp of the
- * last update.
+ * last loop_update.
  *
  * The number of values and interpretation of the data is sensor dependent.
  * See SDL_sensor.h for the details for each type of sensor.
@@ -999,7 +999,7 @@ extern DECLSPEC SDL_bool SDLCALL SDL_GameControllerHasRumbleTriggers(SDL_GameCon
 /**
  * Update a game controller's LED color.
  *
- * \param gamecontroller The controller to update
+ * \param gamecontroller The controller to loop_update
  * \param red The intensity of the red LED
  * \param green The intensity of the green LED
  * \param blue The intensity of the blue LED

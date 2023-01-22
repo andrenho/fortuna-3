@@ -52,7 +52,7 @@ typedef struct SDL_version
 {
     Uint8 major;        /**< major version */
     Uint8 minor;        /**< minor version */
-    Uint8 patch;        /**< update version */
+    Uint8 patch;        /**< loop_update version */
 } SDL_version;
 
 /* Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL

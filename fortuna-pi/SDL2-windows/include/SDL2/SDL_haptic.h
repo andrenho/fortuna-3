@@ -1086,7 +1086,7 @@ extern DECLSPEC int SDLCALL SDL_HapticNewEffect(SDL_Haptic * haptic,
  * running SDL_HapticUpdateEffect().
  *
  * \param haptic the SDL_Haptic device that has the effect
- * \param effect the identifier of the effect to update
+ * \param effect the identifier of the effect to loop_update
  * \param data an SDL_HapticEffect structure containing the new effect
  *             properties to use
  * \returns 0 on success or a negative error code on failure; call

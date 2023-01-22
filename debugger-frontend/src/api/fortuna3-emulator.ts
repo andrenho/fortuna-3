@@ -296,8 +296,8 @@ export class Fortuna3Emulator {
         this.api!.sdCardSetEjected(ejected);
     }
 
-    windowSingleLoop() {
-        this.api!.windowSingleLoop();
+    loopSingle() {
+        this.api!.loopSingle();
     }
 
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {

@@ -278,7 +278,7 @@ extern DECLSPEC void SDLCALL SDL_FreeSurface(SDL_Surface * surface);
  *
  * A single palette can be shared with many surfaces.
  *
- * \param surface the SDL_Surface structure to update
+ * \param surface the SDL_Surface structure to loop_update
  * \param palette the SDL_Palette structure to use
  * \returns 0 on success or a negative error code on failure; call
  *          SDL_GetError() for more information.
@@ -432,7 +432,7 @@ extern DECLSPEC SDL_bool SDLCALL SDL_HasSurfaceRLE(SDL_Surface * surface);
  * RLE acceleration can substantially speed up blitting of images with large
  * horizontal runs of transparent pixels. See SDL_SetSurfaceRLE() for details.
  *
- * \param surface the SDL_Surface structure to update
+ * \param surface the SDL_Surface structure to loop_update
  * \param flag SDL_TRUE to enable color key, SDL_FALSE to disable color key
  * \param key the transparent pixel
  * \returns 0 on success or a negative error code on failure; call
@@ -491,7 +491,7 @@ extern DECLSPEC int SDLCALL SDL_GetColorKey(SDL_Surface * surface,
  *
  * `srcC = srcC * (color / 255)`
  *
- * \param surface the SDL_Surface structure to update
+ * \param surface the SDL_Surface structure to loop_update
  * \param r the red color value multiplied into blit operations
  * \param g the green color value multiplied into blit operations
  * \param b the blue color value multiplied into blit operations
@@ -534,7 +534,7 @@ extern DECLSPEC int SDLCALL SDL_GetSurfaceColorMod(SDL_Surface * surface,
  *
  * `srcA = srcA * (alpha / 255)`
  *
- * \param surface the SDL_Surface structure to update
+ * \param surface the SDL_Surface structure to loop_update
  * \param alpha the alpha value multiplied into blit operations
  * \returns 0 on success or a negative error code on failure; call
  *          SDL_GetError() for more information.
@@ -570,7 +570,7 @@ extern DECLSPEC int SDLCALL SDL_GetSurfaceAlphaMod(SDL_Surface * surface,
  * existing data, the blendmode of the SOURCE surface should be set to
  * `SDL_BLENDMODE_NONE`.
  *
- * \param surface the SDL_Surface structure to update
+ * \param surface the SDL_Surface structure to loop_update
  * \param blendMode the SDL_BlendMode to use for blit blending
  * \returns 0 on success or a negative error code on failure; call
  *          SDL_GetError() for more information.

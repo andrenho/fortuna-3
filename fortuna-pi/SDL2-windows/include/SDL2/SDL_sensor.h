@@ -271,7 +271,7 @@ extern DECLSPEC int SDLCALL SDL_SensorGetData(SDL_Sensor *sensor, float *data, i
 
 /**
  * Get the current state of an opened sensor with the timestamp of the last
- * update.
+ * loop_update.
  *
  * The number of values and interpretation of the data is sensor dependent.
  *

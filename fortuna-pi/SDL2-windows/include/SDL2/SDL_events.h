@@ -693,7 +693,7 @@ SDL_COMPILE_TIME_ASSERT(SDL_Event, sizeof(SDL_Event) == sizeof(((SDL_Event *)NUL
  * SDL_PumpEvents() is hidden from the user since SDL_PollEvent() and
  * SDL_WaitEvent() implicitly call SDL_PumpEvents(). However, if you are not
  * polling or waiting for events (e.g. you are filtering them), then you must
- * call SDL_PumpEvents() to force an event queue update.
+ * call SDL_PumpEvents() to force an event queue loop_update.
  *
  * \since This function is available since SDL 2.0.0.
  *
@@ -863,7 +863,7 @@ extern DECLSPEC void SDLCALL SDL_FlushEvents(Uint32 minType, Uint32 maxType);
  *         // decide what to do with this event.
  *     }
  *
- *     // update game state, draw the current frame
+ *     // loop_update game state, draw the current frame
  * }
  * ```
  *

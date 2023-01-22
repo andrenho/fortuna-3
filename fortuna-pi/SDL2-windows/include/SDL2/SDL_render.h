@@ -399,7 +399,7 @@ extern DECLSPEC int SDLCALL SDL_QueryTexture(SDL_Texture * texture,
  * Color modulation is not always supported by the renderer; it will return -1
  * if color modulation is not supported.
  *
- * \param texture the texture to update
+ * \param texture the texture to loop_update
  * \param r the red color value multiplied into copy operations
  * \param g the green color value multiplied into copy operations
  * \param b the blue color value multiplied into copy operations
@@ -445,7 +445,7 @@ extern DECLSPEC int SDLCALL SDL_GetTextureColorMod(SDL_Texture * texture,
  * Alpha modulation is not always supported by the renderer; it will return -1
  * if alpha modulation is not supported.
  *
- * \param texture the texture to update
+ * \param texture the texture to loop_update
  * \param alpha the source alpha value multiplied into copy operations
  * \returns 0 on success or a negative error code on failure; call
  *          SDL_GetError() for more information.
@@ -480,7 +480,7 @@ extern DECLSPEC int SDLCALL SDL_GetTextureAlphaMod(SDL_Texture * texture,
  * If the blend mode is not supported, the closest supported mode is chosen
  * and this function returns -1.
  *
- * \param texture the texture to update
+ * \param texture the texture to loop_update
  * \param blendMode the SDL_BlendMode to use for texture blending
  * \returns 0 on success or a negative error code on failure; call
  *          SDL_GetError() for more information.
@@ -513,7 +513,7 @@ extern DECLSPEC int SDLCALL SDL_GetTextureBlendMode(SDL_Texture * texture,
  *
  * If the scale mode is not supported, the closest supported mode is chosen.
  *
- * \param texture The texture to update.
+ * \param texture The texture to loop_update.
  * \param scaleMode the SDL_ScaleMode to use for texture scaling.
  * \returns 0 on success, or -1 if the texture is not valid.
  *
@@ -541,7 +541,7 @@ extern DECLSPEC int SDLCALL SDL_GetTextureScaleMode(SDL_Texture * texture,
 /**
  * Associate a user-specified pointer with a texture.
  *
- * \param texture the texture to update.
+ * \param texture the texture to loop_update.
  * \param userdata the pointer to associate with the texture.
  * \returns 0 on success, or -1 if the texture is not valid.
  *
@@ -579,9 +579,9 @@ extern DECLSPEC void * SDLCALL SDL_GetTextureUserData(SDL_Texture * texture);
  * While this function will work with streaming textures, for optimization
  * reasons you may not get the pixels back if you lock the texture afterward.
  *
- * \param texture the texture to update
- * \param rect an SDL_Rect structure representing the area to update, or NULL
- *             to update the entire texture
+ * \param texture the texture to loop_update
+ * \param rect an SDL_Rect structure representing the area to loop_update, or NULL
+ *             to loop_update the entire texture
  * \param pixels the raw pixel data in the format of the texture
  * \param pitch the number of bytes in a row of pixel data, including padding
  *              between lines
@@ -606,9 +606,9 @@ extern DECLSPEC int SDLCALL SDL_UpdateTexture(SDL_Texture * texture,
  * block of Y and U/V planes in the proper order, but this function is
  * available if your pixel data is not contiguous.
  *
- * \param texture the texture to update
- * \param rect a pointer to the rectangle of pixels to update, or NULL to
- *             update the entire texture
+ * \param texture the texture to loop_update
+ * \param rect a pointer to the rectangle of pixels to loop_update, or NULL to
+ *             loop_update the entire texture
  * \param Yplane the raw pixel data for the Y plane
  * \param Ypitch the number of bytes between rows of pixel data for the Y
  *               plane
@@ -638,9 +638,9 @@ extern DECLSPEC int SDLCALL SDL_UpdateYUVTexture(SDL_Texture * texture,
  * block of NV12/21 planes in the proper order, but this function is available
  * if your pixel data is not contiguous.
  *
- * \param texture the texture to update
- * \param rect a pointer to the rectangle of pixels to update, or NULL to
- *             update the entire texture.
+ * \param texture the texture to loop_update
+ * \param rect a pointer to the rectangle of pixels to loop_update, or NULL to
+ *             loop_update the entire texture.
  * \param Yplane the raw pixel data for the Y plane.
  * \param Ypitch the number of bytes between rows of pixel data for the Y
  *               plane.

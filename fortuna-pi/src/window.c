@@ -1,26 +1,15 @@
 #include "window.h"
 
-#ifdef EMULATOR
-#include <emscripten/emscripten.h>
-#else
-#define EMSCRIPTEN_KEEPALIVE
-#endif
-
 #include <SDL.h>
 
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "text.h"
-
 static SDL_Window* window = NULL;
-static int zoom = 1;
-static int rel_x, rel_y;  // video output position relative to topleft border of monitor
 
 SDL_Renderer* renderer = NULL;
 
-#define SCR_W 640
-#define SCR_H 400
+static int win_w = 0, win_h = 0;
 
 static void sdl_init()
 {
@@ -56,17 +45,6 @@ static void sdl_init()
     printf("SDL_VIDEODRIVER selected: %s\n", SDL_GetCurrentVideoDriver());
 }
 
-static void find_zoom_and_rel(int desktop_w, int desktop_h, int* rel_x, int* rel_y, int* zoom)
-{
-    int zoom_w = desktop_w / SCR_W;
-    int zoom_h = desktop_h / SCR_H;
-    *zoom = zoom_w < zoom_h ? zoom_w : zoom_h;
-    int w = SCR_W * (*zoom);
-    int h = SCR_H * (*zoom);
-    *rel_x = (desktop_w / 2) - (w / 2);
-    *rel_y = (desktop_h / 2) - (h / 2);
-}
-
 static void window_and_renderer_init()
 {
     SDL_DisplayMode mode;
@@ -74,11 +52,11 @@ static void window_and_renderer_init()
     printf("Desktop size is %dx%d.\n", mode.w, mode.h);
 
 #ifdef EMULATOR
-    int win_w = SCR_W;
-    int win_h = SCR_H;
+    win_w = SCREEN_W * 2;
+    win_h = SCREEN_H * 2;
 #else
-    int win_w = mode.w;
-    int win_h = mode.h;
+    win_w = mode.w;
+    win_h = mode.h;
 #endif
 
     window = SDL_CreateWindow(
@@ -91,6 +69,9 @@ static void window_and_renderer_init()
         fprintf(stderr, "SDL_CreateWindow(): %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
+#ifndef EMULATOR
+    SDL_ShowCursor(SDL_DISABLE);
+#endif
 
     printf("SDL_RENDER_DRIVER available: ");
     for (int i = 0; i < SDL_GetNumRenderDrivers(); ++i) {
@@ -109,9 +90,6 @@ static void window_and_renderer_init()
     SDL_RendererInfo info;
     SDL_GetRendererInfo( renderer, &info );
     printf("SDL_RENDER_DRIVER selected: %s\n", info.name);
-
-    find_zoom_and_rel(win_w, win_h, &rel_x, &rel_y, &zoom);
-    printf("Zoom: %d, rel_x: %d, rel_y: %d\n", zoom, rel_x, rel_y);
 }
 
 void window_init()
@@ -120,60 +98,10 @@ void window_init()
     window_and_renderer_init();
 }
 
-static void window_adjust_size(int resolution)
+void window_size(int* w, int* h)
 {
-    int zres = zoom * resolution;
-
-    extern int SDL_RenderSetScale(SDL_Renderer*, float, float);
-    SDL_RenderSetScale(renderer, zres, zres);
-
-    SDL_Rect r = { (float) rel_x / (float) zres, (float) rel_y / (float) zres, SCR_W, SCR_H };
-    SDL_RenderSetViewport(renderer, &r);
-}
-
-EMSCRIPTEN_KEEPALIVE bool window_single_loop()
-{
-    // events
-    SDL_Event ev;
-    while (SDL_PollEvent(&ev))
-        if ((ev.type == SDL_QUIT) || (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE))
-            return false;
-
-    // updates
-    text_update();
-
-    // redraws
-    SDL_Rect rect = { 1, 1, 3, 3 };
-
-    window_adjust_size(2);
-    SDL_SetRenderDrawColor(renderer, 26, 28, 44, SDL_ALPHA_OPAQUE);
-    SDL_RenderClear(renderer);
-
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRect(renderer, &rect);
-
-    SDL_Rect r2 = { 319, 199, 1, 1 };
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRect(renderer, &r2);
-
-    window_adjust_size(1);
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRect(renderer, &rect);
-
-    SDL_SetRenderDrawColor(renderer, 128, 128, 255, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawLine(renderer, 4, 4, 140, 140);
-
-    text_draw();
-
-    SDL_RenderPresent(renderer);
-    // SDL_Delay(16);
-
-    return true;
-}
-
-void window_main_loop()
-{
-    while (window_single_loop());
+    *w = win_w;
+    *h = win_h;
 }
 
 void window_destroy()

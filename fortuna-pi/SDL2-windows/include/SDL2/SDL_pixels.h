@@ -167,7 +167,7 @@ typedef enum
 #define SDL_ISPIXELFORMAT_FOURCC(format)    \
     ((format) && (SDL_PIXELFLAG(format) != 1))
 
-/* Note: If you modify this list, update SDL_GetPixelFormatName() */
+/* Note: If you modify this list, loop_update SDL_GetPixelFormatName() */
 typedef enum
 {
     SDL_PIXELFORMAT_UNKNOWN,

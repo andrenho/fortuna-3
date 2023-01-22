@@ -22,7 +22,7 @@ LDFLAGS=-std=c11 -Wall -Wextra --no-entry -O3 \
 # Objects to compile
 #
 SRC_IO=io/io.c io/ioregs.c io/iomemory.c io/serial.c io/iolcd.c io/iofs.c
-SRC_PI=${PI_DIR}/src/window.c ${PI_DIR}/src/text.c
+SRC_PI=${PI_DIR}/src/window.c ${PI_DIR}/src/loop.c ${PI_DIR}/src/text.c ${PI_DIR}/src/palette.c
 SRC=globals.c \
  	util/compress.c \
 	emulation/emulator.c emulation/cpu.c emulation/state.c emulation/sdcard.c emulation/terminal.c emulation/fs.c \

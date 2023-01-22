@@ -1307,7 +1307,7 @@ extern DECLSPEC SDL_Surface * SDLCALL SDL_GetWindowSurface(SDL_Window * window);
  *
  * This function is equivalent to the SDL 1.2 API SDL_Flip().
  *
- * \param window the window to update
+ * \param window the window to loop_update
  * \returns 0 on success or a negative error code on failure; call
  *          SDL_GetError() for more information.
  *
@@ -1326,7 +1326,7 @@ extern DECLSPEC int SDLCALL SDL_UpdateWindowSurface(SDL_Window * window);
  *
  * This function is equivalent to the SDL 1.2 API SDL_UpdateRects().
  *
- * \param window the window to update
+ * \param window the window to loop_update
  * \param rects an array of SDL_Rect structures representing areas of the
  *              surface to copy
  * \param numrects the number of rectangles

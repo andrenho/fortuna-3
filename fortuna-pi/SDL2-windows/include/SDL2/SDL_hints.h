@@ -446,7 +446,7 @@ extern "C" {
  *  The variable should be newline delimited rows of gamecontroller config data, see SDL_gamecontroller.h
  *
  *  This hint must be set before calling SDL_Init(SDL_INIT_GAMECONTROLLER)
- *  You can update mappings after the system is initialized with SDL_GameControllerMappingForGUID() and SDL_GameControllerAddMapping()
+ *  You can loop_update mappings after the system is initialized with SDL_GameControllerMappingForGUID() and SDL_GameControllerAddMapping()
  */
 #define SDL_HINT_GAMECONTROLLERCONFIG "SDL_GAMECONTROLLERCONFIG"
 
@@ -456,7 +456,7 @@ extern "C" {
  *  The file should contain lines of gamecontroller config data, see SDL_gamecontroller.h
  *
  *  This hint must be set before calling SDL_Init(SDL_INIT_GAMECONTROLLER)
- *  You can update mappings after the system is initialized with SDL_GameControllerMappingForGUID() and SDL_GameControllerAddMapping()
+ *  You can loop_update mappings after the system is initialized with SDL_GameControllerMappingForGUID() and SDL_GameControllerAddMapping()
  */
 #define SDL_HINT_GAMECONTROLLERCONFIG_FILE "SDL_GAMECONTROLLERCONFIG_FILE"
 
@@ -1089,7 +1089,7 @@ extern "C" {
  *
  *  Generally you want the default, but if you have OpenGL code in a background thread on a Mac, and the main thread
  *  hangs because it's waiting for that background thread, but that background thread is also hanging because it's
- *  waiting for the main thread to do an update, this might fix your issue.
+ *  waiting for the main thread to do an loop_update, this might fix your issue.
  *
  *  This hint only applies to macOS.
  *
