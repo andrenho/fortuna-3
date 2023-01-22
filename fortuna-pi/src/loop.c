@@ -17,6 +17,7 @@
 
 static int zoom = 1;
 static int relative_x, relative_y;  // video output position relative to topleft border of monitor
+static uint8_t background = COLOR_BLACK;
 
 void loop_init()
 {
@@ -63,7 +64,7 @@ static void loop_redraw()
 
     // screen background
     loop_adjust_viewport(2);
-    SDL_Color bg = palette_color(COLOR_BLACK);
+    SDL_Color bg = palette_color(background);
     SDL_SetRenderDrawColor(renderer, bg.r, bg.g, bg.b, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &(SDL_Rect) {0, 0, SCREEN_W, SCREEN_H });
 
@@ -77,6 +78,11 @@ static void loop_redraw()
 
     SDL_RenderPresent(renderer);
     // SDL_Delay(16);
+}
+
+void loop_set_background(uint8_t bg)
+{
+    background = bg;
 }
 
 EMSCRIPTEN_KEEPALIVE bool loop_single()

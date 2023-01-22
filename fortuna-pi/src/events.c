@@ -2,6 +2,8 @@
 
 #include <SDL.h>
 
+#include "loop.h"
+
 static uint32_t start_event = 0;
 static bool need_to_be_freed[EVENT_COUNT] = { true };
 
@@ -31,6 +33,7 @@ void events_do(bool* quit)
         if ((ev.type == SDL_QUIT) || (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE)) {
             *quit = true;
         } else if (ev.type == E_CHANGE_BACKGROUND + start_event) {
+            loop_set_background((uint8_t) ev.user.data1);
         }
     }
 }
