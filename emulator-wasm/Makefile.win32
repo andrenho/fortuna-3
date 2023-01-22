@@ -19,6 +19,6 @@ fortuna.wasm: ${OBJ}
 
 .PHONY: clean
 clean:
-	del /Q /S fortuna.wasm fortuna.js obj\* io\* 2>NUL
+	del /Q /S fortuna.wasm fortuna.js obj\* io\* fortuna-pi\* 2>NUL
 
 # vim: ts=8:sts=8:sw=8:expandtab

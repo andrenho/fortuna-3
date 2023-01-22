@@ -23,6 +23,6 @@ fortuna.wasm: ${OBJ}
 
 .PHONY: clean
 clean:
-	rm -f fortuna.wasm fortuna.js obj/* io/*
+	rm -f fortuna.wasm fortuna.js obj/* io/* fortuna-pi/*
 
 # vim: ts=8:sts=8:sw=8:expandtab
