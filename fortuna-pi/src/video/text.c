@@ -54,8 +54,8 @@ void text_draw()
             uint8_t c = matrix[line][column];
             int orig_x = (c / 16) * TEXT_CHAR_W;
             int orig_y = (c % 16) * TEXT_CHAR_H;
-            int dest_x = TEXT_BORDER + (column * TEXT_CHAR_W);
-            int dest_y = TEXT_BORDER + (line * TEXT_CHAR_H);
+            int dest_x = TEXT_BORDER_X + (column * TEXT_CHAR_W);
+            int dest_y = TEXT_BORDER_Y + (line * TEXT_CHAR_H);
             SDL_RenderCopy(renderer, font,
                            &(SDL_Rect) { orig_x, orig_y, TEXT_CHAR_W, TEXT_CHAR_H },
                            &(SDL_Rect) { dest_x, dest_y, TEXT_CHAR_W, TEXT_CHAR_H });
