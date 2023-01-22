@@ -62,3 +62,4 @@ void text_destroy()
 {
     SDL_DestroyTexture(font);
 }
+

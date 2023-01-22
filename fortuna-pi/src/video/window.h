@@ -4,8 +4,8 @@
 #include "SDL.h"
 #include <stdbool.h>
 
-#define SCREEN_W 300
-#define SCREEN_H 180
+#define SCREEN_W 120
+#define SCREEN_H 135
 
 void window_init();
 void window_size(int* w, int* h);
