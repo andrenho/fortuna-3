@@ -15,7 +15,6 @@
 #include "sdcard.h"
 #include "terminal.h"
 #include "z80/Z80.h"
-#include "src/window.h"
 
 static bool sdl_initialized = false;
 

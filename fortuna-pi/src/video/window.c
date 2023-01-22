@@ -52,8 +52,8 @@ static void window_and_renderer_init()
     printf("Desktop size is %dx%d.\n", mode.w, mode.h);
 
 #ifdef EMULATOR
-    win_w = SCREEN_W * 2;
-    win_h = SCREEN_H * 2;
+    win_w = SCREEN_W * 4;
+    win_h = SCREEN_H * 4;
 #else
     win_w = mode.w;
     win_h = mode.h;
@@ -69,6 +69,7 @@ static void window_and_renderer_init()
         fprintf(stderr, "SDL_CreateWindow(): %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
+    printf("Window created with %d x %d.\n", win_w, win_h);
 #ifndef EMULATOR
     SDL_ShowCursor(SDL_DISABLE);
 #endif

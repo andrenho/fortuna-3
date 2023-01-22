@@ -30,9 +30,14 @@ static void text_load_font()
 void text_init()
 {
     text_load_font();
-    for (size_t line = 0; line < TEXT_LINES; ++line)
-        for (size_t column = 0; column < TEXT_COLUMNS; ++column)
-            matrix[line][column] = 'A';  // TODO
+    uint8_t i = 32;
+    for (size_t line = 0; line < TEXT_LINES; ++line) {
+        for (size_t column = 0; column < TEXT_COLUMNS; ++column) {
+            matrix[line][column] = i++;
+            if (i > 127)
+                i = 32;
+        }
+    }
 }
 
 void text_update()
