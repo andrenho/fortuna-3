@@ -3,14 +3,14 @@
 
 #include "window.h"
 
-#define TEXT_CHAR_W  6
-#define TEXT_CHAR_H  9
-#define TEXT_BORDER_X  5
-#define TEXT_BORDER_Y  6
-#define TEXT_COLUMNS ((SCREEN_W * 2 - TEXT_BORDER_X * 2) / TEXT_CHAR_W)
-#define TEXT_LINES   ((SCREEN_H * 2 - TEXT_BORDER_Y * 2) / TEXT_CHAR_H)
+#define TEXT_CHAR_W 6
+#define TEXT_CHAR_H 9
+#define TEXT_BORDER_X 5
+#define TEXT_BORDER_Y 6
+#define TEXT_BLINK_DELAY 500
 
 void text_init();
+void text_output(uint8_t c);
 void text_update();
 void text_draw();
 void text_destroy();

@@ -12,7 +12,7 @@ void fortunapi_init()
     loop_init();
     text_init();
 
-    events_push(E_CHANGE_BACKGROUND, (void*) COLOR_DARK_BLUE);
+    events_push(E_TEXT_OUTPUT, (void *) 'H');
 }
 
 void fortunapi_destroy()

@@ -3,6 +3,7 @@
 #include <SDL.h>
 
 #include "loop.h"
+#include "video/text.h"
 
 static uint32_t start_event = 0;
 static bool need_to_be_freed[EVENT_COUNT] = { true };
@@ -34,6 +35,8 @@ void events_do(bool* quit)
             *quit = true;
         } else if (ev.type == E_CHANGE_BACKGROUND + start_event) {
             loop_set_background((intptr_t) ev.user.data1);
+        } else if (ev.type == E_TEXT_OUTPUT + start_event) {
+            text_output((intptr_t) ev.user.data1);
         }
 
         if (ev.type >= start_event && need_to_be_freed[ev.type]) {

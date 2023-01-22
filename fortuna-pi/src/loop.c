@@ -80,6 +80,11 @@ static void loop_redraw()
     // SDL_Delay(16);
 }
 
+uint8_t loop_background()
+{
+    return background;
+}
+
 void loop_set_background(uint8_t bg)
 {
     background = bg;
@@ -89,6 +94,8 @@ EMSCRIPTEN_KEEPALIVE bool loop_single()
 {
     bool quit = false;
     events_do(&quit);
+
+    text_update();
 
     loop_redraw();
 
