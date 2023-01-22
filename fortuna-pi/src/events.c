@@ -33,7 +33,7 @@ void events_do(bool* quit)
         if ((ev.type == SDL_QUIT) || (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE)) {
             *quit = true;
         } else if (ev.type == E_CHANGE_BACKGROUND + start_event) {
-            loop_set_background((uint8_t) ev.user.data1);
+            loop_set_background((intptr_t) ev.user.data1);
         }
     }
 }
