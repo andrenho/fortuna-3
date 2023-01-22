@@ -50,6 +50,7 @@ static bool loop_update()
 
 static void loop_adjust_viewport(int resolution)
 {
+#ifdef EMULATOR
     int zres = zoom * resolution;
 
     extern int SDL_RenderSetScale(SDL_Renderer*, float, float);
@@ -62,6 +63,9 @@ static void loop_adjust_viewport(int resolution)
         SCREEN_H * 2
     };
     SDL_RenderSetViewport(renderer, &r);
+#else
+    SDL_RenderSetLogicalSize(renderer, SCREEN_W * 2 / resolution, SCREEN_H * 2 / resolution);
+#endif
 }
 
 static void loop_redraw()
@@ -75,6 +79,10 @@ static void loop_redraw()
     SDL_Color bg = palette_color(COLOR_BLACK);
     SDL_SetRenderDrawColor(renderer, bg.r, bg.g, bg.b, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &(SDL_Rect) {0, 0, SCREEN_W, SCREEN_H });
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRect(renderer, &(SDL_Rect) {0, 0, 3, 3 });
+    SDL_RenderDrawRect(renderer, &(SDL_Rect) {SCREEN_W - 3, SCREEN_H - 3, 3, 3 });
 
     // layers
     loop_adjust_viewport(1);
