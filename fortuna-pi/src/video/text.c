@@ -73,7 +73,7 @@ static void text_advance_cursor()
 
 static bool text_buffer_is_ansi(const char* cmd)
 {
-    return strlen(cmd) == buffer_len && strncmp(buffer, cmd, buffer_len) == 0;
+    return strlen(cmd) == buffer_len && strncmp((const char *) buffer, cmd, buffer_len) == 0;
 }
 
 static bool text_check_buffer_for_ansi()
@@ -86,6 +86,10 @@ static bool text_check_buffer_for_ansi()
     } else if (text_buffer_is_ansi("\e[1;1H")) {   // home
         cursor.x = cursor.y = 0;
         return true;
+    } else if (text_buffer_is_ansi("\e[0m")) {   // color: green
+        color = COLOR_WHITE;
+    } else if (text_buffer_is_ansi("\e[1;32m")) {   // color: green
+        color = COLOR_GREEN;
     }
     return false;
 }
@@ -115,6 +119,8 @@ void text_output(uint8_t c)
         text_parse_buffer(c);
     } else {
         switch (c) {
+            case '\r':
+                break;
             case '\n':
                 text_advance_line();
                 break;
