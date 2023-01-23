@@ -3,81 +3,61 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
 
 static int fd = 0;
-
-int
-set_interface_attribs (int fd, int speed, int parity)
-{
-    struct termios tty;
-    if (tcgetattr (fd, &tty) != 0)
-    {
-        fprintf(stderr, "error %d from tcgetattr", errno);
-        return -1;
-    }
-
-    cfsetospeed (&tty, speed);
-    cfsetispeed (&tty, speed);
-
-    tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8;     // 8-bit chars
-    // disable IGNBRK for mismatched speed tests; otherwise receive break
-    // as \000 chars
-    tty.c_iflag &= ~IGNBRK;         // disable break processing
-    tty.c_lflag = 0;                // no signaling chars, no echo,
-    // no canonical processing
-    tty.c_oflag = 0;                // no remapping, no delays
-    tty.c_cc[VMIN]  = 0;            // read doesn't block
-    tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
-
-    tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
-
-    tty.c_cflag |= (CLOCAL | CREAD);// ignore modem controls,
-    // enable reading
-    tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
-    tty.c_cflag |= parity;
-    tty.c_cflag &= ~CSTOPB;
-    tty.c_cflag &= ~CRTSCTS;
-
-    if (tcsetattr (fd, TCSANOW, &tty) != 0)
-    {
-        fprintf(stderr, "error %d from tcsetattr", errno);
-        return -1;
-    }
-    return 0;
-}
-
-void
-set_blocking (int fd, int should_block)
-{
-    struct termios tty;
-    memset (&tty, 0, sizeof tty);
-    if (tcgetattr (fd, &tty) != 0)
-    {
-        fprintf(stderr, "error %d from tggetattr", errno);
-        return;
-    }
-
-    tty.c_cc[VMIN]  = should_block ? 1 : 0;
-    tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
-
-    if (tcsetattr (fd, TCSANOW, &tty) != 0)
-        fprintf(stderr, "error %d setting term attributes", errno);
-}
+static pthread_t thread;
 
 void interface_init()
 {
-    int fd = open(SERIAL, O_RDWR | O_NOCTTY | O_SYNC);
+    fd = open(SERIAL, O_RDWR | O_NOCTTY);
     if (fd < 0) {
         fprintf(stderr, "error %d opening %s: %s", errno, SERIAL, strerror (errno));
         return;  // TODO
     }
+    printf("Serial port initialized.\n");
 
-    set_interface_attribs(fd, 1000000, 0);  // TODO - deal with errors
-    set_blocking(fd, 0);
+    struct termios options;
+    if (tcgetattr (fd, &options) != 0)
+    {
+        fprintf(stderr, "error %d from tcgetattr", errno);
+        return;
+    }
+
+    cfsetospeed(&options, (speed_t) 1000000);
+    cfsetispeed(&options, (speed_t) 1000000);
+
+    options.c_cflag |= (CLOCAL | CREAD);  // enable received and set local mode
+
+    options.c_cflag &= ~CSIZE; /* Mask the character size bits */
+    options.c_cflag |= CS8; /* Select 8 data bits */
+
+    // no parity
+    options.c_cflag &= ~PARENB;
+    options.c_cflag &= ~CSTOPB;
+
+    options.c_cflag &= ~CRTSCTS;  // disable flow control
+
+    options.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
+    options.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+    options.c_oflag &= ~OPOST;
+
+    options.c_cc[VMIN] = 1;
+    options.c_cc[VTIME] = 1;
+
+    if (tcsetattr (fd, TCSANOW, &options) != 0)
+    {
+        fprintf(stderr, "error %d from tcsetattr", errno);
+        return;
+    }
+    printf("Serial port configured.\n");
+
+    // set_interface_attribs(fd, 1000000, 0);  // TODO - deal with errors
+    // set_blocking(fd, 0);
 }
 
 void interface_uart_write(uint8_t c)
@@ -85,16 +65,28 @@ void interface_uart_write(uint8_t c)
     write(fd, &c, 1);  // TODO - sleep?
 }
 
+_Noreturn static void* interface_main_thread(void* data)
+{
+    (void) data;
+
+    printf("Reading serial...\n");
+
+    while (1) {
+        char buf[1];
+        int n = read(fd, buf, sizeof buf); // TODO - deal with errors
+        for (int i = 0; i < n; ++i) {
+            events_push(E_TEXT_PRINT, (void *)(intptr_t) buf[i]);
+        }
+    }
+}
+
 void interface_uart_read()
 {
-    char buf[128];
-    int n = read(fd, buf, sizeof buf); // TODO - deal with errors
-    for (int i = 0; i < n; ++i)
-        events_push(E_TEXT_PRINT, (void *)(intptr_t) buf[i]);
 }
 
 void interface_run_thread()
 {
+    thread = pthread_create(&thread, NULL, interface_main_thread, (void *) NULL);
 }
 
 void interface_destroy()

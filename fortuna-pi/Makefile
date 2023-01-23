@@ -6,7 +6,7 @@ STDIN_OBJ=src/interface/stdin.o
 SERIAL_OBJ=src/interface/serial.o
 EXE=fortuna-pi
 
-CFLAGS=-Wall -Wextra -std=c11 -Isrc
+CFLAGS=-Wall -Wextra -std=gnu11 -Isrc
 
 ifeq ($(OS),Windows_NT)
 	EXE := ${EXE}.exe
@@ -26,7 +26,8 @@ stdin: ${OBJ} ${STDIN_OBJ}
 	${CC} -o ${EXE} $^ ${LDFLAGS}
 
 serial: OBJ += ${SERIAL_OBJ}
-serial: CFLAGS += -DSERIAL=${SERIAL}
+serial: CFLAGS += -DSERIAL=\"${SERIAL}\"
+serial: LDFLAGS += -lpthread
 serial: ${OBJ} ${SERIAL_OBJ}
 	${CC} -o ${EXE} $^ ${LDFLAGS}
 
