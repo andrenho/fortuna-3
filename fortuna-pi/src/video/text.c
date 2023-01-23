@@ -13,7 +13,12 @@
 
 static SDL_Texture* font = NULL;
 
-static uint8_t matrix[TEXT_LINES][TEXT_COLUMNS];
+typedef struct {
+    uint8_t c;
+    uint8_t color : 4;
+} Char;
+
+static Char matrix[TEXT_LINES][TEXT_COLUMNS];
 static uint8_t color = COLOR_WHITE;
 
 #define BUFFER_SZ 12
@@ -49,7 +54,7 @@ void text_init()
     text_load_font();
     for (size_t line = 0; line < TEXT_LINES; ++line)
         for (size_t column = 0; column < TEXT_COLUMNS; ++column)
-            matrix[line][column] = ' ';
+            matrix[line][column] = (Char) { ' ', color };
 }
 
 static void text_advance_line()
@@ -81,7 +86,7 @@ static bool text_check_buffer_for_ansi()
     if (text_buffer_is_ansi("\e[2J")) {  // clear screen
         for (size_t y = 0; y < TEXT_LINES; ++y)
             for (size_t x = 0; x < TEXT_COLUMNS; ++x)
-                matrix[y][x] = ' ';
+                matrix[y][x] = (Char) { ' ', color };
         return true;
     } else if (text_buffer_is_ansi("\e[1;1H")) {   // home
         cursor.x = cursor.y = 0;
@@ -135,7 +140,7 @@ void text_output(uint8_t c)
                 buffer[buffer_len++] = c;
                 break;
             default:
-                matrix[cursor.y][cursor.x] = c;
+                matrix[cursor.y][cursor.x] = (Char) { c, color };
                 text_advance_cursor();
                 break;
         }
@@ -144,7 +149,8 @@ void text_output(uint8_t c)
 
 static void text_draw_cell(size_t line, size_t column)
 {
-    uint8_t c = matrix[line][column];
+    Char chr = matrix[line][column];
+    uint8_t c = chr.c;
 
     int orig_x = (c / 16) * TEXT_CHAR_W;
     int orig_y = (c % 16) * TEXT_CHAR_H;
@@ -160,7 +166,7 @@ static void text_draw_cell(size_t line, size_t column)
         SDL_SetTextureColorMod(font, bg.r, bg.g, bg.b);
 
     } else {
-        SDL_Color fg = palette_color(color);
+        SDL_Color fg = palette_color(chr.color);
         SDL_SetTextureColorMod(font, fg.r, fg.g, fg.b);
     }
 
