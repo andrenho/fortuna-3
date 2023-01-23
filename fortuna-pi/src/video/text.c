@@ -16,8 +16,8 @@ static SDL_Texture* font = NULL;
 static uint8_t matrix[TEXT_LINES][TEXT_COLUMNS];
 static uint8_t color = COLOR_WHITE;
 
-#define BUFFER_SZ 6
-static uint8_t buffer[6];
+#define BUFFER_SZ 12
+static uint8_t buffer[BUFFER_SZ];
 static uint8_t buffer_len = 0;
 static bool    buffer_mode = false;
 
@@ -71,9 +71,19 @@ static void text_advance_cursor()
         text_advance_line();
 }
 
-static bool text_check_buffer_for_ansi() {
-    if (strncmp((const char *) buffer, "[2J", buffer_len) == 0) {
-    } else if (strncmp((const char *) buffer, "[1;1H", buffer_len) == 0) {
+static bool text_buffer_is_ansi(const char* cmd)
+{
+    return strlen(cmd) == buffer_len && strncmp(buffer, cmd, buffer_len) == 0;
+}
+
+static bool text_check_buffer_for_ansi()
+{
+    if (text_buffer_is_ansi("\e[2J")) {  // clear screen
+        for (size_t y = 0; y < TEXT_LINES; ++y)
+            for (size_t x = 0; x < TEXT_COLUMNS; ++x)
+                matrix[y][x] = ' ';
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;1H")) {   // home
         cursor.x = cursor.y = 0;
         return true;
     }
