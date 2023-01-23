@@ -86,10 +86,12 @@ static bool text_check_buffer_for_ansi()
     } else if (text_buffer_is_ansi("\e[1;1H")) {   // home
         cursor.x = cursor.y = 0;
         return true;
-    } else if (text_buffer_is_ansi("\e[0m")) {   // color: green
+    } else if (text_buffer_is_ansi("\e[0m")) {   // reset formatting
         color = COLOR_WHITE;
+        return true;
     } else if (text_buffer_is_ansi("\e[1;32m")) {   // color: green
         color = COLOR_GREEN;
+        return true;
     }
     return false;
 }
