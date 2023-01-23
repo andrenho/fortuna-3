@@ -4,10 +4,11 @@
 #include <stdio.h>
 #include <SDL.h>
 
+#include "events.h"
+#include "interface/interface.h"
 #include "video/text.h"
 #include "video/window.h"
 #include "video/palette.h"
-#include "events.h"
 
 #ifdef EMULATOR
 #include <emscripten/emscripten.h>
@@ -100,6 +101,7 @@ EMSCRIPTEN_KEEPALIVE bool loop_single()
 
 void loop()
 {
+    interface_run_thread();
     while (loop_single());
 }
 

@@ -1,12 +1,14 @@
-#include "video/window.h"
 #include "loop.h"
+#include "events.h"
+#include "interface/interface.h"
 #include "video/text.h"
 #include "video/palette.h"
-#include "events.h"
+#include "video/window.h"
 
 void fortunapi_init()
 {
     window_init();
+    interface_init("/dev/serial0");
     events_init();
     palette_init();
     loop_init();
@@ -19,6 +21,7 @@ void fortunapi_destroy()
     loop_destroy();
     palette_destroy();
     events_destroy();
+    interface_destroy();
     window_destroy();
 }
 

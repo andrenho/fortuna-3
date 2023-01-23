@@ -1051,7 +1051,7 @@ extern "C" {
   *    "0"       - Use /dev/input/event*
   *    "1"       - Use /dev/input/js*
   *
-  *  By default the /dev/input/event* interfaces are used
+  *  By default the /dev/input/event* interface are used
   */
 #define SDL_HINT_LINUX_JOYSTICK_CLASSIC "SDL_LINUX_JOYSTICK_CLASSIC"
 

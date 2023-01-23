@@ -1,7 +1,9 @@
-OBJ=src/main.o src/loop.o src/events.o src/video/window.o src/video/text.o src/video/palette.o
+OBJ=src/main.o src/loop.o src/events.o \
+	src/video/window.o src/video/text.o src/video/palette.o
+SERIAL_OBJ=src/interface/stdin.o
 EXE=fortuna-pi
 
-CFLAGS=-Wall -Wextra -std=c11
+CFLAGS=-Wall -Wextra -std=c11 -Isrc
 
 ifeq ($(OS),Windows_NT)
 	EXE := ${EXE}.exe
@@ -14,13 +16,18 @@ endif
 
 all: ${EXE}
 
+serial: OBJ += ${SERIAL_OBJ}
+serial: LDFLAGS += -lpthread
+serial: ${OBJ} ${SERIAL_OBJ}
+	${CC} -o ${EXE} $^ ${LDFLAGS}
+
 ${EXE}: ${OBJ}
-	${CC} -o ${EXE} ${OBJ} ${LDFLAGS}
+	${CC} -o $@ $^ ${LDFLAGS}
 
 .PHONY: clean
 clean:
 ifeq ($(OS),Windows_NT)
-	cmd /C "del /Q /F $(subst /,\,${OBJ} ${EXE})"
+	cmd /C "del /Q /F $(subst /,\,${OBJ} ${SERIAL_OBJ} ${EXE})"
 else
-	rm -f ${OBJ} ${EXE}
+	rm -f ${OBJ} ${SERIAL_OBJ} ${EXE}
 endif
