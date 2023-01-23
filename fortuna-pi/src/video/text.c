@@ -13,6 +13,8 @@
 
 static SDL_Texture* font = NULL;
 
+static bool text_check_buffer_for_ansi();
+
 typedef struct {
     uint8_t c;
     uint8_t color : 4;
@@ -63,9 +65,10 @@ static void text_advance_line()
     ++cursor.y;
     if (cursor.y >= TEXT_LINES) {
         for (size_t y = 0; y < (TEXT_LINES - 1); ++y)
-            memcpy(matrix[y], matrix[y+1], TEXT_COLUMNS);
+            memcpy(matrix[y], matrix[y+1], TEXT_COLUMNS * sizeof(Char));
         --cursor.y;
-        memset(matrix[cursor.y], ' ', TEXT_COLUMNS);
+        for (size_t x = 0; x < TEXT_COLUMNS; ++x)
+            matrix[cursor.y][x] = (Char) { ' ', color };
     }
 }
 
@@ -79,26 +82,6 @@ static void text_advance_cursor()
 static bool text_buffer_is_ansi(const char* cmd)
 {
     return strlen(cmd) == buffer_len && strncmp((const char *) buffer, cmd, buffer_len) == 0;
-}
-
-static bool text_check_buffer_for_ansi()
-{
-    if (text_buffer_is_ansi("\e[2J")) {  // clear screen
-        for (size_t y = 0; y < TEXT_LINES; ++y)
-            for (size_t x = 0; x < TEXT_COLUMNS; ++x)
-                matrix[y][x] = (Char) { ' ', color };
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;1H")) {   // home
-        cursor.x = cursor.y = 0;
-        return true;
-    } else if (text_buffer_is_ansi("\e[0m")) {   // reset formatting
-        color = COLOR_WHITE;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;32m")) {   // color: green
-        color = COLOR_GREEN;
-        return true;
-    }
-    return false;
 }
 
 static void text_parse_buffer(uint8_t c)
@@ -195,5 +178,73 @@ void text_draw()
 void text_destroy()
 {
     SDL_DestroyTexture(font);
+}
+
+static bool text_check_buffer_for_ansi()
+{
+    if (text_buffer_is_ansi("\e[2J")) {  // clear screen
+        for (size_t y = 0; y < TEXT_LINES; ++y)
+            for (size_t x = 0; x < TEXT_COLUMNS; ++x)
+                matrix[y][x] = (Char) { ' ', color };
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;1H")) {   // home
+        cursor.x = cursor.y = 0;
+        return true;
+    } else if (text_buffer_is_ansi("\e[0m")) {   // reset formatting
+        color = COLOR_WHITE;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;30m")) {   // color: black
+        color = COLOR_BLACK;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;31m")) {   // color: red
+        color = COLOR_RED;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;32m")) {   // color: green
+        color = COLOR_GREEN;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;33m")) {   // color: yellow
+        color = COLOR_ORANGE;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;34m")) {   // color: blue
+        color = COLOR_DARK_BLUE;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;35m")) {   // color: magenta
+        color = COLOR_PURPLE;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;36m")) {   // color: cyan
+        color = COLOR_TURQUOISE;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;37m")) {   // color: white
+        color = COLOR_LIGHT_GRAY;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;90m")) {   // color: bright black
+        color = COLOR_GRAY;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;91m")) {   // color: bright red
+        color = COLOR_ORANGE;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;92m")) {   // color: bright green
+        color = COLOR_LIME;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;93m")) {   // color: bright yellow
+        color = COLOR_YELLOW;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;94m")) {   // color: bright blue
+        color = COLOR_LIGHT_BLUE;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;95m")) {   // color: bright magenta
+        color = COLOR_BLUE;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;96m")) {   // color: bright cyan
+        color = COLOR_CYAN;
+        return true;
+    } else if (text_buffer_is_ansi("\e[1;97m")) {   // color: bright white
+        color = COLOR_WHITE;
+        return true;
+    }
+
+    // TODO - cursor movement: https://tldp.org/HOWTO/Bash-Prompt-HOWTO/x361.html
+
+    return false;
 }
 
