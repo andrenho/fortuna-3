@@ -37,16 +37,15 @@
   - [x] Build initial setup
     - [x] Run on EMScripten
     - [x] Makefile, directories
-    - [ ] Interface, commandline
+    - [x] Interface, commandline
     - [x] Find appropriate window size
   - [ ] Text
     - [x] Write text on the screen
     - [x] Cursor
-    - [ ] Keyboard
+    - [x] Keyboard
     - [ ] VT100 emulation (send and receive characters)
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
-  - [ ] Graphical interface (serial)
   - [ ] Create protocol
   - [ ] Graphics
   - [ ] Audio
