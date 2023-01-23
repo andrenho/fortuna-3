@@ -95,7 +95,9 @@ static void text_parse_buffer(uint8_t c)
     if (buffer_len == BUFFER_SZ) {
         buffer_mode = false;
         buffer_len = 0;
-        for (size_t i = 0; i < BUFFER_SZ; ++i)
+        text_output('^');
+        text_output('[');
+        for (size_t i = 1; i < BUFFER_SZ; ++i)
             text_output(buffer[i]);
         text_output(c);
     } else {
