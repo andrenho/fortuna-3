@@ -40,9 +40,10 @@
     - [ ] Interface, commandline
     - [x] Find appropriate window size
   - [ ] Text
-    - [ ] Write text on the screen
-    - [ ] Cursor
+    - [x] Write text on the screen
+    - [x] Cursor
     - [ ] Keyboard
+    - [ ] VT100 emulation (send and receive characters)
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
   - [ ] Graphical interface (serial)

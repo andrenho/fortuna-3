@@ -27,7 +27,7 @@ _Noreturn static void* interface_main_thread(void *)
                     goto syntax_error;
                 }
             } else if (strlen(command) == 1) {
-                events_push(E_TEXT_OUTPUT, (void*)(intptr_t) command[0]);
+                events_push(E_TEXT_PRINT, (void*)(intptr_t) command[0]);
             } else {
                 goto syntax_error;
             }
@@ -52,6 +52,10 @@ void interface_run_thread()
 {
     thread = pthread_create(&thread, NULL, interface_main_thread, (void *) NULL);
     printf("%p\n", &thread);
+}
+
+void interface_uart_read()
+{
 }
 
 void interface_destroy()

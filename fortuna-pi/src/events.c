@@ -13,7 +13,7 @@ void events_init()
 {
     start_event = SDL_RegisterEvents(EVENT_COUNT);
     need_to_be_freed[E_CHANGE_BACKGROUND] = false;
-    need_to_be_freed[E_TEXT_OUTPUT] = false;
+    need_to_be_freed[E_TEXT_PRINT] = false;
 
     // SDL_StartTextInput();
 }
@@ -33,11 +33,14 @@ void events_push(EventType event_type, void* data)
 static uint8_t translate_char(SDL_Keycode sym) {
     if (sym <= 255)
         return (uint8_t) sym;
+    // TODO - add other keys such as F1, arrows, etc... (use VT100 codes)
     return 0;
 }
 
 void events_do(bool* quit)
 {
+    interface_uart_read();
+
     SDL_Event ev;
     while (SDL_PollEvent(&ev)) {
 
@@ -60,7 +63,7 @@ void events_do(bool* quit)
 
         else if (ev.type == E_CHANGE_BACKGROUND + start_event) {
             loop_set_background((intptr_t) ev.user.data1);
-        } else if (ev.type == E_TEXT_OUTPUT + start_event) {
+        } else if (ev.type == E_TEXT_PRINT + start_event) {
             text_output((intptr_t) ev.user.data1);
         }
 

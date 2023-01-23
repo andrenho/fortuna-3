@@ -6,7 +6,7 @@
 
 typedef enum {
     E_CHANGE_BACKGROUND,
-    E_TEXT_OUTPUT,
+    E_TEXT_PRINT,
     EVENT_COUNT
 } EventType;
 

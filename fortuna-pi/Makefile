@@ -1,6 +1,9 @@
+SERIAL=/dev/serial0
+
 OBJ=src/main.o src/loop.o src/events.o \
 	src/video/window.o src/video/text.o src/video/palette.o
-SERIAL_OBJ=src/interface/stdin.o
+STDIN_OBJ=src/interface/stdin.o
+SERIAL_OBJ=src/interface/serial.o
 EXE=fortuna-pi
 
 CFLAGS=-Wall -Wextra -std=c11 -Isrc
@@ -17,8 +20,13 @@ endif
 all:
 	$(info Choose one of: serial, stdin or emulator)
 
+stdin: OBJ += ${STDIN_OBJ}
+stdin: LDFLAGS += -lpthread
+stdin: ${OBJ} ${STDIN_OBJ}
+	${CC} -o ${EXE} $^ ${LDFLAGS}
+
 serial: OBJ += ${SERIAL_OBJ}
-serial: LDFLAGS += -lpthread
+serial: CFLAGS += -DSERIAL=${SERIAL}
 serial: ${OBJ} ${SERIAL_OBJ}
 	${CC} -o ${EXE} $^ ${LDFLAGS}
 
@@ -28,7 +36,7 @@ ${EXE}: ${OBJ}
 .PHONY: clean
 clean:
 ifeq ($(OS),Windows_NT)
-	cmd /C "del /Q /F $(subst /,\,${OBJ} ${SERIAL_OBJ} ${EXE})"
+	cmd /C "del /Q /F $(subst /,\,${OBJ} ${STDIN_OBJ} ${SERIAL_OBJ} ${EXE})"
 else
-	rm -f ${OBJ} ${SERIAL_OBJ} ${EXE}
+	rm -f ${OBJ} ${STDIN_OBJ} ${SERIAL_OBJ} ${EXE}
 endif
