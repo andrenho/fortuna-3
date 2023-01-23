@@ -8,7 +8,7 @@
 void fortunapi_init()
 {
     window_init();
-    interface_init("/dev/serial0");
+    interface_init();
     events_init();
     palette_init();
     loop_init();

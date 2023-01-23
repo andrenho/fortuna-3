@@ -8,7 +8,7 @@
 
 static pthread_t thread;
 
-void interface_init(const char*)
+void interface_init()
 {
 }
 
@@ -38,6 +38,14 @@ syntax_error:
         printf("Syntax error.\n");
     }
 
+}
+
+void interface_uart_write(uint8_t c)
+{
+    if (c >= 32 && c < 127)
+        printf("Sent char '%c'.\n", (char) c);
+    else
+        printf("Sent char 0x%02X.\n", c);
 }
 
 void interface_run_thread()

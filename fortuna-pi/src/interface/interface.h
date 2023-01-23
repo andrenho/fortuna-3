@@ -1,8 +1,12 @@
 #ifndef INTERFACE_H_
 #define INTERFACE_H_
 
-void interface_init(const char* serial_port);
-void interface_run_thread();
-void interface_destroy();
+#include <stdint.h>
+
+void    interface_init();
+void    interface_uart_write(uint8_t c);
+uint8_t interface_uart_read();
+void    interface_run_thread();
+void    interface_destroy();
 
 #endif

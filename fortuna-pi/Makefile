@@ -14,7 +14,8 @@ else
 	LDFLAGS := ${CFLAGS} `sdl2-config --libs`
 endif
 
-all: ${EXE}
+all:
+	$(info Choose one of: serial, stdin or emulator)
 
 serial: OBJ += ${SERIAL_OBJ}
 serial: LDFLAGS += -lpthread
