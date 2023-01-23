@@ -2,6 +2,7 @@
 
 #include "SDL.h"
 #include <stdio.h>
+#include <string.h>
 
 #include "font.h"
 #include "palette.h"
@@ -14,6 +15,11 @@ static SDL_Texture* font = NULL;
 
 static uint8_t matrix[TEXT_LINES][TEXT_COLUMNS];
 static uint8_t color = COLOR_WHITE;
+
+#define BUFFER_SZ 6
+static uint8_t buffer[6];
+static uint8_t buffer_len = 0;
+static bool    buffer_mode = false;
 
 typedef struct {
     uint8_t x;
@@ -65,16 +71,54 @@ static void text_advance_cursor()
         text_advance_line();
 }
 
+static bool text_check_buffer_for_ansi() {
+    if (strncmp((const char *) buffer, "[2J", buffer_len) == 0) {
+    } else if (strncmp((const char *) buffer, "[1;1H", buffer_len) == 0) {
+        cursor.x = cursor.y = 0;
+        return true;
+    }
+    return false;
+}
+
+static void text_parse_buffer(uint8_t c)
+{
+    if (buffer_len == BUFFER_SZ) {
+        buffer_mode = false;
+        buffer_len = 0;
+        for (size_t i = 0; i < BUFFER_SZ; ++i)
+            text_output(buffer[i]);
+        text_output(c);
+    } else {
+        buffer[buffer_len++] = c;
+        if (text_check_buffer_for_ansi()) {
+            buffer_mode = false;
+            buffer_len = 0;
+        }
+    }
+}
+
 void text_output(uint8_t c)
 {
-    switch (c) {
-        case '\n':
-            text_advance_line();
-            break;
-        default:
-            matrix[cursor.y][cursor.x] = c;
-            text_advance_cursor();
-            break;
+    if (buffer_mode) {
+        text_parse_buffer(c);
+    } else {
+        switch (c) {
+            case '\n':
+                text_advance_line();
+                break;
+            case '\b':
+                if (cursor.x > 0)
+                    --cursor.x;
+                break;
+            case 27:  // ESC
+                buffer_mode = true;
+                buffer[buffer_len++] = c;
+                break;
+            default:
+                matrix[cursor.y][cursor.x] = c;
+                text_advance_cursor();
+                break;
+        }
     }
 }
 
