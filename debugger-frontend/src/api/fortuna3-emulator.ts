@@ -2,6 +2,7 @@ import {FinishReason, FortunaApi, loadApiFunctions} from "./api";
 
 export interface FortunaModule extends EmscriptenModule {
     cwrap: typeof cwrap;
+    canvas: HTMLElement | null;
 }
 declare const Module : FortunaModule;
 
@@ -77,6 +78,7 @@ export class Fortuna3Emulator {
 
         await this.loadWasmModule(wasmFilePath);
         emulator.api = loadApiFunctions(Module);
+        Module.canvas = document.getElementById("canvas");
 
         emulator.api.initialize(emulator.sdCardImageSizeMB);
 
@@ -292,6 +294,10 @@ export class Fortuna3Emulator {
 
     sdCardSetEjected(ejected: boolean) {
         this.api!.sdCardSetEjected(ejected);
+    }
+
+    loopSingle() {
+        this.api!.loopSingle();
     }
 
     private static async loadWasmModule(wasmFilePath: string) : Promise<void> {

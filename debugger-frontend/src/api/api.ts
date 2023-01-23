@@ -24,6 +24,7 @@ export interface FortunaApi {
     fsFilePage: (dir: string, filename: string, page: number, buf: number) => number;
     fsCreateFile: (filename: string, buf: Uint8Array, sz: number) => number;
     sdCardSetEjected: (ejected: boolean) => void;
+    loopSingle: () => void;
 }
 
 export function loadApiFunctions(module: FortunaModule) : FortunaApi {
@@ -44,5 +45,6 @@ export function loadApiFunctions(module: FortunaModule) : FortunaApi {
         fsFilePage: module.cwrap("fs_file_page", "number", ["string", "string", "number", "number"]),
         fsCreateFile: module.cwrap("fs_create_file", "number", ["string", "array", "number"]),
         sdCardSetEjected: module.cwrap("sdcard_set_ejected", null, ["boolean"]),
+        loopSingle: module.cwrap("loop_single", null, []),
     };
 }

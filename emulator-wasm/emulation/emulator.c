@@ -16,6 +16,8 @@
 #include "terminal.h"
 #include "z80/Z80.h"
 
+static bool sdl_initialized = false;
+
 EMSCRIPTEN_KEEPALIVE bool emulator_initialize(size_t sdcard_sz_in_mb)
 {
     ResetZ80(&z80);
@@ -32,6 +34,13 @@ EMSCRIPTEN_KEEPALIVE bool emulator_initialize(size_t sdcard_sz_in_mb)
     bool r = sdcard_init(sdcard_sz_in_mb MB);
 
     puts("Emulator initialized.");
+
+    if (!sdl_initialized) {
+        extern void fortunapi_init();
+        fortunapi_init();
+        sdl_initialized = true;
+    }
+
     return r;
 }
 
