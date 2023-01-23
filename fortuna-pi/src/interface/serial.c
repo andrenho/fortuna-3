@@ -14,12 +14,14 @@ static pthread_t thread;
 
 void interface_init()
 {
-    fd = open(SERIAL, O_RDWR | O_NOCTTY);
+    fd = open(SERIAL, O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd < 0) {
         fprintf(stderr, "error %d opening %s: %s", errno, SERIAL, strerror (errno));
         return;  // TODO
     }
     printf("Serial port initialized.\n");
+
+    fcntl(fd, F_SETFL, 0);
 
     struct termios options;
     if (tcgetattr (fd, &options) != 0)
@@ -45,9 +47,6 @@ void interface_init()
     options.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
     options.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
     options.c_oflag &= ~OPOST;
-
-    options.c_cc[VMIN] = 1;
-    options.c_cc[VTIME] = 1;
 
     if (tcsetattr (fd, TCSANOW, &options) != 0)
     {
