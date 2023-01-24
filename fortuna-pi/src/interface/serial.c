@@ -30,8 +30,7 @@ void interface_init()
         return;
     }
 
-    cfsetospeed(&options, (speed_t) 500000);
-    cfsetispeed(&options, (speed_t) 500000);
+    printf("%d\n", cfsetspeed(&options, (speed_t) 500000));
 
     options.c_cflag |= (CLOCAL | CREAD);  // enable received and set local mode
 
