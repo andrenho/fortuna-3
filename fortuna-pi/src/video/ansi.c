@@ -72,7 +72,7 @@ static AnsiCommand ansi_parse_command(char command, int p1, int p2)
         case 'H':
             return (AnsiCommand) { .operation = A_MOVETO, .par1 = p1, .par2 = p2 };
         case 'm':
-            if (p1 == 0)
+            if (p1 == 0 && p2 == 0)
                 return (AnsiCommand) { .operation = A_RESET };
             else
                 return (AnsiCommand) { .operation = A_COLOR, .par1 = p1, .par2 = p2 };
