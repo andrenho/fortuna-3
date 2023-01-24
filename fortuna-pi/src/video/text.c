@@ -2,17 +2,26 @@
 
 #include "SDL.h"
 #include <stdio.h>
+#include <string.h>
 
 #include "font.h"
 #include "palette.h"
 #include "../loop.h"
+#include "ansi.h"
 
 #define TEXT_COLUMNS ((SCREEN_W * 2 - TEXT_BORDER_X * 2) / TEXT_CHAR_W)
 #define TEXT_LINES   ((SCREEN_H * 2 - TEXT_BORDER_Y * 2) / TEXT_CHAR_H)
 
 static SDL_Texture* font = NULL;
 
-static uint8_t matrix[TEXT_LINES][TEXT_COLUMNS];
+static void text_execute_ansi_command(AnsiCommand command);
+
+typedef struct {
+    uint8_t c;
+    uint8_t color : 4;
+} Char;
+
+static Char matrix[TEXT_LINES][TEXT_COLUMNS];
 static uint8_t color = COLOR_WHITE;
 
 typedef struct {
@@ -43,7 +52,7 @@ void text_init()
     text_load_font();
     for (size_t line = 0; line < TEXT_LINES; ++line)
         for (size_t column = 0; column < TEXT_COLUMNS; ++column)
-            matrix[line][column] = ' ';
+            matrix[line][column] = (Char) { ' ', color };
 }
 
 static void text_advance_line()
@@ -52,9 +61,10 @@ static void text_advance_line()
     ++cursor.y;
     if (cursor.y >= TEXT_LINES) {
         for (size_t y = 0; y < (TEXT_LINES - 1); ++y)
-            memcpy(matrix[y], matrix[y+1], TEXT_COLUMNS);
+            memcpy(matrix[y], matrix[y+1], TEXT_COLUMNS * sizeof(Char));
         --cursor.y;
-        memset(matrix[cursor.y], ' ', TEXT_COLUMNS);
+        for (size_t x = 0; x < TEXT_COLUMNS; ++x)
+            matrix[cursor.y][x] = (Char) { ' ', color };
     }
 }
 
@@ -67,20 +77,35 @@ static void text_advance_cursor()
 
 void text_output(uint8_t c)
 {
-    switch (c) {
-        case '\n':
-            text_advance_line();
-            break;
-        default:
-            matrix[cursor.y][cursor.x] = c;
-            text_advance_cursor();
-            break;
+    bool aa = ansi_active();
+
+    AnsiCommand ansi_command = ansi_char((char) c);
+    text_execute_ansi_command(ansi_command);
+
+    if (!aa) {
+        switch (c) {
+            case '\r':
+            case 27:  // ESC
+                break;
+            case '\n':
+                text_advance_line();
+                break;
+            case '\b':
+                if (cursor.x > 0)
+                    --cursor.x;
+                break;
+            default:
+                matrix[cursor.y][cursor.x] = (Char) { c, color };
+                text_advance_cursor();
+                break;
+        }
     }
 }
 
 static void text_draw_cell(size_t line, size_t column)
 {
-    uint8_t c = matrix[line][column];
+    Char chr = matrix[line][column];
+    uint8_t c = chr.c;
 
     int orig_x = (c / 16) * TEXT_CHAR_W;
     int orig_y = (c % 16) * TEXT_CHAR_H;
@@ -96,7 +121,7 @@ static void text_draw_cell(size_t line, size_t column)
         SDL_SetTextureColorMod(font, bg.r, bg.g, bg.b);
 
     } else {
-        SDL_Color fg = palette_color(color);
+        SDL_Color fg = palette_color(chr.color);
         SDL_SetTextureColorMod(font, fg.r, fg.g, fg.b);
     }
 
@@ -127,3 +152,83 @@ void text_destroy()
     SDL_DestroyTexture(font);
 }
 
+static uint8_t text_ansi_color(int number)
+{
+    switch (number) {
+        case 30: return COLOR_BLACK;
+        case 31: return COLOR_RED;
+        case 32: return COLOR_GREEN;
+        case 33: return COLOR_ORANGE;
+        case 34: return COLOR_DARK_BLUE;
+        case 35: return COLOR_PURPLE;
+        case 36: return COLOR_TURQUOISE;
+        case 37: return COLOR_LIGHT_GRAY;
+        case 90: return COLOR_GRAY;
+        case 91: return COLOR_ORANGE;
+        case 92: return COLOR_LIME;
+        case 93: return COLOR_YELLOW;
+        case 94: return COLOR_LIGHT_BLUE;
+        case 95: return COLOR_BLUE;
+        case 96: return COLOR_CYAN;
+        case 97: return COLOR_WHITE;
+        default: return color;
+    }
+}
+
+static void text_execute_ansi_command(AnsiCommand command) {
+
+    switch (command.operation) {
+
+        case A_NOTHING:
+        case A_START:
+            break;
+
+        case A_ROLLBACK: {
+            text_output('^');
+            for (const char *s = command.str; *s; ++s)
+                text_output(*s);
+            break;
+        }
+
+        case A_CLRSCR:
+            for (size_t y = 0; y < TEXT_LINES; ++y)
+                for (size_t x = 0; x < TEXT_COLUMNS; ++x)
+                    matrix[y][x].c = ' ';
+            break;
+
+        case A_MOVETO:
+            if ((command.par1 - 1) < TEXT_LINES && (command.par2 - 1) < TEXT_COLUMNS) {
+                cursor.x = command.par2 - 1;
+                cursor.y = command.par1 - 1;
+            }
+            break;
+
+        case A_COLOR:
+            color = text_ansi_color(command.par2);
+            break;
+
+        case A_RESET:
+            color = COLOR_WHITE;
+            break;
+
+        case A_MOVE_UP:
+            if (cursor.y - command.par1 >= 0)
+                cursor.y -= command.par1;
+            break;
+
+        case A_MOVE_DOWN:
+            if (cursor.y + command.par1 < TEXT_LINES)
+                cursor.y += command.par1;
+            break;
+
+        case A_MOVE_LEFT:
+            if (cursor.x - command.par1 >= 0)
+                cursor.x -= command.par1;
+            break;
+
+        case A_MOVE_RIGHT:
+            if (cursor.x + command.par1 < TEXT_COLUMNS)
+                cursor.x += command.par1;
+            break;
+    }
+}

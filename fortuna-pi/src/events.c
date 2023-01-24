@@ -7,14 +7,10 @@
 #include "interface/interface.h"
 
 static uint32_t start_event = 0;
-static bool need_to_be_freed[EVENT_COUNT] = { true };
 
 void events_init()
 {
     start_event = SDL_RegisterEvents(EVENT_COUNT);
-    need_to_be_freed[E_CHANGE_BACKGROUND] = false;
-    need_to_be_freed[E_TEXT_PRINT] = false;
-
     // SDL_StartTextInput();
 }
 
@@ -24,7 +20,6 @@ void events_push(EventType event_type, void* data)
         .user = (SDL_UserEvent) {
             .type = event_type + start_event,
             .data1 = data,
-            .data2 = (void *) need_to_be_freed[event_type]
         }
     };
     SDL_PushEvent(&event);
@@ -65,12 +60,6 @@ void events_do(bool* quit)
             loop_set_background((intptr_t) ev.user.data1);
         } else if (ev.type == E_TEXT_PRINT + start_event) {
             text_output((intptr_t) ev.user.data1);
-        }
-
-        // user event cleanup
-
-        if (ev.type >= start_event && need_to_be_freed[ev.type]) {
-            free(ev.user.data1);
         }
     }
 }

@@ -43,7 +43,12 @@
     - [x] Write text on the screen
     - [x] Cursor
     - [x] Keyboard
-    - [ ] VT100 emulation (send and receive characters)
+    - [x] Serial speed not being set correctly
+    - [x] VT100 emulation (send and receive characters)
+    - [x] Treat errors when setting up serial
+  - [ ] Setup fortuna-pi for emulator
+    - [ ] Change OS to manage keystrokes
+  - [ ] Add SPI wires to PI to make whole computer independent
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
   - [ ] Create protocol

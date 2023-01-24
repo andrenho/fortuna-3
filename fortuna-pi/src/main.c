@@ -13,6 +13,13 @@ void fortunapi_init()
     palette_init();
     loop_init();
     text_init();
+
+    /*
+    const char* text = "\e[4;4H\e[2JRandom seed is 0xabcdef00.\n\e[0;32mError initializing SDCard.\e[0m\n";
+    for (int i = 0; i < 8; ++i)
+        for (const char *s = text; *s; ++s)
+            events_push(E_TEXT_PRINT, (void *) *s);
+    */
 }
 
 void fortunapi_destroy()
