@@ -83,9 +83,11 @@ static void text_advance_cursor()
 void text_output(uint8_t c)
 {
     bool aa = ansi_active();
-    AnsiCommand ansi_command = ansi_char((char) c);
 
+    /*
+    AnsiCommand ansi_command = ansi_char((char) c);
     text_execute_ansi_command(ansi_command);
+    */
 
     if (!aa) {
         switch (c) {

@@ -14,11 +14,10 @@ void fortunapi_init()
     loop_init();
     text_init();
 
-    /*
-    const char* text = "\e[1;1HHello world\r\n\e[0;31mError initializing SDCard.\e[0m";
-    for (const char *s = text; *s; ++s)
-        events_push(E_TEXT_PRINT, (void *) *s);
-    */
+    const char* text = "\e[1;1H\e[2J\nRandom seed is 0xabcdef00.\n\e[0;31mError initializing SDCard.\e[0m\n";
+    for (int i = 0; i < 6; ++i)
+        for (const char *s = text; *s; ++s)
+            events_push(E_TEXT_PRINT, (void *) *s);
 }
 
 void fortunapi_destroy()
