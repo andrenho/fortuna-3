@@ -16,7 +16,7 @@ jobs:
         with:
           distribution: corretto
           java-version: 17
-      - uses: mymindstorm/setup-emsdk@v11
+      - uses: mymindstorm/setup-emsdk@v12
       - run: |
           make build-jar
       - uses: ncipollo/release-action@v1
