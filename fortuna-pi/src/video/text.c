@@ -24,11 +24,6 @@ typedef struct {
 static Char matrix[TEXT_LINES][TEXT_COLUMNS];
 static uint8_t color = COLOR_WHITE;
 
-#define BUFFER_SZ 12
-static uint8_t buffer[BUFFER_SZ];
-static uint8_t buffer_len = 0;
-static bool    buffer_mode = false;
-
 typedef struct {
     uint8_t x;
     uint8_t y;
@@ -84,14 +79,13 @@ void text_output(uint8_t c)
 {
     bool aa = ansi_active();
 
-    /*
     AnsiCommand ansi_command = ansi_char((char) c);
     text_execute_ansi_command(ansi_command);
-    */
 
     if (!aa) {
         switch (c) {
             case '\r':
+            case 27:  // ESC
                 break;
             case '\n':
                 text_advance_line();
@@ -99,10 +93,6 @@ void text_output(uint8_t c)
             case '\b':
                 if (cursor.x > 0)
                     --cursor.x;
-                break;
-            case 27:  // ESC
-                buffer_mode = true;
-                buffer[buffer_len++] = c;
                 break;
             default:
                 matrix[cursor.y][cursor.x] = (Char) { c, color };
