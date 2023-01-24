@@ -69,7 +69,7 @@ void events_do(bool* quit)
 
         // user event cleanup
 
-        if (ev.type >= start_event && need_to_be_freed[ev.type]) {
+        if (ev.type >= start_event && ev.user.data2) {
             free(ev.user.data1);
         }
     }
