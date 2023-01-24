@@ -11,7 +11,6 @@ static uint32_t start_event = 0;
 void events_init()
 {
     start_event = SDL_RegisterEvents(EVENT_COUNT);
-
     // SDL_StartTextInput();
 }
 
@@ -62,7 +61,6 @@ void events_do(bool* quit)
         } else if (ev.type == E_TEXT_PRINT + start_event) {
             text_output((intptr_t) ev.user.data1);
         }
-
     }
 }
 

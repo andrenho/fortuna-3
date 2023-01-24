@@ -106,10 +106,6 @@ void window_size(int* w, int* h)
     *h = win_h;
 }
 
-void window_set_background(uint8_t bg)
-{
-}
-
 void window_destroy()
 {
     SDL_DestroyRenderer(renderer);

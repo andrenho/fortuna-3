@@ -74,7 +74,10 @@ void interface_init()
 
 void interface_uart_write(uint8_t c)
 {
-    write(fd, &c, 1);  // TODO - sleep?
+    if (write(fd, &c, 1) < 0) {  // TODO - sleep?
+        error_message("Failure writing to serial: ");
+        error_message(strerror(errno));
+    }
 }
 
 _Noreturn static void* interface_main_thread(void* data)
@@ -86,6 +89,10 @@ _Noreturn static void* interface_main_thread(void* data)
     while (1) {
         char buf[1];
         int n = read(fd, buf, sizeof buf); // TODO - deal with errors
+        if (n < 0) {
+            error_message("Failure reading from serial: ");
+            error_message(strerror(errno));
+        }
         for (int i = 0; i < n; ++i) {
             events_push(E_TEXT_PRINT, (void *)(intptr_t) buf[i]);
         }
