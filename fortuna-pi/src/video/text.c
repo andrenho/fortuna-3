@@ -205,9 +205,9 @@ static void text_execute_ansi_command(AnsiCommand command) {
             break;
 
         case A_MOVETO:
-            if (command.par1 < TEXT_LINES && command.par2 < TEXT_COLUMNS) {
-                cursor.x = command.par2;
-                cursor.y = command.par1;
+            if ((command.par1 - 1) < TEXT_LINES && (command.par2 - 1) < TEXT_COLUMNS) {
+                cursor.x = command.par2 - 1;
+                cursor.y = command.par1 - 1;
             }
             break;
 

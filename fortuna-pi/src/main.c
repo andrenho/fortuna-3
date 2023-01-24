@@ -14,7 +14,7 @@ void fortunapi_init()
     loop_init();
     text_init();
 
-    const char* text = "\e[1;1HHello world \e[0;31mgreen\e[0m reset";
+    const char* text = "\e[1;1HHello world\n\e[0;31mError initializing SDCard.\e[0m";
     for (const char *s = text; *s; ++s)
         events_push(E_TEXT_PRINT, (void *) *s);
 }
