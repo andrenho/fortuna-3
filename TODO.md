@@ -46,6 +46,8 @@
     - [x] Serial speed not being set correctly
     - [x] VT100 emulation (send and receive characters)
     - [ ] Treat errors when setting up serial
+  - [ ] Setup fortuna-pi for emulator
+    - [ ] Change OS to manage keystrokes
   - [ ] Add SPI wires to PI to make whole computer independent
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)

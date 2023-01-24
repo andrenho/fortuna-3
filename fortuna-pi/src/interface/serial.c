@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
@@ -12,11 +13,21 @@
 static int fd = 0;
 static pthread_t thread;
 
+static void error_message(const char* msg)
+{
+    char* buffer = malloc(strlen(msg) + 20);
+    sprintf(buffer, "\e[1;31m%s\e[0m", msg);
+
+    for (const char *s = buffer; *s; ++s)
+        events_push(E_TEXT_PRINT, (void *) (intptr_t) *s);
+}
+
 void interface_init()
 {
     fd = open(SERIAL, O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd < 0) {
-        fprintf(stderr, "error %d opening %s: %s", errno, SERIAL, strerror (errno));
+        error_message("Error opening serial port: ");
+        error_message(strerror(errno));
         return;  // TODO
     }
     printf("Serial port initialized.\n");
@@ -26,11 +37,16 @@ void interface_init()
     struct termios options;
     if (tcgetattr (fd, &options) != 0)
     {
-        fprintf(stderr, "error %d from tcgetattr", errno);
+        error_message("Could not get current serial attributes: ");
+        error_message(strerror(errno));
         return;
     }
 
-    printf("%d\n", cfsetspeed(&options, (speed_t) 500000));
+    if (cfsetspeed(&options, (speed_t) 500000) < 0) {
+        error_message("Could not get current serial baud speed: ");
+        error_message(strerror(errno));
+        return;
+    }
 
     options.c_cflag |= (CLOCAL | CREAD);  // enable received and set local mode
 
@@ -49,13 +65,11 @@ void interface_init()
 
     if (tcsetattr (fd, TCSANOW, &options) != 0)
     {
-        fprintf(stderr, "error %d from tcsetattr", errno);
+        error_message("Could not set current serial attributes: ");
+        error_message(strerror(errno));
         return;
     }
     printf("Serial port configured.\n");
-
-    // set_interface_attribs(fd, 1000000, 0);  // TODO - deal with errors
-    // set_blocking(fd, 0);
 }
 
 void interface_uart_write(uint8_t c)
