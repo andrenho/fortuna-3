@@ -25,7 +25,7 @@ F_CPU=16000000UL
 
 # Serial speed, in baud. Used by avr-libc for UART speed calculation.
 # BAUD=38400
-BAUD=1000000
+BAUD=500000
 
 CFLAGS=-I. -Idev -Ifsfat -Iinterface -Iio
 
