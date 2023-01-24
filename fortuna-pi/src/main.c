@@ -14,11 +14,9 @@ void fortunapi_init()
     loop_init();
     text_init();
 
-    /*
     const char* text = "\e[1;1HHello world \e[1;92mgreen\e[0m reset";
     for (const char *s = text; *s; ++s)
         events_push(E_TEXT_PRINT, (void *) *s);
-    */
 }
 
 void fortunapi_destroy()

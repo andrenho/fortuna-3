@@ -1,7 +1,7 @@
 SERIAL=/dev/serial0
 
 OBJ=src/main.o src/loop.o src/events.o \
-	src/video/window.o src/video/text.o src/video/palette.o
+	src/video/window.o src/video/text.o src/video/palette.o src/video/ansi.o
 STDIN_OBJ=src/interface/stdin.o
 SERIAL_OBJ=src/interface/serial.o
 EXE=fortuna-pi

@@ -7,13 +7,14 @@
 #include "font.h"
 #include "palette.h"
 #include "../loop.h"
+#include "ansi.h"
 
 #define TEXT_COLUMNS ((SCREEN_W * 2 - TEXT_BORDER_X * 2) / TEXT_CHAR_W)
 #define TEXT_LINES   ((SCREEN_H * 2 - TEXT_BORDER_Y * 2) / TEXT_CHAR_H)
 
 static SDL_Texture* font = NULL;
 
-static bool text_check_buffer_for_ansi();
+static void text_execute_ansi_command(AnsiCommand command);
 
 typedef struct {
     uint8_t c;
@@ -79,35 +80,14 @@ static void text_advance_cursor()
         text_advance_line();
 }
 
-static bool text_buffer_is_ansi(const char* cmd)
-{
-    return strlen(cmd) == buffer_len && strncmp((const char *) buffer, cmd, buffer_len) == 0;
-}
-
-static void text_parse_buffer(uint8_t c)
-{
-    if (buffer_len == BUFFER_SZ) {
-        buffer_mode = false;
-        buffer_len = 0;
-        text_output('^');
-        text_output('[');
-        for (size_t i = 1; i < BUFFER_SZ; ++i)
-            text_output(buffer[i]);
-        text_output(c);
-    } else {
-        buffer[buffer_len++] = c;
-        if (text_check_buffer_for_ansi()) {
-            buffer_mode = false;
-            buffer_len = 0;
-        }
-    }
-}
-
 void text_output(uint8_t c)
 {
-    if (buffer_mode) {
-        text_parse_buffer(c);
-    } else {
+    bool aa = ansi_active();
+    AnsiCommand ansi_command = ansi_char((char) c);
+
+    text_execute_ansi_command(ansi_command);
+
+    if (!aa) {
         switch (c) {
             case '\r':
                 break;
@@ -180,71 +160,83 @@ void text_destroy()
     SDL_DestroyTexture(font);
 }
 
-static bool text_check_buffer_for_ansi()
+static uint8_t text_ansi_color(int number)
 {
-    if (text_buffer_is_ansi("\e[2J")) {  // clear screen
-        for (size_t y = 0; y < TEXT_LINES; ++y)
-            for (size_t x = 0; x < TEXT_COLUMNS; ++x)
-                matrix[y][x] = (Char) { ' ', color };
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;1H")) {   // home
-        cursor.x = cursor.y = 0;
-        return true;
-    } else if (text_buffer_is_ansi("\e[0m")) {   // reset formatting
-        color = COLOR_WHITE;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;30m")) {   // color: black
-        color = COLOR_BLACK;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;31m")) {   // color: red
-        color = COLOR_RED;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;32m")) {   // color: green
-        color = COLOR_GREEN;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;33m")) {   // color: yellow
-        color = COLOR_ORANGE;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;34m")) {   // color: blue
-        color = COLOR_DARK_BLUE;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;35m")) {   // color: magenta
-        color = COLOR_PURPLE;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;36m")) {   // color: cyan
-        color = COLOR_TURQUOISE;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;37m")) {   // color: white
-        color = COLOR_LIGHT_GRAY;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;90m")) {   // color: bright black
-        color = COLOR_GRAY;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;91m")) {   // color: bright red
-        color = COLOR_ORANGE;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;92m")) {   // color: bright green
-        color = COLOR_LIME;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;93m")) {   // color: bright yellow
-        color = COLOR_YELLOW;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;94m")) {   // color: bright blue
-        color = COLOR_LIGHT_BLUE;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;95m")) {   // color: bright magenta
-        color = COLOR_BLUE;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;96m")) {   // color: bright cyan
-        color = COLOR_CYAN;
-        return true;
-    } else if (text_buffer_is_ansi("\e[1;97m")) {   // color: bright white
-        color = COLOR_WHITE;
-        return true;
+    switch (number) {
+        case 30: return COLOR_BLACK;
+        case 31: return COLOR_RED;
+        case 32: return COLOR_GREEN;
+        case 33: return COLOR_ORANGE;
+        case 34: return COLOR_DARK_BLUE;
+        case 35: return COLOR_PURPLE;
+        case 36: return COLOR_TURQUOISE;
+        case 37: return COLOR_LIGHT_GRAY;
+        case 90: return COLOR_GRAY;
+        case 91: return COLOR_ORANGE;
+        case 92: return COLOR_LIME;
+        case 93: return COLOR_YELLOW;
+        case 94: return COLOR_LIGHT_BLUE;
+        case 95: return COLOR_BLUE;
+        case 96: return COLOR_CYAN;
+        case 97: return COLOR_WHITE;
+        default: return color;
     }
-
-    // TODO - cursor movement: https://tldp.org/HOWTO/Bash-Prompt-HOWTO/x361.html
-
-    return false;
 }
 
+static void text_execute_ansi_command(AnsiCommand command) {
+
+    switch (command.operation) {
+
+        case A_NOTHING:
+        case A_START:
+            break;
+
+        case A_ROLLBACK: {
+            text_output('^');
+            for (const char *s = command.str; *s; ++s)
+                text_output(*s);
+            break;
+        }
+
+        case A_CLRSCR:
+            for (size_t y = 0; y < TEXT_LINES; ++y)
+                for (size_t x = 0; x < TEXT_COLUMNS; ++x)
+                    matrix[y][x].c = ' ';
+            break;
+
+        case A_MOVETO:
+            if (command.par1 < TEXT_LINES && command.par2 < TEXT_COLUMNS) {
+                cursor.x = command.par2;
+                cursor.y = command.par1;
+            }
+            break;
+
+        case A_COLOR:
+            color = text_ansi_color(command.par1);
+            break;
+
+        case A_RESET:
+            color = COLOR_WHITE;
+            break;
+
+        case A_MOVE_UP:
+            if (cursor.y - command.par1 >= 0)
+                cursor.y -= command.par1;
+            break;
+
+        case A_MOVE_DOWN:
+            if (cursor.y + command.par1 < TEXT_LINES)
+                cursor.y += command.par1;
+            break;
+
+        case A_MOVE_LEFT:
+            if (cursor.x - command.par1 >= 0)
+                cursor.x -= command.par1;
+            break;
+
+        case A_MOVE_RIGHT:
+            if (cursor.x + command.par1 < TEXT_COLUMNS)
+                cursor.x += command.par1;
+            break;
+    }
+}

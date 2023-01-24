@@ -43,7 +43,10 @@
     - [x] Write text on the screen
     - [x] Cursor
     - [x] Keyboard
+    - [x] Serial speed not being set correctly
     - [ ] VT100 emulation (send and receive characters)
+    - [ ] Treat errors when setting up serial
+  - [ ] Add SPI wires to PI to make whole computer independent
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
   - [ ] Create protocol
