@@ -212,7 +212,7 @@ static void text_execute_ansi_command(AnsiCommand command) {
             break;
 
         case A_COLOR:
-            color = text_ansi_color(command.par1);
+            color = text_ansi_color(command.par2);
             break;
 
         case A_RESET:
