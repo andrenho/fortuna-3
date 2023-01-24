@@ -37,7 +37,7 @@ ${EXE}: ${OBJ}
 .PHONY: clean
 clean:
 ifeq ($(OS),Windows_NT)
-	cmd /C "del /Q /F $(subst /,\,${OBJ} ${STDIN_OBJ} ${SERIAL_OBJ} ${EXE})"
+	del /Q /F $(subst /,\,${OBJ} ${STDIN_OBJ} ${SERIAL_OBJ} ${EXE})
 else
 	rm -f ${OBJ} ${STDIN_OBJ} ${SERIAL_OBJ} ${EXE}
 endif
