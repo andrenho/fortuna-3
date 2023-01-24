@@ -1083,6 +1083,10 @@
     (effects (font (size 3 3) (thickness 0.6) bold) (justify left bottom))
     (uuid 56a233ab-ca71-472d-844d-76f44df2725b)
   )
+  (text "Main board ->" (at 111.76 186.69 0)
+    (effects (font (size 3 3)) (justify left bottom))
+    (uuid 85676036-7fa4-4686-a18d-a2a5a23c230b)
+  )
   (text "Wires:\nRED    -- VCC\nBLACK  -- GND\nYELLOW -- DATA\nORANGE -- ADDR\nGREEN  -- SPI\nPURPLE -- Z80 BUS\nBROWN  -- SERIAL\nBLUE   -- OTHER"
     (at 20.32 193.04 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
@@ -1871,6 +1875,9 @@
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/815cf42e-0f2d-4ed5-a526-fc91ac52180b"
       (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
     )
+    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/8667c096-1105-4282-abf5-b5f5fd5d95a1"
+      (reference "#PWR?") (unit 1) (value "+3V3") (footprint "")
+    )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/883247fb-bfb5-42ae-8659-a110c018d3aa"
       (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
     )
@@ -1944,6 +1951,9 @@
       (reference "#PWR?") (unit 1) (value "GND") (footprint "")
     )
     (path "/e7ce1141-6c3a-4fc8-af80-349727fa23fd"
+      (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
+    )
+    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/ea43ba8b-e61d-4888-aa80-16b0815f20c3"
       (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/eac37082-9088-47ba-ac7c-ed45350bdf21"
@@ -2119,6 +2129,9 @@
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/83f17338-9659-4944-bf1c-ecceaa48ffff"
       (reference "U?") (unit 1) (value "ATmega2560-16A") (footprint "Package_QFP:TQFP-100_14x14mm_P0.5mm")
+    )
+    (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/e6bc2f02-5b3d-4456-a918-ddd7fc18f8e5"
+      (reference "U?") (unit 1) (value "Level shifter") (footprint "Package_SO:TSSOP-14_4.4x5mm_P0.65mm")
     )
     (path "/e9d70090-90fc-4e9b-9b66-2c4a5e914581/b78b446a-b4b4-477c-99a7-ae017f47fd2e"
       (reference "U?") (unit 2) (value "74LS393") (footprint "")

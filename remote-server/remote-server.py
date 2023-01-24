@@ -14,7 +14,7 @@ import serial
 
 PORT = 8026
 RESET_GPIO = 8
-REMOTE_GPIO = 3
+REMOTE_GPIO = 4 # 3
 COMPUTE_UNIT_DIR = '../compute-unit'
 serial_port = ''
 

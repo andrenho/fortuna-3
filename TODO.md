@@ -29,26 +29,13 @@
   - [ ] Timers + interrupt
   - [ ] "Hard" I/O (strsub, `compare_16`, `compare_32`)
 - [ ] Raspberry Pi
-  - [x] Install OS
-    - [x] Document installation process
-  - [x] Basic SDL window
-    - [x] Run on framebuffer (https://stackoverflow.com/questions/57672568/sdl2-on-raspberry-pi-without-x)
-  - [x] Fix short
-  - [x] Build initial setup
-    - [x] Run on EMScripten
-    - [x] Makefile, directories
-    - [x] Interface, commandline
-    - [x] Find appropriate window size
-  - [ ] Text
-    - [x] Write text on the screen
-    - [x] Cursor
-    - [x] Keyboard
-    - [x] Serial speed not being set correctly
-    - [x] VT100 emulation (send and receive characters)
-    - [x] Treat errors when setting up serial
   - [ ] Setup fortuna-pi for emulator
     - [ ] Change OS to manage keystrokes
   - [ ] Add SPI wires to PI to make whole computer independent
+    - [ ] Reset
+    - [ ] Voltage converter wires
+    - [ ] MOSI/MISO/SCK
+    - [ ] Remote
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
   - [ ] Create protocol
@@ -76,3 +63,21 @@ Done:
   - [x] Add files to SDCard for emulation
 - Bugs:
   - [x] Check z80 project files subdirectory when running from jar
+- Compute unit
+  - [x] Install OS
+    - [x] Document installation process
+  - [x] Basic SDL window
+    - [x] Run on framebuffer (https://stackoverflow.com/questions/57672568/sdl2-on-raspberry-pi-without-x)
+  - [x] Fix short
+  - [x] Build initial setup
+    - [x] Run on EMScripten
+    - [x] Makefile, directories
+    - [x] Interface, commandline
+    - [x] Find appropriate window size
+  - [x] Text
+    - [x] Write text on the screen
+    - [x] Cursor
+    - [x] Keyboard
+    - [x] Serial speed not being set correctly
+    - [x] VT100 emulation (send and receive characters)
+    - [x] Treat errors when setting up serial
