@@ -6,6 +6,7 @@
   - [x] Scroll to current PC
   - [x] Create "NEXT"
   - [x] Improved config button
+  - [ ] Opcodes are wasting space unnecessarily
 - Fortuna3 software
   - [x] Write BIOS
   - [ ] Write OS & shell
