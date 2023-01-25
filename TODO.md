@@ -1,5 +1,3 @@
-- Box
-  - [x] Build box
 - Emulator
   - [x] Go to project when step lands in another project
   - [x] Run to breakpoint in project file
@@ -7,6 +5,10 @@
   - [x] Create "NEXT"
   - [x] Improved config button
   - [ ] Opcodes are wasting space unnecessarily
+  - [ ] Can't edit remote address
+  - [ ] Keys are not working with SDL emulator (F12 to open debugger)
+  - [ ] Setup fortuna-pi for emulator
+    - [ ] Change OS to manage keystrokes
 - Fortuna3 software
   - [x] Write BIOS
   - [ ] Write OS & shell
@@ -29,14 +31,10 @@
   - [ ] Serial input (blocking) + interrupt
   - [ ] Timers + interrupt
   - [ ] "Hard" I/O (strsub, `compare_16`, `compare_32`)
-- [ ] Raspberry Pi
-  - [ ] Setup fortuna-pi for emulator
-    - [ ] Change OS to manage keystrokes
-  - [ ] Add SPI wires to PI to make whole computer independent
-    - [ ] Reset
-    - [ ] Voltage converter wires
-    - [ ] MOSI/MISO/SCK
-    - [ ] Remote
+- Hardware
+  - [ ] SDCard light is not working
+- Fortuna-Pi
+  - [ ] Reset Fortuna on initialization
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
   - [ ] Create protocol
@@ -49,6 +47,8 @@
 
 Done:
 
+- Box
+  - [x] Build box
 - Emulator infra
   - [x] Github actions for building jar
   - Backend
@@ -64,6 +64,12 @@ Done:
   - [x] Add files to SDCard for emulation
 - Bugs:
   - [x] Check z80 project files subdirectory when running from jar
+- Hardware
+  - [x] Add SPI wires to PI to make whole computer independent
+    - [x] Reset
+    - [x] Voltage converter wires
+    - [x] MOSI/MISO/SCK
+    - [x] Remote
 - Compute unit
   - [x] Install OS
     - [x] Document installation process
