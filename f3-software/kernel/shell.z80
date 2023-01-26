@@ -9,6 +9,8 @@ hello_world:
 
 next:
 	in	a, (S_GET)
+	cp	a, 0
+	jr	z, next
 	out	(S_PUT), a
 	jp	next
 
