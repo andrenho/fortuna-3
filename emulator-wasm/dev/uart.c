@@ -16,7 +16,8 @@ void uart_badisr(void)
 void uart_printchar(uint8_t c)
 {
     terminal_printchar(c);
-    interface_received_char(c);
+    if (c != 0)   // any changes here also need to be done on uartTerminal.ts
+        interface_received_char(c);
 }
 
 uint8_t uart_getchar_nonblocking(void)

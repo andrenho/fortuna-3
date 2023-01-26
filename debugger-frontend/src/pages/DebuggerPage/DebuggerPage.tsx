@@ -54,6 +54,8 @@ const DebuggerPage : React.FC<DebuggerPageProps> = observer(({ visible }) => {
                     return;
                 }
                 break;
+            case " ":
+                e.preventDefault();
         }
 
         const keyCode = translateKey(e.key, e.shiftKey);
