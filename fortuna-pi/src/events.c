@@ -14,6 +14,10 @@ void events_init()
     // SDL_StartTextInput();
 }
 
+void events_reset()
+{
+}
+
 void events_push(EventType event_type, void* data)
 {
     SDL_Event event = {
@@ -60,6 +64,8 @@ void events_do(bool* quit)
             loop_set_background((intptr_t) ev.user.data1);
         } else if (ev.type == E_TEXT_PRINT + start_event) {
             text_output((intptr_t) ev.user.data1);
+        } else if (ev.type == E_RESET + start_event) {
+
         }
     }
 }

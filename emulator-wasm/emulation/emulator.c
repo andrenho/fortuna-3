@@ -39,6 +39,9 @@ EMSCRIPTEN_KEEPALIVE bool emulator_initialize(size_t sdcard_sz_in_mb)
         extern void fortunapi_init();
         fortunapi_init();
         sdl_initialized = true;
+    } else {
+        extern void fortunapi_reset();
+        fortunapi_reset();
     }
 
     return r;

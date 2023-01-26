@@ -7,10 +7,12 @@
 typedef enum {
     E_CHANGE_BACKGROUND,
     E_TEXT_PRINT,
+    E_RESET,
     EVENT_COUNT
 } EventType;
 
 void events_init();
+void events_reset();
 void events_do(bool* quit);
 void events_push(EventType event_type, void* data);
 void events_destroy();

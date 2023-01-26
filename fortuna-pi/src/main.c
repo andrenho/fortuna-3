@@ -26,6 +26,19 @@ void fortunapi_init()
     */
 }
 
+void fortunapi_reset()
+{
+    window_reset();
+    interface_reset();
+    events_reset();
+    palette_reset();
+    text_reset();
+    loop_reset();
+#ifdef GPIO
+    gpio_reset();
+#endif
+}
+
 void fortunapi_destroy()
 {
     text_destroy();

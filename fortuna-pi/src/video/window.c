@@ -101,6 +101,10 @@ void window_init()
     window_and_renderer_init();
 }
 
+void window_reset()
+{
+}
+
 void window_size(int* w, int* h)
 {
     *w = win_w;
