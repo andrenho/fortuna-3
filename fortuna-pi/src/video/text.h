@@ -10,6 +10,7 @@
 #define TEXT_BLINK_DELAY 600
 
 void text_init();
+void text_reset();
 void text_output(uint8_t c);
 void text_update();
 void text_draw();

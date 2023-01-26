@@ -4,6 +4,11 @@ static SDL_Color palette[PALETTE_N_COLORS] = { 0 };
 
 void palette_init()
 {
+    palette_reset();
+}
+
+void palette_reset()
+{
 #define SET_COLOR(n, color) palette[n] = (SDL_Color) { (color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, 255 };
     SET_COLOR(COLOR_BLACK,      0x1a1c2c)
     SET_COLOR(COLOR_PURPLE,     0x5d275d)

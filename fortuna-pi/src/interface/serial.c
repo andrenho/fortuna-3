@@ -80,6 +80,10 @@ void interface_uart_write(uint8_t c)
     }
 }
 
+void interface_reset()
+{
+}
+
 _Noreturn static void* interface_main_thread(void* data)
 {
     (void) data;

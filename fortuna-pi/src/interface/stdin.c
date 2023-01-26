@@ -58,6 +58,11 @@ void interface_uart_read()
 {
 }
 
+void interface_reset()
+{
+}
+
+
 void interface_destroy()
 {
     pthread_kill(thread, 9);

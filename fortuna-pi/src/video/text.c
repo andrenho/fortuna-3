@@ -50,6 +50,14 @@ static void text_load_font()
 void text_init()
 {
     text_load_font();
+    text_reset();
+}
+
+void text_reset()
+{
+    cursor = (Cursor) { .x = 0, .y = 0, .color = COLOR_ORANGE, .visible = true, .blink_state = true };
+    color = COLOR_WHITE;
+
     for (size_t line = 0; line < TEXT_LINES; ++line)
         for (size_t column = 0; column < TEXT_COLUMNS; ++column)
             matrix[line][column] = (Char) { ' ', color };
