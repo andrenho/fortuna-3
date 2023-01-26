@@ -1,17 +1,3 @@
-- General
-  - [x] Centralize BAUD speed in one place
-- Emulator
-  - [x] Go to project when step lands in another project
-  - [x] Run to breakpoint in project file
-  - [x] Scroll to current PC
-  - [x] Create "NEXT"
-  - [x] Improved config button
-  - [x] Opcodes are wasting space unnecessarily
-  - [x] Keys are not working with SDL emulator
-  - [x] F12 to open debugger not working
-  - [x] Don't restart the emulator when changing pages
-  - [ ] Setup fortuna-pi for emulator
-    - [ ] Change OS to manage keystrokes
 - Fortuna3 software
   - [x] Write BIOS
   - [ ] Write OS & shell
@@ -63,6 +49,17 @@ Done:
     - [x] Buy stuff
 - Emulator:
   - [x] Add files to SDCard for emulation
+  - [x] Go to project when step lands in another project
+  - [x] Run to breakpoint in project file
+  - [x] Scroll to current PC
+  - [x] Create "NEXT"
+  - [x] Improved config button
+  - [x] Opcodes are wasting space unnecessarily
+  - [x] Keys are not working with SDL emulator
+  - [x] F12 to open debugger not working
+  - [x] Don't restart the emulator when changing pages
+  - [x] Setup fortuna-pi for emulator
+    - [x] Change OS to manage keystrokes
 - Bugs:
   - [x] Check z80 project files subdirectory when running from jar
 - Hardware
@@ -90,3 +87,5 @@ Done:
     - [x] Serial speed not being set correctly
     - [x] VT100 emulation (send and receive characters)
     - [x] Treat errors when setting up serial
+- General
+  - [x] Centralize BAUD speed in one place
