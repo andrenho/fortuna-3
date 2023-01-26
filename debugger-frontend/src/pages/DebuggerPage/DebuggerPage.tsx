@@ -17,7 +17,11 @@ import translateKey from "util/translateKey";
 import Options from "components/compiler-options/Options";
 import FortunaPi from "components/fortuna-pi/FortunaPi";
 
-const Components : React.FC = observer(() => {
+type DebuggerPageProps = {
+    visible: boolean;
+}
+
+const DebuggerPage : React.FC<DebuggerPageProps> = observer(({ visible }) => {
 
     const store = useStore();
 
@@ -67,7 +71,7 @@ const Components : React.FC = observer(() => {
         return () => document.removeEventListener("keydown", onKeyDown);
     }, []);   // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <>
+    return <div style={{display: visible ? 'block' : 'none'}}>
         <div className={css.toolbar}>
             <Toolbar>
                 <ToolbarToggle text="PI" title="Fortuna-Pi (video / audio / keyboard)" value={showFortunaPi} onToggle={() => setShowFortunaPi(!showFortunaPi)} />
@@ -159,7 +163,7 @@ const Components : React.FC = observer(() => {
 
             </div>
         </div>
-    </>;
+    </div>;
 });
 
-export default Components;
+export default DebuggerPage;

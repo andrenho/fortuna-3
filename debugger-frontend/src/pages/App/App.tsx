@@ -16,7 +16,7 @@ const App : React.FC = observer(() => {
         <Tabs tabs={["Components", "SD Card", "Remote"]} selected={selectedTab} onChange={i => setSelectedTab(i)} />
         <ErrorMessage currentError={currentError} />
         <div style={{padding:"16px"}}>
-            {selectedTab === 0 && <DebuggerPage />}
+            <DebuggerPage visible={selectedTab == 0} />
             {selectedTab === 1 && <SDCardPage />}
             {selectedTab === 2 && <RemotePage/>}
         </div>

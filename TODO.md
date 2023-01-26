@@ -8,9 +8,9 @@
   - [x] Improved config button
   - [x] Opcodes are wasting space unnecessarily
   - [x] Keys are not working with SDL emulator
-  - [ ] F12 to open debugger not working
+  - [x] F12 to open debugger not working
+  - [x] Don't restart the emulator when changing pages
   - [ ] Setup fortuna-pi for emulator
-    - [ ] Keys don't work
     - [ ] Change OS to manage keystrokes
 - Fortuna3 software
   - [x] Write BIOS
