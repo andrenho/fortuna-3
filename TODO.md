@@ -33,10 +33,8 @@
   - [ ] Serial input (blocking) + interrupt
   - [ ] Timers + interrupt
   - [ ] "Hard" I/O (strsub, `compare_16`, `compare_32`)
-- Hardware
-  - [ ] SDCard light is not working
 - Fortuna-Pi
-  - [ ] Reset Fortuna on initialization
+  - [x] Reset Fortuna on initialization
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
   - [ ] Create protocol
@@ -72,6 +70,7 @@ Done:
     - [x] Voltage converter wires
     - [x] MOSI/MISO/SCK
     - [x] Remote
+  - [x] SDCard light is not working
 - Compute unit
   - [x] Install OS
     - [x] Document installation process
