@@ -45,7 +45,6 @@ class UartTerminal {
     }
 
     addChars(printedChars: string[]) : void {
-        // any changes here also need to be done on uart.c
         for (const chr of printedChars) {
             if (chr.codePointAt(0)! >= 32 && chr.codePointAt(0)! < 127) {
                 this.addRegularChar(chr);
