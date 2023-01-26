@@ -6,9 +6,15 @@ hello_world:
 
 	set_Pa	hello_str
 	out	(S_PRINT_Z), a
+
+next:
+	in	a, (S_GET)
+	out	(S_PUT), a
+	jp	next
+
 stp:	jp	stp
 
 hello_str:
-	asciiz	"Hello world!", 10
+	asciiz	"Hello world!", 10, "? "
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab
