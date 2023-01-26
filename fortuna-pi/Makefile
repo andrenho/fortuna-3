@@ -1,8 +1,7 @@
 SERIAL=/dev/serial0
 
 OBJ=src/main.o src/loop.o src/events.o \
-	src/video/window.o src/video/text.o src/video/palette.o src/video/ansi.o \
-	src/interface/gpio.o
+	src/video/window.o src/video/text.o src/video/palette.o src/video/ansi.o
 STDIN_OBJ=src/interface/stdin.o
 SERIAL_OBJ=src/interface/serial.o
 EXE=fortuna-pi
@@ -11,11 +10,12 @@ CFLAGS=-Wall -Wextra -std=gnu11 -Isrc
 
 ifeq ($(OS),Windows_NT)
 	EXE := ${EXE}.exe
-	CFLAGS := ${CFLAGS} -ISDL2-windows/include/SDL2 -O0 -ggdb -Dgpio_reset()={}
+	CFLAGS := ${CFLAGS} -ISDL2-windows/include/SDL2 -O0 -ggdb
 	LDFLAGS = -LSDL2-windows/lib -lmingw32 -lSDL2main -lSDL2
 else
-	CFLAGS := ${CFLAGS} `sdl2-config --cflags` `pkg-config --cflags libgpiod` -O3 
+	CFLAGS := ${CFLAGS} `sdl2-config --cflags` `pkg-config --cflags libgpiod` -O3 -DGPIO
 	LDFLAGS := ${CFLAGS} `sdl2-config --libs` `pkg-config --libs libgpiod`
+	OBJ += src/interface/gpio.o
 endif
 
 all:
