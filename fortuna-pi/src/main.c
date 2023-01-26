@@ -1,6 +1,7 @@
 #include "loop.h"
 #include "events.h"
 #include "interface/interface.h"
+#include "interface/gpio.h"
 #include "video/text.h"
 #include "video/palette.h"
 #include "video/window.h"
@@ -13,6 +14,7 @@ void fortunapi_init()
     palette_init();
     loop_init();
     text_init();
+    gpio_reset();
 
     /*
     const char* text = "\e[4;4H\e[2JRandom seed is 0xabcdef00.\n\e[0;32mError initializing SDCard.\e[0m\n";

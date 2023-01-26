@@ -27,7 +27,7 @@ class FortunaSerialConnection:
 
     def __enter__(self):
         logging.info('Connecting to serial port: ' + self.port)
-        self.ser = serial.Serial(self.port, baudrate = 1000000, timeout = self.timeout)
+        self.ser = serial.Serial(self.port, baudrate = 500000, timeout = self.timeout)
         return self
 
     def __exit__(self, *args):

@@ -1,3 +1,5 @@
+- General
+  - [ ] Centralize BAUD speed in one place
 - Emulator
   - [x] Go to project when step lands in another project
   - [x] Run to breakpoint in project file
