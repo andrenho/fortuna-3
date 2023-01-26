@@ -38,6 +38,7 @@ const Debugger : React.FC = observer(() => {
                 breakpoints={store.state.breakpoints}
                 swapBreakpoint={n => store.swapBreakpoint(n)}
                 sourceLines={sourceLines}
+                showBytes={store.localOptions.showBytes}
             />
         </div>
 

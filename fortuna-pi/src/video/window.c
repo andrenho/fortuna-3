@@ -55,6 +55,7 @@ static void window_and_renderer_init()
 #ifdef EMULATOR
     win_w = SCREEN_W * 4;
     win_h = SCREEN_H * 4;
+    SDL_SetHint(SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT, "#canvas");
 #else
     win_w = mode.w;
     win_h = mode.h;
@@ -100,14 +101,14 @@ void window_init()
     window_and_renderer_init();
 }
 
+void window_reset()
+{
+}
+
 void window_size(int* w, int* h)
 {
     *w = win_w;
     *h = win_h;
-}
-
-void window_set_background(uint8_t bg)
-{
 }
 
 void window_destroy()

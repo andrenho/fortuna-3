@@ -105,6 +105,12 @@ void loop()
     while (loop_single());
 }
 
+void loop_reset()
+{
+    background = COLOR_BLACK;
+    loop_redraw();
+}
+
 void loop_destroy()
 {
 }

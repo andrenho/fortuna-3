@@ -2,7 +2,8 @@ import {FinishReason, FortunaApi, loadApiFunctions} from "./api";
 
 export interface FortunaModule extends EmscriptenModule {
     cwrap: typeof cwrap;
-    canvas: HTMLElement | null;
+    canvas?: HTMLElement | null;
+    doNotCaptureKeyboard?: boolean;
 }
 declare const Module : FortunaModule;
 
@@ -65,7 +66,6 @@ export type FilesystemFile = {
     size?: number,
 }
 
-
 export class Fortuna3Emulator {
 
     private api? : FortunaApi;
@@ -79,6 +79,7 @@ export class Fortuna3Emulator {
         await this.loadWasmModule(wasmFilePath);
         emulator.api = loadApiFunctions(Module);
         Module.canvas = document.getElementById("canvas");
+        Module.doNotCaptureKeyboard = true;
 
         emulator.api.initialize(emulator.sdCardImageSizeMB);
 

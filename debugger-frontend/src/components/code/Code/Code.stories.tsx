@@ -39,6 +39,7 @@ const Template: ComponentStory<typeof Code> = (args) => {
 export const MyCode = Template.bind({});
 MyCode.args = {
     pc: 0,
+    showBytes: true,
     sourceLines: sourceLines,
 };
 MyCode.storyName = 'Code';

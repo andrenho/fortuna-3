@@ -8,7 +8,11 @@ import Filesystem from "./filesystem";
 import {EmulatorState, Fortuna3Emulator} from "api/fortuna3-emulator";
 import {FinishReason} from "api/api";
 import RemoteStore from "store/remoteStore";
-import Options, {optionsLoadFromLocal, optionsSaveToLocal} from "store/types/options";
+import RemoteOptions, {
+    remoteOptionsLoadFromLocalStorage,
+    remoteOptionsSaveToLocalStorage
+} from "store/types/remoteOptions";
+import LocalOptions, {localOptionsLoadFromLocalStorage, localOptionsSaveToLocalStorage} from "store/types/localOptions";
 
 const terminalSize = {
     w: 60,
@@ -60,7 +64,8 @@ export default class FortunaStore {
 
     running = false;
 
-    options : Options = optionsLoadFromLocal();
+    remoteOptions : RemoteOptions = remoteOptionsLoadFromLocalStorage();
+    localOptions: LocalOptions = localOptionsLoadFromLocalStorage();
 
     constructor() {
         makeAutoObservable(this);
@@ -73,7 +78,7 @@ export default class FortunaStore {
                 this.updateSelectedFile();
             });
         });
-        this.updateOptions(this.options).then();  // set initial options
+        this.updateRemoteOptions(this.remoteOptions).then();  // set initial options
         setInterval(() => this.updateDebuggingInfoFromBackend(), 1000);
     }
 
@@ -224,9 +229,14 @@ export default class FortunaStore {
         this.emulator!.keypress(chr);
     }
 
-    async updateOptions(newOptions: Options) : Promise<void> {
-        this.options = await fetchPutOptions(newOptions);
-        optionsSaveToLocal(this.options);
+    async updateRemoteOptions(newOptions: RemoteOptions) : Promise<void> {
+        this.remoteOptions = await fetchPutOptions(newOptions);
+        remoteOptionsSaveToLocalStorage(this.remoteOptions);
+    }
+
+    updateLocalOptions(newOptions: LocalOptions) : void {
+        this.localOptions = newOptions;
+        localOptionsSaveToLocalStorage(this.localOptions);
     }
 
     private updateState() : void {

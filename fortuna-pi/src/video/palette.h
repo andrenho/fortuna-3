@@ -25,6 +25,7 @@
 
 void      palette_init();
 SDL_Color palette_color(uint8_t index);
+void      palette_reset();
 void      palette_destroy();
 
 #endif

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import os
 import socket
 import subprocess
 import sys
@@ -14,10 +15,12 @@ import serial
 
 PORT = 8026
 RESET_GPIO = 8
-REMOTE_GPIO = 3
+REMOTE_GPIO = 26 # 3
 COMPUTE_UNIT_DIR = '../compute-unit'
 serial_port = ''
 
+with open("BAUD") as f:
+    BAUD = int(f.readline())
 
 class FortunaSerialConnection:
 
@@ -27,7 +30,7 @@ class FortunaSerialConnection:
 
     def __enter__(self):
         logging.info('Connecting to serial port: ' + self.port)
-        self.ser = serial.Serial(self.port, baudrate = 1000000, timeout = self.timeout)
+        self.ser = serial.Serial(self.port, baudrate = BAUD, timeout = self.timeout)
         return self
 
     def __exit__(self, *args):

@@ -42,8 +42,8 @@ void interface_init()
         return;
     }
 
-    if (cfsetspeed(&options, (speed_t) 500000) < 0) {
-        error_message("Could not get current serial baud speed: ");
+    if (cfsetspeed(&options, (speed_t) BAUD) < 0) {
+        error_message("Could not set current serial baud speed: ");
         error_message(strerror(errno));
         return;
     }
@@ -78,6 +78,11 @@ void interface_uart_write(uint8_t c)
         error_message("Failure writing to serial: ");
         error_message(strerror(errno));
     }
+    tcdrain(fd);
+}
+
+void interface_reset()
+{
 }
 
 _Noreturn static void* interface_main_thread(void* data)

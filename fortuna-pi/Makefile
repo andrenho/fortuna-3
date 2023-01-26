@@ -13,8 +13,9 @@ ifeq ($(OS),Windows_NT)
 	CFLAGS := ${CFLAGS} -ISDL2-windows/include/SDL2 -O0 -ggdb
 	LDFLAGS = -LSDL2-windows/lib -lmingw32 -lSDL2main -lSDL2
 else
-	CFLAGS := ${CFLAGS} `sdl2-config --cflags` -O3
-	LDFLAGS := ${CFLAGS} `sdl2-config --libs`
+	CFLAGS := ${CFLAGS} `sdl2-config --cflags` `pkg-config --cflags libgpiod` -O3 -DGPIO
+	LDFLAGS := ${CFLAGS} `sdl2-config --libs` `pkg-config --libs libgpiod`
+	OBJ += src/interface/gpio.o
 endif
 
 all:
@@ -26,7 +27,7 @@ stdin: ${OBJ} ${STDIN_OBJ}
 	${CC} -o ${EXE} $^ ${LDFLAGS}
 
 serial: OBJ += ${SERIAL_OBJ}
-serial: CFLAGS += -DSERIAL=\"${SERIAL}\"
+serial: CFLAGS += -DSERIAL=\"${SERIAL}\" -DBAUD=$(shell cat ../BAUD)
 serial: LDFLAGS += -lpthread
 serial: ${OBJ} ${SERIAL_OBJ}
 	${CC} -o ${EXE} $^ ${LDFLAGS}
@@ -37,7 +38,7 @@ ${EXE}: ${OBJ}
 .PHONY: clean
 clean:
 ifeq ($(OS),Windows_NT)
-	cmd /C "del /Q /F $(subst /,\,${OBJ} ${STDIN_OBJ} ${SERIAL_OBJ} ${EXE})"
+	del /Q /F $(subst /,\,${OBJ} ${STDIN_OBJ} ${SERIAL_OBJ} ${EXE})
 else
 	rm -f ${OBJ} ${STDIN_OBJ} ${SERIAL_OBJ} ${EXE}
 endif

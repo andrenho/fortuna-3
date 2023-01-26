@@ -8,6 +8,7 @@
 #define SCREEN_H 128
 
 void window_init();
+void window_reset();
 void window_size(int* w, int* h);
 void window_destroy();
 

@@ -3,10 +3,11 @@
 
 #include <stdint.h>
 
-void loop_init();
-void loop();
+void    loop_init();
+void    loop();
 uint8_t loop_background();
 void    loop_set_background(uint8_t bg);
-void loop_destroy();
+void    loop_reset();
+void    loop_destroy();
 
 #endif

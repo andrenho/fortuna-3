@@ -14,10 +14,14 @@ import Lcd from "components/lcd/Lcd";
 import Rtc from "components/rtc/Rtc";
 import Box from "components/common/Box/Box";
 import translateKey from "util/translateKey";
-import CompilerOptions from "components/compiler-options/CompilerOptions";
+import Options from "components/compiler-options/Options";
 import FortunaPi from "components/fortuna-pi/FortunaPi";
 
-const Components : React.FC = observer(() => {
+type DebuggerPageProps = {
+    visible: boolean;
+}
+
+const DebuggerPage : React.FC<DebuggerPageProps> = observer(({ visible }) => {
 
     const store = useStore();
 
@@ -50,6 +54,8 @@ const Components : React.FC = observer(() => {
                     return;
                 }
                 break;
+            case " ":
+                e.preventDefault();
         }
 
         const keyCode = translateKey(e.key, e.shiftKey);
@@ -67,7 +73,7 @@ const Components : React.FC = observer(() => {
         return () => document.removeEventListener("keydown", onKeyDown);
     }, []);   // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <>
+    return <div style={{display: visible ? 'block' : 'none'}}>
         <div className={css.toolbar}>
             <Toolbar>
                 <ToolbarToggle text="PI" title="Fortuna-Pi (video / audio / keyboard)" value={showFortunaPi} onToggle={() => setShowFortunaPi(!showFortunaPi)} />
@@ -149,15 +155,17 @@ const Components : React.FC = observer(() => {
                 </Box> }
 
                 { showOptions &&
-                    <CompilerOptions
-                        options={store.options}
-                        onUpdate={(opt) => store.updateOptions(opt)}
+                    <Options
+                        localOptions={store.localOptions}
+                        onUpdateLocalOptions={(opt) => store.updateLocalOptions(opt)}
+                        remoteOptions={store.remoteOptions}
+                        onUpdateRemote={(opt) => store.updateRemoteOptions(opt)}
                     />
                 }
 
             </div>
         </div>
-    </>;
+    </div>;
 });
 
-export default Components;
+export default DebuggerPage;

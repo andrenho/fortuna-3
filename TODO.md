@@ -1,11 +1,3 @@
-- Box
-  - [x] Build box
-- Emulator
-  - [x] Go to project when step lands in another project
-  - [x] Run to breakpoint in project file
-  - [x] Scroll to current PC
-  - [x] Create "NEXT"
-  - [x] Improved config button
 - Fortuna3 software
   - [x] Write BIOS
   - [ ] Write OS & shell
@@ -28,27 +20,8 @@
   - [ ] Serial input (blocking) + interrupt
   - [ ] Timers + interrupt
   - [ ] "Hard" I/O (strsub, `compare_16`, `compare_32`)
-- [ ] Raspberry Pi
-  - [x] Install OS
-    - [x] Document installation process
-  - [x] Basic SDL window
-    - [x] Run on framebuffer (https://stackoverflow.com/questions/57672568/sdl2-on-raspberry-pi-without-x)
-  - [x] Fix short
-  - [x] Build initial setup
-    - [x] Run on EMScripten
-    - [x] Makefile, directories
-    - [x] Interface, commandline
-    - [x] Find appropriate window size
-  - [ ] Text
-    - [x] Write text on the screen
-    - [x] Cursor
-    - [x] Keyboard
-    - [x] Serial speed not being set correctly
-    - [x] VT100 emulation (send and receive characters)
-    - [x] Treat errors when setting up serial
-  - [ ] Setup fortuna-pi for emulator
-    - [ ] Change OS to manage keystrokes
-  - [ ] Add SPI wires to PI to make whole computer independent
+- Fortuna-Pi
+  - [x] Reset Fortuna on initialization
   - [ ] Create script to copy the image
     - [ ] Delete secret files (Wi-Fi password, /etc/shadow, etc)
   - [ ] Create protocol
@@ -61,6 +34,8 @@
 
 Done:
 
+- Box
+  - [x] Build box
 - Emulator infra
   - [x] Github actions for building jar
   - Backend
@@ -74,5 +49,43 @@ Done:
     - [x] Buy stuff
 - Emulator:
   - [x] Add files to SDCard for emulation
+  - [x] Go to project when step lands in another project
+  - [x] Run to breakpoint in project file
+  - [x] Scroll to current PC
+  - [x] Create "NEXT"
+  - [x] Improved config button
+  - [x] Opcodes are wasting space unnecessarily
+  - [x] Keys are not working with SDL emulator
+  - [x] F12 to open debugger not working
+  - [x] Don't restart the emulator when changing pages
+  - [x] Setup fortuna-pi for emulator
+    - [x] Change OS to manage keystrokes
 - Bugs:
   - [x] Check z80 project files subdirectory when running from jar
+- Hardware
+  - [x] Add SPI wires to PI to make whole computer independent
+    - [x] Reset
+    - [x] Voltage converter wires
+    - [x] MOSI/MISO/SCK
+    - [x] Remote
+  - [x] SDCard light is not working
+- Compute unit
+  - [x] Install OS
+    - [x] Document installation process
+  - [x] Basic SDL window
+    - [x] Run on framebuffer (https://stackoverflow.com/questions/57672568/sdl2-on-raspberry-pi-without-x)
+  - [x] Fix short
+  - [x] Build initial setup
+    - [x] Run on EMScripten
+    - [x] Makefile, directories
+    - [x] Interface, commandline
+    - [x] Find appropriate window size
+  - [x] Text
+    - [x] Write text on the screen
+    - [x] Cursor
+    - [x] Keyboard
+    - [x] Serial speed not being set correctly
+    - [x] VT100 emulation (send and receive characters)
+    - [x] Treat errors when setting up serial
+- General
+  - [x] Centralize BAUD speed in one place
