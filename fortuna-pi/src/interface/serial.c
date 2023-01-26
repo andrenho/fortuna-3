@@ -78,6 +78,7 @@ void interface_uart_write(uint8_t c)
         error_message("Failure writing to serial: ");
         error_message(strerror(errno));
     }
+    tcdrain(fd);
 }
 
 void interface_reset()
