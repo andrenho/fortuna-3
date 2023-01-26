@@ -4,7 +4,7 @@ PI_DIR=../fortuna-pi
 #
 # Compiler configuration
 #
-CFLAGS=-std=c11 -Wall -Wextra -I. -O3 -DNDEBUG=1 -D EXECZ80=1 -DEMULATOR=1 -DINCLUDE_SDCARD=1 -I${COMPUTE_UNIT_DIR} -I${PI_DIR}
+CFLAGS=-std=c11 -Wall -Wextra -I. -O3 -DNDEBUG=1 -D EXECZ80=1 -DEMULATOR=1 -DINCLUDE_SDCARD=1 -s USE_SDL=2 -I${COMPUTE_UNIT_DIR} -I${PI_DIR}
 LDFLAGS=-std=c11 -Wall -Wextra --no-entry -O3 \
 		-s LLD_REPORT_UNDEFINED \
 		-s WASM=1 \

@@ -14,7 +14,7 @@ import Lcd from "components/lcd/Lcd";
 import Rtc from "components/rtc/Rtc";
 import Box from "components/common/Box/Box";
 import translateKey from "util/translateKey";
-import CompilerOptions from "components/compiler-options/CompilerOptions";
+import Options from "components/compiler-options/Options";
 import FortunaPi from "components/fortuna-pi/FortunaPi";
 
 const Components : React.FC = observer(() => {
@@ -149,9 +149,11 @@ const Components : React.FC = observer(() => {
                 </Box> }
 
                 { showOptions &&
-                    <CompilerOptions
-                        options={store.options}
-                        onUpdate={(opt) => store.updateOptions(opt)}
+                    <Options
+                        localOptions={store.localOptions}
+                        onUpdateLocalOptions={(opt) => store.updateLocalOptions(opt)}
+                        remoteOptions={store.remoteOptions}
+                        onUpdateRemote={(opt) => store.updateRemoteOptions(opt)}
                     />
                 }
 

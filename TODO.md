@@ -1,15 +1,16 @@
 - General
-  - [ ] Centralize BAUD speed in one place
+  - [x] Centralize BAUD speed in one place
 - Emulator
   - [x] Go to project when step lands in another project
   - [x] Run to breakpoint in project file
   - [x] Scroll to current PC
   - [x] Create "NEXT"
   - [x] Improved config button
-  - [ ] Opcodes are wasting space unnecessarily
-  - [ ] Can't edit remote address
-  - [ ] Keys are not working with SDL emulator (F12 to open debugger)
+  - [x] Opcodes are wasting space unnecessarily
+  - [x] Keys are not working with SDL emulator
+  - [ ] F12 to open debugger not working
   - [ ] Setup fortuna-pi for emulator
+    - [ ] Keys don't work
     - [ ] Change OS to manage keystrokes
 - Fortuna3 software
   - [x] Write BIOS

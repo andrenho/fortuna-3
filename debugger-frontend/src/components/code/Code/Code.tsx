@@ -11,9 +11,10 @@ type CodeProps = {
     breakpoints: number[],
     sourceLines: SourceLine[] | undefined,
     swapBreakpoint: (n: number) => void,
+    showBytes: boolean,
 };
 
-const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: source, swapBreakpoint}) => {
+const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: source, swapBreakpoint, showBytes= true}) => {
 
     const lineRef = useMemo<{[key: number]: HTMLTableRowElement}>(() => ({}), []);
 
@@ -76,16 +77,16 @@ const Code: React.FC<CodeProps> = observer(({pc, breakpoints, sourceLines: sourc
                     <td className={css.line}>
                         { parseCode(line.line, line.isMacro || false) }
                     </td>
-                    <td className={css.bytes}>
+                    { showBytes && <td className={css.bytes}>
                         { line.bytes != null ? line.bytes.map((v, j) => <Hex key={`b_${i}_${j}`} value={v} spaceAfter />) : undefined }
-                    </td>
+                    </td> }
                 </tr>;
             }) }
             <tr style={{backgroundColor: "white"}}>
                 <td className={`${css.breakpoint} ${css.lastLine}`}></td>
                 <td className={`${css.address} ${css.lastLine}`}></td>
                 <td className={`${css.line} ${css.lastLine}`}></td>
-                <td className={`${css.bytes} ${css.lastLine}`}></td>
+                { showBytes && <td className={`${css.bytes} ${css.lastLine}`}></td> }
             </tr>
         </tbody>
     </table>;

@@ -3,7 +3,6 @@ import {faSync} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import css from "./Remote.module.scss"
 import {RemoteResult} from "store/remoteStore";
-import {observer} from "mobx-react-lite";
 
 export enum RemoteAction { Reset, UploadBIOS, UploadFullProject, UploadSingleProject, UploadFirmware, CleanBuild, FormatSDCard }
 
@@ -16,7 +15,7 @@ type RemoteProps = {
 
 const REMOTE_IP_KEY = "remote-ip";
 
-const Remote : React.FC<RemoteProps> = observer(({ result = RemoteResult.NotStarted, projectList, output, onAction }) => {
+const Remote : React.FC<RemoteProps> = (({ result = RemoteResult.NotStarted, projectList, output, onAction }) => {
 
     const [selectedProject, setSelectedProject] = useState<string>(projectList[0]);
     const [remoteIp, setRemoteIp] = useState(window.localStorage.getItem(REMOTE_IP_KEY) || "");
