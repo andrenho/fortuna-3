@@ -109,5 +109,5 @@ AnsiCommand ansi_char(char chr)
         }
     }
 
-    return (AnsiCommand) { A_NOTHING };
+    return (AnsiCommand) { .operation = A_NOTHING };
 }

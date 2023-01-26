@@ -8,7 +8,7 @@ void interface_init()
 
 void interface_uart_write(uint8_t c)
 {
-    // TODO
+    (void) c;
 }
 
 void interface_uart_read()
