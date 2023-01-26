@@ -18,6 +18,9 @@ REMOTE_GPIO = 26 # 3
 COMPUTE_UNIT_DIR = '../compute-unit'
 serial_port = ''
 
+from importlib import resources
+with resources.open_text("baud", "../BAUD") as t:
+    BAUD = int(t.readline())
 
 class FortunaSerialConnection:
 
@@ -27,7 +30,7 @@ class FortunaSerialConnection:
 
     def __enter__(self):
         logging.info('Connecting to serial port: ' + self.port)
-        self.ser = serial.Serial(self.port, baudrate = 500000, timeout = self.timeout)
+        self.ser = serial.Serial(self.port, baudrate = BAUD, timeout = self.timeout)
         return self
 
     def __exit__(self, *args):

@@ -27,7 +27,7 @@ stdin: ${OBJ} ${STDIN_OBJ}
 	${CC} -o ${EXE} $^ ${LDFLAGS}
 
 serial: OBJ += ${SERIAL_OBJ}
-serial: CFLAGS += -DSERIAL=\"${SERIAL}\"
+serial: CFLAGS += -DSERIAL=\"${SERIAL}\" -DBAUD=$(shell cat ../BAUD)
 serial: LDFLAGS += -lpthread
 serial: ${OBJ} ${SERIAL_OBJ}
 	${CC} -o ${EXE} $^ ${LDFLAGS}

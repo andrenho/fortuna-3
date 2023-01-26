@@ -42,8 +42,8 @@ void interface_init()
         return;
     }
 
-    if (cfsetspeed(&options, (speed_t) 500000) < 0) {
-        error_message("Could not get current serial baud speed: ");
+    if (cfsetspeed(&options, (speed_t) BAUD) < 0) {
+        error_message("Could not set current serial baud speed: ");
         error_message(strerror(errno));
         return;
     }
