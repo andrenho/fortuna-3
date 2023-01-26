@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import os
 import socket
 import subprocess
 import sys
@@ -18,9 +19,8 @@ REMOTE_GPIO = 26 # 3
 COMPUTE_UNIT_DIR = '../compute-unit'
 serial_port = ''
 
-from importlib import resources
-with resources.open_text("baud", "../BAUD") as t:
-    BAUD = int(t.readline())
+with open("BAUD") as f:
+    BAUD = int(f.readline())
 
 class FortunaSerialConnection:
 
