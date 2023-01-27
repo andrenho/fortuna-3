@@ -2,7 +2,7 @@
   - [x] Write BIOS
     - [x] Move BIOS back to 0x0
     - [x] ComputeUnit: add call for error messages
-    - [ ] Rename KERNEL to KERNEL.SYS
+    - [x] Rename KERNEL to KERNEL.SYS
   - [ ] Write OS & shell
     - [ ] OS: initialization code (setup interrupt table (IM 2 mode), stack, etc)
     - [ ] OS: load and launch SHELL
@@ -14,6 +14,9 @@
     - [ ] SHELL: launch applications
   - [ ] Write hello world program
   - [ ] Write utilities
+- Build
+  - [ ] Generate an online-only version for publication (simulate backend calls)
+    - [ ] Auto-deploy
 - Compute unit
   - [ ] SDCard raw interface (?)
   - [ ] Serial input (blocking) + interrupt
