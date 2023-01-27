@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -57,16 +58,17 @@ public class CompilerService {
         currentDebuggingInfo = outputMapper.mapSourceProjectsToDebuggingInfo(projects, projectFile.debuggerSetup());
     }
 
-    private SourceProject compile(String biosSource, Integer address) {
+    private SourceProject compile(String mainSourceFile, Integer address) {
 
-        var rawCompilerOutputDTO = runCompiler(biosSource);
+        var rawCompilerOutputDTO = runCompiler(mainSourceFile);
         return compilerMapper.mapRawToSourceProject(rawCompilerOutputDTO, address);
     }
 
     private RawCompilerOutput runCompiler(String mainSourceFile) {
 
-        final String LISTING_FILENAME = System.getProperty("java.io.tmpdir") + "/listing.txt";
-        final String ROM_FILENAME = System.getProperty("java.io.tmpdir") + "/rom.bin";
+        final String fileId = Paths.get(mainSourceFile).getFileName().toString();
+        final String LISTING_FILENAME = System.getProperty("java.io.tmpdir") + "/" + fileId + "_listing.txt";
+        final String ROM_FILENAME = System.getProperty("java.io.tmpdir") + "/" + fileId + "_rom.bin";
 
         var commandLine =
                 compilerExecutableService.getCompilerPath() +

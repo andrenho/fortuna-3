@@ -1,5 +1,44 @@
+	include ../f3macros.z80
+
 	org	0x100
 
-stp:	jp	stp
+;===========================================
+; PRINT PROMPT
+;===========================================
+
+print_prompt:
+	
+	set_Pa	.prompt
+	out	(S_PRINT_Z), a
+
+.prompt:
+	asciiz	0x0f, ' '
+
+;===========================================
+; INPUT COMMAND
+;===========================================
+
+input_command:
+
+	in	a, (S_GET)		; get char
+
+	cp	a, 0			; skip if zero
+	jp	z, input_command
+
+	cp	a, 10			; if ENTER, parse command
+	jp	z, parse_command
+
+	out	(S_PUT), a		; print char
+	jp	input_command
+
+;===========================================
+; PARSE COMMAND
+;===========================================
+	
+parse_command:
+
+	ld	a, 10
+	out	(S_PUT), a
+	jp	print_prompt
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab
