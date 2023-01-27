@@ -1,0 +1,32 @@
+Pre-operations (BIOS):
+
+1. BIOS is loaded at 0x0, and the Z80 starts running at 0x0
+2. BIOS loads KERNEL at 0xFD00 and jumps to it. KERNEL is free to override BIOS area.
+
+Operating system (KERNEL):
+
+1. Setup environment: stack, interrupt table
+2. KERNEL loads SHELL
+3. KERNEL offers the following system calls:
+  a. load application (restore stack, replaces SHELL)
+  b. finalize application (restore stack, replaces application with SHELL)
+
+
+Memory map:
+
++------+
+| 0000 | BIOS / reserved area
++------+
+| 0100 | Application area
+| .... |
+| FCFF | Application stack
++------+
+| FD00 | Operating system
++------+
+| FF00 | System calls
++------+
+
+System calls:
+
+FF00 - Finalize application
+FF04 - Load application (name in DE)

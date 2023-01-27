@@ -1,22 +1,89 @@
 	include ../f3macros.z80
 
-	org	0xfd00
+OS_LOCATION  = 0xfd00
+APP_LOCATION = 0x0100
 
-hello_world:
+	org	OS_LOCATION
+
+;===========================================
+; MAIN ROUTINE
+;===========================================
+
+	; Print welcome message
 
 	set_Pa	hello_str
 	out	(S_PRINT_Z), a
 
-next:
-	in	a, (S_GET)
-	cp	a, 0
-	jr	z, next
-	out	(S_PUT), a
-	jp	next
+	; setup stack
 
-stp:	jp	stp
+	ld	sp, OS_LOCATION - 1
+
+	; load shell
+	ld	de, shell_filename
+	jp	load_application	; this never returns
+
+;===========================================
+; LOAD APPLICATION
+;   - DE: application name
+;===========================================
+
+load_application:
+
+	; open file
+
+	set_Pa0	0			; - file #
+	set_Qa_from_DE			; - filename
+	out	(FS_OPEN_R), a		; open file
+
+	call	check_status
+
+	; read file into memory
+
+.read_kernel:
+
+	set_Pb  OS_LOCATION - APP_LOCATION ; - file size (max)
+	set_Qa  APP_LOCATION		; - dest mem address
+	set_Qb0 0			; - RAM page (0)
+	out	(FS_READ), a		; read file
+
+	call	check_status
+
+	out	(FS_CLOSE), a		; close file
+
+	; jump to app
+
+	ld	sp, OS_LOCATION - 1	; reset stack
+	jp	APP_LOCATION
 
 hello_str:
-	asciiz	"Hello world!", 10, "? "
+	asciiz	"Welcome to Fortuna-OS!", 10
+
+shell_filename:
+	asciiz	"SHELL.F3B"
+
+;===========================================
+; CHECK STATUS
+;===========================================
+
+check_status:
+	in	a, (Ra0)		; check return status (Ra0)
+	cp	a, 0
+	jp	z, .status_ok
+
+.status_err:
+	set_Pa	red			; print error
+	out	(S_PRINT_Z), a
+	set_Pa	0xf000
+	out	(FS_ERROR), a
+	out	(S_PRINT_Z), a
+	ld	a, 10
+	out	(S_PUT), a
+.stp	jp	.stp
+
+.status_ok:
+	ret
+
+red:
+	asciiz	27, "[1;31m"
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab

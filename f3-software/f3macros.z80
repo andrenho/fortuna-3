@@ -41,30 +41,37 @@
 	endmacro
 
 	macro set_Pa, value
-		ld	a, \value & 0xff
+		ld	a, (\value) & 0xff
 		out	(Pa0), a
-		ld	a, \value / 0x100
+		ld	a, (\value) / 0x100
 		out	(Pa1), a
 	endmacro
 
 	macro set_Pb, value
-		ld	a, \value & 0xff
+		ld	a, (\value) & 0xff
 		out	(Pb0), a
-		ld	a, \value / 0x100
+		ld	a, (\value) / 0x100
 		out	(Pb1), a
 	endmacro
 
 	macro set_Qa, value
-		ld	a, \value & 0xff
+		ld	a, (\value) & 0xff
 		out	(Qa0), a
-		ld	a, \value / 0x100
+		ld	a, (\value) / 0x100
+		out	(Qa1), a
+	endmacro
+
+	macro set_Qa_from_DE
+		ld	a, e
+		out	(Qa0), a
+		ld	a, d
 		out	(Qa1), a
 	endmacro
 
 	macro set_Qb, value
-		ld	a, \value & 0xff
+		ld	a, (\value) & 0xff
 		out	(Qb0), a
-		ld	a, \value / 0x100
+		ld	a, (\value) / 0x100
 		out	(Qb1), a
 	endmacro
 

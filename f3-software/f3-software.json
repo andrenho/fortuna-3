@@ -4,6 +4,10 @@
     "KERNEL.SYS": {
       "source": "kernel/kernel.z80",
       "address": 0
+    },
+    "SHELL.F3B": {
+      "source": "shell/shell.z80",
+      "address": 0
     }
   },
   "debuggerSetup": {

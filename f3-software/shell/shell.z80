@@ -1,0 +1,5 @@
+	org	0x100
+
+stp:	jp	stp
+
+; vim: ts=8:sts=8:sw=8:noexpandtab
