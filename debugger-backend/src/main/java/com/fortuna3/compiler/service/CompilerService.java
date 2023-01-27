@@ -65,46 +65,37 @@ public class CompilerService {
 
     private RawCompilerOutput runCompiler(String mainSourceFile) {
 
-        final String LISTING_FILENAME = "listing.txt";
-        final String ROM_FILENAME = "rom.bin";
+        final String LISTING_FILENAME = System.getProperty("java.io.tmpdir") + "/listing.txt";
+        final String ROM_FILENAME = System.getProperty("java.io.tmpdir") + "/rom.bin";
 
         var commandLine =
                 compilerExecutableService.getCompilerPath() +
-                " -chklabels -L listing.txt -Llo -nosym -x -Fbin -o rom.bin -I" + compilerExecutableService.getIncludeFilePath() + " " +
+                " -chklabels -L " + LISTING_FILENAME + " -Llo -nosym -x -Fbin -o " + ROM_FILENAME + " -I" + compilerExecutableService.getIncludeFilePath() + " " +
                 mainSourceFile;
         // log.info("Compiling with the following command line: " + commandLine);
 
         try {
-            Process process = Runtime.getRuntime().exec(commandLine);
-            int status = process.waitFor();
-
             String listing = null;
             byte[] rom = null;
 
-            for (int i = 0; i < 3; ++i) {
-                if (Files.exists(Path.of(LISTING_FILENAME))) {
-                    listing = Files.readString(Path.of(LISTING_FILENAME));
-                    if (Boolean.FALSE.equals(keepListingTxt))
-                        new File(LISTING_FILENAME).delete();
-                }
+            Process process = Runtime.getRuntime().exec(commandLine);
+            int status = process.waitFor();
 
-                if (Files.exists(Path.of(ROM_FILENAME))) {
-                    rom = Files.readAllBytes(Path.of(ROM_FILENAME));
-                    new File(ROM_FILENAME).delete();
-                }
-
-                // try 3 times before giving up
-                if (listing != null && rom != null) {
-                    break;
-                } else {
-                    try { Thread.sleep(200); } catch(InterruptedException unused) {}
-                }
+            if (Files.exists(Path.of(LISTING_FILENAME))) {
+                listing = Files.readString(Path.of(LISTING_FILENAME));
+                if (Boolean.FALSE.equals(keepListingTxt))
+                    new File(LISTING_FILENAME).delete();
             }
 
-            if (listing == null)
-                log.warning("Listing is null");
+            if (Files.exists(Path.of(ROM_FILENAME))) {
+                rom = Files.readAllBytes(Path.of(ROM_FILENAME));
+                new File(ROM_FILENAME).delete();
+            }
 
             if (status == 0) {
+                if (listing == null)
+                    log.warning("Listing is null");
+
                 return RawCompilerOutput.builder()
                         .mainSourceFile(Path.of(mainSourceFile).getFileName().toString())
                         .compilerOutput(getOutput(process.getInputStream()))

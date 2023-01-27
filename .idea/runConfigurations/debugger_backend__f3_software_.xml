@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="debugger-backend (bios)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="debugger-backend (f3-software)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" />
     <module name="debugger-backend" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.fortuna3.Fortuna3Application" />

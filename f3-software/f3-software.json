@@ -2,7 +2,7 @@
   "biosSource": "bios/bios.z80",
   "projects": {
     "KERNEL.SYS": {
-      "source": "kernel/shell.z80",
+      "source": "kernel/kernel.z80",
       "address": 0
     }
   },
