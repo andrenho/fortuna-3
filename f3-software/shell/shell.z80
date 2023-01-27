@@ -31,6 +31,9 @@ input_command:
 	out	(S_PUT), a		; print char
 	jp	input_command
 
+prompt_str:
+	;blk	256
+
 ;===========================================
 ; PARSE COMMAND
 ;===========================================

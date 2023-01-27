@@ -4,8 +4,8 @@
     - [x] ComputeUnit: add call for error messages
     - [x] Rename KERNEL to KERNEL.SYS
   - [ ] Write OS & shell
-    - [ ] OS: initialization code (setup interrupt table (IM 2 mode), stack, etc)
-    - [ ] OS: load and launch SHELL
+    - [x] OS: initialization code (setup interrupt table (IM 2 mode), stack, etc)
+    - [x] OS: load and launch SHELL
     - [ ] OS: finalize applications and reload SHELL
     - [ ] SHELL: basic REPL
     - [ ] SHELL: REPL parse
@@ -14,9 +14,6 @@
     - [ ] SHELL: launch applications
   - [ ] Write hello world program
   - [ ] Write utilities
-- [ ] Fortuna-Pi
-  - [ ] Deal with ENTER (which character it'll be?)
-  - [ ] Cursor timer restart after keypress
 - Build
   - [ ] Generate an online-only version for publication (simulate backend calls)
     - [ ] Auto-deploy
@@ -93,5 +90,8 @@ Done:
     - [x] Serial speed not being set correctly
     - [x] VT100 emulation (send and receive characters)
     - [x] Treat errors when setting up serial
+- [x] Fortuna-Pi
+  - [x] Deal with ENTER (which character it'll be?)
+  - [x] Cursor timer restart after keypress
 - General
   - [x] Centralize BAUD speed in one place

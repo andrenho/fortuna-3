@@ -3,7 +3,7 @@
     <option name="ACTIVE_PROFILES" />
     <module name="debugger-backend" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.fortuna3.Fortuna3Application" />
-    <option name="VM_PARAMETERS" value="-DprojectPath=&quot;f3-software/f3-software.json&quot;" />
+    <option name="VM_PARAMETERS" value="-DprojectPath=&quot;f3-software/f3-software.json&quot; -DkeepListingTxt=true" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

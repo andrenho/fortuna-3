@@ -79,7 +79,9 @@ public class CompilerMapper {
                 switch (currentSection) {
                     case SOURCE -> {
                         var source = sourceProject.getSource().get(currentFile);
-                        source.add(parseLine(line, source.size(), context));
+                        var sourceLine = parseLine(line, source.size(), context);
+                        if (sourceLine != null)
+                            source.add(sourceLine);
                     }
                     case LABELS -> addLabel(line, sourceProject.getLabels());
                     case SYMBOLS -> addSymbol(line, sourceProject.getSymbols());
@@ -96,6 +98,9 @@ public class CompilerMapper {
     }
 
     private SourceLine parseLine(String line, int index, CompilationContext context) {
+
+        if (line.substring(8).equals("*"))
+            return null;
 
         List<Integer> addresses = new ArrayList<>();
         try {
