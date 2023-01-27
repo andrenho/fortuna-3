@@ -38,7 +38,7 @@ static uint8_t translate_char(SDL_Keycode sym, uint8_t buffer[16]) {
             return 1;
     }
 
-    if (sym >= 32 && sym <= 255) {
+    if (sym > 0 && sym <= 255) {
         buffer[0] = (uint8_t) sym;
         return 1;
     }
