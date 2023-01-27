@@ -30,22 +30,17 @@ void events_push(EventType event_type, void* data)
 }
 
 static uint8_t translate_char(SDL_Keycode sym, uint8_t buffer[16]) {
-    if (sym >= 32 && sym <= 255) {
-        buffer[0] = (uint8_t) sym;
-        return 1;
-    }
 
     switch (sym) {
         case SDLK_KP_ENTER:
         case SDLK_RETURN:
             buffer[0] = 10;
             return 1;
+    }
 
-        case SDLK_BACKSPACE:
-            buffer[0] = 8;
-            buffer[1] = ' ';
-            buffer[2] = 8;
-            return 3;
+    if (sym >= 32 && sym <= 255) {
+        buffer[0] = (uint8_t) sym;
+        return 1;
     }
 
     // TODO - add other keys such as F1, arrows, etc... (use VT100 codes)

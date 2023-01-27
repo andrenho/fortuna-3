@@ -99,8 +99,10 @@ void text_output(uint8_t c)
                 text_advance_line();
                 break;
             case '\b':
-                if (cursor.x > 0)
+                if (cursor.x > 0) {
                     --cursor.x;
+                    matrix[cursor.y][cursor.x] = (Char) { ' ', color };
+                }
                 break;
             default:
                 matrix[cursor.y][cursor.x] = (Char) { c, color };
