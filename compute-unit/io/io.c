@@ -99,6 +99,7 @@ bool io_write(uint8_t addr, uint8_t data)
         case FS_MKDIR:
         case FS_OPENDIR:
         case FS_READDIR:
+        case FS_ERROR:
             return true;
     }
 

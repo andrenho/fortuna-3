@@ -33,7 +33,7 @@ CFLAGS=-I. -Idev -Ifsfat -Iinterface -Iio
 # Rules
 #
 
-AVRDUDE_FLAGS=-p ${MCU_AVRDUDE} -C +./avrdude_gpio.conf -c ${AVRDUDE_CONFIG} -V
+AVRDUDE_FLAGS=-p ${MCU_AVRDUDE} -C +./avrdude_gpio.conf -c ${AVRDUDE_CONFIG} -V -B1
 CC=avr-gcc
 WARNINGS=-Wall -Wextra \
 	 -Wformat=2 -Wno-unused-parameter -Wshadow \
