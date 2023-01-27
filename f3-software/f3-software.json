@@ -1,13 +1,14 @@
 {
   "biosSource": "bios/bios.z80",
   "projects": {
-    "kernel": {
+    "KERNEL.SYS": {
       "source": "kernel/shell.z80",
       "address": 0
     }
   },
   "debuggerSetup": {
     "sdCardSizeInMB": 16,
+    "runOnLoad": true,
     "breakpoints": [ 64768 ]
   }
 }

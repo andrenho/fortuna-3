@@ -2,6 +2,9 @@
 
 OS_LOCATION = 0xfd00
 
+	; The BIOS is loaded at 0x0, and it's meant to
+	; be overwritten after its execution.
+
 	org	0x0
 
 	;
@@ -71,8 +74,6 @@ check_status:
 	cp	a, 0
 	jp	z, .status_ok
 
-	; TODO - print in RED
-
 .status_err:
 	set_Pa	red			; print error
 	out	(S_PRINT_Z), a
@@ -91,16 +92,16 @@ check_status:
 	;
 
 loading_kernel:
-	asciiz	"Loading KERNEL...", 10
+	asciiz	"Loading KERNEL.SYS...", 10
 
 kernel_filename:
-	asciiz	"KERNEL"
+	asciiz	"KERNEL.SYS"
 
 kernel_not_found:
-	asciiz	"KERNEL not found!"
+	asciiz	"KERNEL.SYS not found!"
 
 kernel_error:
-	asciiz	"Error loading KERNEL!"
+	asciiz	"Error loading KERNEL.SYS!"
 
 red:
 	asciiz	27, "[1;31m"
