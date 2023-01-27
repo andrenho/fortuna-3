@@ -29,9 +29,25 @@ void events_push(EventType event_type, void* data)
     SDL_PushEvent(&event);
 }
 
-static uint8_t translate_char(SDL_Keycode sym) {
-    if (sym <= 255)
-        return (uint8_t) sym;
+static uint8_t translate_char(SDL_Keycode sym, uint8_t buffer[16]) {
+    if (sym >= 32 && sym <= 255) {
+        buffer[0] = (uint8_t) sym;
+        return 1;
+    }
+
+    switch (sym) {
+        case SDLK_KP_ENTER:
+        case SDLK_RETURN:
+            buffer[0] = 10;
+            return 1;
+
+        case SDLK_BACKSPACE:
+            buffer[0] = 8;
+            buffer[1] = ' ';
+            buffer[2] = 8;
+            return 3;
+    }
+
     // TODO - add other keys such as F1, arrows, etc... (use VT100 codes)
     return 0;
 }
@@ -52,9 +68,10 @@ void events_do(bool* quit)
                 interface_uart_write(*c);
         } else if (ev.type == SDL_KEYDOWN && ev.key.state == SDL_PRESSED) {
             if (ev.key.keysym.sym < 32 || ev.key.keysym.sym > 126) {
-                uint8_t c = translate_char(ev.key.keysym.sym);
-                if (c)
-                    interface_uart_write(c);
+                static uint8_t buffer[16] = {0};
+                uint8_t sz = translate_char(ev.key.keysym.sym, buffer); 
+                for (size_t i = 0; i < sz; ++i)
+                    interface_uart_write(buffer[i]);
             }
         }
 
