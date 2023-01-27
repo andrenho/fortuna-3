@@ -102,8 +102,6 @@ const DebuggerPage : React.FC<DebuggerPageProps> = observer(({ visible }) => {
             <Debugger />
             <div className={css.rightSide}>
 
-                <div style={{ display: showFortunaPi ? "block" : "none" }}><FortunaPi /></div>
-
                 { showCpu && <CPU cpu={store.state.cpu} running={store.running} /> }
 
                 { showCompute && <ComputeUnit
@@ -112,7 +110,9 @@ const DebuggerPage : React.FC<DebuggerPageProps> = observer(({ visible }) => {
                     r={store.state.computeUnit.r}
                     running={store.running} /> }
 
-                { showUart && <UART 
+                <div style={{ display: showFortunaPi ? "block" : "none" }}><FortunaPi /></div>
+
+                { showUart && <UART
                     rows={store.uartTerminal.terminalRows}
                     columns={store.uartTerminal.terminalColumns} 
                     cursorX={store.uartTerminal.cursorX}

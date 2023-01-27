@@ -79,17 +79,30 @@ public class CompilerService {
             int status = process.waitFor();
 
             String listing = null;
-            if (Files.exists(Path.of(LISTING_FILENAME))) {
-                listing = Files.readString(Path.of(LISTING_FILENAME));
-                if (Boolean.FALSE.equals(keepListingTxt))
-                    new File(LISTING_FILENAME).delete();
+            byte[] rom = null;
+
+            for (int i = 0; i < 3; ++i) {
+                if (Files.exists(Path.of(LISTING_FILENAME))) {
+                    listing = Files.readString(Path.of(LISTING_FILENAME));
+                    if (Boolean.FALSE.equals(keepListingTxt))
+                        new File(LISTING_FILENAME).delete();
+                }
+
+                if (Files.exists(Path.of(ROM_FILENAME))) {
+                    rom = Files.readAllBytes(Path.of(ROM_FILENAME));
+                    new File(ROM_FILENAME).delete();
+                }
+
+                // try 3 times before giving up
+                if (listing != null && rom != null) {
+                    break;
+                } else {
+                    try { Thread.sleep(200); } catch(InterruptedException unused) {}
+                }
             }
 
-            byte[] rom = null;
-            if (Files.exists(Path.of(ROM_FILENAME))) {
-                rom = Files.readAllBytes(Path.of(ROM_FILENAME));
-                new File(ROM_FILENAME).delete();
-            }
+            if (listing == null)
+                log.warning("Listing is null");
 
             if (status == 0) {
                 return RawCompilerOutput.builder()

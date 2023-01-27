@@ -1,18 +1,17 @@
 - Fortuna3 software
   - [x] Write BIOS
-  - [ ] Write OS & shell
     - [x] Move BIOS back to 0x0
-    - [x] SDCard component: simulate card removal
     - [ ] ComputeUnit: add call for error messages
     - [ ] Rename KERNEL to KERNEL.SYS
+  - [ ] Write OS & shell
     - [ ] OS: initialization code (setup interrupt table (IM 2 mode), stack, etc)
     - [ ] OS: load and launch SHELL
+    - [ ] OS: finalize applications and reload SHELL
     - [ ] SHELL: basic REPL
     - [ ] SHELL: REPL parse
     - [ ] SHELL: ls
     - [ ] SHELL: cd
     - [ ] SHELL: launch applications
-    - [ ] OS: finalize applications and reload SHELL
   - [ ] Write hello world program
   - [ ] Write utilities
 - Compute unit
@@ -48,6 +47,7 @@ Done:
   - Box
     - [x] Buy stuff
 - Emulator:
+  - [x] SDCard component: simulate card removal
   - [x] Add files to SDCard for emulation
   - [x] Go to project when step lands in another project
   - [x] Run to breakpoint in project file
