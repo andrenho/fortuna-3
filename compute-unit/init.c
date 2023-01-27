@@ -208,7 +208,7 @@ void initialize(void)
 
     if (!sdcard_setup()) {
         puts_P(PSTR(RED "Error initializing SDCard." RST));
-        for (;;);
+        // for (;;);
     }
 #endif
 

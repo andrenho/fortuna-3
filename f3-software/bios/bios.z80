@@ -2,20 +2,28 @@
 
 OS_LOCATION = 0xfd00
 
+	; The BIOS is loaded at 0x0, and it's meant to
+	; be overwritten after its execution.
+
 	org	0x0
+
+	;
+	; Print loading message
+	;
 	
 	set_Pa	loading_kernel
 	out	(S_PRINT_Z), a
 
-; 
-; LOAD KERNEL
-; 
-
-mount_sdcard:
+	;
+	; Mount SDCard
+	;
 
 	out	(FS_MOUNT), a
+	call	check_status
 	
-check_if_kernel_exists:
+	;
+	; Check if kernel exists
+	;
 
 	set_Pa	kernel_filename		; - filename
 	out	(FS_STAT), a		; stat file
@@ -28,19 +36,17 @@ check_if_kernel_exists:
 	out	(S_PRINT_Z), a
 	jp	stp
 
+	;
+	; Load KERNEL file
+	;
+
 load_kernel:
 
 	set_Pa0	0			; - file #
 	set_Qa	kernel_filename		; - filename
 	out	(FS_OPEN_R), a		; open file
 
-	in	a, (Ra0)		; if error...
-	or	a
-	jp	z, .read_kernel
-
-	set_Pa	kernel_error		; ...show error
-	out	(S_PRINT_Z), a
-	jp	stp
+	call	check_status
 
 .read_kernel:
 
@@ -49,13 +55,7 @@ load_kernel:
 	set_Qb0 0			; - RAM page (0)
 	out	(FS_READ), a		; read file
 
-	in	a, (Ra0)		; if error...
-	or	a
-	jp	z, .jump_to_os
-
-	set_Pa	kernel_error		; ...show error
-	out	(S_PRINT_Z), a
-	jp	stp
+	call	check_status
 
 .jump_to_os:
 	out	(FS_CLOSE), a		; close file
@@ -63,16 +63,47 @@ load_kernel:
 
 stp:	jp	stp
 
+; =================== END-OF-EXECUTION =======================
+
+	; 
+	; Check for SDCard operation status
+	;
+
+check_status:
+	in	a, (Ra0)		; check return status (Ra0)
+	cp	a, 0
+	jp	z, .status_ok
+
+.status_err:
+	set_Pa	red			; print error
+	out	(S_PRINT_Z), a
+	set_Pa	0xf000
+	out	(FS_ERROR), a
+	out	(S_PRINT_Z), a
+	ld	a, 10
+	out	(S_PUT), a
+	jp	stp
+
+.status_ok:
+	ret
+
+	;
+	; Messages
+	;
+
 loading_kernel:
-	asciiz	"Loading KERNEL...", 10
+	asciiz	"Loading KERNEL.SYS...", 10
 
 kernel_filename:
-	asciiz	"KERNEL"
+	asciiz	"KERNEL.SYS"
 
 kernel_not_found:
-	asciiz	"KERNEL not found!"
+	asciiz	"KERNEL.SYS not found!"
 
 kernel_error:
-	asciiz	"Error loading KERNEL!"
+	asciiz	"Error loading KERNEL.SYS!"
+
+red:
+	asciiz	27, "[1;31m"
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab
