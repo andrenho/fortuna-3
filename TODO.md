@@ -14,6 +14,9 @@
     - [ ] SHELL: launch applications
   - [ ] Write hello world program
   - [ ] Write utilities
+- [ ] Fortuna-Pi
+  - [ ] Deal with ENTER (which character it'll be?)
+  - [ ] Cursor timer restart after keypress
 - Build
   - [ ] Generate an online-only version for publication (simulate backend calls)
     - [ ] Auto-deploy
