@@ -30,8 +30,9 @@ typedef struct {
     uint8_t color : 4;
     bool visible;
     bool blink_state;
+    uint32_t last_blink;
 } Cursor;
-static Cursor cursor = { .x = 0, .y = 0, .color = COLOR_ORANGE, .visible = true, .blink_state = true };
+static Cursor cursor = { .x = 0, .y = 0, .color = COLOR_ORANGE, .visible = true, .blink_state = true, .last_blink = 0 };
 
 static void text_load_font()
 {
@@ -55,7 +56,7 @@ void text_init()
 
 void text_reset()
 {
-    cursor = (Cursor) { .x = 0, .y = 0, .color = COLOR_ORANGE, .visible = true, .blink_state = true };
+    cursor = (Cursor) { .x = 0, .y = 0, .color = COLOR_ORANGE, .visible = true, .blink_state = true, .last_blink = SDL_GetTicks() };
     color = COLOR_WHITE;
 
     for (size_t line = 0; line < TEXT_LINES; ++line)
@@ -83,6 +84,14 @@ static void text_advance_cursor()
         text_advance_line();
 }
 
+static void text_write_char(char c)
+{
+    matrix[cursor.y][cursor.x] = (Char) { c, color };
+    text_advance_cursor();
+    cursor.blink_state = true;
+    cursor.last_blink = SDL_GetTicks();
+}
+
 void text_output(uint8_t c)
 {
     bool aa = ansi_active();
@@ -101,12 +110,12 @@ void text_output(uint8_t c)
             case '\b':
                 if (cursor.x > 0) {
                     --cursor.x;
-                    matrix[cursor.y][cursor.x] = (Char) { ' ', color };
+                    text_write_char(' ');
+                    --cursor.x;
                 }
                 break;
             default:
-                matrix[cursor.y][cursor.x] = (Char) { c, color };
-                text_advance_cursor();
+                text_write_char(c);
                 break;
         }
     }
@@ -144,7 +153,10 @@ static void text_draw_cell(size_t line, size_t column)
 
 void text_update()
 {
-    cursor.blink_state = (SDL_GetTicks() / TEXT_BLINK_DELAY) & 1;
+    if (SDL_TICKS_PASSED(SDL_GetTicks(), cursor.last_blink + TEXT_BLINK_DELAY)) {
+        cursor.blink_state = !cursor.blink_state;
+        cursor.last_blink = SDL_GetTicks();
+    }
 }
 
 void text_draw()
