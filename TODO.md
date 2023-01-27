@@ -1,7 +1,7 @@
 - Fortuna3 software
   - [x] Write BIOS
     - [x] Move BIOS back to 0x0
-    - [ ] ComputeUnit: add call for error messages
+    - [x] ComputeUnit: add call for error messages
     - [ ] Rename KERNEL to KERNEL.SYS
   - [ ] Write OS & shell
     - [ ] OS: initialization code (setup interrupt table (IM 2 mode), stack, etc)
