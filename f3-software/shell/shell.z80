@@ -38,11 +38,11 @@ input_command:
 	cp	a, 0			; skip if zero
 	jp	z, .continue_input
 
+	cp	a, 8			; if backspace
+	jp	z, .backspace
+
 	cp	a, 10			; if ENTER, parse command
 	jp	z, parse_command
-
-	cp	a, 8
-	jp	z, .backspace
 
 	call	.add_char_to_buffer	; add character to buffer
 	jp	.continue_input
