@@ -26,6 +26,12 @@ print_prompt:
 
 input_command:
 
+	ld	a, 0			; reset variables
+	ld	(cmd_sz), a
+	
+	ld	de, COMMAND_BUF
+	ld	(cmd_buf_idx), de
+
 .continue_input:
 	in	a, (S_GET)		; get char
 
@@ -48,7 +54,7 @@ input_command:
 .add_char_to_buffer:
 
 	push	af
-	ld	a, (.cmd_sz)		; check if sz > CMD_SZ
+	ld	a, (cmd_sz)		; check if sz > CMD_SZ
 	cp	a, COMMAND_SZ
 	jr	c, .continue_adding
 	pop	af
@@ -56,16 +62,16 @@ input_command:
 
 .continue_adding:
 	inc	a			; increment sz
-	ld	(.cmd_sz), a
+	ld	(cmd_sz), a
 	pop	af
 
 	out	(S_PUT), a		; print char
 
-	ld	de, (.cmd_buf_idx)	; add character to buffer
+	ld	de, (cmd_buf_idx)	; add character to buffer
 	ld	(de), a
 
 	inc	de			; increment buffer
-	ld	(.cmd_buf_idx), de
+	ld	(cmd_buf_idx), de
 
 	ret
 	
@@ -75,7 +81,7 @@ input_command:
 
 .backspace:
 	push	af
-	ld	a, (.cmd_sz)		; check if sz > 1
+	ld	a, (cmd_sz)		; check if sz > 1
 	cp	a, 0
 	jr	nz, .continue_backspace
 	pop	af
@@ -83,14 +89,14 @@ input_command:
 
 .continue_backspace:
 	dec	a			; decrement sz
-	ld	(.cmd_sz), a
+	ld	(cmd_sz), a
 	pop	af
 
 	out	(S_PUT), a		; print backspace
 
-	ld	de, (.cmd_buf_idx)	; decrement buffer index
+	ld	de, (cmd_buf_idx)	; decrement buffer index
 	dec	de
-	ld	(.cmd_buf_idx), de
+	ld	(cmd_buf_idx), de
 
 	jp	.continue_input
 
@@ -98,10 +104,10 @@ input_command:
 	; variables
 	;
 
-.cmd_sz:
+cmd_sz:
 	db	0
 
-.cmd_buf_idx:
+cmd_buf_idx:
 	dw	COMMAND_BUF
 
 ;===========================================
@@ -112,6 +118,15 @@ parse_command:
 
 	ld	a, 10
 	out	(S_PUT), a
+
+	set_Pa	COMMAND_BUF		; print buffer
+	ld	a, (cmd_sz)
+	set_Pb_from_A
+	out	(S_PRINT_LEN), a
+
+	ld	a, 10			; print ENTER
+	out	(S_PUT), a
+
 	jp	print_prompt
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab

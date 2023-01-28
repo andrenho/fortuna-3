@@ -54,6 +54,19 @@
 		out	(Pb1), a
 	endmacro
 
+	macro set_Pb_from_A
+		out	(Pb0), a
+		ld	a, 0
+		out	(Pb1), a
+	endmacro
+
+	macro set_Pb_from_DE
+		ld	a, e
+		out	(Pb0), a
+		ld	a, d
+		out	(Pb1), a
+	endmacro
+
 	macro set_Qa, value
 		ld	a, (\value) & 0xff
 		out	(Qa0), a
