@@ -95,4 +95,11 @@
 		out	(Qb1), a
 	endmacro
 
+	macro set_DE_from_Ra
+		in	a, (Ra0)
+		ld	e, a
+		in	a, (Ra1)
+		ld	d, a
+	endmacro
+
 ; vim:ts=8:sts=8:sw=8:noexpandtab

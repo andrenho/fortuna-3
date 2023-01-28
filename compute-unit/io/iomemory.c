@@ -122,14 +122,13 @@ void io_mm_strsub(IO_Regs* r)
 void io_mm_strchr(IO_Regs* r, uint8_t data)
 {
     uint16_t addr = Pa(r);
-    uint16_t count = 0;
 
     uint8_t chr;
     while ((chr = ram_get_byte(addr++)) != 0) {
         if (chr == data) {
-            set_Ra(r, count);
+            set_Ra(r, addr - 1);
+            return;
         }
-        ++count;
     }
 
     set_Ra(r, 0xffff); // not found

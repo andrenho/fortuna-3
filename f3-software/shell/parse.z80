@@ -57,6 +57,25 @@ parse_command:
 	;
 
 .find_first_space:
+	; find first space in string
+	ld	de, (cmd_ptr)
+	set_Pa_from_DE
+	ld	a, ' '
+	out	(MM_STRCHR), a
+
+	; is there a space? replace it with zero and set pointer
+	in	a, (Ra0)
+	cp	a, 0xff			; no space found?
+	jr	z, .no_space
+	set_DE_from_Ra
+	ld	a, 0			; set '\0' to space
+	ld	(de), a
+	inc	e			; set p1 ptr to space + 1
+	ld	(cmd_p1_ptr), de
+	ret
+
+	; TODO - there's no space? make p1 point to zero
+.no_space
 	ret
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab
