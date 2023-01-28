@@ -1,6 +1,12 @@
 	include ../f3macros.z80
 
+COMMAND_BUF = 0xfb00
+COMMAND_SZ  = 200
+STACK_TOP   = COMMAND_BUF - 1
+
 	org	0x100
+
+	ld	sp, STACK_TOP
 
 ;===========================================
 ; PRINT PROMPT
@@ -20,19 +26,83 @@ print_prompt:
 
 input_command:
 
+.continue_input:
 	in	a, (S_GET)		; get char
 
 	cp	a, 0			; skip if zero
-	jp	z, input_command
+	jp	z, .continue_input
 
 	cp	a, 10			; if ENTER, parse command
 	jp	z, parse_command
 
-	out	(S_PUT), a		; print char
-	jp	input_command
+	cp	a, 8
+	jp	z, .backspace
 
-prompt_str:
-	;blk	256
+	call	.add_char_to_buffer	; add character to buffer
+	jp	.continue_input
+
+	; 
+	; add character to buffer (A = character)
+	;
+
+.add_char_to_buffer:
+
+	push	af
+	ld	a, (.cmd_sz)		; check if sz > CMD_SZ
+	cp	a, COMMAND_SZ
+	jr	c, .continue_adding
+	pop	af
+	ret				; sz > CMD_SZ
+
+.continue_adding:
+	inc	a			; increment sz
+	ld	(.cmd_sz), a
+	pop	af
+
+	out	(S_PUT), a		; print char
+
+	ld	de, (.cmd_buf_idx)	; add character to buffer
+	ld	(de), a
+
+	inc	de			; increment buffer
+	ld	(.cmd_buf_idx), de
+
+	ret
+	
+	;
+	; backspace
+	;
+
+.backspace:
+	push	af
+	ld	a, (.cmd_sz)		; check if sz > 1
+	cp	a, 0
+	jr	nz, .continue_backspace
+	pop	af
+	jp	.continue_input
+
+.continue_backspace:
+	dec	a			; decrement sz
+	ld	(.cmd_sz), a
+	pop	af
+
+	out	(S_PUT), a		; print backspace
+
+	ld	de, (.cmd_buf_idx)	; decrement buffer index
+	dec	de
+	ld	(.cmd_buf_idx), de
+
+	jp	.continue_input
+
+	; 
+	; variables
+	;
+
+.cmd_sz:
+	db	0
+
+.cmd_buf_idx:
+	dw	COMMAND_BUF
 
 ;===========================================
 ; PARSE COMMAND
