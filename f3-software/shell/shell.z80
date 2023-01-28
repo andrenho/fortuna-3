@@ -6,6 +6,11 @@ STACK_TOP   = COMMAND_BUF - 1
 
 	org	0x100
 
+	jp	main
+	
+	include parse.z80
+
+main:
 	ld	sp, STACK_TOP
 
 ;===========================================
@@ -24,6 +29,16 @@ print_prompt:
 ; INPUT COMMAND
 ;===========================================
 
+cmd_sz:
+	db	0			; command size
+
+cmd_buf_idx:				; current index in the command buffer
+	dw	COMMAND_BUF
+
+	;
+	; input user command
+	;
+
 input_command:
 
 	ld	a, 0			; reset variables
@@ -35,15 +50,20 @@ input_command:
 .continue_input:
 	in	a, (S_GET)		; get char
 
-	cp	a, 0			; skip if zero
+	; skip if zero
+	cp	a, 0
 	jp	z, .continue_input
 
-	cp	a, 8			; if backspace
+	; backspace?
+	cp	a, 8
 	jp	z, .backspace
 
-	cp	a, 10			; if ENTER, parse command
-	jp	z, parse_command
+	; enter?
+	cp	a, 10
+	jp	z, .enter
 
+	; none of the above - just a regular character
+.add_char:
 	call	.add_char_to_buffer	; add character to buffer
 	jp	.continue_input
 
@@ -101,32 +121,19 @@ input_command:
 	jp	.continue_input
 
 	; 
-	; variables
+	; enter
 	;
 
-cmd_sz:
-	db	0
-
-cmd_buf_idx:
-	dw	COMMAND_BUF
-
-;===========================================
-; PARSE COMMAND
-;===========================================
-	
-parse_command:
-
-	ld	a, 10
-	out	(S_PUT), a
-
-	set_Pa	COMMAND_BUF		; print buffer
-	ld	a, (cmd_sz)
-	set_Pb_from_A
-	out	(S_PRINT_LEN), a
-
+.enter:
 	ld	a, 10			; print ENTER
 	out	(S_PUT), a
 
-	jp	print_prompt
+	ld	de, (cmd_buf_idx)	; add terminator to command
+	ld	a, 0
+	ld	(de), a
+
+	call	parse_command		; parse command
+
+	jp	print_prompt		; restart loop
 
 ; vim: ts=8:sts=8:sw=8:noexpandtab

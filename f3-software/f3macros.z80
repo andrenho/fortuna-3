@@ -47,6 +47,13 @@
 		out	(Pa1), a
 	endmacro
 
+	macro set_Pa_from_DE
+		ld	a, e
+		out	(Pa0), a
+		ld	a, d
+		out	(Pa1), a
+	endmacro
+
 	macro set_Pb, value
 		ld	a, (\value) & 0xff
 		out	(Pb0), a

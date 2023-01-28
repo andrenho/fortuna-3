@@ -1,0 +1,48 @@
+;===========================================
+; PARSE COMMAND
+;===========================================
+
+cmd_ptr:
+	dw	0			; pointer to command
+cmd_p1_ptr:
+	dw	0			; pointer to 1st parameter
+	
+parse_command:
+
+	; split command
+	call	.left_trim
+	call	.find_first_space	; 1st space in DE
+
+	; print command
+	ld	de, (cmd_ptr)
+	set_Pa_from_DE
+	out	(S_PRINT_Z), a
+	ld	a, 10
+	out	(S_PUT), a
+
+	;set_Pa	cmd_ptr			; print 1st parameter
+	;out	(S_PRINT_Z), a
+	;ld	a, 10
+	;out	(S_PUT), a
+
+	ret
+
+	;
+	; skip spaces in the beginning of the command,
+	; and set `cmd_ptr`
+	;
+
+.left_trim:
+	ld	de, COMMAND_BUF
+	ld	(cmd_ptr), de
+	ret
+
+	;
+	; find first space in command, set it to '\0',
+	; and set `cmd_p1_ptr`
+	;
+
+.find_first_space:
+	ret
+
+; vim: ts=8:sts=8:sw=8:noexpandtab
