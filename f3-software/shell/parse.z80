@@ -33,9 +33,23 @@ parse_command:
 	;
 
 .left_trim:
-	ld	de, COMMAND_BUF
+	ld	de, COMMAND_BUF		; point cmd_ptr to buffer
 	ld	(cmd_ptr), de
+
+.next:
+	ld	de, (cmd_ptr)
+	ld	a, (de)			; get next char
+	cp	a, ' '			; is it a space?
+	jp	z, .space_found
 	ret
+
+.space_found:
+	; a space was found, so we increment the pointer
+	ld	de, (cmd_ptr)
+	inc	e	; we can increment only E because we
+			; know the string is < 200 chars
+	ld	(cmd_ptr), de
+	jp	.next
 
 	;
 	; find first space in command, set it to '\0',
